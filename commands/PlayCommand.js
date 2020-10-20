@@ -32,7 +32,7 @@ module.exports = {
                 }
                 if (args[0]) {
                     if (args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0]) {
-                        let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild) VALUES($1,$2,$3,$4) RETURNING *;'
+                        let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild) VALUES($1,$2,$3,$4);'
                         let addToQueueValues = [Date.now(),message.author.id,args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i),message.guild.id]
                         db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`)
                         .then(queue => {
@@ -52,13 +52,11 @@ module.exports = {
                             }
                             else {
                                 db.query(addToQueueQuery,addToQueueValues)
-                                .then(queue => {
-                                    playTrack()
-                                })
                                 .catch(e => {
                                     console.error(e.stack)
                                     message.channel.send(e)
                                 })
+                                playTrack()
                             }
                         })
                         .catch(e => {
