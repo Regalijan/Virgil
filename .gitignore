@@ -103,9 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# Configuration file
-config.json
-
 # Individual guild settings files
 serversettings/
 
@@ -114,3 +111,6 @@ servicekey.json
 
 # Ban files
 bans/
+
+# Configuration file
+config.json
