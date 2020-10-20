@@ -111,3 +111,6 @@ serversettings/
 
 # Google Cloud service key
 servicekey.json
+
+# Ban files
+bans/
