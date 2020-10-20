@@ -113,4 +113,4 @@ servicekey.json
 bans/
 
 # Configuration file
-config.json
+config/config.json
