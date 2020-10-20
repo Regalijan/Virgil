@@ -43,3 +43,18 @@
 10. Enable the service: `sudo systemctl start virgil`
 
 If the bot is not online, check the logs with `sudo journalctl -eu virgil`
+
+## Config Options
+```
+"token": The bot token needed to log in to discord.
+"prefix": Please tell me this is obvious.
+"gameModeratorUsers": Array of user IDs which can execute game mod commands (roles array takes precedence).
+"bucket": Ban files are uploaded to this bucket.
+"serviceKeyPath": Full path of service key for google cloud.
+"banFilesPath": Full path to directory where outputted json files are uploaded.
+"appealsManagerRole": Array of roles that are allowed to execute the appeals commands.
+"databaseAddress": Default 'localhost'. Hostname/IP address of database.
+"databaseUser": Default 'postgres'. Username of connecting user.
+"databasePassword": Password of database user (socketed connections currently not supported).
+"databaseName": Default 'postgres'. Name of database to connect to.
+```
