@@ -76,7 +76,7 @@ module.exports = {
                         }
                         for (let i = 0;i < gamepasses.length;i++) {
                             if (badges) {
-                                request(`https://inventory.roblox.com/v1/users/${RobloxID}/items/Badge/${gamepasses[i].badge}`)
+                                request(`https://inventory.roblox.com/v1/users/${RobloxID}/items/GamePass/${gamepasses[i].badge}`)
                                 .then(function (gamepassData) {
                                     if (gamepassData.data.data) {
                                         if (!member.roles.cache.has(gamepasses[i].role)) member.roles.add(gamepasses[i].role).catch(error => console.error(error))
