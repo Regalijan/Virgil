@@ -1,6 +1,3 @@
-#Config folder
-config/
-
 # Logs
 logs
 *.log
@@ -114,3 +111,6 @@ servicekey.json
 
 # Ban files
 bans/
+
+# Config file
+config.json
