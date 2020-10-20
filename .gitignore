@@ -114,3 +114,4 @@ bans/
 
 # Configuration file
 config/*
+config/config.json
