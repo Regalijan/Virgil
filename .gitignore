@@ -108,3 +108,6 @@ config.json
 
 # Individual guild settings files
 serversettings/
+
+# Google Cloud service key
+servicekey.json
