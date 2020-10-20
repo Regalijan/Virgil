@@ -26,7 +26,7 @@
    ```
    [Unit]
    Description=Virgil systemd service
-   Documentation=https://github.com/Wolftallemo/Virgil/blob/master/README.md
+   Documentation=https://github.com/Wolftallemo/Virgil/blob/main/README.md
    After=network.target
    
    [Service]
