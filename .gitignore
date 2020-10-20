@@ -114,6 +114,3 @@ servicekey.json
 
 # Ban files
 bans/
-
-# Configuration file
-config/config.json
