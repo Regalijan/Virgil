@@ -1,0 +1,13 @@
+{
+    "token": "Bot token",
+    "prefix": "!",
+    "gameModeratorUsers": ["Array","of","roles"],
+    "bucket": "Google cloud storage bucket name",
+    "serviceKeyPath": "Fully qualified path of service account key",
+    "banFilesPath": "Fully qualified directory path for outputted json files",
+    "appealsManagerRole": ["Array","of","roles"],
+    "databaseAddress": "If localhost, delete",
+    "databaseUser": "If postgres, delete",
+    "databasePassword": "Required",
+    "databaseName": "If postgres, delete"
+}
