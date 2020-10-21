@@ -4,7 +4,7 @@
 
 ### Windows
 
-1. Download the <a href="https://nodejs.org/en/download/current/">current release MSI</a> of NodeJS.
+1. Download the <a href="https://nodejs.org/en/download/current/">current release</a> of NodeJS.
 2. Launch the installer, and check the box to install Chocolatey.
 3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2017buildtools`
 4. Navigate into the repo folder and install the node modules: `npm i`
