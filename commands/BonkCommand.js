@@ -6,7 +6,7 @@ module.exports = {
     guildOnly: true,
     execute(message, args) {
         let target = `<@${args[0]}>`
-        if (args[0].match(/(@)/)) {
+        if (args[0].match(/(^<@!?[0-9]*>)/)) {
             target = message.mentions.members.first()
         }
         const embed = new Discord.MessageEmbed()
