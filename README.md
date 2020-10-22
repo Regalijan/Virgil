@@ -9,7 +9,7 @@
 3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2017buildtools`
 4. Navigate into the repo folder and install the node modules: `npm i`
 5. To ensure the bot stays online, a process manager such as PM2 will be handy.
-6. Rename `sample-config.json` to `config.json` and fill in the details.
+6. Create the file `config.json` and add the necessary credentials, see `sample-config.json` for reference.
 7. Start the bot: `npm start`
 
 ### Linux
