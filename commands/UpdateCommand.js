@@ -11,7 +11,7 @@ module.exports = {
         const { badges, gamepasses, groupranks, updateCommandRoles } = require(`../serversettings/${message.guild.id}.json`)
         let member = args[0]
         if (args[0].match(/(^<@!?[0-9]*>)/)) {
-            member = message.mentions.members.first()
+            member = message.mentions.members.first().user.id
         }
         if ((message.member.roles.cache.some(role => updateCommandRoles.includes(role.id))) || (message.member.hasPermission('MANAGE_GUILD'))) {
             try {
@@ -25,7 +25,7 @@ module.exports = {
             }
             else {
                 try {
-                    if (args[0].match(/(^<@!?[0-9]*>)/)) bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`)
+                    bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`)
                     if (bloxlinkData.data.status === "ok") robloxId = bloxlinkData.data.primaryAccount
                 }
                 catch (e) {
@@ -34,9 +34,7 @@ module.exports = {
             }
             if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('This user could not be found!')
             try {
-                if (args[0].match(/([0-9])*\d/)) {
-                    member = await message.guild.members.fetch(args[0])
-                }
+                member = await message.guild.members.fetch(member)
                 const groupData = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`)
                 if (groupData.status == 400) return message.channel.send('I could not check group ranks as this user appears to be deleted!')
                 else if ((groupData.status != 200) && (groupData.status != 400)) return message.channel.send('I could not retrieve group ranks as Roblox is currently having problems!')
