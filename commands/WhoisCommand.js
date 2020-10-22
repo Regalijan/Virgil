@@ -8,21 +8,21 @@ module.exports = {
     async execute(message, args) {
         let user = args[0]
         let robloxId = 'Unknown'
-        let robloxUsername = 'Unknown'
         let roverData = undefined
         let bloxlinkData = undefined
         let robloxData = ''
         let profile = ''
+        let profileSource = 'Unknown'
         let joinDate = 'Unknown'
-        let bio = 'Unknown'
         let pastNames = 'Unknown'
-        let avatar = undefined
+        let bio = 'Unknown'
+        let avatar = 'Unknown'
         const embed = new Discord.MessageEmbed()
         if (user.match(/(^<@!?[0-9]*>)/)) {
             user = message.mentions.members.first().id
         }
         try {
-            roverData = await request(`https://verify.eryn.io/api/user/${member}`)
+            roverData = await request(`https://verify.eryn.io/api/user/${user}`)
         }
         catch (e) {
             console.error(e.stack)
@@ -32,7 +32,7 @@ module.exports = {
         }
         else {
             try {
-                bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`)
+                bloxlinkData = await request(`https://api.blox.link/v1/user/${user}`)
                 if (bloxlinkData.data.status === "ok") robloxId = bloxlinkData.data.primaryAccount
             }
             catch (e) {
@@ -46,13 +46,13 @@ module.exports = {
         catch (e) {
             return message.channel.send('Hmm........... something broke. Roblox might be giving me garbage instead of data.')
         }
-        if (!robloxData.Username) return message.channel.send('Looks like Roblox deleted this account.')
+        if (!robloxData.data.Username) return message.channel.send('Looks like Roblox deleted this account.')
         try {
             profile = `https://www.roblox.com/users/${robloxData.data.Id}/profile`
-            let profileSource = await request(profile)
-            joinDate = profileSource.match(/Join Date<p class=text-lead>(.*?)<li/)[1]
-            bio = profileSource.match(/<meta name=description content=".*? is one of the millions playing, creating and exploring the endless possibilities of Roblox. Join .*? on Roblox and explore together! ?((?:.|\n)*?)"/m)[1]
-            pastNames = profileSource.match(/<span class=tooltip-pastnames data-toggle=tooltip title="?(.*?)"?>/)[1].substr(0, 1024)
+            profileSource = await request(profile)
+            joinDate = profileSource.data.match(/Join Date<p class=text-lead>(.*?)<li/)[1]
+            bio = profileSource.data.match(/<meta name=description content=".*? is one of the millions playing, creating and exploring the endless possibilities of Roblox. Join .*? on Roblox and explore together! ?((?:.|\n)*?)"/m)[1]
+            pastNames = profileSource.data.match(/<span class=tooltip-pastnames data-toggle=tooltip title="?(.*?)"?>/)[1].substr(0, 1024)
             avatar = `https://assetgame.roblox.com/Thumbs/Avatar.ashx?username=${robloxData.data.Username}`
         }
         catch (e) {
@@ -68,7 +68,7 @@ module.exports = {
         bio = bio.replace('@', '@ ')
         embed.setTitle('View Profile')
         .setURL(profile)
-        .setAuthor(robloxData.data.username,profile,avatar)
+        .setAuthor(robloxData.data.Username,avatar,profile)
         .setColor(3756250)
         .setThumbnail(avatar)
         .setDescription(bio)
