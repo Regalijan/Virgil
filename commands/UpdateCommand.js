@@ -1,99 +1,77 @@
-const Discord = require('discord.js')
 const request = require('axios')
 
 module.exports = {
     name: "update",
     description: "Updates the target user's role bindings.",
     guildOnly: true,
-    execute(message) {
-        let RobloxID = undefined
-        let groupRank = 0
+    async execute(message, args) {
+        let robloxId = undefined
+        let roverData = undefined
+        let bloxlinkData = undefined
         const { badges, gamepasses, groupranks, updateCommandRoles } = require(`../serversettings/${message.guild.id}.json`)
-        const member = message.mentions.members.first()
+        let member = args[0]
+        if (args[0].match(/(^<@!?[0-9]*>)/)) {
+            member = message.mentions.members.first()
+        }
         if ((message.member.roles.cache.some(role => updateCommandRoles.includes(role.id))) || (message.member.hasPermission('MANAGE_GUILD'))) {
-            request(`https://verify.eryn.io/api/user/${member.id}`)
-            .then(function (roverResponse) {
-                if (roverResponse.status != 200) {
-                    request(`https://api.blox.link/v1/user/${member.id}`)
-                    .then(function (bloxlinkResponse) {
-                        if (bloxlinkResponse.data.status === "ok") {
-                            RobloxID = bloxlinkResponse.data.primaryAccount
-                            request(`https://api.roblox.com/users/${RobloxID}/groups`)
-                            .then(function (groupInfo) {
-                                for (var i = 0;i < groupInfo.data.length;i++) {
-                                    for(var x = 0; x < groupranks.length;x++) {
-                                        if ((groupranks[x].group.includes(groupInfo.data[i].Id)) && (groupranks[x].rank.includes(groupInfo.data[i].Rank))) {
-                                            groupRank = groupInfo.data[i].Rank
-                                            member.roles.add(groupranks[x].role).catch(error => {
-                                                console.error(error)
-                                                return message.channel.send(`D0h! I couldn't give roles to ${target}! ${error}`)
-                                            })
-                                        }
-                                    }
-                                }
-                            })
-                            .catch(function (error) {
-                                console.error(error)
-                                return message.channel.send('HMMMMMMMM... Something br0ke when running this command!')
-                            })
-                        }
-                        else {
-                            return message.reply('This user is not verified on either RoVer or BloxLink')
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error(error)
-                        return message.channel.send(`D0h! Some monkeying happened on my end! ${error}`)
-                    })
+            try {
+                roverData = await request(`https://verify.eryn.io/api/user/${member}`)
+            }
+            catch (e) {
+                console.error(e.stack)
+            }
+            if (roverData.status == 200) {
+                robloxId = roverData.data.robloxId
+            }
+            else {
+                try {
+                    if (args[0].match(/(^<@!?[0-9]*>)/)) bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`)
+                    if (bloxlinkData.data.status === "ok") robloxId = bloxlinkData.data.primaryAccount
                 }
-                else {
-                    RobloxID = roverResponse.data.robloxId
-                    request(`https://api.roblox.com/users/${RobloxID}/groups`)
-                    .then(function (groupInfo) {
-                        for (var i = 0;i < groupInfo.data.length;i++) {
-                            for(var x = 0; x < groupranks.length;x++) {
-                                if ((groupranks[x].group.includes(groupInfo.data[i].Id)) && (groupranks[x].rank.includes(groupInfo.data[i].Rank))) {
-                                    groupRank = groupInfo.data[i].Rank
-                                    member.roles.add(groupranks[x].role).catch(error => {
-                                        console.error(error)
-                                        return message.channel.send(`D0h! I couldn't give roles to ${target}! ${error}`)
-                                    })
-                                }
-                            }
-                        }
-                        for (let i = 0;i < badges.length;i++) {
-                            if (badges) {
-                                request(`https://inventory.roblox.com/v1/users/${RobloxID}/items/Badge/${badges[i].badge}`)
-                                .then(function (badgeData) {
-                                    if (badgeData.data.data) {
-                                        if (!member.roles.cache.has(badges[i].role)) member.roles.add(badges[i].role).catch(error => console.error(error))
-                                    }
-                                })
-                                .catch(function (error) {
-                                    console.error(error)
-                                })
-                            }
-                        }
-                        for (let i = 0;i < gamepasses.length;i++) {
-                            if (badges) {
-                                request(`https://inventory.roblox.com/v1/users/${RobloxID}/items/GamePass/${gamepasses[i].badge}`)
-                                .then(function (gamepassData) {
-                                    if (gamepassData.data.data) {
-                                        if (!member.roles.cache.has(gamepasses[i].role)) member.roles.add(gamepasses[i].role).catch(error => console.error(error))
-                                    }
-                                })
-                                .catch(function (error) {
-                                    console.error(error)
-                                })
-                            }
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error(error)
-                        return message.channel.send(`D0h! Some monkeying happened on my end! ${error}`)
-                    })
+                catch (e) {
+                    console.error(e.stack)
                 }
-            })
+            }
+            if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('This user could not be found!')
+            try {
+                if (args[0].match(/([0-9])*\d/)) {
+                    member = await message.guild.members.fetch(args[0])
+                }
+                const groupData = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`)
+                if (groupData.status == 400) return message.channel.send('I could not check group ranks as this user appears to be deleted!')
+                else if ((groupData.status != 200) && (groupData.status != 400)) return message.channel.send('I could not retrieve group ranks as Roblox is currently having problems!')
+                if (groupData.data.data) {
+                    for (let i = 0;i < groupData.data.data.length;i++) {
+                        for (let x = 0;x < groupranks.length;x++) {
+                            if ((groupranks[x].rank.includes(groupData.data.data[i].role.rank)) && (message.member.guild.me.hasPermission("MANAGE_ROLES"))) {
+                                member.roles.add(groupranks[x].role).catch(e => console.error(e.stack))
+                            }
+                        }
+                    }
+                }
+                if (badges) {
+                    for (let i = 0;i < badges.length;i++) {
+                        let badgeData = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/Badge/${badges[i].badge}`)
+                        if ((badgeData.data.data) && (message.member.guild.me.hasPermission("MANAGE_ROLES")) && (member)) {
+                            member.roles.add(badges[i].role).catch(e => console.error(e.stack))
+                        }
+                    }
+                }
+                if (gamepasses) {
+                    for (let i = 0;i < gamepasses.length;i++) {
+                        let gamepassData = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/GamePass/${gamepasses[i].gamepass}`)
+                        if (gamepassData.data.data) {
+                            if ((gamepassData.data.data[0].id == gamepasses[i].gamepass) && (message.member.guild.me.hasPermission("MANAGE_ROLES")) && (member)) {
+                                member.roles.add(gamepasses[i].role).catch(e => console.error(e => console.error(e.stack)))
+                            }
+                        }
+                    }
+                }
+            }
+            catch (e) {
+                console.error(e.stack)
+            }
+            return message.channel.send(`Finished updating roles!`)
         }
         else {
             return message.channel.send('You do not have permission to run this command!')
