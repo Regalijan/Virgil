@@ -10,6 +10,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
             .setTitle(':duck: QUACK! A random duck for you!')
             .setImage(response.data.url)
+            .setColor(3756250)
             .setFooter(response.data.message)
             return message.channel.send(embed)
         })
