@@ -22,5 +22,5 @@
     "start": "node index.js"
   },
   "author": "Wolftallemo",
-  "license": "Apache-2.0"
+  "license": "MIT"
 }
