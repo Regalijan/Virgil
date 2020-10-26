@@ -9,7 +9,7 @@ module.exports = {
     guildOnly: true,
     execute(message, args) {
         let errormessage = undefined
-        if (gameModeratorUsers.includes(message.author.id) || message.members.roles.cache.some(role => gameModeratorRole.includes(role.id))) {
+        if (gameModeratorUsers.includes(message.author.id) || message.member.roles.cache.some(role => gameModeratorRole.includes(role.id))) {
             if (args[0]) {
                 request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`)
                 .then(function (response) {
