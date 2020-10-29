@@ -4,7 +4,7 @@ module.exports = {
     name: "verify",
     description: 'Adds roles based on your roblox badges and group rank (if applicable).',
     guildOnly: true,
-    execute(message) {
+    async execute(message) {
         let robloxId = undefined
         let roverData = undefined
         let bloxlinkData = undefined
