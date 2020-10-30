@@ -109,5 +109,4 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => console.error(e))
 
-
 client.login(config.token)
