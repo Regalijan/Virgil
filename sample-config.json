@@ -1,6 +1,7 @@
 {
     "token": "Bot token",
     "prefix": "!",
+    "owner": null,
     "gameModeratorUsers": [],
     "gameModeratorRole": null,
     "bucket": "bucket name here",
