@@ -2,6 +2,7 @@
     "token": "Bot token",
     "prefix": "!",
     "gameModeratorUsers": [],
+    "gameModeratorRole": null,
     "bucket": "bucket name here",
     "serviceKeyPath": "Full path of service account key file here",
     "banFilesPath": "Full path of directory for outputted json files",
@@ -9,5 +10,10 @@
     "databaseAddress": null,
     "databaseUser": null,
     "databasePassword": "required",
-    "databaseName": null
+    "databaseName": null,
+    "appealsInvite": null,
+    "mailgunDomain": null,
+    "mailgunRegion": null,
+    "mailgunApiKey": null,
+    "fromAddress": null
 }
