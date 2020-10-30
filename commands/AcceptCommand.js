@@ -29,7 +29,7 @@ module.exports = {
                             method: 'POST',
                             url: sendingUrl,
                             headers: {
-                                'Authorization': `Basic ${config.mailgunApiKey}`
+                                'Authorization': `Basic ${apiKey}`
                             },
                             form: form
                         })
