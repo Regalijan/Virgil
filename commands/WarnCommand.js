@@ -24,6 +24,7 @@ module.exports = {
         if (member == owner) return message.channel.send('I cannot warn my creator.')
         let makeWarnVals = [Date.now(),message.author.id,member,reason,"warn",message.guild.id,"f"]
         const embed = new Discord.MessageEmbed()
+        .setColor(3756250)
         db.query('INSERT INTO punishments(time,moderator,target,reason,type,server,deleted) VALUES($1,$2,$3,$4,$5,$6,$7);',makeWarnVals,'f')
         .catch(e => console.error(e => console.error(e.stack)))
         member.send(`You have been warned in ${guild.name} for **${reason}**`).catch(() => {
