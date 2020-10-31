@@ -11,7 +11,6 @@ module.exports = {
                 let member = args[0]
                 if (member.match(/(^<@!?[0-9]*>)/)) {
                     member = message.mentions.members.first()
-                    
                 }
                 else if (message.guild.member(member)) member = message.guild.member(member)
                 let user = member.user
