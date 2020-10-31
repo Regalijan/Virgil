@@ -3,7 +3,6 @@ module.exports = {
     description: 'What do you think this does lol.',
     guildOnly: true,
     execute(message, args) {
-
         const { moderatorRoles, permissionOverrideRoles } = require(`../serversettings/${message.guild.id}.json`)
         let reason = args.slice(1).join(" ")
         if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => permissionOverrideRoles.includes(role.id)))) {
