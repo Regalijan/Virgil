@@ -13,7 +13,7 @@
     "ffmpeg-static": "^4.2.7",
     "form-data": "^3.0.0",
     "libsodium-wrappers": "^0.7.8",
-    "pg": "^8.4.2",
+    "pg": "^8.5.0",
     "utf-8-validate": "^5.0.3",
     "ytdl-core-discord": "^1.2.4",
     "zlib-sync": "^0.1.7"
