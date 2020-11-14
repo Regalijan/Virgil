@@ -1,4 +1,4 @@
-const { owner } = require('../index')
+const { owner } = require('../config.json')
 module.exports = {
     name: 'exit',
     description: 'Exits the bot process',
