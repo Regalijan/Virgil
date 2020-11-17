@@ -1,6 +1,7 @@
 module.exports = {
     name: "play",
     description: "Plays music from youtube",
+    guildOnly: true,
     async execute(message, args) {
         const ytdl = require('ytdl-core-discord')
         const db = require('../database')
@@ -15,8 +16,8 @@ module.exports = {
                             return message.channel.send('All tracks have finished.')
                         }
                         try {
-                        let songInfo = await ytdl.getInfo(queue.rows[0].media)
-                        message.channel.send(`**Now playing ${songInfo.videoDetails.title}**`)
+                            let songInfo = await ytdl.getInfo(queue.rows[0].media)
+                            message.channel.send(`**Now playing ${songInfo.videoDetails.title}**`)
                         }
                         catch (e) {
                             console.error(e)
@@ -33,25 +34,23 @@ module.exports = {
                         console.error(e)
                     }
                 }
-                if (args[0]) {
-                    if (args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0]) {
-                        let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild) VALUES($1,$2,$3,$4) RETURNING *;'
-                        let addToQueueValues = [Date.now(),message.author.id,args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0],message.guild.id]
-                        try {
-                            const serverqueue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`)
-                            if (!serverqueue.rows[0]) {
-                                await db.query(addToQueueQuery,addToQueueValues)
-                                playTrack()
-                            }
-                            else {
-                                const newSong = await db.query(addToQueueQuery,addToQueueValues)
-                                let songInfo = await ytdl.getInfo(newSong.rows[newSong.rowCount - 1].media)
-                                return message.channel.send(`**Added ${songInfo.videoDetails.title} to the queue.**`)
-                            }
+                if (args && args[0] && args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0]) {
+                    let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild) VALUES($1,$2,$3,$4) RETURNING *;'
+                    let addToQueueValues = [Date.now(),message.author.id,args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0],message.guild.id]
+                    try {
+                        const serverqueue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`)
+                        if (!serverqueue.rows[0]) {
+                            await db.query(addToQueueQuery,addToQueueValues)
+                            playTrack()
                         }
-                        catch (e) {
-                            console.error(e)
+                        else {
+                            const newSong = await db.query(addToQueueQuery,addToQueueValues)
+                            let songInfo = await ytdl.getInfo(newSong.rows[newSong.rowCount - 1].media)
+                            return message.channel.send(`**Added ${songInfo.videoDetails.title} to the queue.**`)
                         }
+                    }
+                    catch (e) {
+                        console.error(e)
                     }
                 }
                 else {
