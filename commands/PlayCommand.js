@@ -6,7 +6,7 @@ module.exports = {
         const ytdl = require('ytdl-core-discord')
         const db = require('../database')
         if (message.member.voice.channel) {
-            if ((!message.guild.voice) || (message.member.voice.channel == message.guild.voice.connection.channel)) {
+            if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel == message.guild.voice.connection.channel)) {
                 const connection = await message.member.voice.channel.join()
                 async function playTrack() {
                     try {
