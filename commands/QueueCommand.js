@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const db = require('../database')
-const ytdl = require('ytdl-core')
+const ytdl = require('ytdl-core-discord')
 
 module.exports = {
     name: "queue",
