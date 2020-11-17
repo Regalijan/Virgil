@@ -31,82 +31,108 @@ client.on('message', message => {
 })
 
 client.on('guildMemberAdd', member => {
-	const serversettings = require(`./serversettings/${member.guild.id}.json`)
-	if (!serversettings.joinLogChannel) return
-	const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
-	const embed = new Discord.MessageEmbed()
-	.setAuthor('Member Joined', member.user.displayAvatarURL())
-	.setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
-	.setThumbnail(member.user.displayAvatarURL())
-	.setColor(3756250)
-	.addField('Registration Date',`${member.user.createdAt}`)
-	.setFooter(`ID: ${member.id}`)
-	channel.send(embed)
+	try {
+		const serversettings = require(`./serversettings/${member.guild.id}.json`)
+		if (!serversettings.joinLogChannel) return
+		const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
+		const embed = new Discord.MessageEmbed()
+		.setAuthor('Member Joined', member.user.displayAvatarURL())
+		.setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
+		.setThumbnail(member.user.displayAvatarURL())
+		.setColor(3756250)
+		.addField('Registration Date',`${member.user.createdAt}`)
+		.setFooter(`ID: ${member.id}`)
+		channel.send(embed)
+	}
+	catch (e) {
+		console.error(e)
+	}
 })
 
 client.on('guildMemberRemove', member => {
-	const serversettings = require(`./serversettings/${member.guild.id}.json`)
-	if (!serversettings.joinLogChannel) return
-	const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
-	const embed = new Discord.MessageEmbed()
-	.setAuthor('Member Left', member.user.displayAvatarURL())
-	.setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
-	.setThumbnail(member.user.displayAvatarURL())
-	.setColor(3756250)
-	.setFooter(`ID: ${member.id}`)
-	channel.send(embed)
+	try {
+		const serversettings = require(`./serversettings/${member.guild.id}.json`)
+		if (!serversettings.joinLogChannel) return
+		const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
+		const embed = new Discord.MessageEmbed()
+		.setAuthor('Member Left', member.user.displayAvatarURL())
+		.setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
+		.setThumbnail(member.user.displayAvatarURL())
+		.setColor(3756250)
+		.setFooter(`ID: ${member.id}`)
+		channel.send(embed)
+	}
+	catch (e) {
+		console.error(e)
+	}
 })
 
 client.on('guildBanAdd', guild => {
-	const serversettings = require(`./serversettings/${guild.id}.json`)
-	const channel = guild.channels.cache.find(ch => ch.id == serversettings.banLogChannel)
-	const embed = new Discord.MessageEmbed()
-	.setAuthor('Member Banned', member.user.displayAvatarURL())
-	.setDescription(`${member} ${member.username}#${member.discriminator}`)
-	.setThumbnail(member.user.displayAvatarURL())
-	.setColor(3756250)
-	.setFooter(`ID: ${member.id}`)
-	channel.send(embed)
+	try {
+		const serversettings = require(`./serversettings/${guild.id}.json`)
+		if (!serversettings.banLogChannel) return
+		const channel = guild.channels.cache.find(ch => ch.id == serversettings.banLogChannel)
+		const embed = new Discord.MessageEmbed()
+		.setAuthor('Member Banned', member.user.displayAvatarURL())
+		.setDescription(`${member} ${member.username}#${member.discriminator}`)
+		.setThumbnail(member.user.displayAvatarURL())
+		.setColor(3756250)
+		.setFooter(`ID: ${member.id}`)
+		channel.send(embed)
+	}
+	catch (e) {
+		console.error(e)
+	}
 })
 
 client.on('messageDelete', message => {
 	if (message.channel.type === "dm") return
 	if (message.author.bot) return
-	const serversettings = require(`./serversettings/${message.guild.id}.json`)
-	if ((!serversettings.deleteLogChannel) || (message.author.id == client.user.id) || (serversettings.ignoredChannels.includes(message.channel.id))) return
-	const channel = message.guild.channels.cache.find(ch => ch.id == serversettings.deleteLogChannel)
-	let messagecontent = `Message ${message.id} deleted from ${message.channel}`
-	if (message.content) {
-		messagecontent += `\n**Content:** ${message.content}`
+	try {
+		const serversettings = require(`./serversettings/${message.guild.id}.json`)
+		if ((!serversettings.deleteLogChannel) || (message.author.id == client.user.id) || (serversettings.ignoredChannels.includes(message.channel.id))) return
+		const channel = message.guild.channels.cache.find(ch => ch.id == serversettings.deleteLogChannel)
+		let messagecontent = `Message ${message.id} deleted from ${message.channel}`
+		if (message.content) {
+			messagecontent += `\n**Content:** ${message.content}`
+		}
+		const embed = new Discord.MessageEmbed()
+		.setAuthor(`${message.author.username}#${message.author.discriminator} (${message.author.id})`, message.author.displayAvatarURL())
+		.setDescription(messagecontent)
+		.setColor(3756250)
+		if (message.attachments) {
+			message.attachments.forEach(attachment => {
+				embed.addField('Attachment', `[Link to Attachment](${attachment.url})`, true)
+			})
+		}
+		channel.send(embed).catch(e => console.error(e))
 	}
-	const embed = new Discord.MessageEmbed()
-	.setAuthor(`${message.author.username}#${message.author.discriminator} (${message.author.id})`, message.author.displayAvatarURL())
-	.setDescription(messagecontent)
-	.setColor(3756250)
-	if (message.attachments) {
-		message.attachments.forEach(attachment => {
-			embed.addField('Attachment', `[Link to Attachment](${attachment.url})`, true)
-		})
+	catch (e) {
+		console.error(e)
 	}
-	channel.send(embed).catch(e => console.error(e))
 })
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== "dm") && (!newMessage.author.bot)) {
-		const serversettings = require(`./serversettings/${newMessage.guild.id}.json`)
-		if ((!serversettings.editLogChannel) || (oldMessage.channel.type === "dm") || (serversettings.ignoredChannels.includes(newMessage.channel.id))) return
-		const channel = oldMessage.guild.channels.cache.find(ch => ch.id == serversettings.editLogChannel)
-		const embed = new Discord.MessageEmbed()
-		.setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL())
-		.setDescription(`**Message edited in** ${oldMessage.channel} [Go to message](${oldMessage.url})`)
-		.addField("Before", oldMessage.content)
-		.addField("After", newMessage.content)
-		.setColor(3756250)
-		channel.send(embed).catch(e => console.error(e))
+		try {
+			const serversettings = require(`./serversettings/${newMessage.guild.id}.json`)
+			if ((!serversettings.editLogChannel) || (oldMessage.channel.type === "dm") || (serversettings.ignoredChannels.includes(newMessage.channel.id))) return
+			const channel = oldMessage.guild.channels.cache.find(ch => ch.id == serversettings.editLogChannel)
+			const embed = new Discord.MessageEmbed()
+			.setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL())
+			.setDescription(`**Message edited in** ${oldMessage.channel} [Go to message](${oldMessage.url})`)
+			.addField("Before", oldMessage.content)
+			.addField("After", newMessage.content)
+			.setColor(3756250)
+			channel.send(embed).catch(e => console.error(e))
+		}
+		catch (e) {
+			console.error(e)
+		}
 	}
 })
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => console.error(e))
-
+module.exports.client = client
 client.login(config.token)
