@@ -1,4 +1,3 @@
-const { MessageReaction } = require('discord.js')
 const db = require('../database')
 
 module.exports = {
