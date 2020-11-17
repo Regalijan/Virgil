@@ -22,5 +22,6 @@ module.exports = {
                 embed.addField(`\`${i}.\``,`[${upcomingTrack.videoDetails.title}](${queue.rows[i].media}) - Requested by <@${queue.rows[i].requester}>`)
             }
         }
+        return message.channel.send(embed)
     }
 }
