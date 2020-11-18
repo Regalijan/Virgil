@@ -1,6 +1,7 @@
 module.exports = {
     name: "resume",
     description: "Resumes audio",
+    guildOnly: true,
     async execute(message) {
         const dispatcher = require('./PlayCommand')
         const dispatchercontroller = dispatcher.dispatcher

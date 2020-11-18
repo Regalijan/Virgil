@@ -5,6 +5,7 @@ const ytdl = require('ytdl-core-discord')
 module.exports = {
     name: "queue",
     description: "Shows all tracks in the queue",
+    guildOnly: true,
     async execute(message) {
         const queue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`).catch (e => {
             console.error(e)

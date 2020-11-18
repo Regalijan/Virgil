@@ -1,6 +1,7 @@
 module.exports = {
     name: "volume",
     description: "Changes volume of music anywhere between 0 and 100",
+    guildOnly: true,
     async execute(message, args) {
         if (((parseInt(args[0])) >= 0) && (parseInt(args[0])) <= 100) {
             const dispatcher = require('./PlayCommand')

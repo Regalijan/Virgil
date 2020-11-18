@@ -1,6 +1,7 @@
 module.exports = {
     name: "pause",
     description: "Pauses audio",
+    guildOnly: true,
     async execute(message) {
         const dispatcher = require('./PlayCommand')
         const dispatchercontroller = dispatcher.dispatcher

@@ -3,6 +3,7 @@ const db = require('../database')
 module.exports = {
     name: "skip",
     description: "Skips current track.",
+    guildOnly: true,
     async execute(message) {
         const player = require('./PlayCommand')
         if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send('You do not have permission to run this command.')
