@@ -16,7 +16,7 @@ module.exports = {
                             return message.channel.send('All tracks have finished.')
                         }
                         try {
-                            let songInfo = await ytdl.getInfo(queue.rows[0].media)
+                            let songInfo = await ytdl.getInfo(queue.rows[0].media.toString())
                             message.channel.send(`**Now playing ${songInfo.videoDetails.title}**`)
                         }
                         catch (e) {
@@ -45,7 +45,7 @@ module.exports = {
                         }
                         else {
                             const newSong = await db.query(addToQueueQuery,addToQueueValues)
-                            let songInfo = await ytdl.getInfo(newSong.rows[newSong.rowCount - 1].media)
+                            let songInfo = await ytdl.getInfo(newSong.rows[newSong.rowCount - 1].media.toString())
                             return message.channel.send(`**Added ${songInfo.videoDetails.title} to the queue.**`)
                         }
                     }
