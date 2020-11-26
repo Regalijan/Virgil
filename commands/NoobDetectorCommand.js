@@ -11,7 +11,7 @@ module.exports = {
         .setTitle('Noob Detector')
         .setAuthor(member.user.tag,member.user.displayAvatarURL())
         .setColor(3756250)
-        .addField('Noob Percentage',`${Math.floor(Math.random()*101)}%`)
+        .addField('Noob Percentage',`${Math.round(Math.random()*101)}%`)
         message.channel.send(embed)
     }
 }
