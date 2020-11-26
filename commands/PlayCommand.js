@@ -1,10 +1,11 @@
+const ytdl = require('ytdl-core')
+const db = require('../database')
+
 module.exports = {
     name: "play",
     description: "Plays music from youtube",
     guildOnly: true,
     async execute(message, args) {
-        const ytdl = require('ytdl-core-discord')
-        const db = require('../database')
         if (message.member.voice.channel) {
             if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel == message.guild.voice.connection.channel)) {
                 const connection = await message.member.voice.channel.join()
@@ -21,8 +22,9 @@ module.exports = {
                         }
                         catch (e) {
                             console.error(e)
+                            message.channel.send('Failed to retrieve video metadata!')
                         }
-                        const dispatcher = connection.play(await ytdl(queue.rows[0].media), { type: 'opus'})
+                        const dispatcher = connection.play(ytdl(queue.rows[0].media))
                         .on('finish', () => {
                             db.query(`DELETE FROM musicqueue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
                             dispatcher.destroy()
