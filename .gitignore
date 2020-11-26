@@ -114,3 +114,6 @@ bans/
 
 # Config file
 config.json
+
+# Package lock (dependabot uses lockfile v1 while newer versions of node.js use v2)
+package-lock.json
