@@ -132,6 +132,11 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	}
 })
 
+client.on('invalidated', () => {
+	console.log('SESSION WAS INVALIDATED!')
+	process.exit()
+})
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => console.error(e))
 module.exports.client = client
