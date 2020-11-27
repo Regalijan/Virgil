@@ -74,7 +74,7 @@ client.on('guildBanAdd', (guild, user) => {
 		const channel = guild.channels.cache.find(ch => ch.id == serversettings.banLogChannel)
 		const embed = new Discord.MessageEmbed()
 		.setAuthor('Member Banned', user.displayAvatarURL())
-		.setDescription(`${member} ${user.tag}`)
+		.setDescription(`${user} ${user.tag}`)
 		.setThumbnail(user.displayAvatarURL())
 		.setColor(3756250)
 		.setFooter(`ID: ${user.id}`)
