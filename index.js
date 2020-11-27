@@ -67,17 +67,17 @@ client.on('guildMemberRemove', member => {
 	}
 })
 
-client.on('guildBanAdd', guild => {
+client.on('guildBanAdd', (guild, user) => {
 	try {
 		const serversettings = require(`./serversettings/${guild.id}.json`)
 		if (!serversettings.banLogChannel) return
 		const channel = guild.channels.cache.find(ch => ch.id == serversettings.banLogChannel)
 		const embed = new Discord.MessageEmbed()
-		.setAuthor('Member Banned', member.user.displayAvatarURL())
-		.setDescription(`${member} ${member.username}#${member.discriminator}`)
-		.setThumbnail(member.user.displayAvatarURL())
+		.setAuthor('Member Banned', user.displayAvatarURL())
+		.setDescription(`${member} ${user.tag}`)
+		.setThumbnail(user.displayAvatarURL())
 		.setColor(3756250)
-		.setFooter(`ID: ${member.id}`)
+		.setFooter(`ID: ${user.id}`)
 		channel.send(embed)
 	}
 	catch (e) {
