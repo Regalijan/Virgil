@@ -6,7 +6,6 @@
     "gameModeratorRole": null,
     "bucket": "bucket name here",
     "serviceKeyPath": "Full path of service account key file here",
-    "banFilesPath": "Full path of directory for outputted json files",
     "appealsManagerRole": [],
     "databaseAddress": null,
     "databaseUser": null,
