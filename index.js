@@ -132,6 +132,29 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	}
 })
 
+client.on('messageDeleteBulk', async (messages) => {
+	let contents = `BULK DELETE - ${Date()}`
+	messages.each(m => {
+		contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}`
+	})
+	const fileName = `bulk-${Date.now()}${Math.round(Math.random()*101*1000000)}.txt`
+	fs.writeFile(`./${fileName}`, contents, err => {if (err) return console.error(err)})
+	let serversettings
+	messages.findKey(m => {return serversettings = require(`./serversettings/${m.guild.id}.json`)})
+	if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => {return m.channel.parentID}))) || (serversettings.ignoredChannels.includes(messages.findKey(m => {return m.channel.id})))) return
+	let guild
+	let channel
+	messages.findKey(m => {return channel = m.guild.channels.resolve(serversettings.deleteLogChannel)})
+	const file = new Discord.MessageAttachment(`./${fileName}`)
+	const embed = new Discord.MessageEmbed()
+	.setAuthor('Bulk Delete')
+	.setTitle('Virgil Message Logging')
+	.setDescription(`Bulk delete for ${channel}`)
+	.attachFiles(file)
+	await channel.send(embed)
+	fs.unlink(`./${fileName}`, err => {if (err) return console.error(err)})
+})
+
 client.on('invalidated', () => {
 	console.log('SESSION WAS INVALIDATED!')
 	process.exit()
