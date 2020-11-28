@@ -113,7 +113,7 @@ client.on('messageDelete', message => {
 })
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-	if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== "dm") && (!newMessage.author.bot)) {
+	if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== "dm") && (!newMessage.author.bot) && (oldMessage.content != newMessage.content)) {
 		try {
 			const serversettings = require(`./serversettings/${newMessage.guild.id}.json`)
 			if ((!serversettings.editLogChannel) || (oldMessage.channel.type === "dm") || (serversettings.ignoredChannels.includes(newMessage.channel.id)) || (serversettings.ignoredCategories.includes(newMessage.channel.parent.id))) return
