@@ -134,9 +134,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 client.on('messageDeleteBulk', async (messages) => {
 	let contents = `BULK DELETE - ${Date()}`
-	messages.each(m => {
-		contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}`
-	})
+	messages.each(m => {contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}`})
 	const fileName = `bulk-${Date.now()}${Math.round(Math.random()*101*1000000)}.txt`
 	fs.writeFile(`./${fileName}`, contents, err => {if (err) return console.error(err)})
 	let serversettings
