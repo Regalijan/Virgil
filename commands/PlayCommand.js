@@ -37,8 +37,10 @@ module.exports = {
                     }
                 }
                 if (args && args[0] && args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0]) {
-                    let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild) VALUES($1,$2,$3,$4) RETURNING *;'
-                    let addToQueueValues = [Date.now(),message.author.id,args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0],message.guild.id]
+                    let song = args[0].match(/(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i)[0]
+                    let songInfo = await ytdl.getInfo(song)
+                    let addToQueueQuery = 'INSERT INTO musicqueue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
+                    let addToQueueValues = [Date.now(),message.author.id,song,message.guild.id,songInfo.videoDetails.title]
                     try {
                         const serverqueue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`)
                         if (!serverqueue.rows[0]) {
@@ -47,8 +49,8 @@ module.exports = {
                         }
                         else {
                             const newSong = await db.query(addToQueueQuery,addToQueueValues)
-                            let songInfo = await ytdl.getInfo(newSong.rows[newSong.rowCount - 1].media.toString())
-                            return message.channel.send(`**Added ${songInfo.videoDetails.title} to the queue.**`)
+                            let title = newSong[newSong.rowCount - 1].title
+                            return message.channel.send(`**Added ${title.videoDetails.title} to the queue.**`)
                         }
                     }
                     catch (e) {
