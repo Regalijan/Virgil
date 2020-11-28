@@ -133,17 +133,18 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 })
 
 client.on('messageDeleteBulk', async (messages) => {
-	let contents = `BULK DELETE - ${Date()}`
-	messages.each(m => {contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}`})
-	const fileName = `bulk-${Date.now()}${Math.round(Math.random()*101*1000000)}.txt`
-	fs.writeFile(`./${fileName}`, contents, err => {if (err) return console.error(err)})
 	let serversettings
 	messages.findKey(m => {return serversettings = require(`./serversettings/${m.guild.id}.json`)})
+	let contents = `BULK DELETE - ${Date()}`
+	messages.each(m => {contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}`})
+	let originatingChannel
+	messages.findKey(m => {return originatingChannel = m.channel})
+	if (serversettings.ignoredChannels.includes(originatingChannel.id) || serversettings.ignoredCategories.includes(originatingChannel.parentID)) return
+	const fileName = `bulk-${Date.now()}${Math.round(Math.random()*101*1000000)}.txt`
+	fs.writeFile(`./${fileName}`, contents, err => {if (err) return console.error(err)})
 	if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => {return m.channel.parentID}))) || (serversettings.ignoredChannels.includes(messages.findKey(m => {return m.channel.id})))) return
 	let channel
 	messages.findKey(m => {return channel = m.guild.channels.resolve(serversettings.deleteLogChannel)})
-	let originatingChannel
-	messages.findKey(m => {return originatingChannel = m.channel})
 	const file = new Discord.MessageAttachment(`./${fileName}`)
 	const embed = new Discord.MessageEmbed()
 	.setAuthor('Bulk Delete')
