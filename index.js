@@ -142,7 +142,6 @@ client.on('messageDeleteBulk', async (messages) => {
 	let serversettings
 	messages.findKey(m => {return serversettings = require(`./serversettings/${m.guild.id}.json`)})
 	if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => {return m.channel.parentID}))) || (serversettings.ignoredChannels.includes(messages.findKey(m => {return m.channel.id})))) return
-	let guild
 	let channel
 	messages.findKey(m => {return channel = m.guild.channels.resolve(serversettings.deleteLogChannel)})
 	const file = new Discord.MessageAttachment(`./${fileName}`)
