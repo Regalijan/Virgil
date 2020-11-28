@@ -142,11 +142,13 @@ client.on('messageDeleteBulk', async (messages) => {
 	if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => {return m.channel.parentID}))) || (serversettings.ignoredChannels.includes(messages.findKey(m => {return m.channel.id})))) return
 	let channel
 	messages.findKey(m => {return channel = m.guild.channels.resolve(serversettings.deleteLogChannel)})
+	let originatingChannel
+	messages.findKey(m => {return originatingChannel = m.channel})
 	const file = new Discord.MessageAttachment(`./${fileName}`)
 	const embed = new Discord.MessageEmbed()
 	.setAuthor('Bulk Delete')
 	.setTitle('Virgil Message Logging')
-	.setDescription(`Bulk delete for ${channel}`)
+	.setDescription(`Bulk delete for ${originatingChannel}`)
 	.attachFiles(file)
 	await channel.send(embed)
 	fs.unlink(`./${fileName}`, err => {if (err) return console.error(err)})
