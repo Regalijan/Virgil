@@ -43,7 +43,7 @@ module.exports = {
                         }
                         else {
                             const newSong = await db.query(addToQueueQuery,[ts,message.author.id,link,message.guild.id,trackTitle])
-                            return message.channel.send(`**Added ${newSong[newSong.rowCount - 1].title} to the queue.**`)
+                            return message.channel.send(`**Added ${trackTitle} to the queue.**`)
                         }
                     }
                     catch (e) {
