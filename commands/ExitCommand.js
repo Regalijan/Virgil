@@ -4,6 +4,7 @@ module.exports = {
     description: 'Exits the bot process',
     execute(message) {
         if (message.author.id == owner) {
+            message.channel.send('Bye.')
             process.exit()
         }
         else {
