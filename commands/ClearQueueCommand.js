@@ -5,7 +5,7 @@ module.exports = {
     description: "Clears music queue",
     guildOnly: true,
     async execute(message) {
-        db.query(`DELETE FROM musicqueue WHERE guild = ${message.guild.id};`).catch(e => {
+        db.query(`DELETE FROM music_queue WHERE guild = ${message.guild.id};`).catch(e => {
             console.error(e.stack)
             return message.channel.send(e)
         })

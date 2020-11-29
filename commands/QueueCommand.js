@@ -7,7 +7,7 @@ module.exports = {
     description: "Shows all tracks in the queue",
     guildOnly: true,
     async execute(message) {
-        const queue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`).catch (e => {
+        const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`).catch (e => {
             console.error(e)
             return message.channel.send(`Could not retrieve queue! ${e}`)
         })
