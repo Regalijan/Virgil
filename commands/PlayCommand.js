@@ -42,7 +42,7 @@ module.exports = {
                             playTrack()
                         }
                         else {
-                            const newSong = await db.query(addToQueueQuery,[ts,message.author.id,link,message.guild.id,trackTitle])
+                            await db.query(addToQueueQuery,[ts,message.author.id,link,message.guild.id,trackTitle])
                             return message.channel.send(`**Added ${trackTitle} to the queue.**`)
                         }
                     }
