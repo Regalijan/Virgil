@@ -20,7 +20,7 @@ module.exports = {
       if (member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send('I cannot warn moderators.')
     }
     if (!message.member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send
-    if (member == owner) return message.channel.send('I cannot warn my creator.')
+    if (member === owner) return message.channel.send('I cannot warn my creator.')
     const makeWarnVals = [Date.now(), message.author.id, member, reason, 'warn', message.guild.id, 'f']
     const embed = new Discord.MessageEmbed()
       .setColor(3756250)
