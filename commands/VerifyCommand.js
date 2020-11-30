@@ -50,7 +50,7 @@ module.exports = {
         for (let i = 0; i < gamepasses.length; i++) {
           const gamepassData = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/GamePass/${gamepasses[i].gamepass}`)
           if (gamepassData.data.data) {
-            if ((gamepassData.data.data[0].id === gamepasses[i].gamepass) && (message.member.guild.me.hasPermission('MANAGE_ROLES')) && (member)) {
+            if ((gamepassData.data.data[0].id === gamepasses[i].gamepass) && (message.member.guild.me.hasPermission('MANAGE_ROLES'))) {
               message.member.roles.add(gamepasses[i].role).catch(e => console.error(e => console.error(e.stack)))
             }
           }
