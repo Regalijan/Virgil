@@ -14,7 +14,7 @@ module.exports = {
     } catch (e) {
       console.error(e.stack)
     }
-    if (roverData.status == 200) {
+    if (roverData.status === 200) {
       robloxId = roverData.data.robloxId
     } else {
       try {
@@ -27,8 +27,8 @@ module.exports = {
     if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('You are not verified in either of my databases!')
     try {
       const groupData = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`)
-      if (groupData.status == 400) return message.channel.send('I could not check group ranks as your user account appears to be deleted!')
-      else if ((groupData.status != 200) && (groupData.status != 400)) return message.channel.send('I could not retrieve group ranks as Roblox is currently having problems!')
+      if (groupData.status === 400) return message.channel.send('I could not check group ranks as your user account appears to be deleted!')
+      else if ((groupData.status !== 200) && (groupData.status !== 400)) return message.channel.send('I could not retrieve group ranks as Roblox is currently having problems!')
       if (groupData.data.data) {
         for (let i = 0; i < groupData.data.data.length; i++) {
           for (let x = 0; x < groupranks.length; x++) {
@@ -50,7 +50,7 @@ module.exports = {
         for (let i = 0; i < gamepasses.length; i++) {
           const gamepassData = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/GamePass/${gamepasses[i].gamepass}`)
           if (gamepassData.data.data) {
-            if ((gamepassData.data.data[0].id == gamepasses[i].gamepass) && (message.member.guild.me.hasPermission('MANAGE_ROLES')) && (member)) {
+            if ((gamepassData.data.data[0].id === gamepasses[i].gamepass) && (message.member.guild.me.hasPermission('MANAGE_ROLES')) && (member)) {
               message.member.roles.add(gamepasses[i].role).catch(e => console.error(e => console.error(e.stack)))
             }
           }
