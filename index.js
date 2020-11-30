@@ -34,7 +34,7 @@ client.on('guildMemberAdd', member => {
   try {
     const serversettings = require(`./serversettings/${member.guild.id}.json`)
     if (!serversettings.joinLogChannel) return
-    const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
+    const channel = member.guild.channels.cache.find(ch => ch.id === serversettings.joinLogChannel)
     const embed = new Discord.MessageEmbed()
       .setAuthor('Member Joined', member.user.displayAvatarURL())
       .setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
@@ -52,7 +52,7 @@ client.on('guildMemberRemove', member => {
   try {
     const serversettings = require(`./serversettings/${member.guild.id}.json`)
     if (!serversettings.joinLogChannel) return
-    const channel = member.guild.channels.cache.find(ch => ch.id == serversettings.joinLogChannel)
+    const channel = member.guild.channels.cache.find(ch => ch.id === serversettings.joinLogChannel)
     const embed = new Discord.MessageEmbed()
       .setAuthor('Member Left', member.user.displayAvatarURL())
       .setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
@@ -69,7 +69,7 @@ client.on('guildBanAdd', (guild, user) => {
   try {
     const serversettings = require(`./serversettings/${guild.id}.json`)
     if (!serversettings.banLogChannel) return
-    const channel = guild.channels.cache.find(ch => ch.id == serversettings.banLogChannel)
+    const channel = guild.channels.cache.find(ch => ch.id === serversettings.banLogChannel)
     const embed = new Discord.MessageEmbed()
       .setAuthor('Member Banned', user.displayAvatarURL())
       .setDescription(`${user} ${user.tag}`)
@@ -87,8 +87,8 @@ client.on('messageDelete', message => {
   if (message.author.bot) return
   try {
     const serversettings = require(`./serversettings/${message.guild.id}.json`)
-    if ((!serversettings.deleteLogChannel) || (message.author.id == client.user.id) || (serversettings.ignoredChannels.includes(message.channel.id)) || (serversettings.ignoredCategories.includes(message.channel.parent.id))) return
-    const channel = message.guild.channels.cache.find(ch => ch.id == serversettings.deleteLogChannel)
+    if ((!serversettings.deleteLogChannel) || (message.author.id === client.user.id) || (serversettings.ignoredChannels.includes(message.channel.id)) || (serversettings.ignoredCategories.includes(message.channel.parent.id))) return
+    const channel = message.guild.channels.cache.find(ch => ch.id === serversettings.deleteLogChannel)
     let messagecontent = `Message ${message.id} deleted from ${message.channel}`
     if (message.content) {
       messagecontent += `\n**Content:** ${message.content}`
@@ -109,11 +109,11 @@ client.on('messageDelete', message => {
 })
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-  if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content != newMessage.content)) {
+  if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const serversettings = require(`./serversettings/${newMessage.guild.id}.json`)
       if ((!serversettings.editLogChannel) || (oldMessage.channel.type === 'dm') || (serversettings.ignoredChannels.includes(newMessage.channel.id)) || (serversettings.ignoredCategories.includes(newMessage.channel.parent.id))) return
-      const channel = oldMessage.guild.channels.cache.find(ch => ch.id == serversettings.editLogChannel)
+      const channel = oldMessage.guild.channels.cache.find(ch => ch.id === serversettings.editLogChannel)
       const embed = new Discord.MessageEmbed()
         .setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL())
         .setDescription(`**Message edited in** ${oldMessage.channel} [Go to message](${oldMessage.url})`)
@@ -129,17 +129,17 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 client.on('messageDeleteBulk', async (messages) => {
   let serversettings
-  messages.findKey(m => { return serversettings = require(`./serversettings/${m.guild.id}.json`) })
+  messages.findKey(m => { serversettings = require(`./serversettings/${m.guild.id}.json`) })
   let contents = `BULK DELETE - ${Date()}`
   messages.each(m => { contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}` })
   let originatingChannel
-  messages.findKey(m => { return originatingChannel = m.channel })
+  messages.findKey(m => { originatingChannel = m.channel })
   if (serversettings.ignoredChannels.includes(originatingChannel.id) || serversettings.ignoredCategories.includes(originatingChannel.parentID)) return
   const fileName = `bulk-${Date.now()}${Math.round(Math.random() * 101 * 1000000)}.txt`
   fs.writeFile(`./${fileName}`, contents, err => { if (err) return console.error(err) })
   if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => { return m.channel.parentID }))) || (serversettings.ignoredChannels.includes(messages.findKey(m => { return m.channel.id })))) return
   let channel
-  messages.findKey(m => { return channel = m.guild.channels.resolve(serversettings.deleteLogChannel) })
+  messages.findKey(m => { channel = m.guild.channels.resolve(serversettings.deleteLogChannel) })
   const file = new Discord.MessageAttachment(`./${fileName}`)
   const embed = new Discord.MessageEmbed()
     .setAuthor('Bulk Delete')
