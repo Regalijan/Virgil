@@ -26,7 +26,7 @@ module.exports = {
       .setColor(3756250)
     db.query('INSERT INTO punishments(time,moderator,target,reason,type,server,deleted) VALUES($1,$2,$3,$4,$5,$6,$7);', makeWarnVals, 'f')
       .catch(e => console.error(e => console.error(e.stack)))
-    member.send(`You have been warned in ${guild.name} for **${reason}**`).catch(() => {
+    member.send(`You have been warned in ${message.guild.name} for **${reason}**`).catch(() => {
       embed.setDescription(':x: I could not DM them.')
       return message.channel.send(embed)
     })
