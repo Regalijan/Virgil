@@ -15,7 +15,7 @@ module.exports = {
           console.error(e)
           return message.channel.send(`An error occured when looking up this user! ${e}`)
         })
-        if (!robloxData.data.Id || robloxData.data.Id == '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
+        if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
         fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`, err => {
           if (err) {
             console.error(err)
@@ -30,7 +30,7 @@ module.exports = {
           console.error(e)
           return message.channel.send(`An error occured when checking the file! ${e}`)
         })
-        if (filecheck.status == 403) {
+        if (filecheck.status === 403) {
           await storage.bucket(bucket).file(`${robloxData.data.Id}.json`).makePublic().catch(e => {
             console.error(e)
             return message.channel.send(`An error occured when making the file public! ${e}`)

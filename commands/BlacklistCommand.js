@@ -14,7 +14,7 @@ module.exports = {
           console.error(e)
           return message.channel.send(`An error occured when looking up this user! ${e}`)
         })
-        if (!robloxData.data.Id || robloxData.data.Id == '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}`)
+        if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}`)
         fs.writeFile(`./${robloxData.data.Id}.json`, '{"usercode":"0x1"}', err => {
           if (err) {
             console.error(err)

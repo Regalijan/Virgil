@@ -7,7 +7,7 @@ module.exports = {
   async execute (message, args) {
     try {
       const response = await request(`https://random-d.uk/api/v2/http/${args[0]}`, { validateStatus: false })
-      if (response.status != 200) return message.channel.send('I could not find a duck with that status code.')
+      if (response.status !== 200) return message.channel.send('I could not find a duck with that status code.')
       const embed = new Discord.MessageEmbed()
         .setTitle(`${args[0]} Duck`)
         .setImage(`https://random-d.uk/api/v2/http/${args[0]}`)
