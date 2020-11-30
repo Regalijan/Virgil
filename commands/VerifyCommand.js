@@ -41,7 +41,7 @@ module.exports = {
       if (badges) {
         for (let i = 0; i < badges.length; i++) {
           const badgeData = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/Badge/${badges[i].badge}`)
-          if ((badgeData.data.data) && (message.member.guild.me.hasPermission('MANAGE_ROLES')) && (member)) {
+          if ((badgeData.data.data) && (message.member.guild.me.hasPermission('MANAGE_ROLES'))) {
             message.member.roles.add(badges[i].role).catch(e => console.error(e.stack))
           }
         }
