@@ -14,7 +14,7 @@ module.exports = {
           member = message.mentions.members.first()
         } else if (message.guild.member(member)) member = message.guild.member(member)
         const user = member.user
-        if (message.author == user) return message.channel.send('Dumbass, why would you want to ban yourself?')
+        if (message.author === user) return message.channel.send('Dumbass, why would you want to ban yourself?')
         if (member.roles.cache) {
           if (member.roles.cache.find(role => serversettings.moderatorRoles.includes(role.id))) return message.channel.send('I cannot ban moderators.')
         }
@@ -28,7 +28,7 @@ module.exports = {
             console.error(e.stack)
             return message.channel.send(`I could not ban that user! ${e}`)
           })
-        const channel = message.guild.cache.channels.find(ch => ch.id == serversettings.modLogChannel)
+        const channel = message.guild.cache.channels.find(ch => ch.id === serversettings.modLogChannel)
         const embed = new Discord.MessageEmbed()
           .setAuthor(`Ban | ${member.user.tag}`, member.displayAvatarURL())
           .addFields(

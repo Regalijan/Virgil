@@ -26,7 +26,7 @@ module.exports = {
           return message.channel.send(`Error returned by Google: ${e}`)
         })
         const viewcheck = await request(`https://storage.googleapis.com/${bucket}/${robloxData.data.Id}`, { validateStatus: false })
-        if (viewcheck.status == 403) {
+        if (viewcheck.status === 403) {
           await storage.bucket(bucket).file(`${robloxData.data.id}.json`).makePublic().catch(e => {
             console.error(e)
             return message.channel.send(`An error occured when making the file public! ${e}`)

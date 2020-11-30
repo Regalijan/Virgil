@@ -22,7 +22,7 @@ module.exports = {
                 form.append('html', `<html>Your appeal was accepted, you may join us again at our <a href="${config.appealsInvite}" target="_blank">discord server</a>.<br/><br/>Note from the moderation team: ${args[1]}</html>`)
                 const apiKey = Buffer.from(`api:${config.mailgunApiKey}`, 'utf8').toString('base64')
                 let sendingUrl = `https://api.mailgun.net/v3/${config.mailgunDomain}/messages`
-                if (config.mailgunRegion == 'eu') {
+                if (config.mailgunRegion === 'eu') {
                   sendingUrl = `https://api.eu.mailgun.net/v3/${config.mailgunDomain}/messages`
                 }
                 request({
@@ -34,7 +34,7 @@ module.exports = {
                   form: form
                 })
                   .then(response => {
-                    if (response.status == 200) {
+                    if (response.status === 200) {
                       db.query('DELETE FROM appeals WHERE discord_id = $1;', userval)
                         .catch(e => console.error(e))
                       return message.channel.send('Appeal accepted!')
