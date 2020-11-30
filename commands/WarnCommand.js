@@ -8,6 +8,7 @@ module.exports = {
   execute (message, args) {
     const { moderatorRoles, owner, permissionOverrideRoles } = require(`../serversettings/${message.guild.id}.json`)
     const reason = args.slice(1).join(' ')
+    if (!message.member.roles.cache.find(role => permissionOverrideRoles.includes(role.id)) || !message.member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send('You do not have permissions to run this command!')
     let member
     if (member.match(/(^<@!?[0-9]*>)/)) {
       member = message.mentions.members.first().id
