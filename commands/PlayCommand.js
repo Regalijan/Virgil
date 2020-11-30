@@ -9,7 +9,7 @@ module.exports = {
   guildOnly: true,
   async execute (message, args) {
     if (message.member.voice.channel) {
-      if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel == message.guild.voice.connection.channel)) {
+      if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const connection = await message.member.voice.channel.join()
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 101 * 1000).toString()))
