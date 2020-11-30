@@ -13,7 +13,7 @@ module.exports = {
           if ((response.status == 200) && (args[1].match('^(https:\/\/|http:\/\/|<https:\/\/|<http:\/\/.)'))) {
             const embed = new Discord.MessageEmbed()
               .setTitle('Exploiter Report')
-              .setDescription(`${message.author.username}#${message.author.discriminator} has reported ${response.data.Username} for exploiting!\n\nReason: ${args[2]}\n\n[Evidence](${args[2]})`)
+              .setDescription(`${message.author.username}#${message.author.discriminator} has reported ${response.data.Username} for exploiting!\n\nReason: ${args[2]}\n\n[Evidence](${reason})`)
               .setFooter(`Reporter ID: ${message.author.id}`)
             if (exploiterReportChannel) {
               exploiterReportChannel.send(embed)
