@@ -18,7 +18,7 @@ module.exports = {
         fs.writeFile(`./${robloxData.data.Id}.json`, '{"usercode":"0x1"}', err => {
           if (err) {
             console.error(err)
-            return message.channel.send(`An error occured when writing the file! ${e}`)
+            return message.channel.send(`An error occured when writing the file! ${err}`)
           }
         })
         await storage.bucket(bucket).upload(`./${robloxData.data.Id}.json`).catch(e => {
