@@ -6,7 +6,7 @@ module.exports = {
     if (((parseInt(args[0])) >= 0) && (parseInt(args[0])) <= 100) {
       const dispatcher = require('./PlayCommand')
       const dispatchercontroller = dispatcher.dispatcher
-      if (((message.member.voice.channel) && (message.member.voice.channelID == message.guild.voice.connection.channelID)) || (message.member.hasPermission('MANAGE_GUILD'))) {
+      if (((message.member.voice.channel) && (message.member.voice.channelID === message.guild.voice.connection.channelID)) || (message.member.hasPermission('MANAGE_GUILD'))) {
         dispatchercontroller.setVolume(args[0] / 100)
         return message.channel.send(`Set volume to ${args[0]}.`)
       } else if (message.member.voice.channel) {
