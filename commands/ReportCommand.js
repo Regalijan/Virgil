@@ -18,7 +18,7 @@ module.exports = {
             if (exploiterReportChannel) {
               exploiterReportChannel.send(embed)
             }
-          } else if (response.status == 404) {
+          } else if (response.status === 404) {
             message.channel.send('I could not find this user, is the spelling correct? (Usernames are not case-sensitive)')
           } else if (!args[1].match(/^(https:\/\/|http:\/\/|<https:\/\/|<http:\/\/.)/)) {
             message.channel.send('The URL you sent was not valid, make sure it starts with `http://` or `https://`')
