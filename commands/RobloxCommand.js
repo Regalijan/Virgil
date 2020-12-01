@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 const config = require('../config.json')
 
 module.exports = {
-  name: 'rbxinfo',
+  name: 'roblox',
   description: "Looks up a user's roblox information",
   guildOnly: true,
   async execute (message, args) {
