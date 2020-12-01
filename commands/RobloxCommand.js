@@ -37,7 +37,7 @@ module.exports = {
     const joinDate = new Date(robloxData.data.created)
     if (robloxData.data.isBanned) return message.channel.send('This account has been terminated by Roblox!')
     const avatar = `https://assetgame.roblox.com/Thumbs/Avatar.ashx?username=${robloxData.data.name}`
-    while ((bio.match(/\n/mg) || []).length > 3) {
+    while ((bio.match(/\n/mg) || []).length > 15 || bio.match(/\n\n\n/mg)) {
       const lastN = bio.lastIndexOf('\n')
       bio = bio.slice(0, lastN) + bio.slice(lastN + 1)
     }
