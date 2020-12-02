@@ -2,9 +2,9 @@ const { owner } = require('../config.json')
 module.exports = {
   name: 'exit',
   description: 'Exits the bot process',
-  execute (message) {
+  async execute (message) {
     if (message.author.id === owner) {
-      message.channel.send('Bye.')
+      await message.channel.send('Bye.')
       process.exit()
     } else {
       return message.channel.send('You tried.')
