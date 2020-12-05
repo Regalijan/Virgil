@@ -2,7 +2,7 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config.json')
 const db = require('./database')
-const client = new Discord.Client()
+const client = new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS','GUILD_MEMBERS','GUILD_BANS','GUILD_MESSAGES','DIRECT_MESSAGES']}})
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 
