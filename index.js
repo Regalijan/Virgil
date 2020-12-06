@@ -2,10 +2,12 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config.json')
 const db = require('./database')
-const client = new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS','GUILD_MEMBERS','GUILD_BANS','GUILD_MESSAGES','GUILD_VOICE_STATES','DIRECT_MESSAGES']}})
+module.exports = {
+  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS','GUILD_MEMBERS','GUILD_BANS','GUILD_MESSAGES','GUILD_VOICE_STATES','DIRECT_MESSAGES']}})
+}
+const client = module.exports.client
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
-
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
   client.commands.set(command.name, command)
@@ -157,5 +159,4 @@ client.on('invalidated', () => {
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => console.error(e))
-module.exports.client = client
 client.login(config.token)
