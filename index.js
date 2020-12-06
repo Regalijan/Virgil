@@ -158,5 +158,8 @@ client.on('invalidated', () => {
 })
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
-db.connect().catch(e => console.error(e))
+db.connect().catch(e => {
+  console.error(e)
+  process.exit()
+})
 client.login(config.token)
