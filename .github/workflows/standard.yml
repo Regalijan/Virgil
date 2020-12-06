@@ -1,0 +1,25 @@
+name: 'Standard'
+
+on: [push,pull_request]
+
+jobs:
+  build:
+    name: StandardJS Linting
+    runs-on: ubuntu-20.04
+    matrix:
+      node-version: [14.x, 15.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Node ${{ matrix.node-version}}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+        
+      - name: Run Standard
+        run: |
+          npm install -g standard
+          npm test
+        env:
+          CI: true
