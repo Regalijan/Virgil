@@ -7,7 +7,7 @@ module.exports = {
     if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => serversettings.permissionOverrideRoles.includes(role.id)))) {
       if (args[0]) {
         let reason = args.slice(2).join(' ')
-        const time = args[1]
+        let time = args[1]
         let member = args[0]
         if (member.match(/(^<@!?[0-9]*>)/)) {
           member = message.mentions.members.first()
@@ -21,7 +21,8 @@ module.exports = {
         if (!serversettings.muteRole) return message.channel.send('Muted role was not set!')
         if (!message.guild.roles.cache.find(role => role.id === serversettings.muteRole)) return message.channel.send('The muted role is invalid!')
         const role = message.guild.roles.cache.find(role => role.id === serversettings.muteRole)
-        member.roles.add(role)
+        if (!time) time = 30
+        member.roles.add(role).catch(console.error('I could not give this member the role.'))
         message.channel.send(`${member} was muted!`)
       }
     }
