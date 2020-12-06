@@ -53,8 +53,8 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 "serviceKeyPath": Full path of service key for google cloud.
 "banFilesPath": Full path to directory where outputted json files are uploaded.
 "appealsManagerRole": Array of roles that are allowed to execute the appeals commands.
-"databaseAddress": Default 'localhost'. Hostname/IP address of database.
-"databaseUser": Default 'postgres'. Username of connecting user.
+"databaseAddress": Hostname/IP address of database.
+"databaseUser": Username of connecting user.
 "databasePassword": Password of database user (socketed connections currently not supported).
-"databaseName": Default 'postgres'. Name of database to connect to.
+"databaseName": Name of database to connect to.
 ```
