@@ -13,11 +13,14 @@ module.exports = {
       let url
       if (config.mailgunRegion === 'eu') url = `https://api.eu.mailgun.net/v3/${config.domain}/messages`
       else url = `https://api.mailgun.net/v3/${config.domain}/messages`
-      const response = await request.post(url, email, {
+      const response = await request({
+        method: 'POST',
+        url: url,
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Basic ${Buffer.from(`api:${config.apiKey}`).toString('base64')}`
+          Authorization: `Basic ${Buffer.from(config.apiKey).toString('base64')}`,
+          'Content-Type': 'multipart/form-data'
         },
+        form: email,
         validateStatus: false
       }).catch(e => { return console.error(e) })
       if (response.status !== 200) throw new Error(`HTTP ${response.status}: ${response.body}`)
@@ -25,11 +28,14 @@ module.exports = {
       const email = JSON.stringify({
         personalizations: [{ to: [{ email: recipient }] }], from: { email: config.fromAddress }, content: [{ type: 'text/html', value: body }]
       })
-      const response = await request.post('https://api.sendgrid.com/v3/mail/send', email, {
+      const response = await request({
+        method: 'POST',
+        url: 'https://api.sendgrid.com/v3/mail/send',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${config.apiKey}`
+          Authorization: `Bearer ${config.apiKey}`,
+          'Content-Type': 'application/json'
         },
+        data: email,
         validateStatus: false
       }).catch(e => { return console.error(e) })
       if (response.status !== 202) throw new Error(`HTTP ${response.status}: ${response.body}`)
