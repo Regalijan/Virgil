@@ -20,7 +20,8 @@
     "zlib-sync": "^0.1.7"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "standard"
   },
   "author": "Wolftallemo",
   "license": "MIT"
