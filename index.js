@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 const config = require('./config.json')
 const db = require('./database')
 module.exports = {
-  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS','GUILD_MEMBERS','GUILD_BANS','GUILD_MESSAGES','GUILD_VOICE_STATES','DIRECT_MESSAGES']}})
+  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
 }
 const client = module.exports.client
 client.commands = new Discord.Collection()
