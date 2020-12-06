@@ -5,27 +5,24 @@ const host = getHost()
 const database = getDatabase()
 
 function getDbUser () {
-  let dbuser = 'postgres'
   if (dbconfig.databaseUser) {
-    dbuser = dbconfig.databaseUser
+    return dbconfig.databaseUser
   }
-  return dbuser
+  return 'postgres'
 }
 
 function getHost () {
-  let host = 'localhost'
   if (dbconfig.databaseAddress) {
-    host = dbconfig.databaseAddress
+    return dbconfig.databaseAddress
   }
-  return host
+  return 'localhost'
 }
 
 function getDatabase () {
-  let database = 'postgres'
   if (dbconfig.databaseName) {
-    database = dbconfig.databaseName
+    return dbconfig.databaseName
   }
-  return database
+  return 'postgres'
 }
 
 const db = new Client({
