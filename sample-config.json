@@ -12,8 +12,9 @@
     "databasePassword": "required",
     "databaseName": null,
     "appealsInvite": null,
-    "mailgunDomain": null,
+    "provider": null,
+    "domain": null,
     "mailgunRegion": null,
-    "mailgunApiKey": null,
+    "apiKey": null,
     "fromAddress": null
 }
