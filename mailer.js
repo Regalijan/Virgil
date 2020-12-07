@@ -17,7 +17,7 @@ module.exports = {
         method: 'POST',
         url: url,
         headers: {
-          Authorization: `Basic ${Buffer.from(config.apiKey).toString('base64')}`,
+          Authorization: `Basic ${Buffer.from(`api:${config.apiKey}`).toString('base64')}`,
           'Content-Type': 'multipart/form-data'
         },
         form: email,
