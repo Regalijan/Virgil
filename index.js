@@ -137,7 +137,7 @@ client.on('messageDeleteBulk', async (messages) => {
   let originatingChannel
   messages.findKey(m => { originatingChannel = m.channel })
   if (serversettings.ignoredChannels.includes(originatingChannel.id) || serversettings.ignoredCategories.includes(originatingChannel.parentID)) return
-  const fileName = `bulk-${Date.now()}${Math.round(Math.random() * 101 * 1000000)}.txt`
+  const fileName = `bulk-${Date.now()}${Math.round(Math.random() * 100000000)}.txt`
   fs.writeFile(`./${fileName}`, contents, err => { if (err) return console.error(err) })
   if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => { return m.channel.parentID }))) || (serversettings.ignoredChannels.includes(messages.findKey(m => { return m.channel.id })))) return
   let channel
