@@ -1,6 +1,7 @@
 const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config.json')
+const crypto = require('crypto')
 const db = require('./database')
 module.exports = {
   client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
@@ -137,19 +138,19 @@ client.on('messageDeleteBulk', async (messages) => {
   let originatingChannel
   messages.findKey(m => { originatingChannel = m.channel })
   if (serversettings.ignoredChannels.includes(originatingChannel.id) || serversettings.ignoredCategories.includes(originatingChannel.parentID)) return
-  const fileName = `bulk-${Date.now()}${Math.round(Math.random() * 100000000)}.txt`
-  fs.writeFile(`./${fileName}`, contents, err => { if (err) return console.error(err) })
+  const fileName = `./bulk-${crypto.randomBytes(16).toString('hex')}.txt`
+  fs.writeFile(fileName, contents, err => { if (err) return console.error(err) })
   if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => { return m.channel.parentID }))) || (serversettings.ignoredChannels.includes(messages.findKey(m => { return m.channel.id })))) return
   let channel
   messages.findKey(m => { channel = m.guild.channels.resolve(serversettings.deleteLogChannel) })
-  const file = new Discord.MessageAttachment(`./${fileName}`)
+  const file = new Discord.MessageAttachment(fileName)
   const embed = new Discord.MessageEmbed()
     .setAuthor('Bulk Delete')
     .setTitle('Virgil Message Logging')
     .setDescription(`Bulk delete for ${originatingChannel}`)
     .attachFiles(file)
   await channel.send(embed)
-  fs.unlink(`./${fileName}`, err => { if (err) return console.error(err) })
+  fs.unlink(fileName, err => { if (err) return console.error(err) })
 })
 
 client.on('invalidated', () => {
