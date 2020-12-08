@@ -4,10 +4,9 @@ module.exports = {
   guildOnly: true,
   async execute (message, args) {
     if (((parseInt(args[0])) >= 0) && (parseInt(args[0])) <= 100) {
-      const dispatcher = require('./PlayCommand')
-      const dispatchercontroller = dispatcher.dispatcher
+      const { dispatcher } = require('./PlayCommand')
       if (((message.member.voice.channel) && (message.member.voice.channelID === message.guild.voice.connection.channelID)) || (message.member.hasPermission('MANAGE_GUILD'))) {
-        dispatchercontroller.setVolume(args[0] / 100)
+        dispatcher.setVolume(args[0] / 100)
         return message.channel.send(`Set volume to ${args[0]}.`)
       } else if (message.member.voice.channel) {
         return message.channel.send('You must be in the same voice channel as the bot to change the volume!')
