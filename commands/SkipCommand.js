@@ -12,7 +12,7 @@ module.exports = {
       return message.channel.send('Could not skip track!')
     })
     if (!queue.rows[1]) return message.channel.send('Nothing to skip.')
-    await db.query('DELETE FROM musicqueue WHERE guild = $1 AND time = $2;', [message.guild.id, queue.rows[0].time]).catch(e => {
+    await db.query('DELETE FROM music_queue WHERE guild = $1 AND time = $2;', [message.guild.id, queue.rows[0].time]).catch(e => {
       console.error(e)
       return message.channel.send('Could not skip track!')
     })
