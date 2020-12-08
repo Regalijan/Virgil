@@ -90,7 +90,6 @@ module.exports = {
                 processTrack(song, title)
               })
             }).catch((e) => {
-              console.log(e)
               return message.channel.send('Command timed out.')
             })
           }
