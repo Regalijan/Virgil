@@ -5,6 +5,7 @@ module.exports = {
   async execute (message, args) {
     if (((parseInt(args[0])) >= 0) && (parseInt(args[0])) <= 100) {
       const { dispatcher } = require('./PlayCommand')
+      if (!dispatcher) return message.channel.send('Nothing currently playing.')
       if (((message.member.voice.channel) && (message.member.voice.channelID === message.guild.voice.connection.channelID)) || (message.member.hasPermission('MANAGE_GUILD'))) {
         dispatcher.setVolume(args[0] / 100)
         return message.channel.send(`Set volume to ${args[0]}.`)

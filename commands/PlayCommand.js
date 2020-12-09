@@ -10,9 +10,11 @@ module.exports = {
   async execute (message, args) {
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
+        const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
+        const urlreg = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
         const connection = await message.member.voice.channel.join()
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
-        const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 101 * 1000).toString()))
+        const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
         async function playTrack () {
           try {
             const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
@@ -21,12 +23,14 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            const dispatcher = connection.play(ytdl(queue.rows[0].media))
-              .on('finish', () => {
-                db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
-                dispatcher.destroy()
-                playTrack()
-              })
+            let dispatcher
+            if (queue.rows[0].media.match(ytreg)) dispatcher = connection.play(ytdl(queue.rows[0].media))
+            else dispatcher = connection.play(queue.rows[0].media)
+            dispatcher.on('finish', () => {
+              db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
+              dispatcher.destroy()
+              playTrack()
+            })
             // Export the dispatcher so other commands can use it
             module.exports = {
               dispatcher: dispatcher
@@ -50,7 +54,6 @@ module.exports = {
           }
         }
         // Parse youtube link
-        const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
         if (args && args[0]) {
           let song
           let songInfo
@@ -60,6 +63,9 @@ module.exports = {
             songInfo = await ytdl.getInfo(song)
             title = songInfo.videoDetails.title
             processTrack(args[0].match(ytreg)[0], title)
+          } else if (args[0] && args[0].match(urlreg)) {
+            const source = args[0].match(urlreg)[0]
+            processTrack(source, source)
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(/ +/)

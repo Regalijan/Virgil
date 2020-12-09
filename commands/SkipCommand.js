@@ -6,8 +6,9 @@ module.exports = {
   guildOnly: true,
   async execute (message) {
     const player = require('./PlayCommand')
+    if (!player.dispatcher) return message.channel.send('Nothing currently playing.')
     if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send('You do not have permission to run this command.')
-    const queue = await db.query(`SELECT * FROM musicqueue WHERE guild = ${message.guild.id};`).catch(e => {
+    const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`).catch(e => {
       console.error(e)
       return message.channel.send('Could not skip track!')
     })
