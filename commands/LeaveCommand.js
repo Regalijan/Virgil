@@ -12,6 +12,6 @@ module.exports = {
     if (dispatcher) {
       dispatcher.destroy()
     }
-    bot.client.member.voice.channel.leave()
+    client.member.voice.channel.leave()
   }
 }
