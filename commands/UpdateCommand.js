@@ -15,7 +15,7 @@ module.exports = {
     }
     if ((message.member.roles.cache.some(role => updateCommandRoles.includes(role.id))) || (message.member.hasPermission('MANAGE_GUILD'))) {
       try {
-        roverData = await request(`https://verify.eryn.io/api/user/${member}`)
+        roverData = await request(`https://verify.eryn.io/api/user/${member}`, { validateStatus: false })
       } catch (e) {
         console.error(e.stack)
       }
@@ -23,7 +23,7 @@ module.exports = {
         robloxId = roverData.data.robloxId
       } else {
         try {
-          bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`)
+          bloxlinkData = await request(`https://api.blox.link/v1/user/${member}`, { validateStatus: false })
           if (bloxlinkData.data.status === 'ok') robloxId = bloxlinkData.data.primaryAccount
         } catch (e) {
           console.error(e.stack)
@@ -32,7 +32,7 @@ module.exports = {
       if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('This user could not be found!')
       try {
         member = await message.guild.members.fetch(member)
-        const groupData = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`)
+        const groupData = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
         if (groupData.status === 400) return message.channel.send('I could not check group ranks as this user appears to be deleted!')
         else if ((groupData.status !== 200) && (groupData.status !== 400)) return message.channel.send('I could not retrieve group ranks as Roblox is currently having problems!')
         if (groupData.data.data) {
