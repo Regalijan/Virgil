@@ -38,7 +38,8 @@ module.exports = {
         data: email,
         validateStatus: false
       }).catch(e => { return console.error(e) })
-      if (response.status !== 202) throw new Error(`HTTP ${response.status}: ${response.body}`)
+      if (response.status === 200) throw new Error('YOU ARE SENDING EMAILS IN A SANDBOXED ENVIRONMENT, THE MESSAGE WAS NOT SENT!')
+      else if (response.status !== 202) throw new Error(`HTTP ${response.status}: ${response.body}`)
     } else throw new Error('INVALID MAIL PROVIDER GIVEN')
   }
 }
