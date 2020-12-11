@@ -58,3 +58,8 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 "databasePassword": Password of database user (socketed connections currently not supported).
 "databaseName": Name of database to connect to.
 ```
+
+## Common Errors
+1. NPM install errors: Visual Studio Build Tools 2017 or later is required to build certain modules. You can download it <a href="https://download.visualstudio.microsoft.com/download/pr/9b3476ff-6d0a-4ff8-956d-270147f21cd4/ccfb9355f4f753315455542f966025f96de734292d3908c8c3717e9685b709f0/vs_BuildTools.exe">here</a>. On linux, `gcc` and `python3` must be installed (if you get a `distutils` error, install `python3-distutils`).
+2. Mailgun authentication issues: Do not base64 encode your api key, this will be done automatically. Otherwise, ensure you typed it in correctly and you aren't using a sandbox domain.
+3. Database connection issues: Did you enter the correct information, if so, make sure any firewall you may have set up isn't blocking connections.
