@@ -6,7 +6,7 @@
 
 1. Download the <a href="https://nodejs.org/en/download/current/">current release</a> of NodeJS.
 2. Launch the installer, and check the box to install Chocolatey.
-3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2017buildtools`
+3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2019buildtools`
 4. Navigate into the repo folder and install the node modules: `npm i`
 5. To ensure the bot stays online, a process manager such as PM2 will be handy.
 6. Create the file `config.json` and add the necessary credentials, see `sample-config.json` for reference.
