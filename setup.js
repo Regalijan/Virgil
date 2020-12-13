@@ -4,7 +4,7 @@ const readline = require('readline').createInterface({
   output: process.stdout
 })
 fs.access('./config.json', fs.constants.R_OK, err => {
-  if (err) {}
+  if (err);
   else throw new Error('THE CONFIG FILE ALREADY EXISTS, DELETE IT FIRST IF YOU REALLY WANT TO RUN SETUP AGAIN')
 })
 console.log('-----Configuration Setup-----')
