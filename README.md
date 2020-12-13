@@ -61,6 +61,12 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 "databaseName": Name of database to connect to.
 ```
 
+## Installing FFmpeg for Windows
+1. Download the latest `LGPL` <a href="https://github.com/BtbN/FFmpeg-Builds/releases">release</a>.
+2. Copy the folder inside of the file to `C:\`
+3. Add the bin directory to the system `PATH` environment variable.
+4. Open command prompt or powershell and run `ffmpeg`, there should be version information displayed in the console.
+
 ## Common Errors
 1. NPM install errors: Visual Studio Build Tools 2017 or later is required to build certain modules. You can download it <a href="https://download.visualstudio.microsoft.com/download/pr/9b3476ff-6d0a-4ff8-956d-270147f21cd4/ccfb9355f4f753315455542f966025f96de734292d3908c8c3717e9685b709f0/vs_BuildTools.exe">here</a>. On linux, `gcc` and `python3` must be installed (if you get a `distutils` error, install `python3-distutils`).
 2. Mailgun authentication issues: Do not base64 encode your api key, this will be done automatically. Otherwise, ensure you typed it in correctly and you aren't using a sandbox domain.
