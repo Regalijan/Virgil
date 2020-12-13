@@ -69,7 +69,7 @@ module.exports = {
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(/\s/)
-            const list = await ytsr(query, { limit: 5 })
+            const list = await ytsr(query, { limit: 10 })
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
@@ -85,7 +85,7 @@ module.exports = {
                 let sel = messages.first().content
                 if (parseInt(sel)) sel = parseInt(sel) - 1
                 else return message.channel.send('Invalid selection!')
-                if (sel < 0 || sel > 4) return message.channel.send('Invalid selection!')
+                if (sel < 0 || sel > length - 1) return message.channel.send('Invalid selection!')
                 title = list.items[sel].title
                 song = `https://www.youtube.com/watch?v=${list.items[sel].id}`
                 processTrack(song, title)
