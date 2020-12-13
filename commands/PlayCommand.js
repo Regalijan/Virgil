@@ -71,7 +71,6 @@ module.exports = {
             const query = args.slice(0).join(/\s/)
             const list = await ytsr(query, { limit: 5 })
             if (!list) return message.channel.send('No search results :(')
-            console.log(list.items)
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
               .setTitle('Search Results')
