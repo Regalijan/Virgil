@@ -1,7 +1,7 @@
-const ytdl = require('ytdl-core')
 const db = require('../database')
-const usetube = require('usetube')
 const Discord = require('discord.js')
+const ytdl = require('ytdl-core')
+const ytsr = require('ytsr')
 
 module.exports = {
   name: 'play',
@@ -68,36 +68,30 @@ module.exports = {
             processTrack(source, source)
           } else {
             // Join all args to search entire query
-            const query = args.slice(0).join(/ +/)
-            let list = await usetube.searchVideo(query)
-            // Youtube is pissy so try again if it fails
-            if (!list) list = await usetube.searchVideo(query)
-            if (!list) return message.channel.send('I could not retrieve results from youtube, try running this command again.')
-            let length
-            // Cap results to a maximum of 5
-            if (list.tracks.length > 5) length = 5
-            else length = list.tracks.length
+            const query = args.slice(0).join(/\s/)
+            const list = await ytsr(query, { limit: 5 })
+            if (!list) return message.channel.send('No search results :(')
+            console.log(list.items)
+            const length = list.items.length
             const embed = new Discord.MessageEmbed()
               .setTitle('Search Results')
               .setColor(3756250)
               .setDescription('Say a number between 1 and 5 to play the track.')
             for (let i = 0; i < length; i++) {
-              embed.addField(`\`${i + 1}\``, `[${list.tracks[i].title}](https://www.youtube.com/watch?v=${list.tracks[i].id})`)
+              embed.addField(`\`${i + 1}\``, `[${list.items[i].title}](https://www.youtube.com/watch?v=${list.items[i].id})`)
             }
             message.channel.send(embed).then(async () => {
               const filter = m => message.author.id === m.author.id
-              message.channel.awaitMessages(filter, { time: 30000, max: 1, errors: ['time'] }).then(async messages => {
+              message.channel.awaitMessages(filter, { time: 60000, max: 1, errors: ['time'] }).then(async messages => {
                 let sel = messages.first().content
                 if (parseInt(sel)) sel = parseInt(sel) - 1
                 else return message.channel.send('Invalid selection!')
                 if (sel < 0 || sel > 4) return message.channel.send('Invalid selection!')
-                title = list.tracks[sel].title
-                song = `https://www.youtube.com/watch?v=${list.tracks[sel].id}`
+                title = list.items[sel].title
+                song = `https://www.youtube.com/watch?v=${list.items[sel].id}`
                 processTrack(song, title)
               })
-            }).catch((e) => {
-              return message.channel.send('Command timed out.')
-            })
+            }).catch(() => message.channel.send('Command timed out.'))
           }
         } else {
           playTrack()
