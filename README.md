@@ -35,7 +35,7 @@
    Type=simple
    User=virgil
    ExecStart=/usr/bin/node /full/path/to/index.js
-   Restart=always
+   Restart=on-failure
    
    [Install]
    WantedBy=multi-user.target
