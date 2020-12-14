@@ -1,5 +1,6 @@
 const db = require('../database')
 const Discord = require('discord.js')
+const { execSync } = require('child_process')
 const ytdl = require('ytdl-core')
 const ytsr = require('ytsr')
 
@@ -8,6 +9,11 @@ module.exports = {
   description: 'Plays music from youtube',
   guildOnly: true,
   async execute (message, args) {
+    try {
+      execSync('ffmpeg -version')
+    } catch {
+      return message.channel.send('FFmpeg is not installed! Music is disabled.')
+    }
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
