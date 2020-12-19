@@ -10,6 +10,7 @@
 4. Navigate into the repo folder and install the node modules: `npm i`
 5. To ensure the bot stays online, a process manager such as PM2 will be handy.
 6. To enable music, install ffmpeg: `npm i -g ffmpeg-static`.
+6.1 On node installations that use npm v7, you must follow the FFmpeg compilation instructions at the bottom.
 7. Run `node setup.js` and follow the prompts.
 8. Start the bot: `npm start`
 
@@ -67,3 +68,15 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 1. NPM install errors: Visual Studio Build Tools 2017 or later is required to build certain modules. You can download it <a href="https://download.visualstudio.microsoft.com/download/pr/9b3476ff-6d0a-4ff8-956d-270147f21cd4/ccfb9355f4f753315455542f966025f96de734292d3908c8c3717e9685b709f0/vs_BuildTools.exe">here</a>. On linux, `gcc` and `python3` must be installed (if you get a `distutils` error, install `python3-distutils`).
 2. Mailgun authentication issues: Do not base64 encode your api key, this will be done automatically. Otherwise, ensure you typed it in correctly and you aren't using a sandbox domain.
 3. Database connection issues: Did you enter the correct information, if so, make sure any firewall you may have set up isn't blocking connections.
+
+## Compiling FFmpeg
+1. Download and install <a href="https://www.msys2.org">MSYS2</a>
+2. Open an elevated command prompt or powershell window and run `choco install yasm`
+3. Open x64 Native Tools Command Prompt for VS 20XX
+4. Run `C:\msys64\msys2_shell.cmd`
+5. Add `yasm` and `cl.exe` to PATH: `export PATH=/c/ProgramData/chocolatey/bin:"/c/Program Files (x86)/Microsoft Visual Studio/20XX/BuildTools/VC/Tools/MSVC/{version}/bin/Hostx64/x64":$PATH` (Substitute the year number and MSVC version)
+6. Clone the FFmpeg repo: `git clone https://git.ffmpeg.org/ffmpeg.git && cd ffmpeg`
+7. `./configure --toolchain=msvc --arch=x86_64 --target-os=win64` - Note: This step is painfully slow on MSYS2
+8. `make -j4` (You can always run more or less jobs if you wish)
+9. When compilation completes, open `C:\msys64\home\yourname\ffmpeg` and drag `ffmpeg.exe` into `C:\Windows`
+10. Run `ffmpeg` in command prompt to make sure it works.
