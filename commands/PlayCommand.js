@@ -1,6 +1,5 @@
 const db = require('../database')
 const Discord = require('discord.js')
-const { execSync } = require('child_process')
 const ytdl = require('ytdl-core')
 const ytsr = require('ytsr')
 
@@ -9,11 +8,6 @@ module.exports = {
   description: 'Plays music from youtube',
   guildOnly: true,
   async execute (message, args) {
-    try {
-      execSync('ffmpeg -version')
-    } catch {
-      return message.channel.send('FFmpeg is not installed! Music is disabled.')
-    }
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
@@ -31,7 +25,11 @@ module.exports = {
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
             let dispatcher
             if (queue.rows[0].media.match(ytreg)) dispatcher = connection.play(ytdl(queue.rows[0].media))
-            else dispatcher = connection.play(queue.rows[0].media)
+            else try {
+              dispatcher = connection.play(queue.rows[0].media)
+            } catch {
+              return message.channel.send('FFmpeg is not installed! Music is disabled.')
+            }
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
@@ -74,8 +72,9 @@ module.exports = {
             processTrack(source, source)
           } else {
             // Join all args to search entire query
-            const query = args.slice(0).join(/\s/)
-            const list = await ytsr(query, { limit: 10 })
+            const query = args.slice(0).join(/\s/).replace(/\s/gm, ' ')
+            console.log(query)
+            const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
