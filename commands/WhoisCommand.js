@@ -14,8 +14,8 @@ module.exports = {
       .setColor(3756250)
       .setThumbnail(member.user.displayAvatarURL())
       .addFields(
-        { name: 'Username', value: member.user.tag, inline: true },
-        { name: 'User ID', value: member.id, inline: true },
+        { name: 'Username', value: member.user.tag},
+        { name: 'User ID', value: member.id},
         { name: 'Highest Role', value: member.roles.highest, inline: true },
         { name: 'Created At', value: member.user.createdAt, inline: true },
         { name: 'Joined At', value: member.joinedAt, inline: true }
