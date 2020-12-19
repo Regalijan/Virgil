@@ -74,8 +74,7 @@ module.exports = {
             processTrack(source, source)
           } else {
             // Join all args to search entire query
-            const query = args.slice(0).join(/\s/).replace(/\s/gm, ' ')
-            console.log(query)
+            const query = args.slice(0).join(' ')
             const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
