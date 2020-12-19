@@ -9,8 +9,7 @@
 3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2019buildtools`
 4. Navigate into the repo folder and install the node modules: `npm i`
 5. To ensure the bot stays online, a process manager such as PM2 will be handy.
-6. To enable music, install ffmpeg: `npm i -g ffmpeg-static`.
-6.1 On node installations that use npm v7, you must follow the FFmpeg compilation instructions at the bottom.
+6. To enable music, read the ffmpeg compilation guide at the bottom.
 7. Run `node setup.js` and follow the prompts.
 8. Start the bot: `npm start`
 
