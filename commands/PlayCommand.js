@@ -25,10 +25,12 @@ module.exports = {
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
             let dispatcher
             if (queue.rows[0].media.match(ytreg)) dispatcher = connection.play(ytdl(queue.rows[0].media))
-            else try {
-              dispatcher = connection.play(queue.rows[0].media)
-            } catch {
-              return message.channel.send('FFmpeg is not installed! Music is disabled.')
+            else {
+              try {
+                dispatcher = connection.play(queue.rows[0].media)
+              } catch {
+                return message.channel.send('FFmpeg is not installed! Music is disabled.')
+              }
             }
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
