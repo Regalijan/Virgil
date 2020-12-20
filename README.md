@@ -74,7 +74,7 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 3. Open x64 Native Tools Command Prompt for VS 20XX
 4. Run `C:\msys64\msys2_shell.cmd`
 5. Add `yasm` and `cl.exe` to PATH: `export PATH=/c/ProgramData/chocolatey/bin:"/c/Program Files (x86)/Microsoft Visual Studio/20XX/BuildTools/VC/Tools/MSVC/{version}/bin/Hostx64/x64":$PATH` (Substitute the year number and MSVC version)
-6. Install the necessary packages: `pacman -S diffutils make pkg-config`
+6. Install the necessary packages: `pacman -S diffutils git make pkg-config`
 7. Clone the FFmpeg repo: `git clone https://git.ffmpeg.org/ffmpeg.git && cd ffmpeg`
 8. `./configure --toolchain=msvc --arch=x86_64 --target-os=win64` - Note: This step is painfully slow on MSYS2
 9. `make -j4` (You can always run more or less jobs if you wish)
