@@ -14,7 +14,7 @@ module.exports = {
       if (config.mailgunRegion === 'eu') url = `https://api.eu.mailgun.net/v3/${config.domain}/messages`
       else url = `https://api.mailgun.net/v3/${config.domain}/messages`
       const response = await request.post(url, form, { headers: form.getHeaders(), auth: { username: 'api', password: config.apiKey, validateStatus: false } }).catch(e => { return console.error(e) })
-      if (response.status !== 200) throw new Error(`HTTP ${response.status}: ${response.data}`)
+      if (response.status !== 200) throw new Error(`HTTP ${response.status}: ${response.data.message}`)
     } else if (config.provider.toLowerCase() === 'sendgrid') {
       const email = JSON.stringify({
         personalizations: [{ to: [{ email: recipient }] }], from: { email: config.fromAddress }, content: [{ type: 'text/html', value: body }]
