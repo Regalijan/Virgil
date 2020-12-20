@@ -22,10 +22,8 @@ client.on('message', message => {
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
   const args = message.content.slice(config.prefix.length).trim().split(/ +/)
   const command = args.shift().toLowerCase()
-  if (!client.commands.has(command)) return message.channel.send('This command don\'t exist yet n00b.')
-  if (command.guildOnly && message.channel.type === 'dm') {
-    return message.reply('I can\'t execute that command inside DMs!')
-  }
+  if (!client.commands.has(command)) return
+  if (command.guildOnly && message.channel.type === 'dm') return
   try {
     client.commands.get(command).execute(message, args)
   } catch (error) {
