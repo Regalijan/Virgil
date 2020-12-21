@@ -137,7 +137,11 @@ client.on('messageDeleteBulk', async (messages) => {
   messages.findKey(m => { originatingChannel = m.channel })
   if (serversettings.ignoredChannels.includes(originatingChannel.id) || serversettings.ignoredCategories.includes(originatingChannel.parentID)) return
   const fileName = `./bulk-${crypto.randomBytes(16).toString('hex')}.txt`
-  fs.writeFile(fileName, contents, err => { if (err) return console.error(err) })
+  try {
+    fs.writeFileSync(fileName, contents)
+  } catch (e) {
+    return console.error(e)
+  }
   if ((!serversettings.deleteLogChannel) || (serversettings.ignoredCategories.includes(messages.findKey(m => { return m.channel.parentID }))) || (serversettings.ignoredChannels.includes(messages.findKey(m => { return m.channel.id })))) return
   let channel
   messages.findKey(m => { channel = m.guild.channels.resolve(serversettings.deleteLogChannel) })
