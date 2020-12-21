@@ -16,7 +16,9 @@ module.exports = {
       .setColor(3756250)
       .addField('Current Track', `[${queue.rows[0].title}](${queue.rows[0].media}) - Requested by <@${queue.rows[0].requester}>`)
     if (queue.rows[1]) {
-      for (let i = 1; i < queue.rowCount; i++) {
+      let length = queue.rowCount
+      if (length > 10) length = 10
+      for (let i = 1; i < length; i++) {
         embed.addField(`\`${i}.\``, `[${queue.rows[i].title}](${queue.rows[i].media}) - Requested by <@${queue.rows[i].requester}>`)
       }
     }
