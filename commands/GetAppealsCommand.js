@@ -6,7 +6,7 @@ module.exports = {
   name: 'getappeals',
   description: 'Retrieves all open appeals',
   guildOnly: true,
-  async execute(message) {
+  async execute (message) {
     if (!message.member.roles.cache.some(role => config.appealsManagerRole.includes(role.id))) {
       return message.channel.send('You do not have permission to run this command!')
     }
