@@ -23,10 +23,12 @@ module.exports = {
         const embed = new Discord.MessageEmbed()
           .setTitle('Exploiter Report')
           .setDescription(description)
+          .setColor(3756250)
           .setFooter(`Reporter: ${message.author.tag} - ${message.author.id}`)
-        if (exploiterReportsChannel) {
-          exploiterReportsChannel.send(embed)
-        }
+        const channel = message.guild.channels.cache.find(ch => ch.id === exploiterReportsChannel)
+        if (!channel) return message.channel.send('The reports channel is not set up!')
+        await channel.send(embed)
+        await message.channel.send('Report sent!')
       } else {
         message.channel.send('An unknown error occured! Maybe Roblox is down or is returning malformed data. If this keeps happening, contact the bot developer.')
       }
