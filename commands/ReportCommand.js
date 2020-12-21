@@ -21,7 +21,7 @@ module.exports = {
         const urltest = await request(args[1], { validateStatus: false })
         if (!urltest || urltest.status !== 200) return message.channel.send('This url is either not valid or cannot be verified.')
         const bancheck = await request(`https://storage.googleapis.com/${config.bucket}/${response.data.Id}.json`, { validateStatus: false })
-        let banstatus = `Not banned or blacklisted`
+        let banstatus = 'Not banned or blacklisted'
         if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
         else if (bancheck.status === 200 && bancheck.data.usercode === '0x2') banstatus = `Banned (${bancheck.data.reason})`
         const embed = new Discord.MessageEmbed()
