@@ -13,20 +13,27 @@ module.exports = {
         url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
         url = url.replace('/edit', '')
       }
+      const urlcheck = await request(url, { validateStatus: false }).catch(() => { return message.channel.send('This URL does not appear to be accessible!') })
+      if (urlcheck.status !== 200) return message.channel.send('This URL does not appear to be accessible!')
       const reason = args.slice(2).join(' ')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
       if (response.data.Username) {
         const urltest = await request(args[1], { validateStatus: false })
         if (!urltest || urltest.status !== 200) return message.channel.send('This url is either not valid or cannot be verified.')
         const bancheck = await request(`https://storage.googleapis.com/${config.bucket}/${response.data.Id}.json`, { validateStatus: false })
-        let description = `${message.author.username}#${message.author.discriminator} has reported ${response.data.Username} for exploiting!\n\nReason: ${reason}\n\n[Evidence](${url})`
-        if (bancheck.status === 200 && bancheck.data.usercode === '0x1') description += '\n\nThis user is blacklisted!'
-        else if (bancheck.status === 200 && bancheck.data.usercode === '0x2') description += '\n\nThis user is banned!'
+        let banstatus = `Not banned or blacklisted`
+        if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
+        else if (bancheck.status === 200 && bancheck.data.usercode === '0x2') banstatus = `Banned (${bancheck.data.reason})`
         const embed = new Discord.MessageEmbed()
           .setTitle('Exploiter Report')
-          .setDescription(description)
           .setColor(3756250)
-          .setFooter(`Reporter: ${message.author.tag} - ${message.author.id}`)
+          .setAuthor(message.author.tag, message.author.displayAvatarURL())
+          .addFields(
+            { name: 'Username', value: `[${response.data.Username}](https://www.roblox.com/users/${response.data.Id}/profile)` },
+            { name: 'Description', value: reason },
+            { name: 'Evidence', value: url },
+            { name: 'Current user status', value: banstatus }
+          )
         const channel = message.guild.channels.cache.find(ch => ch.id === exploiterReportsChannel)
         if (!channel) return message.channel.send('The reports channel is not set up!')
         await channel.send(embed)
