@@ -30,7 +30,7 @@ module.exports = {
       } else {
         message.channel.send('An unknown error occured! Maybe Roblox is down or is returning malformed data. If this keeps happening, contact the bot developer.')
       }
-    } else if (!args[0]){
+    } else if (!args[0]) {
       message.channel.send('Command Usage: `[prefix]report <username> <link> <description>`')
     } else if (!args[1]) {
       message.channel.send('Please provide a link!')
