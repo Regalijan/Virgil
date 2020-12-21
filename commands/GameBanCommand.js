@@ -17,7 +17,7 @@ module.exports = {
         })
         if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
         try {
-          fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
+          fs.writeFileSync(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
         } catch (e) {
           message.channel.send('There was an error writing the file!')
           return console.error(e)
@@ -37,7 +37,7 @@ module.exports = {
           })
         }
         await message.channel.send(`${robloxData.data.Username} successfully banned from the game!`)
-        fs.unlink(`./${robloxData.data.Id}.json`, e => console.error(e))
+        fs.unlink(`./${robloxData.data.Id}.json`, e => { if (err) console.error(e) })
       } else if (!args[0]) {
         return message.reply('You did not provide a username!')
       } else if (!reason) {
