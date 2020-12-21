@@ -37,7 +37,7 @@ module.exports = {
           })
         }
         await message.channel.send(`${robloxData.data.Username} successfully banned from the game!`)
-        fs.unlink(`./${robloxData.data.Id}.json`, e => { if (err) console.error(e) })
+        fs.unlink(`./${robloxData.data.Id}.json`, e => { if (e) console.error(e) })
       } else if (!args[0]) {
         return message.reply('You did not provide a username!')
       } else if (!reason) {
