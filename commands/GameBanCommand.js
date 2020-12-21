@@ -16,12 +16,12 @@ module.exports = {
           return message.channel.send(`An error occured when looking up this user! ${e}`)
         })
         if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
-        fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`, err => {
-          if (err) {
-            console.error(err)
-            return message.channel.send('An error occured when writing the file!')
-          }
-        })
+        try {
+          fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
+        } catch (e) {
+          message.channel.send('There was an error writing the file!')
+          return console.error(e)
+        }
         await storage.bucket(bucket).upload(`./${robloxData.data.Id}.json`).catch(e => {
           console.error(e)
           return message.channel.send(`An error occured when uploading the file! ${e}`)
@@ -36,7 +36,7 @@ module.exports = {
             return message.channel.send(`An error occured when making the file public! ${e}`)
           })
         }
-        message.channel.send(`${robloxData.data.Username} successfully banned from the game!`)
+        await message.channel.send(`${robloxData.data.Username} successfully banned from the game!`)
         fs.unlink(`./${robloxData.data.Id}.json`, e => console.error(e))
       } else if (!args[0]) {
         return message.reply('You did not provide a username!')
