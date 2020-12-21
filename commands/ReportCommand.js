@@ -6,8 +6,8 @@ module.exports = {
   name: 'report',
   description: 'Report an exploiter',
   async execute (message, args) {
-    const { exploiterReportChannel } = require(`../serversettings/${message.guild.id}.json`)
-    if ((args[0]) && (args[1]) && (args[2]) && (exploiterReportChannel)) {
+    const { exploiterReportsChannel } = require(`../serversettings/${message.guild.id}.json`)
+    if ((args[0]) && (args[1]) && (args[2]) && (exploiterReportsChannel)) {
       let url = args[1]
       url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
       url = url.replace('/edit', '')
@@ -24,14 +24,20 @@ module.exports = {
           .setTitle('Exploiter Report')
           .setDescription(description)
           .setFooter(`Reporter: ${message.author.tag} - ${message.author.id}`)
-        if (exploiterReportChannel) {
-          exploiterReportChannel.send(embed)
+        if (exploiterReportsChannel) {
+          exploiterReportsChannel.send(embed)
         }
       } else {
         message.channel.send('An unknown error occured! Maybe Roblox is down or is returning malformed data. If this keeps happening, contact the bot developer.')
       }
-    } else {
-      message.channel.send('A required argument was missing, make sure you have supplied all required information.')
+    } else if (!args[0]){
+      message.channel.send('Command Usage: `[prefix]report <username> <link> <description>`')
+    } else if (!args[1]) {
+      message.channel.send('Please provide a link!')
+    } else if (!args[2]) {
+      message.channel.send('Please provide a description!')
+    } else if (!exploiterReportsChannel) {
+      message.channel.send('The report channel was not set!')
     }
   }
 }
