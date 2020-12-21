@@ -9,8 +9,10 @@ module.exports = {
     const { exploiterReportsChannel } = require(`../serversettings/${message.guild.id}.json`)
     if ((args[0]) && (args[1]) && (args[2]) && (exploiterReportsChannel)) {
       let url = args[1]
-      url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
-      url = url.replace('/edit', '')
+      if (url.match('studio.youtube.com')) {
+        url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
+        url = url.replace('/edit', '')
+      }
       const reason = args.slice(2).join(' ')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
       if (response.data.Username) {
