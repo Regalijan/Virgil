@@ -81,7 +81,7 @@ module.exports = {
             const embed = new Discord.MessageEmbed()
               .setTitle('Search Results')
               .setColor(3756250)
-              .setDescription('Say a number between 1 and 5 to play the track.')
+              .setDescription('Say a number between 1 and 10 to play the track.')
             for (let i = 0; i < length; i++) {
               embed.addField(`\`${i + 1}\``, `[${list.items[i].title}](https://www.youtube.com/watch?v=${list.items[i].id})`)
             }
