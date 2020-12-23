@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 const config = require('./config.json')
 const crypto = require('crypto')
 const db = require('./database')
+const verifier = require('./verify')
 module.exports = {
   client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
 }
@@ -31,7 +32,7 @@ client.on('message', message => {
   }
 })
 
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
   try {
     const serversettings = require(`./serversettings/${member.guild.id}.json`)
     if (!serversettings.joinLogChannel) return
@@ -44,6 +45,13 @@ client.on('guildMemberAdd', member => {
       .addField('Registration Date', `${member.user.createdAt}`)
       .setFooter(`ID: ${member.id}`)
     channel.send(embed)
+    const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
+    const secLevel = member.guild.verificationLevel
+    if (secLevel === 'MEDIUM' && member.joinedTimestamp - member.user.createdTimestamp < 300000) return member.send(`${dmtext} Due`)
+    if (secLevel === 'HIGH') return member.send(`${dmtext} you must wait 10 minutes before speaking, after which you can verify yourself.`).catch(() => {})
+    if (secLevel === 'VERY_HIGH') return member.send(`${dmtext} you must verify your phone number before chatting. You may verify after doing so (or if you have already done so).`).catch(() => {})
+    const success = await verifier.onjoin(member)
+    if (success) member.send(`Thank you for joining ${member.guild.name}! You were automatically verified.`)
   } catch (e) {
     console.error(e)
   }
