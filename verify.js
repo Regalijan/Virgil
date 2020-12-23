@@ -18,7 +18,7 @@ module.exports = {
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
     status.edit(':scroll: Fetching information from Roblox...')
-    let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
+    let groupdata = await request(`https://groups.roblox.com/v2/users/${robloxId}/groups/roles`, { validateStatus: false })
     if (groupdata.status !== 200) return status.edit('An error occured when looking up group roles!')
     groupdata = groupdata.data.data
     linkedRoles.rows.forEach(async row => {
