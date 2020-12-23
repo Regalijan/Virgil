@@ -45,7 +45,6 @@ module.exports = {
     if (bio.length > 500) {
       bio = bio.substr(0, 500) + '...'
     }
-    bio = bio.replace('@', '@ ')
     const pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50`).catch(e => {
       console.error(e)
       pastNames = 'Unknown'
