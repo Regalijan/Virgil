@@ -2,7 +2,10 @@ const db = require('./database')
 const request = require('axios')
 module.exports = {
   async run (message, user) {
+    if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I cannot modify your roles as I do not have the "Manage Roles" permission.')
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [message.guild.id])
+    let member = message.member
+    if (message.author.id !== user) member = await message.guild.members.fetch(user)
     let robloxId
     let verificationData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false })
     if (verificationData.status === 200) robloxId = verificationData.data.robloxId
@@ -12,18 +15,18 @@ module.exports = {
       else return message.channel.send('I could not find this user!')
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
-    const member = await message.guild.members.fetch(user)
+    if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
     let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
     linkedRoles.rows.forEach(async row => {
       if (row.type !== 'Group') {
-        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.item_id}`).catch((e) => {
+        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`).catch((e) => {
           console.error(e)
           return message.channel.send('I could not look up roles! Roblox appears to be having issues.')
         })
-        if (roledata.data && roledata.data !== []) {
+        if (roledata.data && roledata.data.data[0] && roledata.data.data[0].id === parseInt(row.link_id)) {
           if (message.guild.roles.cache.find(role => role.id === row.role_id)) {
             const role = message.guild.roles.cache.find(role => role.id === row.role_id)
-            if (role.position > message.guild.me.roles.highest.position) member.roles.add(row.role_id).catch(e => console.error(e))
+            if (role.position < message.guild.me.roles.highest.position) member.roles.add(row.role_id).catch(e => console.error(e))
           } else {
             return message.channel.send('I could not finish giving the roles! One of the set roles was deleted!')
           }
@@ -31,18 +34,31 @@ module.exports = {
       } else {
         if (!groupdata.data || groupdata.data.data === []) return
         groupdata = groupdata.data.data
-        linkedRoles.rows.forEach(async role => {
-          for (let i = 0; i < groupdata.length; i++) {
-            if (role.rank === groupdata[i].role.rank) {
-              const boundrole = message.guild.roles.cache.find(item => role.role_id === item.id)
-              if (boundrole) {
-                if (boundrole.position > message.guild.me.roles.highest.position) member.roles.add(role.role_id).catch(e => console.error(e))
+        for (let i = 0; i < groupdata.length; i++) {
+          if (groupdata[i].group.id.toString() === row.link_id) {
+            const resolvedrole = await message.guild.roles.fetch(row.role_id)
+            if (!row.rank || groupdata[i].role.rank === row.rank) {
+              if (message.guild.me.roles.highest.position > resolvedrole.position) {
+                try {
+                  member.roles.add(row.role_id)
+                } catch (e) {
+                  console.error(e)
+                }
+              }
+            } else {
+              const role = member.roles.cache.find(r => r.id === row.role_id)
+              if (role) {
+                try {
+                  member.roles.remove(role)
+                } catch (e) {
+                  console.error(e)
+                }
               }
             }
           }
-        })
+        }
       }
     })
-    return message.channel.send('Verification finished!')
+    return true
   }
 }
