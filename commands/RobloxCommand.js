@@ -46,7 +46,7 @@ module.exports = {
       bio = bio.substr(0, 500) + '...'
     }
     let pastNames
-    const pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50`).catch(e => {
+    const pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50&sortOrder=Desc`).catch(e => {
       console.error(e)
       pastNames = 'Unknown'
     })
