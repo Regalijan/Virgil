@@ -45,15 +45,16 @@ module.exports = {
     if (bio.length > 500) {
       bio = bio.substr(0, 500) + '...'
     }
-    let pastNames
-    const pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50&sortOrder=Desc`).catch(e => {
+    let pastNames = '_'
+    let pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50&sortOrder=Desc`).catch(e => {
       console.error(e)
-      pastNames = 'Unknown'
     })
-    for (let i = 0; i < pastNamesData.data.data.length; i++) {
-      pastNames = `${pastNames}, ${pastNamesData.data.data[i].name}`
+    pastNamesData = pastNamesData.data.data
+    for (let i = 0; i < pastNamesData.length; i++) {
+      pastNames = `${pastNames}, ${pastNamesData[i].name}`
     }
-    if (!pastNames) pastNames = 'None'
+    if (pastNamesData.length === 0) pastNames = 'None'
+    if (pastNames !== 'None') pastNames = pastNames.replace('_, ', '')
     const profile = `https://www.roblox.com/users/${robloxData.data.id}/profile`
     const embed = new Discord.MessageEmbed()
       .setTitle('View Profile')
