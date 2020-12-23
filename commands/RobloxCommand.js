@@ -45,11 +45,11 @@ module.exports = {
     if (bio.length > 500) {
       bio = bio.substr(0, 500) + '...'
     }
+    let pastNames = 'None'
     const pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50`).catch(e => {
       console.error(e)
       pastNames = 'Unknown'
     })
-    let pastNames = 'None'
     if (pastNamesData.data.data[0]) pastNames = pastNamesData.data.data[0].name
     for (let i = 1; i < pastNamesData.data.data.length; i++) {
       pastNames = `${pastNames}, ${pastNamesData.data.data[i].name}`
