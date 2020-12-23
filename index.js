@@ -38,7 +38,7 @@ client.on('guildMemberAdd', member => {
     const channel = member.guild.channels.cache.find(ch => ch.id === serversettings.joinLogChannel)
     const embed = new Discord.MessageEmbed()
       .setAuthor('Member Joined', member.user.displayAvatarURL())
-      .setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
+      .setDescription(`${member} ${member.user.tag}`)
       .setThumbnail(member.user.displayAvatarURL())
       .setColor(3756250)
       .addField('Registration Date', `${member.user.createdAt}`)
