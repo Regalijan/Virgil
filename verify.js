@@ -36,7 +36,6 @@ module.exports = {
           }
         }
       } else {
-        console.log(row.rank, groupdata.length)
         if (groupdata.length !== 0) {
           for (let i = 0; i < groupdata.length; i++) {
             if (groupdata[i].group.id.toString() === row.link_id) {
