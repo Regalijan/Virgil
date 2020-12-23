@@ -4,6 +4,7 @@ module.exports = {
   async run (message, user) {
     if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I cannot modify your roles as I do not have the "Manage Roles" permission.')
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [message.guild.id])
+    const status = await message.channel.send(':scroll: Checking the verification registries...')
     let member = message.member
     if (message.author.id !== user) member = await message.guild.members.fetch(user)
     let robloxId
@@ -16,7 +17,10 @@ module.exports = {
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
+    status.edit(':scroll: Fetching information from Roblox...')
     let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
+    if (groupdata.status !== 200) return status.edit('An error occured when looking up group roles!')
+    groupdata = groupdata.data.data
     linkedRoles.rows.forEach(async row => {
       if (row.type !== 'Group') {
         const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`).catch((e) => {
@@ -32,26 +36,27 @@ module.exports = {
           }
         }
       } else {
-        if (!groupdata.data || groupdata.data.data === []) return
-        groupdata = groupdata.data.data
-        for (let i = 0; i < groupdata.length; i++) {
-          if (groupdata[i].group.id.toString() === row.link_id) {
-            const resolvedrole = await message.guild.roles.fetch(row.role_id)
-            if (!row.rank || groupdata[i].role.rank === row.rank) {
-              if (message.guild.me.roles.highest.position > resolvedrole.position) {
-                try {
-                  member.roles.add(row.role_id)
-                } catch (e) {
-                  console.error(e)
+        console.log(row.rank, groupdata.length)
+        if (groupdata.length !== 0) {
+          for (let i = 0; i < groupdata.length; i++) {
+            if (groupdata[i].group.id.toString() === row.link_id) {
+              const resolvedrole = await message.guild.roles.fetch(row.role_id)
+              if (!row.rank || groupdata[i].role.rank === row.rank) {
+                if (message.guild.me.roles.highest.position > resolvedrole.position) {
+                  try {
+                    member.roles.add(row.role_id)
+                  } catch (e) {
+                    console.error(e)
+                  }
                 }
-              }
-            } else {
-              const role = member.roles.cache.find(r => r.id === row.role_id)
-              if (role) {
-                try {
-                  member.roles.remove(role)
-                } catch (e) {
-                  console.error(e)
+              } else {
+                const role = member.roles.cache.find(r => r.id === row.role_id)
+                if (role) {
+                  try {
+                    member.roles.remove(role)
+                  } catch (e) {
+                    console.error(e)
+                  }
                 }
               }
             }
@@ -59,7 +64,7 @@ module.exports = {
         }
       }
     })
-    return true
+    return status
   },
   async onjoin (member) {
     if (!member.guild.me.hasPermission('MANAGE_ROLES')) return
