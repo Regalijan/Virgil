@@ -51,7 +51,7 @@ client.on('guildMemberAdd', async member => {
     if (secLevel === 'HIGH') return member.send(`${dmtext} you must wait 10 minutes before speaking, after which you can verify yourself.`).catch(() => {})
     if (secLevel === 'VERY_HIGH') return member.send(`${dmtext} you must verify your phone number before chatting. You may verify after doing so (or if you have already done so).`).catch(() => {})
     const success = await verifier.onjoin(member)
-    if (success) member.send(`Thank you for joining ${member.guild.name}! You were automatically verified.`)
+    if (success) member.send(`Thank you for joining ${member.guild.name}! You were automatically verified.`).catch(() => {})
   } catch (e) {
     console.error(e)
   }
