@@ -6,7 +6,7 @@ module.exports = {
   async execute (message, args) {
     if (!message.member.hasPermission('MANAGE_ROLES') && message.author.id !== owner) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('You did not give me a role!')
-    let role = args[0]
+    let role = args.slice(0).join(' ')
     if (role.match(/(<@&[0-9]*>)/)) role = role.replace(/(<@&|>)/g, '')
     if (args[0].match(/^\d+$/)) role = message.guild.roles.cache.find(r => r.id === args[0])
     else role = message.guild.roles.cache.find(r => r.name.toLowerCase().includes(role.toLowerCase()))
@@ -19,6 +19,7 @@ module.exports = {
       console.error(e)
       return message.channel.send('An error occured when making that role mentionable!')
     })
+    if (!makementionable) return message.channel.send(`${role.name} is now unmentionable.`)
     message.channel.send(`${role.name} is now mentionable.`)
   }
 }
