@@ -13,7 +13,9 @@ module.exports = {
     if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I do not have permission to manage roles.')
     if (!role) return message.channel.send('I could not find that role!')
     if (role.position >= message.guild.me.roles.highest.position) return message.channel.send('I cannot manage this role as it is not lower than my highest role.')
-    role.setMentionable(true).catch(e => {
+    let makementionable = true
+    if (role.mentionable) makementionable = false
+    role.setMentionable(makementionable).catch(e => {
       console.error(e)
       return message.channel.send('An error occured when making that role mentionable!')
     })
