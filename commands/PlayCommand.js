@@ -38,9 +38,7 @@ module.exports = {
               playTrack()
             })
             // Export the dispatcher so other commands can use it
-            module.exports = {
-              dispatcher: dispatcher
-            }
+            module.exports.dispatcher = dispatcher
           } catch (e) {
             console.error(e)
           }
