@@ -25,8 +25,7 @@ This guide assumes you are using Ubuntu
 6. Clone the repo: `sudo -u virgil git clone https://github.com/Wolftallemo/Virgil ./`
 7. Install the modules: `sudo -u virgil npm i`
 8. Run `node setup.js` and add the credentials.
-9. Give the group write permissions to the files: `sudo chmod -R +w yourusername *`
-10. Create a systemd service to ensure the bot stays online, a sample service is provided below:
+9. Create a systemd service to ensure the bot stays online, a sample service is provided below:
    ```
    [Unit]
    Description=Virgil systemd service
@@ -45,7 +44,7 @@ This guide assumes you are using Ubuntu
    ```
    If you installed node from the snap store, the path of the node executable is `/snap/bin/node`
    
-11. Enable the service: `sudo systemctl start virgil`
+10. Enable the service: `sudo systemctl start virgil`
 
 If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 
