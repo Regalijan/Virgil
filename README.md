@@ -19,12 +19,12 @@ This guide assumes you are using Ubuntu
 
 1. Install the current release of NodeJS by <a href="https://github.com/nodejs/node/blob/master/BUILDING.md#building-nodejs-on-supported-platforms">building from source</a>, <a href="https://nodejs.org/en/download/package-manager/">adding the repo to your package manager</a>, or <a href="https://snapcraft.io/node">the snap store</a>.
 2. Install the necessary build tools: `sudo apt install build-essential`
-3. Clone the repo: `git clone https://github.com/Wolftallemo/Virgil`
-4. Install the modules: `npm i`
-5. Install ffmpeg with `sudo apt install ffmpeg`
-6. Run `node setup.js` and add the credentials.
-7. Create system user for the bot to run under: `sudo adduser --system --disabled-login --group virgil`
-8. Add the newly made system user group to the folder (MAKE SURE YOU ARE IN THE PROJECT FOLDER): `sudo chown -R yourusername:virgil *`
+3. Install ffmpeg: `sudo apt install ffmpeg`
+4. Create the user: `sudo adduser --system --disabled-login --group virgil`
+5. Switch to home: `cd /home/virgil`
+6. Clone the repo: `sudo -u virgil git clone https://github.com/Wolftallemo/Virgil ./`
+7. Install the modules: `sudo -u virgil npm i`
+8. Run `node setup.js` and add the credentials.
 9. Give the group write permissions to the files: `sudo chmod -R +w yourusername *`
 10. Create a systemd service to ensure the bot stays online, a sample service is provided below:
    ```
@@ -36,6 +36,7 @@ This guide assumes you are using Ubuntu
    [Service]
    Type=simple
    User=virgil
+   WorkingDirectory=/home/virgil
    ExecStart=/usr/bin/node /full/path/to/index.js
    Restart=on-failure
    
@@ -55,7 +56,6 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 "gameModeratorUsers": Array of user IDs which can execute game mod commands (roles array takes precedence).
 "bucket": Ban files are uploaded to this bucket.
 "serviceKeyPath": Full path of service key for google cloud.
-"banFilesPath": Full path to directory where outputted json files are uploaded.
 "appealsManagerRole": Array of roles that are allowed to execute the appeals commands.
 "databaseAddress": Hostname/IP address of database.
 "databaseUser": Username of connecting user.
@@ -72,7 +72,7 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 1. Download and install <a href="https://www.msys2.org">MSYS2</a>
 2. Open an elevated command prompt or powershell window and run `choco install yasm`
 3. Open x64 Native Tools Command Prompt for VS 20XX
-4. Run `C:\msys64\msys2_shell.cmd`
+4. Run `C:\msys64\msys2_shell.cmd` in the command prompt
 5. Add `yasm` and `cl.exe` to PATH: `export PATH=/c/ProgramData/chocolatey/bin:"/c/Program Files (x86)/Microsoft Visual Studio/20XX/BuildTools/VC/Tools/MSVC/{version}/bin/Hostx64/x64":$PATH` (Substitute the year number and MSVC version)
 6. Install the necessary packages: `pacman -S diffutils git make pkg-config`
 7. Clone the FFmpeg repo: `git clone https://git.ffmpeg.org/ffmpeg.git && cd ffmpeg`
