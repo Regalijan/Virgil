@@ -13,7 +13,7 @@ module.exports = {
     try {
       const appeals = await db.query('SELECT appeals.discord_id, auth.username, auth.discriminator FROM appeals,auth WHERE appeals.discord_id = auth.discord_id;')
       if (appeals.rowCount === 0) return message.channel.send('There are currently no open appeals.')
-      let users
+      let users = ''
       for (let i = 0; i < appeals.rowCount; i++) {
         users = `${users}\n\n${appeals.rows[i].username}#${('0000' + appeals.rows[i].discriminator).slice(-4)} (${appeals.rows[i].discord_id})`
       }
