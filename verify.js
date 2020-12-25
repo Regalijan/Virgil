@@ -13,7 +13,7 @@ module.exports = {
     else {
       verificationData = await request(`https://api.blox.link/v1/user/${user}`, { validateStatus: false })
       if (verificationData.data && verificationData.data.status === 'ok') robloxId = verificationData.data.primaryAccount
-      else return message.channel.send('I could not find this user!')
+      else return message.channel.send('The registries did not return any data, you are probably not verified. You may verify at either registry: <https://verify.eryn.io> <https://blox.link/verify>')
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
