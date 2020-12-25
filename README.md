@@ -19,7 +19,7 @@ This guide assumes you are using Ubuntu
 
 1. Install the current release of NodeJS by <a href="https://github.com/nodejs/node/blob/master/BUILDING.md#building-nodejs-on-supported-platforms">building from source</a> or <a href="https://nodejs.org/en/download/package-manager/">adding the repo to your package manager</a>.<br/>Note: There have been various issues when intalling via the snap store, it is not recommended to install node from there.
 2. Install the necessary build tools: `sudo apt install build-essential`
-3. Install ffmpeg: `sudo apt install ffmpeg`
+3. Install ffmpeg: `sudo apt install ffmpeg` or `sudo snap install ffmpeg`
 4. Create the user: `sudo adduser --system --disabled-login --group virgil`
 5. Switch to home: `cd /home/virgil`
 6. Clone the repo: `sudo -u virgil git clone https://github.com/Wolftallemo/Virgil ./`
