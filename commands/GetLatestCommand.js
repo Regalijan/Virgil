@@ -1,3 +1,4 @@
+const { client } = require('../index')
 const { exec } = require('child_process')
 const { owner } = require('../config.json')
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
       await message.channel.send(stdout)
       if (stdout.match(/(Already up to date\.)/gim)) return
       await message.channel.send('Restarting...')
+      client.destroy()
       process.exit(1)
     })
   }
