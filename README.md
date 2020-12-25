@@ -17,7 +17,7 @@
 
 This guide assumes you are using Ubuntu
 
-1. Install the current release of NodeJS by <a href="https://github.com/nodejs/node/blob/master/BUILDING.md#building-nodejs-on-supported-platforms">building from source</a>, <a href="https://nodejs.org/en/download/package-manager/">adding the repo to your package manager</a>, or <a href="https://snapcraft.io/node">the snap store</a>.
+1. Install the current release of NodeJS by <a href="https://github.com/nodejs/node/blob/master/BUILDING.md#building-nodejs-on-supported-platforms">building from source</a> or <a href="https://nodejs.org/en/download/package-manager/">adding the repo to your package manager</a>.<br/>Note: There have been various issues when intalling via the snap store, it is not recommended to install node from there.
 2. Install the necessary build tools: `sudo apt install build-essential`
 3. Install ffmpeg: `sudo apt install ffmpeg`
 4. Create the user: `sudo adduser --system --disabled-login --group virgil`
@@ -36,13 +36,12 @@ This guide assumes you are using Ubuntu
    Type=simple
    User=virgil
    WorkingDirectory=/home/virgil
-   ExecStart=/usr/bin/node /full/path/to/index.js
+   ExecStart=/usr/bin/node ./index.js
    Restart=on-failure
    
    [Install]
    WantedBy=multi-user.target
    ```
-   If you installed node from the snap store, the path of the node executable is `/snap/bin/node`
    
 10. Enable the service: `sudo systemctl start virgil`
 
