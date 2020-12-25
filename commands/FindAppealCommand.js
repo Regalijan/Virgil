@@ -12,7 +12,7 @@ module.exports = {
     }
     if (!args[0]) return message.channel.send('You did not specify a user id!')
     try {
-      let appeal = await db.query('SELECT * FROM appeals WHERE discord_id = $1;', [args[0]])
+      let appeal = await db.query('SELECT appeals.discord_id, auth.username, auth.discriminator, appeals.reason, appeals.comment, appeals.date FROM appeals,auth where appeals.discord_id = $1 AND auth.discord_id = $1;', [args[0]])
       if (appeal.rowCount === 0) return message.channel.send('This user doesn\'t have an open appeal!')
       appeal = appeal.rows[0]
       const reason = appeal.reason || 'No reason provided'
