@@ -31,6 +31,8 @@ module.exports = {
         return message.channel.send('I could not finish closing this appeal! The user was most likely emailed but the appeal may still appear in the database.')
       })
       message.channel.send('Appeal closed and user emailed!')
+      if (!message.guild.me.hasPermission('BAN_MEMBERS')) return message.channel.send('The appeal was accepted but I could not unban them as I do not have permission.')
+      message.guild.members.unban(userval)
     }
   }
 }
