@@ -168,6 +168,10 @@ client.on('invalidated', () => {
   process.exit()
 })
 
+client.on('error', e => {
+  console.error(e)
+})
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => {
   console.error(e)
