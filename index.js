@@ -19,7 +19,7 @@ client.once('ready', () => {
   console.log('Virgil has started!')
 })
 
-client.on('message', message => {
+client.on('message', async message => {
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
   const args = message.content.slice(config.prefix.length).trim().split(/ +/)
   const command = args.shift().toLowerCase()
