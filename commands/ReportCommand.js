@@ -13,8 +13,6 @@ module.exports = {
         url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
         url = url.replace('/edit', '')
       }
-      const urlcheck = await request(url, { validateStatus: false }).catch(() => { return message.channel.send('This URL does not appear to be accessible!') })
-      if (urlcheck.status !== 200) return message.channel.send('This URL does not appear to be accessible!')
       const reason = args.slice(2).join(' ')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
       if (response.data.Username) {
