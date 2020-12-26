@@ -74,7 +74,7 @@ client.on('guildMemberRemove', async member => {
   }
 })
 
-client.on('guildBanAdd', (guild, user) => {
+client.on('guildBanAdd', async (guild, user) => {
   try {
     const serversettings = require(`./serversettings/${guild.id}.json`)
     if (!serversettings.banLogChannel) return
@@ -91,7 +91,7 @@ client.on('guildBanAdd', (guild, user) => {
   }
 })
 
-client.on('messageDelete', message => {
+client.on('messageDelete', async message => {
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   try {
@@ -117,7 +117,7 @@ client.on('messageDelete', message => {
   }
 })
 
-client.on('messageUpdate', (oldMessage, newMessage) => {
+client.on('messageUpdate', async (oldMessage, newMessage) => {
   if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const serversettings = require(`./serversettings/${newMessage.guild.id}.json`)
