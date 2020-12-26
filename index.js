@@ -91,6 +91,23 @@ client.on('guildBanAdd', async (guild, user) => {
   }
 })
 
+client.on('guildBanRemove', async (guild, user) => {
+  try {
+    const serversettings = require(`./serversettings/${guild.id}.json`)
+    if (!serversettings.banLogChannel) return
+    const channel = guild.channels.cache.find(ch => ch.id === serversettings.banLogChannel)
+    const embed = new Discord.MessageEmbed()
+      .setAuthor('Member Unbanned', user.displayAvatarURL())
+      .setDescription(`${user} ${user.tag}`)
+      .setThumbnail(user.displayAvatarURL())
+      .setColor(3756250)
+      .setFooter(`ID: ${user.id}`)
+    channel.send(embed)
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 client.on('messageDelete', async message => {
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
