@@ -57,7 +57,7 @@ client.on('guildMemberAdd', async member => {
   }
 })
 
-client.on('guildMemberRemove', member => {
+client.on('guildMemberRemove', async member => {
   try {
     const serversettings = require(`./serversettings/${member.guild.id}.json`)
     if (!serversettings.joinLogChannel) return
