@@ -189,6 +189,10 @@ client.on('error', e => {
   console.error(e)
 })
 
+client.on('shardError', error => {
+  console.error(error)
+})
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => {
   console.error(e)
