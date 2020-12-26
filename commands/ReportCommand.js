@@ -38,6 +38,8 @@ module.exports = {
         if (!channel) return message.channel.send('The reports channel is not set up!')
         await channel.send(embed)
         await message.channel.send('Report sent!')
+      } else if (response.status === 200 && response.data.success === false) {
+        return message.channel.send('This username does not appear to exist.')
       } else {
         message.channel.send('An unknown error occured! Maybe Roblox is down or is returning malformed data. If this keeps happening, contact the bot developer.')
       }
