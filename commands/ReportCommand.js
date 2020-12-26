@@ -24,10 +24,12 @@ module.exports = {
         let banstatus = 'Not banned or blacklisted'
         if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
         else if (bancheck.status === 200 && bancheck.data.usercode === '0x2') banstatus = `Banned (${bancheck.data.reason})`
+        const thumbdata = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${response.data.Id}&size=250x250&format=Png`)
         const embed = new Discord.MessageEmbed()
           .setTitle('Exploiter Report')
           .setColor(3756250)
           .setAuthor(message.author.tag, message.author.displayAvatarURL())
+          .setThumbnail(thumbdata.data.data[0].imageUrl)
           .addFields(
             { name: 'Username', value: `[${response.data.Username}](https://www.roblox.com/users/${response.data.Id}/profile)` },
             { name: 'Description', value: reason },
