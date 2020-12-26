@@ -47,8 +47,8 @@ client.on('guildMemberAdd', async member => {
     channel.send(embed)
     const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
     const secLevel = member.guild.verificationLevel
-    if (secLevel === 'MEDIUM' && member.joinedTimestamp - member.user.createdTimestamp < 300000) return member.send(`${dmtext} Due`)
-    if (secLevel === 'HIGH') return member.send(`${dmtext} you must wait 10 minutes before speaking, after which you can verify yourself.`).catch(() => {})
+    if (secLevel === 'MEDIUM' && member.joinedTimestamp - member.user.createdTimestamp < 300000) return member.send(`${dmtext} you must wait 5 minutes befire chatting`)
+    if (secLevel === 'HIGH') return member.send(`${dmtext} you must wait 10 minutes before speaking if you do not have a verified phone number, after which you may verify yourself.`).catch(() => {})
     if (secLevel === 'VERY_HIGH') return member.send(`${dmtext} you must verify your phone number before chatting. You may verify after doing so (or if you have already done so).`).catch(() => {})
     const success = await verifier.onjoin(member)
     if (success) member.send(`Thank you for joining ${member.guild.name}! You were automatically verified.`).catch(() => {})
