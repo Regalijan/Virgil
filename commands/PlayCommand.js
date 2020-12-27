@@ -37,6 +37,9 @@ module.exports = {
               dispatcher.destroy()
               playTrack()
             })
+            dispatcher.on('error', e => {
+              console.error(e)
+            })
             // Export the dispatcher so other commands can use it
             module.exports.dispatcher = dispatcher
           } catch (e) {
@@ -99,6 +102,9 @@ module.exports = {
         } else {
           playTrack()
         }
+        connection.on('error', e => {
+          console.error(e)
+        })
       }
     } else {
       return message.channel.send('Join a voice channel first noob.')
