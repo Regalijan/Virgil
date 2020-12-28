@@ -29,7 +29,7 @@ module.exports = {
             if (queue.rows[0].media.match(ytreg)) dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: ytheaders } }))
             else {
               try {
-                dispatcher = connection.play(request.get(queue.rows[0].media, { responseType: 'stream' }))
+                dispatcher = connection.play(queue.rows[0].media)
               } catch {
                 return message.channel.send('Either ffmpeg is not installed or some other error occured!')
               }
