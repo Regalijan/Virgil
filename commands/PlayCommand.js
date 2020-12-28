@@ -25,7 +25,6 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            let dispatcher
             const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: ytheaders } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
