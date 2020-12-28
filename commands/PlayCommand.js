@@ -1,6 +1,5 @@
 const db = require('../database')
 const Discord = require('discord.js')
-const request = require('axios')
 const ytdl = require('ytdl-core')
 const ytsr = require('ytsr')
 
@@ -12,7 +11,6 @@ module.exports = {
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
-        const urlreg = /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/
         const connection = await message.member.voice.channel.join()
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
@@ -25,7 +23,7 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: ytheaders } }))
+            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { ytheaders } } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
@@ -67,7 +65,7 @@ module.exports = {
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
-            const list = await ytsr(query, { limit: 10, requestOptions: { headers: ytheaders } }).catch(e => console.error(e))
+            const list = await ytsr(query, { limit: 10, requestOptions: { headers: { ytheaders } } }).catch(e => console.error(e))
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
