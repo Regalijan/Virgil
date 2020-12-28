@@ -1,6 +1,5 @@
 const db = require('../database')
 const Discord = require('discord.js')
-const request = require('axios')
 const ytdl = require('ytdl-core')
 const ytsr = require('ytsr')
 
@@ -20,15 +19,11 @@ module.exports = {
         const lang = 'en-US,en;q=0.9'
         const referer = 'https://www.google.com'
         const enc = 'gzip, deflate, br'
-        let cookiedata = await request('https://www.youtube.com', { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer } })
-        cookiedata = cookiedata.headers['set-cookie']
-        let cookies
-        cookiedata.forEach(cookie => {
-          cookies += cookie.match(/[0-z]*[$;]/)
-        })
-        cookies += '¤'
-        cookies.replace(/(;)/, '; ')
-        cookies.replace(/(;¤)/, ';')
+        const cache = 'no-cache'
+        const secfetchdest = 'document'
+        const secfetchmode = 'navigate'
+        const secfetchsite = 'none'
+        const uis = 1
         async function playTrack () {
           try {
             const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
@@ -37,7 +32,7 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, Cookie: cookies } } }))
+            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
@@ -73,13 +68,13 @@ module.exports = {
           let title
           if (args[0].match(ytreg)) {
             song = args[0].match(ytreg)[0]
-            songInfo = await ytdl.getInfo(song)
+            songInfo = await ytdl.getInfo(song, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } })
             title = songInfo.videoDetails.title
             processTrack(args[0].match(ytreg)[0], title)
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
-            const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
+            const list = await ytsr(query, { limit: 10, requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } }).catch(e => console.error(e))
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
