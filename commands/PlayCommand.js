@@ -20,7 +20,7 @@ module.exports = {
         const lang = 'en-US,en;q=0.9'
         const referer = 'https://www.google.com'
         const enc = 'gzip, deflate, br'
-        let cookiedata = request('https://www.youtube.com', { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer } })
+        let cookiedata = await request('https://www.youtube.com', { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer } })
         cookiedata = cookiedata.headers['set-cookie']
         let cookies
         cookiedata.forEach(cookie => {
