@@ -1,4 +1,3 @@
-const { client } = require('../index')
 const { dispatcher } = require('./PlayCommand')
 
 module.exports = {
