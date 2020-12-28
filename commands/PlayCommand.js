@@ -29,7 +29,7 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'upgrade-insecure-requests': uis } } }))
+            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache } } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
