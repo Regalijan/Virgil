@@ -68,7 +68,7 @@ module.exports = {
           let title
           if (args[0].match(ytreg)) {
             song = args[0].match(ytreg)[0]
-            songInfo = await ytdl.getInfo(song, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } })
+            songInfo = await ytdl.getInfo(song)
             title = songInfo.videoDetails.title
             processTrack(args[0].match(ytreg)[0], title)
           } else {
