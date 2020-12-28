@@ -26,14 +26,7 @@ module.exports = {
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
             let dispatcher
-            if (queue.rows[0].media.match(ytreg)) dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: ytheaders } }))
-            else {
-              try {
-                dispatcher = connection.play(queue.rows[0].media)
-              } catch {
-                return message.channel.send('Either ffmpeg is not installed or some other error occured!')
-              }
-            }
+            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: ytheaders } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
@@ -72,9 +65,6 @@ module.exports = {
             songInfo = await ytdl.getInfo(song)
             title = songInfo.videoDetails.title
             processTrack(args[0].match(ytreg)[0], title)
-          } else if (args[0] && args[0].match(urlreg)) {
-            const source = args[0].match(urlreg)[0]
-            processTrack(source, source)
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
