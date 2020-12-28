@@ -74,7 +74,7 @@ module.exports = {
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
-            const list = await ytsr(query, { limit: 10, requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } }).catch(e => console.error(e))
+            const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
             if (!list) return message.channel.send('No search results :(')
             const length = list.items.length
             const embed = new Discord.MessageEmbed()
