@@ -20,9 +20,6 @@ module.exports = {
         const referer = 'https://www.google.com'
         const enc = 'gzip, deflate, br'
         const cache = 'no-cache'
-        const secfetchdest = 'document'
-        const secfetchmode = 'navigate'
-        const secfetchsite = 'none'
         const uis = 1
         async function playTrack () {
           try {
@@ -32,7 +29,7 @@ module.exports = {
               return message.channel.send('All tracks have finished.')
             }
             message.channel.send(`**Now playing ${queue.rows[0].title}**`)
-            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'sec-fetch-dest': secfetchdest, 'sec-fetch-mode': secfetchmode, 'sec-fetch-site': secfetchsite, 'upgrade-insecure-requests': uis } } }))
+            const dispatcher = connection.play(ytdl(queue.rows[0].media, { requestOptions: { headers: { Accept: accept, 'User-Agent': ua, 'Accept-Language': lang, 'Accept-Encoding': enc, Referer: referer, 'cache-control': cache, pragma: cache, 'upgrade-insecure-requests': uis } } }))
             dispatcher.on('finish', () => {
               db.query(`DELETE FROM music_queue WHERE time = ${queue.rows[0].time.toString()};`).catch(e => console.error(e))
               dispatcher.destroy()
