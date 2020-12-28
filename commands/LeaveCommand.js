@@ -12,5 +12,6 @@ module.exports = {
       dispatcher.destroy()
     }
     message.guild.voice.channel.leave()
+    message.channel.send('Left voice channel.')
   }
 }
