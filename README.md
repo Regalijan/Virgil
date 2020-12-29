@@ -15,11 +15,11 @@
 
 ### Linux
 
-This guide assumes you are using Ubuntu
+This guide assumes you are using Ubuntu or another Debian based distro)
 
 1. Install the current release of NodeJS by <a href="https://github.com/nodejs/node/blob/master/BUILDING.md#building-nodejs-on-supported-platforms">building from source</a> or <a href="https://nodejs.org/en/download/package-manager/">adding the repo to your package manager</a>.<br/>Note: There have been various issues when intalling via the snap store, it is not recommended to install node from there.
 2. Install the necessary build tools: `sudo apt install gcc g++ make`
-3. Install ffmpeg: `sudo apt install ffmpeg` or `sudo snap install ffmpeg`
+3. Install ffmpeg: `sudo apt install ffmpeg` or `sudo snap install ffmpeg` (Note: Do not use ffmpeg on node v15.5.0, see common errors #4).
 4. Create the user: `sudo adduser --system --disabled-login --group virgil`
 5. Switch to home: `cd /home/virgil`
 6. Clone the repo: `sudo -u virgil git clone https://github.com/Wolftallemo/Virgil ./`
@@ -65,8 +65,9 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 1. NPM install errors: Visual Studio Build Tools 2017 or later is required to build certain modules. You can download it <a href="https://download.visualstudio.microsoft.com/download/pr/9b3476ff-6d0a-4ff8-956d-270147f21cd4/ccfb9355f4f753315455542f966025f96de734292d3908c8c3717e9685b709f0/vs_BuildTools.exe">here</a>. On linux, `gcc` and `python3` must be installed (if you get a `distutils` error, install `python3-distutils`).
 2. Mailgun authentication issues: Do not base64 encode your api key, this will be done automatically. Otherwise, ensure you typed it in correctly and you aren't using a sandbox domain.
 3. Database connection issues: Did you enter the correct information, if so, make sure any firewall you may have set up isn't blocking connections.
+4. `ECONNRESET` when playing 5+ minute long songs: It appears that ffmpeg and node v15.5.0 do not play well with each other so you have two options: Either downgrade (`sudo apt purge nodejs`, `sudo rm /etc/apt/sources.list.d/nodesource.list`, `sudo apt update`, `wget https://deb.nodesource.com/node_15.x/pool/main/n/nodejs/nodejs_15.4.0-deb-1nodesource1_amd64.deb`, `sudo dpkg -i nodejs_15.4.0-deb-1nodesource1_amd64.deb`) or remove ffmpeg and use libav instead (see the compiling libav section).
 
-## Compiling FFmpeg
+## Compiling FFmpeg (Windows)
 1. Download and install <a href="https://www.msys2.org">MSYS2</a>
 2. Open an elevated command prompt or powershell window and run `choco install yasm`
 3. Open x64 Native Tools Command Prompt for VS 20XX
@@ -78,3 +79,11 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 9. `make -j4` (You can always run more or less jobs if you wish)
 10. When compilation completes, open `C:\msys64\home\yourname\ffmpeg` and drag `ffmpeg.exe` into `C:\Windows`
 11. Run `ffmpeg` in command prompt to make sure it works.
+
+## Compiling Libav
+1. Clone: `git clone git://git.libav.org/libav.git`
+2. Install needed tools (if not already installed): `sudo apt install pkg-config yasm`
+3. `./configure`
+4. `make`
+5. `sudo make install`
+6. Verify it works: `whereis avconv`
