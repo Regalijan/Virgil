@@ -78,7 +78,7 @@ module.exports = {
               message.channel.send(`${playlist.title} was loaded.`)
               playTrack()
             } else message.channel.send(`Items of ${playlist.title} have been added to the queue.`)
-          } else{
+          } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
             const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
