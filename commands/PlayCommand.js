@@ -1,6 +1,7 @@
 const db = require('../database')
 const Discord = require('discord.js')
 const ytdl = require('ytdl-core')
+const ytpl = require('ytpl')
 const ytsr = require('ytsr')
 
 module.exports = {
@@ -11,9 +12,12 @@ module.exports = {
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
+        const playlistreg = /(\?|&)list=\S+/
         const connection = await message.member.voice.channel.join()
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
+        let link = args[0]
+        link = link.replace(/&index=\d*/, '')
         async function playTrack () {
           try {
             const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
@@ -54,16 +58,27 @@ module.exports = {
           }
         }
         // Parse youtube link
-        if (args && args[0]) {
+        if (link) {
           let song
           let songInfo
           let title
-          if (args[0].match(ytreg)) {
-            song = args[0].match(ytreg)[0]
+          if (link.match(ytreg)) {
+            song = link.match(ytreg)[0]
             songInfo = await ytdl.getInfo(song)
             title = songInfo.videoDetails.title
-            processTrack(args[0].match(ytreg)[0], title)
-          } else {
+            processTrack(link.match(ytreg)[0], title)
+          } else if (link.match(ytreg) && link.match(playlistreg)) {
+            const playlist = await ytpl(link.match(playlistreg))
+            if (!playlist) return message.channel.send('I could not resolve the playlist.')
+            playlist.items.forEach(async video => {
+              await db.query('INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5);', [parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString())), message.author.id, video.shortUrl, message.guild.id, video.title])
+            })
+            const qcheck = await db.query('SELECT * FROM music_queue WHERE guild = $1;', [message.guild.id])
+            if (qcheck.rowCount === playlist.items.length) {
+              message.channel.send(`${playlist.title} was loaded.`)
+              playTrack()
+            } else message.channel.send(`Items of ${playlist.title} have been added to the queue.`)
+          } else{
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
             const list = await ytsr(query, { limit: 10 }).catch(e => console.error(e))
