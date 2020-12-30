@@ -43,10 +43,10 @@ module.exports = {
           try {
             const serverqueue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
             if (!serverqueue.rows[0]) {
-              await db.query(addToQueueQuery, [ts, message.author.id, link, message.guild.id, trackTitle, length])
+              await db.query(addToQueueQuery, [ts, message.author.id, link, message.guild.id, trackTitle])
               playTrack()
             } else {
-              await db.query(addToQueueQuery, [ts, message.author.id, link, message.guild.id, trackTitle, length])
+              await db.query(addToQueueQuery, [ts, message.author.id, link, message.guild.id, trackTitle])
               return message.channel.send(`**Added ${trackTitle} to the queue.**`)
             }
           } catch (e) {
