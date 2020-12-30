@@ -61,6 +61,7 @@ module.exports = {
         }
       }
     })
+    return 1
   },
   async onjoin (member) {
     if (!member.guild.me.hasPermission('MANAGE_ROLES')) return
