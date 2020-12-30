@@ -12,7 +12,7 @@ module.exports = {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
         const connection = await message.member.voice.channel.join()
-        const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title,length) VALUES($1,$2,$3,$4,$5,$6) RETURNING *;'
+        const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
         async function playTrack () {
           try {
@@ -39,7 +39,7 @@ module.exports = {
             console.error(e)
           }
         }
-        async function processTrack (link, trackTitle, length) {
+        async function processTrack (link, trackTitle) {
           try {
             const serverqueue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
             if (!serverqueue.rows[0]) {
@@ -62,7 +62,7 @@ module.exports = {
             song = args[0].match(ytreg)[0]
             songInfo = await ytdl.getInfo(song)
             title = songInfo.videoDetails.title
-            processTrack(args[0].match(ytreg)[0], title, songInfo.videoDetails.lengthSeconds)
+            processTrack(args[0].match(ytreg)[0], title)
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')
@@ -85,7 +85,7 @@ module.exports = {
                 if (sel < 0 || sel > length - 1) return message.channel.send('Invalid selection!')
                 title = list.items[sel].title
                 song = `https://www.youtube.com/watch?v=${list.items[sel].id}`
-                processTrack(song, title, list.items[sel].lengthSeconds)
+                processTrack(song, title)
               })
             }).catch(() => message.channel.send('Command timed out.'))
           }
