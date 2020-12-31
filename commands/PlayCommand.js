@@ -17,7 +17,7 @@ module.exports = {
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
         let link = args[0]
-        link = link.replace(/&index=\d*/, '')
+        if (link) link = link.replace(/&index=\d*/, '')
         async function playTrack () {
           try {
             const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`)
