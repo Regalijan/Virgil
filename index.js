@@ -14,7 +14,7 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
   client.commands.set(command.name, command)
 }
-
+let lastlogtime
 client.once('ready', () => {
   console.log('Virgil has started!')
 })
@@ -118,7 +118,10 @@ client.on('messageDelete', async message => {
     let auditlogs = await message.guild.fetchAuditLogs({ limit: 1, type: 72 })
     auditlogs = auditlogs.entries.first()
     let messagecontent = `Message ${message.id} deleted from ${message.channel}`
-    if (auditlogs.executor) messagecontent += `by ${auditlogs.executor.tag}`
+    if (auditlogs.createdTimestamp !== lastlogtime) {
+      if (auditlogs.executor) messagecontent += `by \`${auditlogs.executor.tag}\``
+      lastlogtime = auditlogs.createdTimestamp
+    }
     if (message.content) {
       messagecontent += `\n**Content:** ${message.content}`
     }
@@ -202,5 +205,4 @@ db.connect().catch(e => {
   process.exit()
 })
 client.login(config.token)
-const app = await client.fetchApplication()
-module.exports.owner = app.owner.id
+client.fetchApplication().then(app => module.exports.owner = app.owner.id)
