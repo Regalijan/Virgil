@@ -115,7 +115,9 @@ client.on('messageDelete', async message => {
     const serversettings = require(`./serversettings/${message.guild.id}.json`)
     if ((!serversettings.deleteLogChannel) || (message.author.id === client.user.id) || (serversettings.ignoredChannels.includes(message.channel.id)) || (serversettings.ignoredCategories.includes(message.channel.parent.id))) return
     const channel = message.guild.channels.cache.find(ch => ch.id === serversettings.deleteLogChannel)
+    const auditlogs = await message.guild.fetchAuditLogs({ limit: 1, type: 72 }).first()
     let messagecontent = `Message ${message.id} deleted from ${message.channel}`
+    if (auditlogs.executor) messagecontent += `by ${auditlogs.executor.tag}`
     if (message.content) {
       messagecontent += `\n**Content:** ${message.content}`
     }
