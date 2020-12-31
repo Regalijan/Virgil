@@ -205,5 +205,8 @@ db.connect().catch(e => {
   process.exit()
 })
 client.login(config.token)
-const app = client.fetchApplication()
-module.exports.owner = app.owner.id
+async function fetchowner () {
+  const app = await client.fetchApplication()
+  return app.owner.id
+}
+module.exports.owner = fetchowner()
