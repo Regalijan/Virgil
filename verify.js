@@ -16,6 +16,8 @@ module.exports = {
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
+    const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(() => { return message.channel.send('An error occured when fetching data from Roblox!') })
+    if (bancheck.data.isBanned) return
     let groupdata = await request(`https://groups.roblox.com/v2/users/${robloxId}/groups/roles`, { validateStatus: false })
     if (groupdata.status !== 200) return message.channel.send('An error occured when looking up group roles!')
     groupdata = groupdata.data.data
