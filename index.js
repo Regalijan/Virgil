@@ -118,7 +118,7 @@ client.on('messageDelete', async message => {
     let auditlogs = await message.guild.fetchAuditLogs({ limit: 1, type: 72 })
     auditlogs = auditlogs.entries.first()
     let messagecontent = `Message ${message.id} deleted from ${message.channel}`
-    if (auditlogs.createdTimestamp !== lastlogtime) {
+    if (auditlogs.createdTimestamp !== lastlogtime && Date.now() - auditlogs.createdTimestamp < 5000) {
       if (auditlogs.executor) messagecontent += `by \`${auditlogs.executor.tag}\``
       lastlogtime = auditlogs.createdTimestamp
     }
