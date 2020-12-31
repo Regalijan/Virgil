@@ -78,6 +78,8 @@ module.exports = {
       else return false
     }
     if (!robloxId) return
+    const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => { return console.error(e) })
+    if (bancheck.data.isBanned) return
     let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
     linkedRoles.rows.forEach(async row => {
       if (row.type !== 'Group') {
