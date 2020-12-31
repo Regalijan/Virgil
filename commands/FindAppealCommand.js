@@ -16,6 +16,7 @@ module.exports = {
       if (appeal.rowCount === 0) return message.channel.send('This user doesn\'t have an open appeal!')
       appeal = appeal.rows[0]
       const reason = appeal.reason || 'No reason provided'
+      const why = appeal.why || 'No response provided'
       const comment = appeal.comment || 'No comment provided'
       const embed = new Discord.MessageEmbed()
         .setTitle(`Appeal for ${appeal.username}#${('0000' + appeal.discriminator).slice(-4)} (${appeal.discord_id})`)
@@ -24,6 +25,7 @@ module.exports = {
         .addFields(
           { name: 'Reason for ban', value: reason },
           { name: 'Comment', value: comment },
+          { name: 'Why they believe they should be unbanned', value: why },
           { name: 'Time', value: appeal.date }
         )
       await message.channel.send(embed)
