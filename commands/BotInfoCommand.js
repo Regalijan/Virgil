@@ -1,18 +1,25 @@
-const fs = require('fs')
 const { MessageEmbed } = require('discord.js')
 const { client } = require('../index')
+const { execSync } = require('child_process')
 const os = require('os')
 module.exports = {
   name: 'botinfo',
   description: 'Bot information',
   async execute (message) {
+    const app = await client.fetchApplication()
     const cpus = os.cpus()
-    const commit = fs.readFile('../.git/ORIG_HEAD', err => { if (err) return console.error(err) }).toString()
+    let commit
+    try {
+      commit = execSync('git rev-parse HEAD')
+    } catch (e) {
+      console.error(e)
+      return message.channel.send('An error occured when fetching commit information!')
+    }
     const embed = new MessageEmbed()
       .setAuthor(client.user.tag, client.user.displayAvatarURL())
       .setTitle('System Information')
       .addFields(
-        { name: 'Owner', value: owner.tag },
+        { name: 'Owner', value: app.owner.tag },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/Virgil' },
         { name: 'Current Commit Hash', value: commit },
         { name: 'System Architecture', value: process.arch },
