@@ -4,7 +4,7 @@ module.exports = {
   name: 'getlatest',
   description: 'Pulls latest version from GitHub',
   async execute (message) {
-    if (message.author.id !== owner) return message.channel.send('You do not have permission to run this command!')
+    if (message.author.id !== owner.id) return message.channel.send('You do not have permission to run this command!')
     exec('git pull', async function (error, stdout, stderr) {
       if (error) {
         console.error(error)

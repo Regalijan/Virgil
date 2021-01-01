@@ -207,6 +207,6 @@ db.connect().catch(e => {
 client.login(config.token)
 async function fetchowner () {
   const app = await client.fetchApplication()
-  return app.owner.id
+  return app.owner
 }
 module.exports.owner = fetchowner()

@@ -4,7 +4,7 @@ module.exports = {
   description: 'Repeats text input',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.hasPermission('MANAGE_GUILD') && message.author.id !== owner) return message.channel.send('You do not have permission to run this command!')
+    if (!message.member.hasPermission('MANAGE_GUILD') && message.author.id !== owner.id) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('You did not provide a message.')
     let msg
     if (args[0].match(/(<#)\d+(>)/)) {

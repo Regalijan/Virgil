@@ -3,7 +3,7 @@ module.exports = {
   name: 'exit',
   description: 'Exits the bot process',
   async execute (message) {
-    if (message.author.id === owner) {
+    if (message.author.id === owner.id) {
       await message.channel.send('Bye.')
       client.destroy()
       process.exit()
