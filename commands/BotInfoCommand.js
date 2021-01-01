@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { MessageEmbed } = require('discord.js')
-const { client, owner } = require('../index')
+const { client } = require('../index')
 const os = require('os')
 module.exports = {
   name: 'botinfo',
