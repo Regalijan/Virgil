@@ -1,6 +1,5 @@
-const { client } = require('../index')
+const { client, owner } = require('../index')
 const { exec } = require('child_process')
-const { owner } = require('../config.json')
 module.exports = {
   name: 'getlatest',
   description: 'Pulls latest version from GitHub',

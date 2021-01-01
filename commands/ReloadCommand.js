@@ -1,10 +1,9 @@
-const config = require('../config.json')
-
+const { owner } = require('../index')
 module.exports = {
   name: 'reload',
   description: 'Reload a command',
   async execute (message, args) {
-    if (message.author.id !== config.owner) return message.channel.send('You do not have permission to run this command!')
+    if (message.author.id !== owner) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('No data was passed to reload.')
     const commandName = args[0].toLowerCase()
     const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))

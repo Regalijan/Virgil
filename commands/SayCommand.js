@@ -1,4 +1,4 @@
-const { owner } = require('../config.json')
+const { owner } = require('../index')
 module.exports = {
   name: 'say',
   description: 'Repeats text input',
