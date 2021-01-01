@@ -1,6 +1,6 @@
+const { client } = require('../index')
 const request = require('axios')
 const Discord = require('discord.js')
-const config = require('../config.json')
 
 module.exports = {
   name: 'roblox',
@@ -67,7 +67,8 @@ module.exports = {
         { name: 'Join Date', value: `${joinDate.getMonth() + 1}/${joinDate.getDate()}/${joinDate.getFullYear()}`, inline: true },
         { name: 'Past Usernames', value: pastNames, inline: true }
       )
-    if (config.owner === user) embed.addField('User Tags', 'Bot Creator', true)
+    const app = await client.fetchApplication()
+    if (app.owner.id === user) embed.addField('User Tags', 'Bot Creator', true)
     return message.channel.send(embed)
   }
 }

@@ -5,8 +5,7 @@ const crypto = require('crypto')
 const db = require('./database')
 const verifier = require('./verify')
 module.exports = {
-  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } }),
-  owner: fetchowner()
+  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
 }
 const client = module.exports.client
 client.commands = new Discord.Collection()
@@ -15,6 +14,7 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
   client.commands.set(command.name, command)
 }
+client.login(config.token)
 let lastlogtime
 client.once('ready', () => {
   console.log('Virgil has started!')
@@ -205,8 +205,3 @@ db.connect().catch(e => {
   console.error(e)
   process.exit()
 })
-client.login(config.token)
-async function fetchowner () {
-  const app = await client.fetchApplication()
-  return app.owner
-}

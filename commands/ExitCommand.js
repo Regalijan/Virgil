@@ -1,9 +1,10 @@
-const { client, owner } = require('../index')
+const { client } = require('../index')
 module.exports = {
   name: 'exit',
   description: 'Exits the bot process',
   async execute (message) {
-    if (message.author.id === owner.id) {
+    const app = await client.fetchApplication()
+    if (message.author.id === app.owner.id) {
       await message.channel.send('Bye.')
       client.destroy()
       process.exit()
