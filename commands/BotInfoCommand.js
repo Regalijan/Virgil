@@ -18,6 +18,7 @@ module.exports = {
     const embed = new MessageEmbed()
       .setAuthor(client.user.tag, client.user.displayAvatarURL())
       .setTitle('System Information')
+      .setColor(3756250)
       .addFields(
         { name: 'Owner', value: app.owner.tag },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/Virgil' },
@@ -26,7 +27,7 @@ module.exports = {
         { name: 'Operating System', value: os.version() },
         { name: 'CPU Cores (logical)', value: cpus.length },
         { name: 'Processor', value: cpus[0].model },
-        { name: 'Total Memory', value: os.totalmem() * 1000000 },
+        { name: 'Total Memory', value: `${os.totalmem() / 1000000} MB` },
         { name: 'System Uptime', value: `${os.uptime()} seconds` },
         { name: 'Process Uptime', value: `${Math.floor(client.uptime / 1000)} seconds` },
         { name: 'Node Version', value: process.version }
