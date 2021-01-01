@@ -5,7 +5,8 @@ const crypto = require('crypto')
 const db = require('./database')
 const verifier = require('./verify')
 module.exports = {
-  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
+  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } }),
+  owner: fetchowner()
 }
 const client = module.exports.client
 client.commands = new Discord.Collection()
@@ -209,4 +210,3 @@ async function fetchowner () {
   const app = await client.fetchApplication()
   return app.owner
 }
-module.exports.owner = fetchowner()
