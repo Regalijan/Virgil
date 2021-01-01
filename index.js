@@ -6,7 +6,7 @@ const db = require('./database')
 const verifier = require('./verify')
 module.exports = {
   client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } }),
-  owner: fetchowner()
+  owner: await fetchowner()
 }
 const client = module.exports.client
 client.commands = new Discord.Collection()
