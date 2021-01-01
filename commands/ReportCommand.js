@@ -15,8 +15,13 @@ module.exports = {
       }
       const reason = args.slice(2).join(' ')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
+      let validurl = true
       if (response.data.Username) {
-        await request(args[1], { validateStatus: false }).catch(() => { return message.channel.send('This URL could not be reached or verified.') })
+        await request(args[1], { validateStatus: false }).catch(() => {
+          message.channel.send('This URL could not be reached or verified.')
+          validurl = false
+        })
+        if (!validurl) return
         const bancheck = await request(`https://storage.googleapis.com/${config.bucket}/${response.data.Id}.json`, { validateStatus: false })
         let banstatus = 'Not banned or blacklisted'
         if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
