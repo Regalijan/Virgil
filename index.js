@@ -43,7 +43,7 @@ client.on('guildMemberAdd', async member => {
       .setDescription(`${member} ${member.user.tag}`)
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setColor(3756250)
-      .addField('Registration Date', new Intl.DateTimeFormat('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(member.user.createdTimestamp)))
+      .addField('Registration Date', new Intl.DateTimeFormat(member.guild.preferredLocale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(member.user.createdTimestamp)))
       .setFooter(`ID: ${member.id}`)
     channel.send(embed)
     const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
