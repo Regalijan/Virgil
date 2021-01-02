@@ -1,8 +1,8 @@
-const fs = require('fs')
-const Discord = require('discord.js')
 const config = require('./config.json')
 const crypto = require('crypto')
 const db = require('./database')
+const Discord = require('discord.js')
+const fs = require('fs')
 const verifier = require('./verify')
 module.exports = {
   client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
@@ -38,25 +38,12 @@ client.on('guildMemberAdd', async member => {
     const serversettings = require(`./serversettings/${member.guild.id}.json`)
     if (!serversettings.joinLogChannel) return
     const channel = member.guild.channels.cache.find(ch => ch.id === serversettings.joinLogChannel)
-    const separation = new Date(Date.now() - member.user.createdTimestamp)
-    const years = separation.getFullYear() - 1970
-    const months = separation.getMonth()
-    const days = separation.getDate()
-    const hours = separation.getHours()
-    const minutes = separation.getMinutes()
-    let diff = `${separation.getSeconds()} seconds`
-    if (minutes > 0) diff = `${minutes} minutes, `.concat(diff)
-    if (hours > 0) diff = `${hours} hours, `.concat(diff)
-    if (days > 0) diff = `${days} days, `.concat(diff)
-    if (months > 0) diff = `${months} months, `.concat(diff)
-    if (years > 0) diff = `${years} years, `.concat(diff)
     const embed = new Discord.MessageEmbed()
       .setAuthor('Member Joined', member.user.displayAvatarURL())
       .setDescription(`${member} ${member.user.tag}`)
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setColor(3756250)
-      .addField('Registration Date', `${member.user.createdAt}`)
-      .addField('Age', diff)
+      .addField('Registration Date', new Intl.DateTimeFormat('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(member.user.createdTimestamp)))
       .setFooter(`ID: ${member.id}`)
     channel.send(embed)
     const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
