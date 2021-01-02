@@ -23,10 +23,8 @@ module.exports = {
     groupdata = groupdata.data.data
     linkedRoles.rows.forEach(async row => {
       if (row.type !== 'Group') {
-        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`).catch((e) => {
-          console.error(e)
-          return message.channel.send('I could not look up roles! Roblox appears to be having issues.')
-        })
+        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`, { validateStatus: false }).catch((e) => console.error(e))
+        if (roledata.status !== 200) return
         if (roledata.data && roledata.data.data[0] && roledata.data.data[0].id === parseInt(row.link_id)) {
           if (message.guild.roles.cache.find(role => role.id === row.role_id)) {
             const role = message.guild.roles.cache.find(role => role.id === row.role_id)
@@ -83,7 +81,8 @@ module.exports = {
     let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })
     linkedRoles.rows.forEach(async row => {
       if (row.type !== 'Group') {
-        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`).catch((e) => { return console.error(e) })
+        const roledata = await request(`https://inventory.roblox.com/v1/users/${robloxId}/items/${row.type}/${row.link_id}`, { validateStatus: false }).catch((e) => { return console.error(e) })
+        if (roledata.status !== 200) return
         if (roledata.data && roledata.data.data[0] && roledata.data.data[0].id === parseInt(row.link_id)) {
           if (member.guild.roles.cache.find(role => role.id === row.role_id)) {
             const role = member.guild.roles.cache.find(role => role.id === row.role_id)
