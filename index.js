@@ -212,6 +212,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
     .setDescription(`${newState.member} ${change}`)
+    .setColor(3756250)
     .setFooter(`ID: ${newState.member.id}`)
   await channel.send(embed).catch(e => console.error(e))
 })
