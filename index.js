@@ -22,7 +22,7 @@ client.once('ready', () => {
 
 client.on('message', async message => {
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';')
-  if (ignored.rowCount > 0) return
+  if (ignored.rowCount > 0 && message.type !== 'dm' && !message.member.hasPermission('MANAGE_MESSAGES')) return
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
   const args = message.content.slice(config.prefix.length).trim().split(/ +/)
   const command = args.shift().toLowerCase()
