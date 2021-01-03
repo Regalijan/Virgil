@@ -71,7 +71,7 @@ client.on('guildMemberRemove', async member => {
       .setAuthor('Member Left', member.user.displayAvatarURL())
       .setDescription(`${member} ${member.user.username}#${member.user.discriminator}`)
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-      .setColor(3756250)
+      .setColor(16711680)
       .setFooter(`ID: ${member.id}`)
     channel.send(embed)
   } catch (e) {
@@ -90,7 +90,7 @@ client.on('guildBanAdd', async (guild, user) => {
       .setAuthor('Member Banned', user.displayAvatarURL())
       .setDescription(`${user} ${user.tag}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-      .setColor(3756250)
+      .setColor(16711680)
       .setFooter(`ID: ${user.id}`)
     channel.send(embed)
   } catch (e) {
