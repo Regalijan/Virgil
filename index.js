@@ -122,7 +122,7 @@ client.on('messageDelete', async message => {
   if (message.author.bot) return
   try {
     const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [message.channel.id, message.channel.parent.id])
-    if (snowflakecheck.rowCount === 0) return
+    if (snowflakecheck.rowCount !== 0) return
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
     serversettings = serversettings.rows[0]
     if (!serversettings.delete_log_channel) return
@@ -157,7 +157,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
   if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [newMessage.channel.id, newMessage.channel.parent.id])
-      if (snowflakecheck.rowCount === 0) return
+      if (snowflakecheck.rowCount !== 0) return
       let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMessage.guild.id])
       serversettings = serversettings.rows[0]
       const channel = oldMessage.guild.channels.cache.find(ch => ch.id === serversettings.edit_log_channel.toString())
