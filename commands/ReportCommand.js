@@ -8,11 +8,14 @@ module.exports = {
   async execute (message, args) {
     const { exploiterReportsChannel } = require(`../serversettings/${message.guild.id}.json`)
     if ((args[0]) && (args[1]) && (args[2]) && (exploiterReportsChannel)) {
+      let username = args[0]
+      username = username.replace(/<|>/g, '')
       let url = args[1]
       url = url.replace('/edit', '')
       url = url.replace('https://studio.youtube.com/video/', 'https://www.youtube.com/watch?v=')
-      const reason = args.slice(2).join(' ')
-      const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
+      let reason = args.slice(2).join(' ')
+      reason = reason.replace(/<|>/g, '')
+      const response = await request(`https://api.roblox.com/users/get-by-username?username=${username}`, { validateStatus: false })
       let validurl = true
       if (response.data.Username) {
         await request(args[1], { validateStatus: false }).catch(() => {
@@ -24,7 +27,7 @@ module.exports = {
         let banstatus = 'Not banned or blacklisted'
         if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
         else if (bancheck.status === 200 && bancheck.data.usercode === '0x2') banstatus = `Banned (${bancheck.data.reason})`
-        const thumbdata = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${response.data.Id}&size=250x250&format=Png`)
+        const thumbdata = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${response.data.Id}&size=720x720&format=Png`)
         const embed = new Discord.MessageEmbed()
           .setTitle('Exploiter Report')
           .setColor(3756250)
