@@ -9,10 +9,8 @@ module.exports = {
     const { exploiterReportsChannel } = require(`../serversettings/${message.guild.id}.json`)
     if ((args[0]) && (args[1]) && (args[2]) && (exploiterReportsChannel)) {
       let url = args[1]
-      if (url.match('studio.youtube.com')) {
-        url = url.replace('studio.youtube.com/video/', 'www.youtube.com/watch?v=')
-        url = url.replace('/edit', '')
-      }
+      url = url.replace('/edit', '')
+      url = url.replace('https://studio.youtube.com/video/', 'https://www.youtube.com/watch?v=')
       const reason = args.slice(2).join(' ')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`, { validateStatus: false })
       let validurl = true
@@ -41,7 +39,9 @@ module.exports = {
         const channel = message.guild.channels.cache.find(ch => ch.id === exploiterReportsChannel)
         if (!channel) return message.channel.send('The reports channel is not set up!')
         await channel.send(embed)
-        await message.channel.send('Report sent!')
+        const confirmation = await message.reply('Report sent!')
+        message.delete({ timeout: 10000 }).catch(e => console.error(e))
+        confirmation.delete({ timeout: 10000 })
       } else if (response.status === 200 && response.data.success === false) {
         return message.channel.send('This username does not appear to exist.')
       } else {
