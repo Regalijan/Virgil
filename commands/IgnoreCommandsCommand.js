@@ -15,7 +15,7 @@ module.exports = {
     if (check.rowCount > 0) return message.channel.send('This channel is already ignored!')
     try {
       await db.query('INSERT INTO ignored(snowflake,type,guild) VALUES($1,\'command\',$2);', [selected.id, message.guild.id])
-      return message.channel.send(`<#${selected}> ignored!`)
+      return message.channel.send(`${selected} ignored!`)
     } catch (e) {
       console.error(e)
       return message.channel.send('An error occured when ignoring that channel!')
