@@ -14,7 +14,7 @@ module.exports = {
     const check = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [channel])
     if (check.rowCount > 0) return message.channel.send('This channel is already ignored!')
     try {
-      await db.query('INSERT INTO ignored(snowflake,type,guild) VALUES($1,\'command\',$2);', [selected, message.guild.id])
+      await db.query('INSERT INTO ignored(snowflake,type,guild) VALUES($1,\'command\',$2);', [selected.id, message.guild.id])
       return message.channel.send(`<#${selected}> ignored!`)
     } catch (e) {
       console.error(e)
