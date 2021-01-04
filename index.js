@@ -192,7 +192,7 @@ client.on('messageDeleteBulk', async (messages) => {
   } catch (e) {
     return console.error(e)
   }
-  const logchannel = channel.guild.chnnels.cache.find(ch => ch.id === serversettings.delete_log_channel.toString())
+  const logchannel = channel.guild.channels.cache.find(ch => ch.id === serversettings.delete_log_channel.toString())
   if (!logchannel) return
   const file = new Discord.MessageAttachment(fileName)
   const embed = new Discord.MessageEmbed()
