@@ -123,8 +123,8 @@ client.on('messageDelete', async message => {
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   try {
-    const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2 AND NOT type = \'command\';', [message.channel.id, message.channel.parent.id])
-    if (snowflakecheck.rowCount > 0) return
+    const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [message.channel.id, message.channel.parent.id])
+    if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
     serversettings = serversettings.rows[0]
     if (!serversettings.delete_log_channel) return
@@ -158,8 +158,8 @@ client.on('messageDelete', async message => {
 client.on('messageUpdate', async (oldMessage, newMessage) => {
   if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
-      const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2 AND NOT type = \'command\';', [newMessage.channel.id, newMessage.channel.parent.id])
-      if (snowflakecheck.rowCount > 0) return
+      const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [newMessage.channel.id, newMessage.channel.parent.id])
+      if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
       let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMessage.guild.id])
       serversettings = serversettings.rows[0]
       const channel = oldMessage.guild.channels.cache.find(ch => ch.id === serversettings.edit_log_channel.toString())
@@ -181,8 +181,8 @@ client.on('messageDeleteBulk', async (messages) => {
   messages.findKey(m => { channel = m.channel })
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   serversettings = serversettings.rows[0]
-  const ignorecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2 AND WHERE NOT type = \'command\';', [channel.id, channel.parent.id])
-  if (ignorecheck.rowCount > 0) return
+  const ignorecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [channel.id, channel.parent.id])
+  if (ignorecheck.rowCount > 0 && ignorecheck.rows[0].type !== 'command') return
   if (!serversettings.delete_log_channel) return
   let contents = `BULK DELETE - ${Date()}`
   messages.each(m => { contents += `\n\n[${m.author.id}](${m.author.tag}) ${m.createdAt}: ${m.content}` })
