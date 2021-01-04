@@ -179,7 +179,8 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 client.on('messageDeleteBulk', async (messages) => {
   let channel
   messages.findKey(m => { channel = m.channel })
-  const serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
+  serversettings = serversettings.rows[0]
   const ignorecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [channel.id, channel.parent.id])
   if (ignorecheck.rowCount > 0) return
   if (!serversettings.delete_log_channel) return
