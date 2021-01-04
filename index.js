@@ -206,6 +206,7 @@ client.on('messageDeleteBulk', async (messages) => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newState.guild.id])
+  if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
   if (!serversettings.voice_log_channel) return
   let change
