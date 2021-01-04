@@ -11,7 +11,7 @@ module.exports = {
     channel = channel.replace(/<#|>/g, '')
     const selected = message.guild.channels.cache.find(c => c.id === channel)
     if (!selected) return message.channel.send('I could not find that channel!')
-    const check = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';')
+    const check = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [channel])
     if (check.rowCount > 0) return message.channel.send('This channel is already ignored!')
     try {
       await db.query('INSERT INTO ignored(snowflake,type,guild) VALUES($1,\'command\',$2);', [selected, message.guild.id])
