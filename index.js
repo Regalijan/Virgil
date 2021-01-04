@@ -21,6 +21,7 @@ client.once('ready', () => {
 })
 
 client.on('message', async message => {
+  if (!message.guild.available) return
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
   if (ignored.rowCount > 0 && message.type !== 'dm' && !message.member.hasPermission('MANAGE_MESSAGES')) return
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
@@ -36,6 +37,7 @@ client.on('message', async message => {
 })
 
 client.on('guildMemberAdd', async member => {
+  if (!member.guild.available) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
     serversettings = serversettings.rows[0]
@@ -63,6 +65,7 @@ client.on('guildMemberAdd', async member => {
 })
 
 client.on('guildMemberRemove', async member => {
+  if (!member.guild.available) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
     serversettings = serversettings.rows[0]
@@ -82,6 +85,7 @@ client.on('guildMemberRemove', async member => {
 })
 
 client.on('guildBanAdd', async (guild, user) => {
+  if (!guild.available) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -101,6 +105,7 @@ client.on('guildBanAdd', async (guild, user) => {
 })
 
 client.on('guildBanRemove', async (guild, user) => {
+  if (!guild.available) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -120,6 +125,7 @@ client.on('guildBanRemove', async (guild, user) => {
 })
 
 client.on('messageDelete', async message => {
+  if (!message.guild.available) return
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   try {
@@ -156,6 +162,7 @@ client.on('messageDelete', async message => {
 })
 
 client.on('messageUpdate', async (oldMessage, newMessage) => {
+  if (!newMessage.guild.available) return
   if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [newMessage.channel.id, newMessage.channel.parent.id])
@@ -179,6 +186,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 client.on('messageDeleteBulk', async (messages) => {
   let channel
   messages.findKey(m => { channel = m.channel })
+  if (!channel.guild.available) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   serversettings = serversettings.rows[0]
   const ignorecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [channel.id, channel.parent.id])
@@ -205,6 +213,7 @@ client.on('messageDeleteBulk', async (messages) => {
 })
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
+  if (!newState.guild.available) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newState.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -226,7 +235,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 })
 
 client.on('invalidated', () => {
-  console.log('SESSION WAS INVALIDATED!')
+  console.log('SESSION WAS INVALIDATED, THIS SHOULD NEVER HAPPEN!')
   process.exit()
 })
 
