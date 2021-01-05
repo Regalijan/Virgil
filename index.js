@@ -249,7 +249,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setColor(3756250)
-      .setDescription(`**Nickname Change**\n\`${oldMember.nickname}\` -> \`${newMember.nickname}\``)
+      .setDescription(`**Nickname Change**\n\`${oldnick}\` -> \`${newnick}\``)
     await channel.send(embed)
   } else if (oldMember.roles.cache !== newMember.roles.cache) {
     if (!serversettings.role_log_channel) return
@@ -264,6 +264,11 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     const newrs = []
     oldMember.roles.cache.forEach(async role => oldrs.push(role.id))
     newMember.roles.cache.forEach(async role => newrs.push(role.id))
+    let oldroles = ''
+    for (let i = 0; i < oldrs.length; i++) {
+      oldroles += `<@&${oldrs[i]}> `
+    }
+    embed.addField('Old Roles', oldroles)
     if (oldrs.length > newrs.length) {
       for (let i = 0; i < oldrs.length; i++) {
         if (!newrs.includes(oldrs[i])) diff += `<@&${oldrs[i]}> `
