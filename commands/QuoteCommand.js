@@ -4,7 +4,7 @@ module.exports = {
   async execute (message) {
     try {
       const request = require('axios').default
-      const quotedata = await request('https://inspirobot.me/api', { responseType: 'text' })
+      const quotedata = await request('https://inspirobot.me/api?generate=true', { responseType: 'text' })
       const { MessageEmbed } = require('discord.js')
       const embed = new MessageEmbed()
         .setTitle('Here is your quote.')

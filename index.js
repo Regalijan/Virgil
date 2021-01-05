@@ -128,6 +128,7 @@ client.on('messageDelete', async message => {
   if (!message.guild.available) return
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
+  // TODO: Detect invites /(https?:\/\/w?w?w?\.?discord\.gg\/\S+|https?:\/\/w?w?w?\.?discord\.com\/invite\/\S+|https?:\/\/w?w?w?\.?discordapp\.com\/invite\/\S+)/g
   try {
     const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [message.channel.id, message.channel.parent.id])
     if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
@@ -215,16 +216,15 @@ client.on('messageDeleteBulk', async (messages) => {
 client.on('voiceStateUpdate', async (oldState, newState) => {
   if (!newState.guild.available) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newState.guild.id])
-  if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
   if (!serversettings.voice_log_channel) return
   let change
   let color = 3756250
   if (oldState.channel && !newState.channel) {
-    change = `left ${oldState.channel.name}`
+    change = `left \`${oldState.channel}\``
     color = 16711680
-  } else if (!oldState.channel && newState.channel) change = `joined ${newState.channel.name}`
-  else change = `switched from ${oldState.channel} to ${newState.channel}`
+  } else if (!oldState.channel && newState.channel) change = `joined \`${newState.channel}\``
+  else change = `switched from \`${oldState.channel}\` to \`${newState.channel}\``
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
@@ -232,6 +232,29 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     .setColor(color)
     .setFooter(`ID: ${newState.member.id}`)
   await channel.send(embed).catch(e => console.error(e))
+})
+
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+  if (!newMember.guild.available) return
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMember.guild.id])
+  serversettings = serversettings.rows[0]
+  if (oldMember.nickname !== newMember.nickname) {
+    const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.nickname_log_channel.toString())
+    if (!channel) return
+    const embed = new Discord.MessageEmbed()
+      .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
+      .setDescription(`**Nickname Change**\n\`${oldMember.nickname}\` -> \`${newMember.nickname}\``)
+    await channel.send(embed)
+  } else if (oldMember.roles.cache !== newMember.roles.cache) {
+    const newroles = ''
+    let oldroles = ''
+    oldMember.roles.cache.forEach(role => { oldroles += `<@&${role.id}>` })
+    const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
+    if (!channel) return
+    const embed = new Discord.MessageEmbed()
+      .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
+      .setDescription('Roles Updated')
+  }
 })
 
 client.on('invalidated', () => {
