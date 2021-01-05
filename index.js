@@ -21,7 +21,6 @@ client.once('ready', () => {
 })
 
 client.on('message', async message => {
-  if (!message.guild.available) return
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
   if (ignored.rowCount > 0 && message.type !== 'dm' && !message.member.hasPermission('MANAGE_MESSAGES')) return
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
