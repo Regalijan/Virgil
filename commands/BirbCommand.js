@@ -9,6 +9,7 @@ module.exports = {
     const { MessageEmbed } = require('discord.js')
     const embed = new MessageEmbed()
       .setTitle('Tweet Tweet...')
+      .setColor(3756250)
       .setImage(`https://random.birb.pw${imagematches[selectedindex]}`)
     await message.channel.send(embed)
   }
