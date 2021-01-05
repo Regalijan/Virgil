@@ -239,6 +239,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMember.guild.id])
   serversettings = serversettings.rows[0]
   if (oldMember.nickname !== newMember.nickname) {
+    if (!serversettings.nickname_log_channel) return
     const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.nickname_log_channel.toString())
     if (!channel) return
     const embed = new Discord.MessageEmbed()
@@ -246,14 +247,29 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       .setDescription(`**Nickname Change**\n\`${oldMember.nickname}\` -> \`${newMember.nickname}\``)
     await channel.send(embed)
   } else if (oldMember.roles.cache !== newMember.roles.cache) {
-    const newroles = ''
-    let oldroles = ''
-    oldMember.roles.cache.forEach(role => { oldroles += `<@&${role.id}>` })
+    if (!serversettings.role_log_channel) return
     const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
     if (!channel) return
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setDescription('Roles Updated')
+    const diffold = oldMember.roles.cache.difference(newMember.roles.cache)
+    const diffnew = newMember.roles.cache.difference(oldMember.roles.cache)
+    if (!diffold) {
+      let newroles = ''
+      newMember.roles.cache.forEach(async role => {
+        if (!oldMember.roles.cache.has(role)) newroles += `${role} `
+        embed.addField('Roles Added', newroles)
+        await channel.send(embed)
+      })
+    } else if (!diffnew) {
+      let oldroles = ''
+      oldMember.roles.cache.forEach(async role => {
+        if (!newMember.roles.cache.has(role)) oldroles += `${role} `
+        embed.addField('Roles Removed', oldroles)
+        await channel.send(embed)
+      })
+    }
   }
 })
 
