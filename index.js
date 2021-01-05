@@ -258,16 +258,16 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setColor(3756250)
-      .setDescription('Roles Updated')
+      .setTitle('Roles Updated')
     const oldroles = Array.from(oldMember.roles.cache)
     const newroles = Array.from(newMember.roles.cache)
     let diff = ''
     if (oldroles.length > newroles.length) {
-      oldMember.roles.cache.forEach(role => { if (!newMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
+      newMember.roles.cache.forEach(role => { if (!oldMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
       embed.addField('Roles Removed', diff)
       await channel.send(embed)
     } else if (oldroles.length < newroles.length) {
-      newMember.roles.cache.forEach(role => { if (!oldMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
+      oldMember.roles.cache.forEach(role => { if (!newMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
       embed.addField('Roles Added', diff)
       await channel.send(embed)
     }
