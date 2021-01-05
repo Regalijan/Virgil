@@ -257,22 +257,18 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     if (!channel) return
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
+      .setColor(3756250)
       .setDescription('Roles Updated')
-    const diffold = oldMember.roles.cache.difference(newMember.roles.cache)
-    const diffnew = newMember.roles.cache.difference(oldMember.roles.cache)
-    if (!diffold) {
-      let newroles = ''
-      newMember.roles.cache.forEach(role => {
-        if (!oldMember.roles.cache.has(role)) newroles += `${role} `
-      })
-      embed.addField('Roles Added', newroles)
+    const oldroles = Array.from(oldMember.roles.cache)
+    const newroles = Array.from(newMember.roles.cache)
+    let diff = ''
+    if (oldroles.length > newroles.length) {
+      oldroles.forEach(role => { if (!newroles.includes(role)) diff += `${role} ` })
+      embed.addField('Roles Removed', diff)
       await channel.send(embed)
-    } else if (!diffnew) {
-      let oldroles = ''
-      oldMember.roles.cache.forEach(role => {
-        if (!newMember.roles.cache.has(role)) oldroles += `${role} `
-      })
-      embed.addField('Roles Removed', oldroles)
+    } else if (oldroles.length < newroles.length) {
+      newroles.forEach(role => { if (!oldroles.includes(role)) diff += `${role} ` })
+      embed.addField('Roles Added', diff)
       await channel.send(embed)
     }
   }
