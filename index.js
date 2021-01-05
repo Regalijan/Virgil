@@ -221,10 +221,10 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
   let change
   let color = 3756250
   if (oldState.channel && !newState.channel) {
-    change = `left \`${oldState.channel}\``
+    change = `left \`#${oldState.channel.name}\``
     color = 16711680
-  } else if (!oldState.channel && newState.channel) change = `joined \`${newState.channel}\``
-  else change = `switched from \`${oldState.channel}\` to \`${newState.channel}\``
+  } else if (!oldState.channel && newState.channel) change = `joined \`#${newState.channel.name}\``
+  else change = `switched from \`#${oldState.channel.name}\` to \`#${newState.channel.name}\``
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
