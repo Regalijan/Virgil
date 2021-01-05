@@ -248,6 +248,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     if (!newnick) newnick = 'None'
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
+      .setColor(3756250)
       .setDescription(`**Nickname Change**\n\`${oldMember.nickname}\` -> \`${newMember.nickname}\``)
     await channel.send(embed)
   } else if (oldMember.roles.cache !== newMember.roles.cache) {
