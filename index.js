@@ -259,19 +259,21 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setColor(3756250)
       .setTitle('Roles Updated')
-    const oldroles = Array.from(oldMember.roles.cache)
-    const newroles = Array.from(newMember.roles.cache)
     let diff = ''
-    if (oldroles.length > newroles.length) {
-      oldMember.roles.cache.forEach(role => {
-        if (newMember.roles.cache.has(roles => roles.id === role.id)) diff += `${role} `
-      })
+    const oldrs = []
+    const newrs = []
+    oldMember.roles.cache.forEach(async role => oldrs.push(role.id))
+    newMember.roles.cache.forEach(async role => newrs.push(role.id))
+    if (oldrs.length > newrs.length) {
+      for (let i = 0; i < oldrs.length; i++) {
+        if (!newrs.includes(oldrs[i])) diff += `${oldrs[i]} `
+      }
       embed.addField('Roles Removed', diff)
       await channel.send(embed)
-    } else if (oldroles.length < newroles.length) {
-      newMember.roles.cache.forEach(role => {
-        if (oldMember.roles.cache.has(roles => roles.id === role.id)) diff += `${role} `
-      })
+    } else if (oldrs.length < newrs.length) {
+      for (let i = 0; i < newrs.length; i++) {
+        if (!oldrs.includes(newrs[i])) diff += `${newrs[i]}`
+      }
       embed.addField('Roles Added', diff)
       await channel.send(embed)
     }
