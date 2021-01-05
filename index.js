@@ -263,11 +263,15 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     const newroles = Array.from(newMember.roles.cache)
     let diff = ''
     if (oldroles.length > newroles.length) {
-      newMember.roles.cache.forEach(role => { if (!oldMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
+      for (let i = 0; i < oldroles.length; i++) {
+        if (!newroles.includes(oldroles[i])) diff += `<@&${oldroles[i].id}> `
+      }
       embed.addField('Roles Removed', diff)
       await channel.send(embed)
     } else if (oldroles.length < newroles.length) {
-      oldMember.roles.cache.forEach(role => { if (!newMember.roles.cache.has(role)) diff += `<@&${role.id}> ` })
+      for (let i = 0; i < newroles.length; i++) {
+        if (!oldroles.includes(newroles[i])) diff += `<@&${newroles[i].id}> `
+      }
       embed.addField('Roles Added', diff)
       await channel.send(embed)
     }
