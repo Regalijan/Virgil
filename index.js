@@ -242,6 +242,10 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     if (!serversettings.nickname_log_channel) return
     const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.nickname_log_channel.toString())
     if (!channel) return
+    let oldnick = oldMember.nickname
+    let newnick = newMember.nickname
+    if (!oldnick) oldnick = 'None'
+    if (!newnick) newnick = 'None'
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setDescription(`**Nickname Change**\n\`${oldMember.nickname}\` -> \`${newMember.nickname}\``)
