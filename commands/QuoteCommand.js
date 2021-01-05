@@ -3,7 +3,7 @@ module.exports = {
   description: 'Gets a quote from InspiroBot',
   async execute (message) {
     try {
-      const request = require('axios').default
+      const request = require('axios')
       const quotedata = await request('https://inspirobot.me/api?generate=true', { responseType: 'text' })
       const { MessageEmbed } = require('discord.js')
       const embed = new MessageEmbed()
