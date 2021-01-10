@@ -3,10 +3,16 @@ module.exports = {
   description: 'What do you think this does lol.',
   guildOnly: true,
   async execute (message, args) {
+    const db = require('../database')
     const Discord = require('discord.js')
-    const serversettings = require(`../serversettings/${message.guild.id}.json`)
+    let serversettings = db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
     let reason = args.slice(1).join(' ')
-    if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => serversettings.permissionOverrideRoles.includes(role.id)))) {
+    const overrides = []
+    const overridedata = db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
+    overridedata.forEach(async row => {
+      if (row.type === 'ban') overrides.push(row.role)
+    })
+    if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => overrides.includes(role.id)))) {
       if (args[0]) {
         let member = args[0]
         if (member.match(/(^<@!?[0-9]*>)/)) {
@@ -22,14 +28,18 @@ module.exports = {
         if (!reason) {
           reason = 'No reason provided.'
         }
-        user.send(`You have been banned from ${message.guild.name}\nReason: ${reason}`).catch(() => {})
+        await user.send(`You have been banned from ${message.guild.name}\nReason: ${reason}`).catch(() => {})
         message.guild.members.ban(member, { reason: reason })
           .then(user => message.channel.send(`${user.user.tag} was banned! | ${reason}`))
           .catch(e => {
             console.error(e.stack)
             return message.channel.send(`I could not ban that user! ${e}`)
           })
-        const channel = message.guild.cache.channels.find(ch => ch.id === serversettings.modLogChannel)
+        if (serversettings.rowCount === 0) return
+        serversettings = serversettings.rows[0]
+        if (!serversettings.ban_log_channel) return
+        const channel = message.guild.channels.cache.find(ch => ch.id === serversettings.ban_log_channel.toString())
+        if (!channel) return
         const embed = new Discord.MessageEmbed()
           .setAuthor(`Ban | ${member.user.tag}`, member.displayAvatarURL())
           .addFields(
