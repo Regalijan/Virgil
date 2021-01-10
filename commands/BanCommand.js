@@ -1,10 +1,9 @@
-const Discord = require('discord.js')
-
 module.exports = {
   name: 'ban',
   description: 'What do you think this does lol.',
   guildOnly: true,
   execute (message, args) {
+    const Discord = require('discord.js')
     const serversettings = require(`../serversettings/${message.guild.id}.json`)
     let reason = args.slice(1).join(' ')
     if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => serversettings.permissionOverrideRoles.includes(role.id)))) {
@@ -13,6 +12,7 @@ module.exports = {
         if (member.match(/(^<@!?[0-9]*>)/)) {
           member = message.mentions.members.first()
         } else if (message.guild.member(member)) member = message.guild.member(member)
+        if (!member) return message.channel.send('I could not find this user!')
         const user = member.user
         if (message.author === user) return message.channel.send('Dumbass, why would you want to ban yourself?')
         if (member.roles.cache) {
@@ -22,6 +22,7 @@ module.exports = {
         if (!reason) {
           reason = 'No reason provided.'
         }
+        user.send(`You have been banned from ${message.guild.name}\nReason: ${reason}`).catch(() => {})
         message.guild.members.ban(member, { reason: reason })
           .then(user => message.channel.send(`${user.user.tag} was banned! | ${reason}`))
           .catch(e => {
