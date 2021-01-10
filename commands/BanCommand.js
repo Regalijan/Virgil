@@ -11,7 +11,7 @@ module.exports = {
         let member = args[0]
         if (member.match(/(^<@!?[0-9]*>)/)) {
           member = message.mentions.members.first()
-        } else if (message.guild.member(member)) member = message.guild.member(member)
+        } else if (message.guild.member(member)) member = await message.guild.members.fetch(member)
         if (!member) return message.channel.send('I could not find this user!')
         const user = member.user
         if (message.author === user) return message.channel.send('Dumbass, why would you want to ban yourself?')
