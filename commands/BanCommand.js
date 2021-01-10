@@ -2,7 +2,7 @@ module.exports = {
   name: 'ban',
   description: 'What do you think this does lol.',
   guildOnly: true,
-  execute (message, args) {
+  async execute (message, args) {
     const Discord = require('discord.js')
     const serversettings = require(`../serversettings/${message.guild.id}.json`)
     let reason = args.slice(1).join(' ')
