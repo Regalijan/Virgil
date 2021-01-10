@@ -146,7 +146,7 @@ client.on('messageDelete', async message => {
     if (message.content) {
       messagecontent += `\n**Content:** ${message.content}`
     }
-    if (messagecontent.length > 1800) messagecontent = messagecontent.substr(0,1799) + '...'
+    if (messagecontent.length > 1800) messagecontent = messagecontent.substr(0, 1799) + '...'
     const embed = new Discord.MessageEmbed()
       .setAuthor(`${message.author.username}#${message.author.discriminator} (${message.author.id})`, message.author.displayAvatarURL())
       .setDescription(messagecontent)
