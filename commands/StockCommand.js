@@ -11,7 +11,7 @@ module.exports = {
     const embed = new MessageEmbed()
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setTitle(args[0].toUpperCase())
-      .setDescription(`Current Value: ${data.data.match(/data-reactid="50">(\d*\.\d*)/)[1]}\nChange: ${data.data.match(/data-reactid="51">(-?\d*\.\d* \(-?\d*\.\d*%\))/)[1]}\n${data.data.match(/span data-reactid="53">([0-9 A-z :.]*)/)[1]}`)
+      .setDescription(`Current Value: ${data.data.match(/data-reactid="50">([0-9,.]*)/)[1]}\nChange: ${data.data.match(/data-reactid="51">(-?\d*\.\d* \(-?\d*\.\d*%\))/)[1]}\n${data.data.match(/span data-reactid="53">([0-9 A-z :.]*)/)[1]}`)
       .setFooter('Powered by Yahoo Finance')
     await message.channel.send(embed)
   }
