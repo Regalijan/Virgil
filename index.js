@@ -170,6 +170,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
       if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
       let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMessage.guild.id])
       serversettings = serversettings.rows[0]
+      if (!serversettings.edit_log_channel) return
       const channel = oldMessage.guild.channels.cache.find(ch => ch.id === serversettings.edit_log_channel.toString())
       const embed = new Discord.MessageEmbed()
         .setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL())
