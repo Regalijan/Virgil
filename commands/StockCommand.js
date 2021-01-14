@@ -8,11 +8,16 @@ module.exports = {
     const data = await request(`https://finance.yahoo.com/quote/${args[0].toUpperCase()}`, { responseType: 'text', validateStatus: false })
     if (data.status !== 200) return message.channel.send('That stock could not be found!')
     const { MessageEmbed } = require('discord.js')
-    const embed = new MessageEmbed()
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
-      .setTitle(args[0].toUpperCase(data.data.match(/data-reactid="7">([^<]*)<\/h1>/)[1]))
-      .setDescription(`Current Value: ${data.data.match(/data-reactid="50">([0-9,.]*)/)[1]}\nChange: ${data.data.match(/data-reactid="51">(-?\d*\.\d* \(-?\d*\.\d*%\))/)[1]}\n${data.data.match(/span data-reactid="53">([0-9 A-z :.]*)/)[1]}`)
-      .setFooter('Powered by Yahoo Finance')
-    await message.channel.send(embed)
+    try {
+      const embed = new MessageEmbed()
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(3756250)
+        .setTitle(data.data.match(/data-reactid="7">([^<]*)<\/h1>/)[1])
+        .setDescription(`Current Value: ${data.data.match(/data-reactid="50">([0-9,.]*)/)[1]}\nChange: ${data.data.match(/data-reactid="51">(-?\d*\.\d* \(-?\d*\.\d*%\))/)[1]}\n${data.data.match(/span data-reactid="53">([0-9 A-z :.]*)/)[1]}`)
+        .setFooter('Powered by Yahoo Finance')
+      await message.channel.send(embed)
+    } catch {
+      return message.channel.send('This stock could not be found!')
+    }
   }
 }
