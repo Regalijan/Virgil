@@ -23,6 +23,7 @@ client.once('ready', () => {
 client.on('message', async message => {
   if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {
     await onInvite(message)
+    message.delete({ reason: 'Invite(s) detected' })
     return
   }
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
