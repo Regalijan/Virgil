@@ -333,7 +333,7 @@ async function onInvite (message) {
   if (!message.guild.me.hasPermission('MANAGE_MESSAGES')) return
   for (let i = 0; i < invites.length; i++) {
     const invt = await message.client.fetchInvite(invites[i])
-    if (invt.guild.id !== message.guild.id) {
+    if (invt.guild.id !== message.guild.id && !message.member.hasPermission('MANAGE_GUILD')) {
       message.delete({ reason: 'Invite(s) detected' })
       return
     }
