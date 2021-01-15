@@ -341,6 +341,15 @@ async function onInvite (message) {
 }
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
+
+process.on('SIGTERM', () => {
+  client.destroy()
+})
+
+process.on('SIGHUP', () => {
+  client.destroy()
+})
+
 db.connect().catch(e => {
   console.error(e)
   process.exit()
