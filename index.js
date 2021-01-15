@@ -21,6 +21,10 @@ client.once('ready', () => {
 })
 
 client.on('message', async message => {
+  if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {
+    await onInvite(message)
+    return
+  }
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
   if (ignored.rowCount > 0 && message.type !== 'dm' && !message.member.hasPermission('MANAGE_MESSAGES')) return
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
@@ -299,6 +303,32 @@ client.on('error', e => {
 client.on('shardError', error => {
   console.error(error)
 })
+
+async function onInvite (message) {
+  if (message.channel.type === 'dm') return
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+  if (serversettings.rowCount === 0) return
+  serversettings = serversettings.rows[0]
+  if (!serversettings.invite_log_channel) return
+  const channel = message.guild.channels.cache.find(c => c.id === serversettings.invite_log_channel.toString())
+  if (!channel) return
+  const invites = message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)
+  invites.forEach(async inv => {
+    try {
+      const invite = await message.client.fetchInvite(inv)
+      const embed = new Discord.MessageEmbed()
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setDescription(`**Invite posted for ${invite.guild.name}** ${message.channel}\n${inv}`)
+        .addFields(
+          { name: 'Inviter', value: invite.inviter.tag, inline: true },
+          { name: 'Channel', value: `${invite.channel}`, inline: true },
+          { name: 'Members', value: `${invite.memberCount}`, inline: true }
+        )
+        .setFooter(`ID: ${message.author.id}`)
+      await channel.send(embed)
+    } catch {}
+  })
+}
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 db.connect().catch(e => {
