@@ -23,7 +23,6 @@ client.once('ready', () => {
 client.on('message', async message => {
   if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {
     await onInvite(message)
-    message.delete({ reason: 'Invite(s) detected' })
     return
   }
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
@@ -317,18 +316,28 @@ async function onInvite (message) {
   invites.forEach(async inv => {
     try {
       const invite = await message.client.fetchInvite(inv)
-      const embed = new Discord.MessageEmbed()
-        .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setDescription(`**Invite posted for ${invite.guild.name}** ${message.channel}\n${inv}`)
-        .addFields(
-          { name: 'Inviter', value: invite.inviter.tag, inline: true },
-          { name: 'Channel', value: `${invite.channel}`, inline: true },
-          { name: 'Members', value: `${invite.memberCount}`, inline: true }
-        )
-        .setFooter(`ID: ${message.author.id}`)
-      await channel.send(embed)
+      if (invite.guild.id !== message.guild.id) {
+        const embed = new Discord.MessageEmbed()
+          .setAuthor(message.author.tag, message.author.displayAvatarURL())
+          .setDescription(`**Invite posted for ${invite.guild.name}** ${message.channel}\n${inv}`)
+          .addFields(
+            { name: 'Inviter', value: invite.inviter.tag, inline: true },
+            { name: 'Channel', value: `${invite.channel}`, inline: true },
+            { name: 'Members', value: `${invite.memberCount}`, inline: true }
+          )
+          .setFooter(`ID: ${message.author.id}`)
+        await channel.send(embed)
+      }
     } catch {}
   })
+  if (!message.guild.me.hasPermission('MANAGE_MESSAGES')) return
+  for (let i = 0; i < invites.length; i++) {
+    const invt = await message.client.fetchInvite(invites[i])
+    if (invt.guild.id !== message.guild.id) {
+      message.delete({ reason: 'Invite(s) detected' })
+      return
+    }
+  }
 }
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
