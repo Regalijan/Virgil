@@ -212,6 +212,7 @@ client.on('messageDeleteBulk', async (messages) => {
   const embed = new Discord.MessageEmbed()
     .setAuthor('Bulk Delete')
     .setTitle('Virgil Message Logging')
+    .setColor(3756250)
     .setDescription(`Bulk delete for ${channel}`)
     .attachFiles(file)
   await logchannel.send(embed)
