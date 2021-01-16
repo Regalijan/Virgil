@@ -308,6 +308,23 @@ client.on('channelCreate', async channel => {
   await logchannel.send(embed)
 })
 
+client.on('channelDelete', async channel => {
+  if (channel.type === 'dm') return
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
+  if (serversettings.rowCount === 0) return
+  serversettings = serversettings.rows[0]
+  if (!serversettings.channel_log_channel) return
+  const logchannel = channel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
+  if (!logchannel) return
+  let auditlogs
+  if (channel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 12 }).first()
+  const embed = new Discord.MessageEmbed()
+    .setColor(16711680)
+    .setDescription(`Channel \`${channel.name}\` has been deleted.`)
+  if (auditlogs) embed.setAuthor(auditlogs.executor.tag, auditlogs.executor.displayAvatarURL())
+  await logchannel.send(embed)
+})
+
 client.on('invalidated', () => {
   console.log('SESSION WAS INVALIDATED, THIS SHOULD NEVER HAPPEN!')
   process.exit()
