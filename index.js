@@ -381,6 +381,14 @@ async function onInvite (message) {
   }
 }
 
+async function changeStatus () {
+  const { statuses } = require('./statuses.json')
+  const index = Math.round(Math.random() * (statuses.length - 1))
+  await client.user.setPresence({ activity: { type: 'PLAYING', name: statuses[index] } })
+}
+
+setInterval(changeStatus, 60000)
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
 
 process.on('SIGTERM', () => {
