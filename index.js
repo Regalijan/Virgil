@@ -326,6 +326,12 @@ client.on('channelDelete', async channel => {
   await logchannel.send(embed)
 })
 
+client.on('guildCreate', async guild => {
+  const settingscheck = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
+  if (settingscheck.rowCount > 0) return
+  await db.query('INSERT INTO core_settings(guild_id) VALUES($1);', [guild.id])
+})
+
 client.on('invalidated', () => {
   console.log('SESSION WAS INVALIDATED, THIS SHOULD NEVER HAPPEN!')
   process.exit()
