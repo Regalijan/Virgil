@@ -41,7 +41,7 @@ module.exports = {
       .setTitle('System Information')
       .setColor(3756250)
       .addFields(
-        { name: 'Owner', value: app.owner.tag },
+        { name: 'Owner', value: (await app).owner.tag },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/Virgil' },
         { name: 'Current Commit Hash', value: commit },
         { name: 'System Architecture', value: process.arch },

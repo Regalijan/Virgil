@@ -7,7 +7,7 @@ module.exports = {
     const config = require('../config.json')
     const db = require('../database')
     const mailer = require('../mailer')
-    if (message.author.id !== app.owner.id) return
+    if (message.author.id !== (await app).owner.id) return
     if (!args[0]) return message.channel.send(`SendEmail Usage: \`${config.prefix}sendemail <email/userid>\``)
     let recipient = args[0]
     if (!recipient.match(/@/gm)) {

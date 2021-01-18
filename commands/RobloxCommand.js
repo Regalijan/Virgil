@@ -66,7 +66,7 @@ module.exports = {
         { name: 'Join Date', value: `${joinDate.getMonth() + 1}/${joinDate.getDate()}/${joinDate.getFullYear()}`, inline: true },
         { name: 'Past Usernames', value: pastNames, inline: true }
       )
-    if (app.owner.id === user) embed.addField('User Tags', 'Bot Creator', true)
+    if ((await app).owner.id === user) embed.addField('User Tags', 'Bot Creator', true)
     return message.channel.send(embed)
   }
 }
