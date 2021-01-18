@@ -336,6 +336,7 @@ client.on('guildCreate', async guild => {
   const settingscheck = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
   if (settingscheck.rowCount > 0) return
   await db.query('INSERT INTO core_settings(guild_id) VALUES($1);', [guild.id])
+  await db.query('INSERT INTO gamemod_settings(guild,files_are_public) VALUES($1,\'f\');', [guild.id])
 })
 
 client.on('invalidated', () => {
