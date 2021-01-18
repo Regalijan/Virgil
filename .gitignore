@@ -103,14 +103,11 @@ dist
 # TernJS port file
 .tern-port
 
-# Individual guild settings files
-serversettings/
-
-# Google Cloud service key
-servicekey.json
-
 # Ban files
 bans/
 
 # Config file
 config.json
+
+# Service key directory
+servicekeys/

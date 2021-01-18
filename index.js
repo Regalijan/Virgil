@@ -17,6 +17,9 @@ client.once('ready', () => {
   console.log('Virgil has started!')
 })
 
+const keypathexists = fs.existsSync('./servicekeys')
+if (!keypathexists) fs.mkdirSync('./servicekeys')
+
 async function getApp () {
   return await client.fetchApplication()
 }

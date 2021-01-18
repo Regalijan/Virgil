@@ -16,11 +16,10 @@ module.exports = {
       if (args[0]) {
         let member = args[0]
         if (member.match(/(^<@!?[0-9]*>)/)) {
-          member = message.mentions.members.first()
+          member = await message.mentions.members.first()
         } else if (message.guild.member(member)) member = await message.guild.members.fetch(member)
         if (!member) return message.channel.send('I could not find this user!')
-        const user = member.user
-        if (message.author === user) return message.channel.send('Dumbass, why would you want to ban yourself?')
+        if (message.author.id === member.id) return message.channel.send('Dumbass, why would you want to ban yourself?')
         if (member.roles.cache) {
           if (member.roles.cache.find(role => serversettings.moderatorRoles.includes(role.id))) return message.channel.send('I cannot ban moderators.')
         }
@@ -28,7 +27,7 @@ module.exports = {
         if (!reason) {
           reason = 'No reason provided.'
         }
-        await user.send(`You have been banned from ${message.guild.name}\nReason: ${reason}`).catch(() => {})
+        await member.send(`You have been banned from ${message.guild.name}\nReason: ${reason}`).catch(() => {})
         message.guild.members.ban(member, { reason: reason })
           .then(user => message.channel.send(`${user.user.tag} was banned! | ${reason}`))
           .catch(e => {
