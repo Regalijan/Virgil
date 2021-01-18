@@ -2,29 +2,24 @@ module.exports = {
   name: 'mute',
   description: 'What do you think this does lmfao',
   guildOnly: true,
-  execute (message, args) {
-    const serversettings = require(`../serversettings/${message.guild.id}.json`)
-    if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => serversettings.permissionOverrideRoles.includes(role.id)))) {
-      if (args[0]) {
-        let reason = args.slice(2).join(' ')
-        let time = args[1]
-        let member = args[0]
-        if (member.match(/(^<@!?[0-9]*>)/)) {
-          member = message.mentions.members.first()
-        } else if (message.guild.member(member)) member = message.guild.member(member)
-        else return message.channel.send('I could not find this user.')
-        if (message.member === member) return message.channel.send('Dumbass, why would you want to mute yourself?')
-        if (member.roles.cache) {
-          if (member.roles.cache.find(role => serversettings.moderatorRoles.includes(role.id))) return message.channel.send('I cannot mute moderators.')
-        }
-        if (!reason) reason = 'No reason provided.'
-        if (!serversettings.muteRole) return message.channel.send('Muted role was not set!')
-        if (!message.guild.roles.cache.find(role => role.id === serversettings.muteRole)) return message.channel.send('The muted role is invalid!')
-        const role = message.guild.roles.cache.find(role => role.id === serversettings.muteRole)
-        if (!time) time = 30
-        member.roles.add(role).catch(console.error('I could not give this member the role.'))
-        message.channel.send(`${member} was muted!`)
-      }
-    }
+  async execute (message, args) {
+    if (!message.member.hasPermission('KICK_MEMBERS') && !message.member.hasPermission('BAN_MEMBERS')) return message.channel.send('You do not have permission to run this command!')
+    if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I cannot run this command as I do not have permission to manage roles!')
+    const { prefix } = require('../config.json')
+    if (args.length === 0) return message.channel.send(`Usage: \`${prefix}mute <user> [number] [measurement]\`\nMeasurements can be (h)ours, (m)inutes, or (d)ays.`)
+    const db = require('../database')
+    let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+    serversettings = serversettings.rows[0]
+    if (!serversettings.mute_role) return
+    const role = message.guild.roles.cache.find(c => c.id === serversettings.mute_role.toString())
+    if (!role) return message.channel.send('I could not mute as the role could not be found!')
+    let member = args[0]
+    let validmember = true
+    if (member.match(/^<@!?[0-9]*>/)) {
+      member = message.mentions.members.first()
+    } else if (args[0].match(/\D/)) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(result => result.mapValues(values => { member = values }))
+    else if (args[0]) member = await message.guild.members.fetch(args[0]).catch(e => { if (e.httpStatus === 400) validmember = false })
+    if (!validmember) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(results => { results.mapValues(values => { member = values }) })
+    await member.roles.add(role)
   }
 }

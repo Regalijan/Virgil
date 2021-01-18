@@ -4,12 +4,9 @@ module.exports = {
   guildOnly: true,
   async execute (message) {
     const { dispatcher } = require('./PlayCommand')
-    const serversettings = require(`../serversettings/${message.guild.id}`)
     if (!dispatcher) return message.channel.send('Nothing currently playing.')
-    if ((message.member.roles.cache.some(role => serversettings.moderatorRoles.includes(role.id))) || (message.member.hasPermission('MANAGE_GUILD'))) {
-      dispatcher.pause()
-      return message.channel.send('Player is paused.')
-    }
-    return message.channel.send('You do not have the permissions required to pause the player.')
+    if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send('You do not have the permissions required to pause the player.')
+    dispatcher.pause()
+    return message.channel.send('Player is paused.')
   }
 }

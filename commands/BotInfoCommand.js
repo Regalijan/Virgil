@@ -23,9 +23,9 @@ module.exports = {
     let minutes = Math.floor(sysuptime / 60)
     if (minutes > 0) sysuptime %= 60
     let sysuptimestr = `${sysuptime}s`
-    if (minutes > 0) sysuptimestr += `${minutes}m `
-    if (hours > 0) sysuptimestr += `${hours}h `
-    if (days > 0) sysuptimestr += `${days}d `
+    if (minutes > 0) sysuptimestr = `${minutes}m ${sysuptimestr}`
+    if (hours > 0) sysuptimestr = `${hours}h ${sysuptimestr}`
+    if (days > 0) sysuptimestr = `${days}d ${sysuptimestr}`
     let botuptime = Math.floor(client.uptime / 1000)
     days = Math.floor(botuptime / 86400)
     if (days > 0) botuptime %= 86400
@@ -34,9 +34,9 @@ module.exports = {
     minutes = Math.floor(botuptime / 60)
     if (minutes > 0) botuptime %= 60
     let botuptimestr = `${botuptime}s`
-    if (minutes > 0) botuptimestr += `${minutes}m `
-    if (hours > 0) botuptimestr += `${hours}h `
-    if (days > 0) botuptimestr += `${days}`
+    if (minutes > 0) botuptimestr = `${minutes}m ${botuptimestr}`
+    if (hours > 0) botuptimestr = `${hours}h ${botuptimestr}`
+    if (days > 0) botuptimestr = `${days}d ${botuptimestr}`
     const embed = new MessageEmbed()
       .setAuthor(client.user.tag, client.user.displayAvatarURL())
       .setTitle('System Information')

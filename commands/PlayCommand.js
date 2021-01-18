@@ -12,7 +12,7 @@ module.exports = {
     if (message.member.voice.channel) {
       if ((!message.guild.voice) || (!message.guild.voice.connection) || (message.member.voice.channel === message.guild.voice.connection.channel)) {
         const ytreg = /(https?:\/\/)(www\.|m\.)?(youtube\.com\/watch\?v=\S*[^>])|(https?:\/\/youtu\.be\/\S*[^>])/i
-        const playlistreg = /(\?|&)list=\S+/
+        const playlistreg = /list=\S+/
         const connection = await message.member.voice.channel.join()
         const addToQueueQuery = 'INSERT INTO music_queue(time,requester,media,guild,title) VALUES($1,$2,$3,$4,$5) RETURNING *;'
         const ts = parseInt(Date.now().toString().concat(Math.round(Math.random() * 1000000).toString()))
@@ -62,12 +62,7 @@ module.exports = {
           let song
           let songInfo
           let title
-          if (link.match(ytreg)) {
-            song = link.match(ytreg)[0]
-            songInfo = await ytdl.getInfo(song)
-            title = songInfo.videoDetails.title
-            processTrack(link.match(ytreg)[0], title)
-          } else if (link.match(ytreg) && link.match(playlistreg)) {
+          if (link.match(playlistreg)) {
             const playlist = await ytpl(link.match(playlistreg))
             if (!playlist) return message.channel.send('I could not resolve the playlist.')
             playlist.items.forEach(async video => {
@@ -78,6 +73,11 @@ module.exports = {
               message.channel.send(`${playlist.title} was loaded.`)
               playTrack()
             } else message.channel.send(`Items of ${playlist.title} have been added to the queue.`)
+          } else if (link.match(ytreg)) {
+            song = link.match(ytreg)[0]
+            songInfo = await ytdl.getInfo(song)
+            title = songInfo.videoDetails.title
+            processTrack(link.match(ytreg)[0], title)
           } else {
             // Join all args to search entire query
             const query = args.slice(0).join(' ')

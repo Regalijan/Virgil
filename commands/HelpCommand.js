@@ -7,7 +7,7 @@ module.exports = {
     const embed = new MessageEmbed()
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
     message.client.commands.forEach(async cmd => {
-      embed.addField(`${prefix}cmd.name`, cmd.description)
+      embed.addField(`${prefix}${cmd.name}`, cmd.description)
     })
     await message.channel.send(embed)
   }

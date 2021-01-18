@@ -1,33 +1,31 @@
-const db = require('../database')
-const Discord = require('discord.js')
-
 module.exports = {
   name: 'warn',
   description: 'Issues a warning to a member',
   guildOnly: true,
-  execute (message, args) {
-    const { moderatorRoles, owner, permissionOverrideRoles } = require(`../serversettings/${message.guild.id}.json`)
-    const reason = args.slice(1).join(' ')
-    if (!message.member.roles.cache.find(role => permissionOverrideRoles.includes(role.id)) || !message.member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send('You do not have permissions to run this command!')
+  async execute (message, args) {
+    const { prefix } = require('../config.json')
+    if (!args[0]) return message.channel.send(`Usage: \`${prefix}warn <user> [reason]\``)
+    const db = require('../database')
+    const { MessageEmbed } = require('discord.js')
+    let reason = args.slice(1).join(' ')
     let member
-    if (member.match(/(^<@!?[0-9]*>)/)) {
-      member = message.mentions.members.first().id
-    } else {
-      member = message.guild.members.fetch(args[0]).id
-    }
+    let validmember = false
+    if (member.match(/^<@!?[0-9]*>/)) {
+      member = message.mentions.members.first()
+    } else if (args[0] && args[0].match(/\D/)) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(result => result.mapValues(values => { member = values }))
+    else if (args[0]) member = await message.guild.members.fetch(args[0]).catch(e => { if (e.httpStatus === 400) validmember = false })
+    if (!validmember) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(results => { results.mapValues(values => { member = values }) })
     if (!member) return message.channel.send('I could not find this user!')
-    if (!reason) return message.channel.send('Gimme a reason first dammit.')
-    if (member.roles.cache) {
-      if (member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send('I cannot warn moderators.')
-    }
-    if (!message.member.roles.cache.find(role => moderatorRoles.includes(role.id))) return message.channel.send
-    if (member === owner) return message.channel.send('I cannot warn my creator.')
-    const makeWarnVals = [Date.now(), message.author.id, member, reason, 'warn', message.guild.id, 'f']
-    const embed = new Discord.MessageEmbed()
+    member = member.id
+    if (!reason) reason = 'No reason provided'
+    const embed = new MessageEmbed()
       .setColor(3756250)
-    db.query('INSERT INTO punishments(time,moderator,target,reason,type,server,deleted) VALUES($1,$2,$3,$4,$5,$6,$7);', makeWarnVals, 'f')
-      .catch(e => console.error(e => console.error(e.stack)))
-    member.send(`You have been warned in ${message.guild.name} for **${reason}**`).catch(() => {
+    await db.query('INSERT INTO punishments(time,moderator,target,reason,type,server,deleted) VALUES($1,$2,$3,$4,$5,$6,$7);', [Date.now(), message.author.id, member, reason, 'warn', message.guild.id, 'f'])
+      .catch(e => {
+        console.error(e)
+        return message.channel.send('An error occured when creating the warn!')
+      })
+    await member.send(`You have been warned in ${message.guild.name} for **${reason}**`).catch(() => {
       embed.setDescription(':x: I could not DM them.')
       return message.channel.send(embed)
     })

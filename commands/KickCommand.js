@@ -1,41 +1,50 @@
-const Discord = require('discord.js')
-
 module.exports = {
   name: 'kick',
   description: 'This should be obvious',
   guildOnly: true,
-  execute (message, args) {
-    const serversettings = require(`../serversettings/${message.guild.id}.json`)
+  async execute (message, args) {
+    const db = require('../database')
+    let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+    serversettings = serversettings.rows[0]
     let reason = args.slice(1).join(' ')
-    if ((!message.member.hasPermission('KICK_MEMBERS')) || (!message.member.roles.cache.some(role => serversettings.permissionOverrideRoles.includes(role.id)))) return message.channel.send('You cannot run this command.')
+    let validmember = true
+    if (!message.member.hasPermission('KICK_MEMBERS')) return message.channel.send('You cannot run this command.')
     if (!args[0]) return message.channel.send('I can\'t kick air.')
     let member = args[0]
-    if (member.match(/(^<@!?[0-9]*>)/)) {
+    if (member.match(/^<@!?[0-9]*>/)) {
       member = message.mentions.members.first()
-    } else if (message.guild.member(member)) member = message.guild.member(member)
-    if (message.author === member.user) return message.channel.send('Dumbass, why would you want to ban yourself?')
+    } else if (args[0] && args[0].match(/\D/)) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(result => result.mapValues(values => { member = values }))
+    else if (args[0]) member = await message.guild.members.fetch(args[0]).catch(e => { if (e.httpStatus === 400) validmember = false })
+    if (!validmember) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(results => { results.mapValues(values => { member = values }) })
+    if (message.author.id === member.user.id) return message.channel.send('Dumbass, why would you want to kick yourself?')
+    if (!member) return message.channel.send('An error occured when fetching the member!')
     if (member.roles.cache) {
-      if (member.roles.cache.find(role => serversettings.moderatorRoles.includes(role.id))) return message.channel.send('I cannot kick moderators.')
+      member.roles.cache.forEach(async role => {
+        const hasmodrole = await db.query('SELECT * FROM overrides WHERE type = \'mod\' AND guild = $1;', [message.guild.id])
+        if (hasmodrole.rowCount > 0) return message.channel.send('I cannot kick moderators.')
+      })
     }
-    if (!message.guild.member(member).kickable) return message.channel.send('This user cannot be kicked!')
+    if (!member.kickable) return message.channel.send('This user cannot be kicked!')
     if (!reason) {
       reason = 'No reason provided.'
     }
-    member.user.send(`You have been kicked from ${message.guild.name}: ${reason}`).catch()
-    message.guild.members.kick(member, { reason: reason })
-      .then(user => message.channel.send(`${user.user.tag} was kicked! | ${reason}`))
-      .catch(e => {
-        console.error(e.stack)
-        return message.channel.send(`I could not kick that user! ${e}`)
-      })
-    const channel = message.guild.cache.channels.find(ch => ch.id === serversettings.modLogChannel)
-    const embed = new Discord.MessageEmbed()
+    if (!member.manageable) return message.channel.send('I cannot kick that member as their highest role is equal to/higher than mine!')
+    await member.user.send(`You have been kicked from ${message.guild.name}: ${reason}`).catch()
+    await member.kick({ reason: reason }).catch(e => {
+      console.error(e)
+      return message.channel.send(`I could not kick that user! ${e}`)
+    })
+    await message.channel.send(`${member.user.tag} was kicked! | ${reason}`)
+    const channel = message.guild.cache.channels.find(ch => ch.id === serversettings.mod_log_channel.toString())
+    if (!channel) return
+    const { MessageEmbed } = require('discord.js')
+    const embed = new MessageEmbed()
       .setAuthor(`Kick | ${member.user.tag}`, member.displayAvatarURL())
       .addFields(
         { name: 'User', value: `${member}`, inline: true },
         { name: 'Moderator', value: message.member, inline: true },
         { name: 'Reason', value: reason, inline: true }
       )
-    if (channel) return channel.send(embed).catch(e => console.error(e))
+    channel.send(embed).catch(e => console.error(e))
   }
 }
