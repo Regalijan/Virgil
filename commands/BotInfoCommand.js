@@ -5,7 +5,7 @@ module.exports = {
   name: 'botinfo',
   description: 'Bot information',
   async execute (message) {
-    const { app } = require('../index')
+    const app = require('../index')
     const cpus = os.cpus()
     let commit
     try {

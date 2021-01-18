@@ -22,12 +22,7 @@ async function getApp () {
 }
 
 const app = getApp()
-
-module.exports = {
-  client: client,
-  app: app
-}
-
+module.exports = app
 client.on('message', async message => {
   if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {
     await onInvite(message)

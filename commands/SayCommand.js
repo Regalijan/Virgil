@@ -3,7 +3,7 @@ module.exports = {
   description: 'Repeats text input',
   guildOnly: true,
   async execute (message, args) {
-    const { app } = require('../index')
+    const app = require('../index')
     if (!message.member.hasPermission('MANAGE_GUILD') && message.author.id !== app.owner.id) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('You did not provide a message.')
     let msg

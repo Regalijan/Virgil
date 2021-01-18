@@ -3,7 +3,7 @@ module.exports = {
   description: "Looks up a user's roblox information",
   guildOnly: true,
   async execute (message, args) {
-    const { app } = require('../index')
+    const app = require('../index')
     let user = message.author.id
     let robloxId = 'Unknown'
     if (args[0]) user = args[0]

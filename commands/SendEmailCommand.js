@@ -3,7 +3,7 @@ module.exports = {
   description: 'Sends an email',
   guildOnly: true,
   async execute (message, args) {
-    const { app } = require('../index')
+    const app = require('../index')
     const config = require('../config.json')
     const db = require('../database')
     const mailer = require('../mailer')

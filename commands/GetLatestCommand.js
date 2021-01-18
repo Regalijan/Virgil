@@ -2,7 +2,7 @@ module.exports = {
   name: 'getlatest',
   description: 'Pulls latest version from GitHub',
   async execute (message) {
-    const { app } = require('../index')
+    const app = require('../index')
     const { exec } = require('child_process')
     if (message.author.id !== app.owner.id) return message.channel.send('You do not have permission to run this command!')
     exec('git pull', async function (error, stdout, stderr) {
