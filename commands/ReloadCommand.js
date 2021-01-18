@@ -1,9 +1,8 @@
-const { client } = require('../index')
 module.exports = {
   name: 'reload',
   description: 'Reload a command',
   async execute (message, args) {
-    const app = await client.fetchApplication()
+    const { app } = require('../index')
     if (message.author.id !== app.owner.id) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('No data was passed to reload.')
     const commandName = args[0].toLowerCase()

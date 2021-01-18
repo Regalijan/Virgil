@@ -1,18 +1,16 @@
-const { client } = require('../index')
-const request = require('axios')
-const Discord = require('discord.js')
-
 module.exports = {
   name: 'roblox',
   description: "Looks up a user's roblox information",
   guildOnly: true,
   async execute (message, args) {
+    const { app } = require('../index')
     let user = message.author.id
     let robloxId = 'Unknown'
     if (args[0]) user = args[0]
     if (user.match(/(^<@!?[0-9]*>)/)) {
       user = message.mentions.members.first().id
     }
+    const request = require('axios')
     const roverData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false }).catch(e => {
       console.log('Failed to fetch data from RoVer!')
       console.error(e.stack)
@@ -56,7 +54,8 @@ module.exports = {
     if (pastNamesData.length === 0) pastNames = 'None'
     if (pastNames !== 'None') pastNames = pastNames.replace('_, ', '')
     const profile = `https://www.roblox.com/users/${robloxData.data.id}/profile`
-    const embed = new Discord.MessageEmbed()
+    const { MessageEmbed } = require('discord.js')
+    const embed = new MessageEmbed()
       .setTitle('View Profile')
       .setURL(profile)
       .setAuthor(robloxData.data.name, avatar, profile)
@@ -67,7 +66,6 @@ module.exports = {
         { name: 'Join Date', value: `${joinDate.getMonth() + 1}/${joinDate.getDate()}/${joinDate.getFullYear()}`, inline: true },
         { name: 'Past Usernames', value: pastNames, inline: true }
       )
-    const app = await client.fetchApplication()
     if (app.owner.id === user) embed.addField('User Tags', 'Bot Creator', true)
     return message.channel.send(embed)
   }

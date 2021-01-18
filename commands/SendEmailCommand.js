@@ -1,13 +1,13 @@
-const config = require('../config.json')
-const db = require('../database')
-const mailer = require('../mailer')
-
 module.exports = {
   name: 'sendemail',
   description: 'Sends an email',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.roles.cache.some(role => config.appealsManagerRole.includes(role.id)) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send('You do not have permission to run this command!')
+    const { app } = require('../index')
+    const config = require('../config.json')
+    const db = require('../database')
+    const mailer = require('../mailer')
+    if (message.author.id !== app.owner.id) return
     if (!args[0]) return message.channel.send(`SendEmail Usage: \`${config.prefix}sendemail <email/userid>\``)
     let recipient = args[0]
     if (!recipient.match(/@/gm)) {

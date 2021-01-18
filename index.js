@@ -4,10 +4,7 @@ const db = require('./database')
 const Discord = require('discord.js')
 const fs = require('fs')
 const verifier = require('./verify')
-module.exports = {
-  client: new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
-}
-const client = module.exports.client
+const client = new Discord.Client({ disableMentions: 'everyone', ws: { intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES'] } })
 client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 for (const file of commandFiles) {
@@ -19,6 +16,17 @@ let lastlogtime
 client.once('ready', () => {
   console.log('Virgil has started!')
 })
+
+async function getApp () {
+  return await client.fetchApplication()
+}
+
+const app = getApp()
+
+module.exports = {
+  client: client,
+  app: app
+}
 
 client.on('message', async message => {
   if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {

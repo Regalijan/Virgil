@@ -1,10 +1,9 @@
-const { client } = require('../index')
-const { exec } = require('child_process')
 module.exports = {
   name: 'getlatest',
   description: 'Pulls latest version from GitHub',
   async execute (message) {
-    const app = await client.fetchApplication()
+    const { app } = require('../index')
+    const { exec } = require('child_process')
     if (message.author.id !== app.owner.id) return message.channel.send('You do not have permission to run this command!')
     exec('git pull', async function (error, stdout, stderr) {
       if (error) {
@@ -14,7 +13,7 @@ module.exports = {
       await message.channel.send(stdout)
       if (stdout.match(/(Already up to date\.)/gim)) return
       await message.channel.send('Restarting...')
-      client.destroy()
+      message.client.destroy()
       process.exit(1)
     })
   }

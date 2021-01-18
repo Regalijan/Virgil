@@ -1,12 +1,11 @@
 const { MessageEmbed } = require('discord.js')
-const { client } = require('../index')
 const { execSync } = require('child_process')
 const os = require('os')
 module.exports = {
   name: 'botinfo',
   description: 'Bot information',
   async execute (message) {
-    const app = await client.fetchApplication()
+    const { app } = require('../index')
     const cpus = os.cpus()
     let commit
     try {
@@ -26,7 +25,7 @@ module.exports = {
     if (minutes > 0) sysuptimestr = `${minutes}m ${sysuptimestr}`
     if (hours > 0) sysuptimestr = `${hours}h ${sysuptimestr}`
     if (days > 0) sysuptimestr = `${days}d ${sysuptimestr}`
-    let botuptime = Math.floor(client.uptime / 1000)
+    let botuptime = Math.floor(message.client.uptime / 1000)
     days = Math.floor(botuptime / 86400)
     if (days > 0) botuptime %= 86400
     hours = Math.floor(botuptime / 3600)
@@ -38,7 +37,7 @@ module.exports = {
     if (hours > 0) botuptimestr = `${hours}h ${botuptimestr}`
     if (days > 0) botuptimestr = `${days}d ${botuptimestr}`
     const embed = new MessageEmbed()
-      .setAuthor(client.user.tag, client.user.displayAvatarURL())
+      .setAuthor(message.client.user.tag, message.client.user.displayAvatarURL())
       .setTitle('System Information')
       .setColor(3756250)
       .addFields(
