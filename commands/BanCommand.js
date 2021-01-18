@@ -8,7 +8,7 @@ module.exports = {
     let serversettings = db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
     let reason = args.slice(1).join(' ')
     const overrides = []
-    const overridedata = db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
+    const overridedata = await db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
     overridedata.rows.forEach(async row => {
       if (row.type === 'ban') overrides.push(row.role)
     })
