@@ -27,7 +27,7 @@ module.exports = {
         message.channel.send('An error occured when writing the file!')
       }
       try {
-        await storage.bucket(bmodsettings.rows[0].bucket).upload(`./${robloxData.data.Id}.json`)
+        await storage.bucket(modsettings.rows[0].bucket).upload(`./${robloxData.data.Id}.json`)
         const viewcheck = await request(`https://storage.googleapis.com/${modsettings.rows[0].bucket}/${robloxData.data.Id}.json`, { validateStatus: false })
         if (viewcheck.status === 403) await storage.bucket(modsettings.rows[0].bucket).file(`${robloxData.data.id}.json`).makePublic()
       } catch (e) {
