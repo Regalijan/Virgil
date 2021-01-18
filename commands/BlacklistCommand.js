@@ -29,7 +29,7 @@ module.exports = {
       try {
         await storage.bucket(modsettings.rows[0].bucket).upload(`./${robloxData.data.Id}.json`)
         const viewcheck = await request(`https://storage.googleapis.com/${modsettings.rows[0].bucket}/${robloxData.data.Id}.json`, { validateStatus: false })
-        if (viewcheck.status === 403) await storage.bucket(modsettings.rows[0].bucket).file(`${robloxData.data.id}.json`).makePublic()
+        if (viewcheck.status === 403 && modsettings.rows[0].files_are_public) await storage.bucket(modsettings.rows[0].bucket).file(`${robloxData.data.id}.json`).makePublic()
       } catch (e) {
         message.channel.send(`An error occured! ${e}`)
         return console.error(e)

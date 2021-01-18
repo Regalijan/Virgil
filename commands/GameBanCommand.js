@@ -36,7 +36,7 @@ module.exports = {
         console.error(e)
         return message.channel.send(`An error occured when checking the file! ${e}`)
       })
-      if (filecheck.status === 403) {
+      if (filecheck.status === 403 && modsettings.rows[0].files_are_public) {
         await storage.bucket(modsettings.rows[0].bucket).file(`${robloxData.data.Id}.json`).makePublic().catch(e => {
           console.error(e)
           return message.channel.send(`An error occured when making the file public! ${e}`)
