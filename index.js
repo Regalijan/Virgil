@@ -393,10 +393,12 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 
 process.on('SIGTERM', () => {
   client.destroy()
+  process.exit()
 })
 
 process.on('SIGHUP', () => {
   client.destroy()
+  process.exit()
 })
 
 db.connect().catch(e => {
