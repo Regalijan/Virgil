@@ -401,6 +401,11 @@ process.on('SIGHUP', () => {
   process.exit()
 })
 
+process.on('SIGINT', () => {
+  client.destroy()
+  process.exit()
+})
+
 db.connect().catch(e => {
   console.error(e)
   process.exit()
