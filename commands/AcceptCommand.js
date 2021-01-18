@@ -3,7 +3,6 @@ module.exports = {
   description: 'Accepts a user\'s appeal',
   guildOnly: true,
   async execute (message, args) {
-    const config = require('../config.json')
     const db = require('../database')
     const mailer = require('../mailer')
     const useroverridecheck = await db.query('SELECT * FROM appeals_managers WHERE type = \'user\' AND guild = $1 AND id = $2;', [message.guild.id, message.author.id])
