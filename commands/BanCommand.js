@@ -9,7 +9,7 @@ module.exports = {
     let reason = args.slice(1).join(' ')
     const overrides = []
     const overridedata = db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
-    overridedata.forEach(async row => {
+    overridedata.rows.forEach(async row => {
       if (row.type === 'ban') overrides.push(row.role)
     })
     if ((message.member.hasPermission('BAN_MEMBERS')) || (message.member.roles.cache.some(role => overrides.includes(role.id)))) {
