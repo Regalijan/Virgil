@@ -12,7 +12,7 @@ module.exports = {
     const modsettings = await db.query('SELECT * FROM gamemod_settings WHERE guild = $1;', [message.guild.id])
     if (modsettings.rowCount === 0) return
     const { Storage } = require('@google-cloud/storage')
-    const storage = new Storage({ keyFilename: `../servicekeys/${message.guild.id}.json` })
+    const storage = new Storage({ keyFilename: `./servicekeys/${message.guild.id}.json` })
     const fs = require('fs')
     const request = require('axios')
     if (args[0]) {

@@ -14,7 +14,7 @@ module.exports = {
     const fs = require('fs')
     const request = require('axios')
     const { Storage } = require('@google-cloud/storage')
-    const storage = new Storage({ keyFilename: `../servicekeys/${message.guild.id}.json` })
+    const storage = new Storage({ keyFilename: `./servicekeys/${message.guild.id}.json` })
     const reason = args.slice(1).join(' ')
     if ((args[0]) && (reason)) {
       const robloxData = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`).catch(e => {
