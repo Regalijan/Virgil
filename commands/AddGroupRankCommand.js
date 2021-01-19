@@ -1,11 +1,11 @@
-const { prefix } = require('../config.json')
-const db = require('../database')
 module.exports = {
   name: 'addgrouprank',
   description: 'Bind a group role to a discord role',
   guildOnly: true,
   async execute (message, args) {
     if (!message.member.hasPermission('MANAGE_SERVER')) return message.channel.send('You do not have permission to run this command!')
+    const { prefix } = require('../config.json')
+    const db = require('../database')
     if (!args[0]) return message.channel.send(`Usage: \`${prefix}addgrouprank  <RoleID/Name> <GroupID> [rank]\`\nIf the role has spaces you **MUST** use the ID. \`${prefix}roleinfo\``)
     if (!args[1]) return message.channel.send('You did not provide a group.')
     let role
