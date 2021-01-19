@@ -1,14 +1,14 @@
-const config = require('../config.json')
-const db = require('../database')
-
 module.exports = {
   name: 'appealban',
   description: 'Bans a user from the appeal form',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.roles.cache.some(role => config.appealsManagerRole.includes(role.id))) {
-      return message.channel.send('You do not have permission to run this command!')
-    }
+    const db = require('../database')
+    const useroverridecheck = await db.query('SELECT * FROM appeals_managers WHERE type = \'user\' AND guild = $1 AND id = $2;', [message.guild.id, message.author.id])
+    const roleoverridecheck = await db.query('SELECT * FROM appeals_managers WHERE guild = $1 AND type = \'role\';', [message.guild.id])
+    const overrides = []
+    roleoverridecheck.rows.forEach(row => overrides.push(row.id.toString()))
+    if (useroverridecheck.rowCount === 0 && !message.member.roles.cache.some(role => overrides.includes(role.id)) && !message.member.hasPermission('ADMINISTRATOR')) return
     if (!args[0]) return message.channel.send('You did not specify a user!')
     try {
       const user = await db.query('SELECT * FROM auth WHERE discord_id = $1;', [args[0]])
