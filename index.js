@@ -353,7 +353,7 @@ client.on('shardError', error => {
 })
 
 async function onInvite (message) {
-  if (message.channel.type === 'dm') return
+  if (message.channel.type === 'dm' || message.author.bot) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
