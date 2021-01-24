@@ -8,7 +8,7 @@ module.exports = {
     const { getuser } = require('../getuser')
     try {
       let member = message.member
-      if (args.length > 0) member = await getuser(args.slice(0).join(' '))
+      if (args.length > 0) member = await getuser(args.slice(0).join(' '), message, message.guild)
       if (!member) return await message.channel.send('I could not find that member!')
       const warnings = await db.query('SELECT * FROM punishments WHERE target = $1 AND server = $2 AND deleted = false;', [member.id, message.guild.id])
       if (warnings.rowCount === 0) return message.channel.send('You do not have any warnings!')

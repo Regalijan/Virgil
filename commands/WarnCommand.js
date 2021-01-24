@@ -9,7 +9,7 @@ module.exports = {
     const { MessageEmbed } = require('discord.js')
     let reason = args.slice(1).join(' ')
     const { getuser } = require('../getuser')
-    const member = await getuser(args[0], message)
+    const member = await getuser(args[0], message, message.guild)
     if (!member) return await message.channel.send('I could not find that member!')
     if (!reason) reason = 'No reason provided'
     const embed = new MessageEmbed()

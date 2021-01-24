@@ -3,7 +3,7 @@ module.exports = {
   description: 'Find out how much of a noob you are',
   async execute (message, args) {
     const { getuser } = require('../getuser')
-    let member = getuser(args.slice(0).join(' '))
+    let member = getuser(args.slice(0).join(' '), message, message.guild)
     if (!member) member = message.member
     const { MessageEmbed } = require('discord.js')
     const embed = new MessageEmbed()

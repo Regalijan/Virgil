@@ -14,7 +14,7 @@ module.exports = {
     if (!message.member.hasPermission('BAN_MEMBERS') && !message.member.roles.cache.some(role => overrides.includes(role.id))) return
     const { prefix } = require('../config.json')
     if (args.length === 0) return message.channel.send(`Usage: \`${prefix}ban <user> [reason]\``)
-    const member = await getuser(args[0], message)
+    const member = await getuser(args[0], message, message.guild)
     if (!member) return message.channel.send('I could not find this user!')
     if (message.author.id === member.id) return message.channel.send('You will **not** ban yourself.')
     if (member.roles.cache.some(role => overrides.includes(role.id.toString()))) return message.channel.send('I cannot ban moderators.')

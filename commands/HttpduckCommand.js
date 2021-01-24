@@ -1,10 +1,9 @@
-const Discord = require('discord.js')
-const request = require('axios')
-
 module.exports = {
   name: 'httpduck',
   description: 'Gets a duck with the specified http status code if one exists',
   async execute (message, args) {
+    const Discord = require('discord.js')
+    const request = require('axios')
     try {
       const response = await request(`https://random-d.uk/api/v2/http/${args[0]}`, { validateStatus: false })
       if (response.status !== 200) return message.channel.send('I could not find a duck with that status code.')
