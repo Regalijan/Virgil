@@ -1,5 +1,5 @@
 module.exports = {
-  async getuser (member, message, guild) {
+  async getuser (member, message) {
     let validmember = true
     let retrievedmember
     if (member.match(/(^<@!?[0-9]+>)/)) retrievedmember = await message.mentions.members.first()

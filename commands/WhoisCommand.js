@@ -6,7 +6,7 @@ module.exports = {
     const { getuser } = require('../getuser')
     let member = message.member
     if (args.length > 0) {
-      member = getuser(args.slice(0).join(' '), message, message.guild)
+      member = getuser(args.slice(0).join(' '), message)
     }
     if (!member) member = message.member
     const { MessageEmbed } = require('discord.js')

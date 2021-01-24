@@ -14,7 +14,7 @@ module.exports = {
     if (!args[0]) return message.channel.send('I can\'t kick air.')
     const { getuser } = require('../getuser')
     let member = args[0]
-    member = await getuser(member, message, message.guild)
+    member = await getuser(member, message)
     if (!member) return message.channel.send('An error occured when fetching the member!')
     if (message.author.id === member.user.id) return message.channel.send('You are **not** kicking yourself.')
     if (member.roles.cache.some(r => overrides.includes(r.id.toString()))) return message.channel.send('I cannot kick moderators.')

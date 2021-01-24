@@ -14,7 +14,7 @@ module.exports = {
     const role = message.guild.roles.cache.find(c => c.id === serversettings.mute_role.toString())
     if (!role) return message.channel.send('I could not mute as the role could not be found!')
     const { getuser } = require('../getuser')
-    const member = await getuser(args[0], message, message.guild)
+    const member = await getuser(args[0], message)
     if (!member) return await message.channel.send('I could not find that member!')
     await member.roles.add(role).catch(e => {
       console.error(e)
