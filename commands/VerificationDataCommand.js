@@ -1,9 +1,9 @@
-const { MessageEmbed } = require('discord.js')
-const request = require('axios')
 module.exports = {
   name: 'verificationdata',
   description: 'Displays your verification data from the RoVer and BloxLink registries',
   async execute (message) {
+    const { MessageEmbed } = require('discord.js')
+    const request = require('axios')
     const roverData = await request(`https://verify.eryn.io/api/user/${message.author.id}`, { transformResponse: [], validateStatus: false })
     const bloxlinkData = await request(`https://api.blox.link/v1/user/${message.author.id}`, { transformResponse: [], validateStatus: false })
     const embed = new MessageEmbed()

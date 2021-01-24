@@ -1,5 +1,3 @@
-const verifier = require('../verify')
-
 module.exports = {
   name: 'update',
   description: "Updates the target user's role bindings.",
@@ -9,6 +7,7 @@ module.exports = {
     if (!args[0]) return message.channel.send('No member was specified.')
     let user = args[0]
     user = user.replace(/<@!?|>/g, '')
+    const verifier = require('../verify')
     const status = await verifier.run(message, user)
     if (status === 1) {
       const member = await message.guild.members.fetch(user)

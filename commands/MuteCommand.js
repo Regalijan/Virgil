@@ -13,13 +13,12 @@ module.exports = {
     if (!serversettings.mute_role) return
     const role = message.guild.roles.cache.find(c => c.id === serversettings.mute_role.toString())
     if (!role) return message.channel.send('I could not mute as the role could not be found!')
-    let member = args[0]
-    let validmember = true
-    if (member.match(/^<@!?[0-9]*>/)) {
-      member = message.mentions.members.first()
-    } else if (args[0].match(/\D/)) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(result => result.mapValues(values => { member = values }))
-    else if (args[0]) member = await message.guild.members.fetch(args[0]).catch(e => { if (e.httpStatus === 400) validmember = false })
-    if (!validmember) await message.guild.members.fetch({ query: args[0], limit: 1 }).then(results => { results.mapValues(values => { member = values }) })
-    await member.roles.add(role)
+    const { getuser } = require('../getuser')
+    const member = await getuser(args[0], message)
+    if (!member) return await message.channel.send('I could not find that member!')
+    await member.roles.add(role).catch(e => {
+      console.error(e)
+      return message.channel.send('An error occured when muting the member!')
+    })
   }
 }

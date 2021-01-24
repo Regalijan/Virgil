@@ -4,14 +4,15 @@ module.exports = {
   name: 'leave',
   description: 'Leaves current voice channel',
   guildOnly: true,
-  execute (message) {
+  async execute (message) {
+    if (!message.member.hasPermission('MANAGE_MESSAGES')) return await message.channel.send('You cannot run this command!')
     if (!message.guild.me.voice) {
-      return message.channel.send('I\'m not in a voice channel you noob.')
+      return await message.channel.send('I\'m not in a voice channel you noob.')
     }
     if (dispatcher) {
-      dispatcher.destroy()
+      await dispatcher.destroy()
     }
-    message.guild.voice.channel.leave()
-    message.channel.send('Left voice channel.')
+    await message.guild.voice.channel.leave()
+    await message.channel.send('Left voice channel.')
   }
 }

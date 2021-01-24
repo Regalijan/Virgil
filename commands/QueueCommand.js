@@ -1,11 +1,10 @@
-const Discord = require('discord.js')
-const db = require('../database')
-
 module.exports = {
   name: 'queue',
   description: 'Shows all tracks in the queue',
   guildOnly: true,
   async execute (message) {
+    const Discord = require('discord.js')
+    const db = require('../database')
     const queue = await db.query(`SELECT * FROM music_queue WHERE guild = ${message.guild.id};`).catch(e => {
       console.error(e)
       return message.channel.send(`Could not retrieve queue! ${e}`)

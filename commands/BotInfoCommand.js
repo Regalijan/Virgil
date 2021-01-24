@@ -1,10 +1,10 @@
-const { MessageEmbed } = require('discord.js')
-const { execSync } = require('child_process')
-const os = require('os')
 module.exports = {
   name: 'botinfo',
   description: 'Bot information',
   async execute (message) {
+    const { MessageEmbed } = require('discord.js')
+    const { execSync } = require('child_process')
+    const os = require('os')
     const app = require('../index')
     const cpus = os.cpus()
     let commit
