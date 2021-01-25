@@ -16,6 +16,7 @@ module.exports = {
       url = url.replace(/<|>/g, '')
       url = url.replace('/edit', '')
       url = url.replace('https://studio.youtube.com/video/', 'https://www.youtube.com/watch?v=')
+      if (url.match(/.*\.roblox\.com/)) return await message.channel.send('Roblox links are not acceptable evidence!')
       let reason = args.slice(2).join(' ')
       reason = reason.replace(/<|>/g, '')
       const request = require('axios')
