@@ -7,7 +7,10 @@ module.exports = {
     let user = message.author.id
     let robloxId = 'Unknown'
     const { getuser } = require('../getuser')
-    if (args[0].length > 0) user = await getuser(args.slice(0).join(' '), message)
+    if (args[0].length > 0) {
+      user = await getuser(args.slice(0).join(' '), message)
+      user = user.id
+    }
     if (!user) return await message.channel.send('I could not find that member!')
     const request = require('axios')
     const roverData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false }).catch(e => {
