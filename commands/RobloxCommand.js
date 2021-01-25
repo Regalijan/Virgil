@@ -7,7 +7,7 @@ module.exports = {
     let user = message.author.id
     let robloxId = 'Unknown'
     const { getuser } = require('../getuser')
-    if (args[0].length > 0) {
+    if (args.length > 0) {
       user = await getuser(args.slice(0).join(' '), message)
       user = user.id
     }
