@@ -5,9 +5,7 @@ module.exports = {
   async execute (message, args) {
     const { getuser } = require('../getuser')
     let member = message.member
-    if (args.length > 0) {
-      member = getuser(args.slice(0).join(' '), message)
-    }
+    if (args.length > 0) member = await getuser(args.slice(0).join(' '), message)
     if (!member) member = message.member
     const { MessageEmbed } = require('discord.js')
     const embed = new MessageEmbed()
