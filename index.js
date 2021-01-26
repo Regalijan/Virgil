@@ -33,6 +33,9 @@ client.on('message', async message => {
   }
   const ignored = await db.query('SELECT * FROM ignored WHERE snowflake = $1 AND type = \'command\';', [message.channel.id])
   if (ignored.rowCount > 0 && message.channel.type !== 'dm' && !message.member.hasPermission('MANAGE_MESSAGES')) return
+  message.attachments.forEach(async att => {
+    if (att.url.endsWith('.exe' || '.msi' || '.apk' || '.appx' || '.bat' || '.cmd' || '.ps1' || '.dmg' || '.pkg' || '.apk' || '.ipa' || '.deb' || '.rpm' || '.js' || '.har') && message.channel.type === 'text' && !message.member.hasPermission('MANAGE_GUILD')) return await message.delete()
+  })
   if (!message.content.startsWith(config.prefix) || message.author.bot) return
   const args = message.content.slice(config.prefix.length).trim().split(/ +/)
   const command = args.shift().toLowerCase()
