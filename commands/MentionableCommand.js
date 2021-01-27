@@ -12,11 +12,11 @@ module.exports = {
     if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I do not have permission to manage roles.')
     if (!role) return message.channel.send('I could not find that role!')
     if (role.position >= message.guild.me.roles.highest.position) return message.channel.send('I cannot manage this role as it is not lower than my highest role.')
-    await role.setMentionable(!role.mentionable).catch(e => {
-      console.error(e)
-      return message.channel.send('An error occured when making that role mentionable!')
-    })
-    if (!role.mentionable) return await message.channel.send(`${role.name} is now unmentionable.`)
-    await message.channel.send(`${role.name} is now mentionable.`)
+    if (!role.mentionable) {
+      await role.mentionable(true)
+      return await message.channel.send(`${role.name} is now mentionable.`)
+    }
+    await role.setMentionable(false)
+    await message.channel.send(`${role.name} is now unmentionable.`)
   }
 }
