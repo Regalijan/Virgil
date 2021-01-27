@@ -15,8 +15,9 @@ module.exports = {
     if (!role.mentionable) {
       await role.mentionable(true)
       return await message.channel.send(`${role.name} is now mentionable.`)
+    } else {
+      await role.setMentionable(false)
+      await message.channel.send(`${role.name} is now unmentionable.`)
     }
-    await role.setMentionable(false)
-    await message.channel.send(`${role.name} is now unmentionable.`)
   }
 }
