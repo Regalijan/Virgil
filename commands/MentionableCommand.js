@@ -13,11 +13,10 @@ module.exports = {
     if (!role) return message.channel.send('I could not find that role!')
     if (role.position >= message.guild.me.roles.highest.position) return message.channel.send('I cannot manage this role as it is not lower than my highest role.')
     if (!role.mentionable) {
-      await role.mentionable(true)
+      await role.setMentionable(true)
       return await message.channel.send(`${role.name} is now mentionable.`)
-    } else {
-      await role.setMentionable(false)
-      await message.channel.send(`${role.name} is now unmentionable.`)
     }
+    await role.setMentionable(false)
+    await message.channel.send(`${role.name} is now unmentionable.`)
   }
 }
