@@ -14,10 +14,12 @@ module.exports = {
     })
     const embed = new MessageEmbed()
       .setAuthor(message.guild.name, message.guild.iconURL({ dynamic: true }))
+      .setColor(3756250)
+      .setThumbnail(message.guild.iconURL({ dynamic: true, size: 4096 }))
       .addFields(
-        { name: 'Owner', value: message.guild.owner, inline: true },
+        { name: 'Owner', value: message.guild.owner.toString(), inline: true },
         { name: 'Region', value: message.guild.region, inline: true },
-        { name: '2FA required', value: Boolean(message.guild.mfaLevel), inline: true },
+        { name: '2FA Required', value: Boolean(message.guild.mfaLevel), inline: true },
         { name: 'Members', value: message.guild.memberCount, inline: true },
         { name: 'Partner Status', value: message.guild.partnered, inline: true },
         { name: 'Verified Status', value: message.guild.verified, inline: true },
@@ -29,7 +31,7 @@ module.exports = {
         { name: 'Voice Channels', value: vcs, inline: true },
         { name: 'Categories', value: cats, inline: true }
       )
-    if (message.guild.splash) embed.setImage(message.guild.splashURL())
+    if (message.guild.splash) embed.setImage(message.guild.splashURL({ size: 4096 }))
     await message.channel.send(embed)
   }
 }
