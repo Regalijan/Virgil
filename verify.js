@@ -3,6 +3,7 @@ const request = require('axios')
 module.exports = {
   async run (message, user) {
     if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send('I cannot modify your roles as I do not have the "Manage Roles" permission.')
+    if (message.author.bot) return message.channel.send('I cannot verify bots.')
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [message.guild.id])
     let member = message.member
     if (message.author.id !== user) member = await message.guild.members.fetch(user)
@@ -65,6 +66,7 @@ module.exports = {
   },
   async onjoin (member) {
     if (!member.guild.me.hasPermission('MANAGE_ROLES')) return
+    if (member.user.bot) return
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [member.guild.id])
     if (linkedRoles.rowCount === 0) return
     let robloxId
