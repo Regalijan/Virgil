@@ -17,7 +17,7 @@ module.exports = {
       .setColor(3756250)
       .setThumbnail(message.guild.iconURL({ dynamic: true, size: 4096 }))
       .addFields(
-        { name: 'Owner', value: message.guild.owner.toString(), inline: true },
+        { name: 'Owner', value: `<@${message.guild.ownerID}>`, inline: true },
         { name: 'Region', value: message.guild.region, inline: true },
         { name: '2FA Required', value: Boolean(message.guild.mfaLevel), inline: true },
         { name: 'Members', value: message.guild.memberCount, inline: true },
