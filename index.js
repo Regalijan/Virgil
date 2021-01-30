@@ -335,6 +335,26 @@ client.on('channelDelete', async channel => {
   await logchannel.send(embed)
 })
 
+client.on('channelUpdate', async (oldChannel, newChannel) => {
+  if (!oldChannel || !newChannel) return
+  if (newChannel.type === 'dm') return
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newChannel.guild.id])
+  if (serversettings.rowCount === 0) return
+  serversettings = serversettings.rows[0]
+  if (!serversettings.channel_log_channel) return
+  const logchannel = newChannel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
+  if (!logchannel) return
+  let auditlog
+  if (newChannel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await newChannel.guild.fetchAuditLogs({ limit: 1, type: 11 }).first()
+  let text = `Channel \`${newChannel.name}\` updated!`
+  if (newChannel.name !== oldChannel.name) text += `\nChannel renamed from \`${oldChannel.name}\` to \`${newChannel.name}\``
+  if (oldChannel.position !== newChannel.position) text += `\nChannel position changed from \`${oldChannel.position}\` to \`${newChannel.position}\``
+  const embed = new Discord.MessageEmbed()
+    .setColor(3756250)
+    .setDescription(text)
+  if (auditlog) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+})
+
 client.on('guildCreate', async guild => {
   const settingscheck = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
   if (settingscheck.rowCount > 0) return
