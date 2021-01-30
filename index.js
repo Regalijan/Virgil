@@ -310,7 +310,8 @@ client.on('channelCreate', async channel => {
   const logchannel = channel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
   if (!logchannel) return
   let auditlogs
-  if (channel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).first()
+  if (channel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 })
+  if (auditlogs) auditlogs = auditlogs.entries.first()
   const embed = new Discord.MessageEmbed()
     .setColor(3756250)
     .setDescription(`Channel \`${channel.name}\` has been created.`)
@@ -327,7 +328,8 @@ client.on('channelDelete', async channel => {
   const logchannel = channel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
   if (!logchannel) return
   let auditlogs
-  if (channel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 12 }).first()
+  if (channel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 12 })
+  if (auditlogs) auditlogs = auditlogs.entries.first()
   const embed = new Discord.MessageEmbed()
     .setColor(16711680)
     .setDescription(`Channel \`${channel.name}\` has been deleted.`)
@@ -345,7 +347,8 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
   const logchannel = newChannel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
   if (!logchannel) return
   let auditlog
-  if (newChannel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await newChannel.guild.fetchAuditLogs({ limit: 1, type: 11 }).first()
+  if (newChannel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await newChannel.guild.fetchAuditLogs({ limit: 1, type: 11 })
+  if (auditlog) auditlog = auditlog.entries.first()
   let text = `Channel \`${newChannel.name}\` updated!`
   if (newChannel.name !== oldChannel.name) text += `\nChannel renamed from \`${oldChannel.name}\` to \`${newChannel.name}\``
   if (oldChannel.position !== newChannel.position) text += `\nChannel position changed from \`${oldChannel.position}\` to \`${newChannel.position}\``
