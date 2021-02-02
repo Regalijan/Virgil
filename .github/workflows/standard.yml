@@ -5,7 +5,7 @@ on: push
 jobs:
   build:
     name: StandardJS Linting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x, 15.x]
