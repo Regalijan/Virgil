@@ -278,12 +278,12 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     let diff = ''
     const oldrs = []
     const newrs = []
+    const deleted = oldMember.roles.cache.every(role => !role.deleted)
+    if (deleted) return
     oldMember.roles.cache.forEach(async role => oldrs.push(role.id))
     newMember.roles.cache.forEach(async role => newrs.push(role.id))
     let oldroles = ''
-    for (let i = 0; i < oldrs.length; i++) {
-      oldroles += `<@&${oldrs[i]}> `
-    }
+    for (let i = 0; i < oldrs.length; i++) oldroles += `<@&${oldrs[i]}> `
     embed.addField('Old Roles', oldroles)
     if (oldrs.length > newrs.length) {
       for (let i = 0; i < oldrs.length; i++) {
@@ -356,6 +356,43 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
     .setColor(3756250)
     .setDescription(text)
   if (auditlog) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+})
+
+client.on('roleCreate', async role => {
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
+  if (serversettings.rowCount === 0) return
+  serversettings = serversettings.rows[0]
+  const channel = role.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
+  if (!channel) return
+  const embed = new Discord.MessageEmbed()
+    .setTitle('Role Created')
+    .setDescription(`Role \`${role.name}\` has been created.`)
+    .setColor(3756250)
+  let auditlog
+  if (role.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await role.guild.fetchAuditLogs({ limit: 1, type: 30 })
+  if (auditlog) {
+    auditlog = auditlog.entries.first()
+    embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+  }
+  await channel.send(embed)
+})
+
+client.on('roleDelete', async role => {
+  let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
+  if (serversettings.rowCount === 0) return
+  serversettings = serversettings.rows[0]
+  const channel = role.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
+  if (!channel) return
+  const embed = new Discord.MessageEmbed()
+    .setTitle('Role Deleted')
+    .setDescription(`Role \`${role.name}\` has been deleted.`)
+    .setColor(16711680)
+  if (role.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
+    let auditlog = await role.guild.fetchAuditLogs({ limit: 1, type: 32 })
+    auditlog = auditlog.entries.first()
+    embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+  }
+  await channel.send(embed)
 })
 
 client.on('guildCreate', async guild => {
