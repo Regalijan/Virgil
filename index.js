@@ -372,7 +372,7 @@ client.on('roleCreate', async role => {
   if (role.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await role.guild.fetchAuditLogs({ limit: 1, type: 30 })
   if (auditlog) {
     auditlog = auditlog.entries.first()
-    embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+    if (Date.now() - auditlog.createdTimestamp < 3000) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
   }
   await channel.send(embed)
 })
@@ -390,7 +390,7 @@ client.on('roleDelete', async role => {
   if (role.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
     let auditlog = await role.guild.fetchAuditLogs({ limit: 1, type: 32 })
     auditlog = auditlog.entries.first()
-    embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+    if (Date.now() - auditlog.createdTimestamp < 3000) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
   }
   await channel.send(embed)
 })
