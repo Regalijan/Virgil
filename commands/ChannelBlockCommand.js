@@ -6,8 +6,13 @@ module.exports = {
     const { MessageEmbed } = require('discord.js')
     const { prefix } = require('../config.json')
     const { getuser } = require('../getuser')
+    const overrides = []
     if (args.length < 2) return message.channel.send(`Usage: \`${prefix}channelblock <#channel> <@user>\``)
     if (!message.guild.me.hasPermission('MANAGE_CHANNELS')) return message.channel.send('I cannot modify channel settings as I do not have the manage channels permission.')
+    const db = require('../database')
+    const overrideData = await db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
+    overrideData.rows.forEach(row => { if (row.type === 'mod') overrides.push(row.role) })
+    if (overrides.length === 0 && !message.member.hasPermission('MANAGE_CHANNELS')) return message.channel.send('You cannot use this command!')
     let channel = args[0]
     channel = channel.replace(/(<#|>)/g, '')
     channel = await message.guild.channels.cache.find(c => c.id === channel)
