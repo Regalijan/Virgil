@@ -4,6 +4,9 @@ module.exports = {
   guildOnly: true,
   async execute (message, args) {
     if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send('You do not have permission to run this command!')
+    const request = require('axios')
+    const gexists = await request(`https://groups.roblox.com/v1/groups/${args[1]}`)
+    if (gexists.status !== 200) return message.channel.send('This group could not be validated!')
     const { prefix } = require('../config.json')
     const db = require('../database')
     if (!args[0]) return message.channel.send(`Usage: \`${prefix}addgrouprank  <RoleID/Name> <GroupID> [rank]\`\nIf the role has spaces you **MUST** use the ID. \`${prefix}roleinfo\``)
