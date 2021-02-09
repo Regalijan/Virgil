@@ -17,18 +17,28 @@ module.exports = {
       console.log('Failed to fetch data from RoVer!')
       console.error(e.stack)
     })
-    let bloxlinkData
-    if (roverData.status === 200) {
-      robloxId = roverData.data.robloxId
-    } else {
-      bloxlinkData = await request(`https://api.blox.link/v1/user/${user}`, { validateStatus: false }).catch(e => {
-        console.log('Failed to fetch data from BloxLink!')
-        console.error(e)
-        return message.channel.send('I could not retreive this user\'s data!')
-      })
-      if (bloxlinkData.data.status === 'ok') robloxId = bloxlinkData.data.primaryAccount
-    }
+    const bloxlinkData = await request(`https://api.blox.link/v1/user/${user}`, { validateStatus: false }).catch(e => {
+      console.log('Failed to fetch data from BloxLink!')
+      console.error(e)
+      return message.channel.send('I could not retreive this user\'s data!')
+    })
     if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('This user could not be found!')
+    if (roverData.data.robloxId && !bloxlinkData.data.primaryAccount) robloxId = roverData.data.robloxId
+    if (!roverData.data.robloxId && bloxlinkData.data.primaryAccount) robloxId = bloxlinkData.data.primaryAccount
+    if ((roverData.data.robloxId && bloxlinkData.data.primaryAccount) && roverData.data.robloxId !== parseInt(bloxlinkData.data.primaryAccount)) {
+      const rbxinfo = await request(`https://users.roblox.com/v1/users/${bloxlinkData.data.primaryAccount}`)
+      await message.channel.send(`I found multiple accounts for this user!\nFrom RoVer: ${roverData.data.robloxUsername}\nFrom BloxLink: ${rbxinfo.data.name}\nSay \`bloxlink\` or \`rover\` to select an account.`)
+      const filter = async m => m.author.id === message.author.id
+      const received = message.channel.awaitMessages(await filter, { max: 1, time: 20000, errors: ['time'] }).catch(async () => {
+        return await message.channel.send('No response, not continuing.')
+      })
+      if (!received || received.size === 0) return
+      const choice = received.first()
+      if (choice.toLowerCase() === 'rover') robloxId = roverData.data.robloxId
+      else if (choice.toLowerCase() === 'bloxlink') robloxId = bloxlinkData.data.primaryAccount
+      else await message.channel.send('Invalid selection!')
+    }
+    if (!robloxId) return
     const robloxData = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => {
       console.error(e)
       return message.channel.send('Hmm........ something broke. Roblox might be giving me garbage instead of data.')
