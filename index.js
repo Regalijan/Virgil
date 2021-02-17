@@ -40,6 +40,10 @@ client.on('message', async message => {
   const args = message.content.slice(config.prefix.length).trim().split(/ +/)
   const command = args.shift().toLowerCase()
   if (!client.commands.has(command)) return
+  if (message.channel.type !== 'dm') {
+    const mee6 = message.guild.members.fetch('159985870458322944')
+    if (mee6) return await message.channel.send('MEE6 has been detected in your server! If you are a server admin, please remove MEE6 before continuing to use my services.')
+  }
   if (command.guildOnly && message.channel.type === 'dm') return
   try {
     client.commands.get(command).execute(message, args)
@@ -49,7 +53,8 @@ client.on('message', async message => {
 })
 
 client.on('guildMemberAdd', async member => {
-  if (!member.guild.available) return
+  if (!member.guild || !member.guild.available) return
+  if (member.id === '159985870458322944') await member.guild.owner.send('MEE6 has been detected in your server! Please remove MEE6 before continuing to use my services.').catch(() => {})
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
     serversettings = serversettings.rows[0]
@@ -63,7 +68,8 @@ client.on('guildMemberAdd', async member => {
       .setColor(3756250)
       .addField('Registration Date', new Intl.DateTimeFormat(member.guild.preferredLocale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(member.user.createdTimestamp)))
       .setFooter(`ID: ${member.id}`)
-    channel.send(embed)
+    await channel.send(embed)
+    if (member.bot) return
     const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
     const secLevel = member.guild.verificationLevel
     if (secLevel === 'MEDIUM' && member.joinedTimestamp - member.user.createdTimestamp < 300000) return member.send(`${dmtext} you must wait 5 minutes befire chatting`)
@@ -78,6 +84,8 @@ client.on('guildMemberAdd', async member => {
 
 client.on('guildMemberRemove', async member => {
   if (!member.guild.available) return
+  const mee6 = member.guild.members.fetch('159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
     serversettings = serversettings.rows[0]
@@ -98,6 +106,8 @@ client.on('guildMemberRemove', async member => {
 
 client.on('guildBanAdd', async (guild, user) => {
   if (!guild.available) return
+  const mee6 = guild.members.fetch('159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -118,6 +128,8 @@ client.on('guildBanAdd', async (guild, user) => {
 
 client.on('guildBanRemove', async (guild, user) => {
   if (!guild.available) return
+  const mee6 = guild.members.fetch('159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -137,10 +149,10 @@ client.on('guildBanRemove', async (guild, user) => {
 })
 
 client.on('messageDelete', async message => {
-  if (!message.guild.available) return
-  if (message.channel.type === 'dm') return
+  if (message.channel.type === 'dm' || !message.guild.available) return
   if (message.author.bot) return
-  // TODO: Detect invites /(https?:\/\/w?w?w?\.?discord\.gg\/\S+|https?:\/\/w?w?w?\.?discord\.com\/invite\/\S+|https?:\/\/w?w?w?\.?discordapp\.com\/invite\/\S+)/g
+  const mee6 = message.guild.members.fetch('159985870458322944')
+  if (mee6) return
   try {
     const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [message.channel.id, message.channel.parent.id])
     if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
@@ -176,8 +188,10 @@ client.on('messageDelete', async message => {
 })
 
 client.on('messageUpdate', async (oldMessage, newMessage) => {
-  if (!newMessage.guild.available) return
-  if ((oldMessage.content) && (newMessage.content) && (newMessage.channel.type !== 'dm') && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
+  if (newMessage.channel.type === 'dm' || !newMessage.guild.available) return
+  const mee6 = newMessage.guild.members.fetch('159985870458322944')
+  if (mee6) return
+  if ((oldMessage.content) && (newMessage.content) && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [newMessage.channel.id, newMessage.channel.parent.id])
       if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
@@ -200,6 +214,8 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 
 client.on('messageDeleteBulk', async (messages) => {
   let channel
+  const mee6 = messages.first().guild.members.fetch('159985870458322944')
+  if (mee6) return
   messages.findKey(m => { channel = m.channel })
   if (!channel.guild.available) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
@@ -230,6 +246,8 @@ client.on('messageDeleteBulk', async (messages) => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   if (!newState.guild.available) return
+  const mee6 = newState.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newState.guild.id])
   serversettings = serversettings.rows[0]
   if (!serversettings.voice_log_channel) return
@@ -252,16 +270,16 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
   if (!newMember.guild.available) return
+  const mee6 = newMember.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMember.guild.id])
   serversettings = serversettings.rows[0]
   if (oldMember.nickname !== newMember.nickname) {
     if (!serversettings.nickname_log_channel) return
     const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.nickname_log_channel.toString())
     if (!channel) return
-    let oldnick = oldMember.nickname
-    let newnick = newMember.nickname
-    if (!oldnick) oldnick = 'None'
-    if (!newnick) newnick = 'None'
+    const oldnick = oldMember.nickname || 'None'
+    const newnick = newMember.nickname || 'None'
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setColor(3756250)
@@ -303,6 +321,8 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
 
 client.on('channelCreate', async channel => {
   if (channel.type === 'dm') return
+  const mee6 = channel.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -321,6 +341,8 @@ client.on('channelCreate', async channel => {
 
 client.on('channelDelete', async channel => {
   if (channel.type === 'dm') return
+  const mee6 = channel.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -340,6 +362,8 @@ client.on('channelDelete', async channel => {
 client.on('channelUpdate', async (oldChannel, newChannel) => {
   if (!oldChannel || !newChannel) return
   if (newChannel.type === 'dm') return
+  const mee6 = newChannel.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newChannel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -359,6 +383,8 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
 })
 
 client.on('roleCreate', async role => {
+  const mee6 = role.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -378,6 +404,8 @@ client.on('roleCreate', async role => {
 })
 
 client.on('roleDelete', async role => {
+  const mee6 = role.guild.members.fetch('159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -396,6 +424,11 @@ client.on('roleDelete', async role => {
 })
 
 client.on('guildCreate', async guild => {
+  const mee6 = guild.members.fetch('159985870458322944')
+  if (mee6) {
+    await guild.owner.send('MEE6 has been detected in your server, please remove it before readding me.').catch(() => {})
+    return await guild.leave()
+  }
   const settingscheck = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
   if (settingscheck.rowCount > 0) return
   await db.query('INSERT INTO core_settings(guild_id) VALUES($1);', [guild.id])
