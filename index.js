@@ -41,8 +41,8 @@ client.on('message', async message => {
   const command = args.shift().toLowerCase()
   if (!client.commands.has(command)) return
   if (message.channel.type !== 'dm') {
-    const mee6 = message.guild.members.fetch('159985870458322944')
-    if (mee6 && !mee6.deleted) return await message.channel.send('MEE6 has been detected in your server! If you are a server admin, please remove MEE6 before continuing to use my services.')
+    const mee6 = message.guild.members.cache.find(m => m.id === '159985870458322944')
+    if (mee6) return await message.channel.send('MEE6 has been detected in your server! If you are a server admin, please remove MEE6 before continuing to use my services.')
   }
   if (command.guildOnly && message.channel.type === 'dm') return
   try {
@@ -84,8 +84,8 @@ client.on('guildMemberAdd', async member => {
 
 client.on('guildMemberRemove', async member => {
   if (!member.guild.available) return
-  const mee6 = member.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = member.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
     serversettings = serversettings.rows[0]
@@ -106,8 +106,8 @@ client.on('guildMemberRemove', async member => {
 
 client.on('guildBanAdd', async (guild, user) => {
   if (!guild.available) return
-  const mee6 = guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -128,8 +128,8 @@ client.on('guildBanAdd', async (guild, user) => {
 
 client.on('guildBanRemove', async (guild, user) => {
   if (!guild.available) return
-  const mee6 = guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   try {
     let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [guild.id])
     serversettings = serversettings.rows[0]
@@ -151,8 +151,8 @@ client.on('guildBanRemove', async (guild, user) => {
 client.on('messageDelete', async message => {
   if (message.channel.type === 'dm' || !message.guild.available) return
   if (message.author.bot) return
-  const mee6 = message.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = message.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   try {
     const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [message.channel.id, message.channel.parent.id])
     if (snowflakecheck.rowCount > 0 && snowflakecheck.rows[0].type !== 'command') return
@@ -189,8 +189,8 @@ client.on('messageDelete', async message => {
 
 client.on('messageUpdate', async (oldMessage, newMessage) => {
   if (newMessage.channel.type === 'dm' || !newMessage.guild.available) return
-  const mee6 = newMessage.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = newMessage.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   if ((oldMessage.content) && (newMessage.content) && (!newMessage.author.bot) && (oldMessage.content !== newMessage.content)) {
     try {
       const snowflakecheck = await db.query('SELECT * FROM ignored WHERE snowflake = $1 OR snowflake = $2;', [newMessage.channel.id, newMessage.channel.parent.id])
@@ -214,8 +214,8 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 
 client.on('messageDeleteBulk', async (messages) => {
   let channel
-  const mee6 = messages.first().guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = messages.first().guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   messages.findKey(m => { channel = m.channel })
   if (!channel.guild.available) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
@@ -246,8 +246,8 @@ client.on('messageDeleteBulk', async (messages) => {
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
   if (!newState.guild.available) return
-  const mee6 = newState.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = newState.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newState.guild.id])
   serversettings = serversettings.rows[0]
   if (!serversettings.voice_log_channel) return
@@ -270,7 +270,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
   if (!newMember.guild.available) return
-  const mee6 = newMember.guild.members.fetch('159985870458322944')
+  const mee6 = newMember.guild.members.cache.find(m => m.id === '159985870458322944')
   if (mee6 && !mee6.deleted) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMember.guild.id])
   serversettings = serversettings.rows[0]
@@ -321,8 +321,8 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
 
 client.on('channelCreate', async channel => {
   if (channel.type === 'dm') return
-  const mee6 = channel.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = channel.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -341,8 +341,8 @@ client.on('channelCreate', async channel => {
 
 client.on('channelDelete', async channel => {
   if (channel.type === 'dm') return
-  const mee6 = channel.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = channel.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [channel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -362,8 +362,8 @@ client.on('channelDelete', async channel => {
 client.on('channelUpdate', async (oldChannel, newChannel) => {
   if (!oldChannel || !newChannel) return
   if (newChannel.type === 'dm') return
-  const mee6 = newChannel.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = newChannel.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newChannel.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -383,8 +383,8 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
 })
 
 client.on('roleCreate', async role => {
-  const mee6 = role.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = role.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -405,8 +405,8 @@ client.on('roleCreate', async role => {
 })
 
 client.on('roleDelete', async role => {
-  const mee6 = role.guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) return
+  const mee6 = role.guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
@@ -425,8 +425,8 @@ client.on('roleDelete', async role => {
 })
 
 client.on('guildCreate', async guild => {
-  const mee6 = guild.members.fetch('159985870458322944')
-  if (mee6 && !mee6.deleted) {
+  const mee6 = guild.members.cache.find(m => m.id === '159985870458322944')
+  if (mee6) {
     await guild.owner.send('MEE6 has been detected in your server, please remove it before readding me.').catch(() => {})
     return await guild.leave()
   }
