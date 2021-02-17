@@ -388,6 +388,7 @@ client.on('roleCreate', async role => {
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [role.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
+  if (!serversettings.role_log_channel) return
   const channel = role.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
   if (!channel) return
   const embed = new Discord.MessageEmbed()
