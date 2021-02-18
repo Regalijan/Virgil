@@ -7,14 +7,9 @@ module.exports = {
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [message.guild.id])
     let member = message.member
     if (message.author.id !== user) member = await message.guild.members.fetch(user)
-    let robloxId
-    let verificationData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false })
-    if (verificationData.status === 200) robloxId = verificationData.data.robloxId
-    else {
-      verificationData = await request(`https://api.blox.link/v1/user/${user}`, { validateStatus: false })
-      if (verificationData.data && verificationData.data.status === 'ok') robloxId = verificationData.data.primaryAccount
-      else return message.channel.send('The registries did not return any data, you are probably not verified. You may verify at either registry: <https://verify.eryn.io> <https://blox.link/verify>')
-    }
+    const verificationData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false })
+    if (verificationData.status !== 200) return await message.channel.send('You are not verified, you may verify at <https://verify.eryn.io>')
+    const robloxId = verificationData.data.robloxId
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
     const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(() => { return message.channel.send('An error occured when fetching data from Roblox!') })
@@ -69,15 +64,9 @@ module.exports = {
     if (member.user.bot) return
     const linkedRoles = await db.query('SELECT * FROM roblox_roles WHERE guild = $1;', [member.guild.id])
     if (linkedRoles.rowCount === 0) return
-    let robloxId
-    let verificationData = await request(`https://verify.eryn.io/api/user/${member.user.id}`, { validateStatus: false })
-    if (verificationData.status === 200) robloxId = verificationData.data.robloxId
-    else {
-      verificationData = await request(`https://api.blox.link/v1/user/${member.user.id}`, { validateStatus: false })
-      if (verificationData.data && verificationData.data.status === 'ok') robloxId = verificationData.data.primaryAccount
-      else return false
-    }
-    if (!robloxId) return
+    const verificationData = await request(`https://verify.eryn.io/api/user/${member.user.id}`, { validateStatus: false })
+    if (verificationData.status !== 200) return
+    const robloxId = verificationData.data.robloxId
     const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => { return console.error(e) })
     if (bancheck.data.isBanned) return
     let groupdata = await request(`https://groups.roblox.com/v1/users/${robloxId}/groups/roles`, { validateStatus: false })

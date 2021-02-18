@@ -5,7 +5,6 @@ module.exports = {
   async execute (message, args) {
     const app = require('../index')
     let user = message.author.id
-    let robloxId = 'Unknown'
     const { getuser } = require('../getuser')
     if (args.length > 0) {
       user = await getuser(args.slice(0).join(' '), message)
@@ -17,36 +16,15 @@ module.exports = {
       console.log('Failed to fetch data from RoVer!')
       console.error(e.stack)
     })
-    const bloxlinkData = await request(`https://api.blox.link/v1/user/${user}`, { validateStatus: false }).catch(e => {
-      console.log('Failed to fetch data from BloxLink!')
-      console.error(e)
-      return message.channel.send('I could not retreive this user\'s data!')
-    })
-    if (!roverData.data.robloxId && !bloxlinkData.data.primaryAccount) return message.channel.send('This user could not be found!')
-    if (roverData.data.robloxId && !bloxlinkData.data.primaryAccount) robloxId = roverData.data.robloxId
-    if (!roverData.data.robloxId && bloxlinkData.data.primaryAccount) robloxId = bloxlinkData.data.primaryAccount
-    if ((roverData.data.robloxId && bloxlinkData.data.primaryAccount) && roverData.data.robloxId !== parseInt(bloxlinkData.data.primaryAccount)) {
-      const rbxinfo = await request(`https://users.roblox.com/v1/users/${bloxlinkData.data.primaryAccount}`)
-      await message.channel.send(`I found multiple accounts for this user!\nFrom RoVer: ${roverData.data.robloxUsername}\nFrom BloxLink: ${rbxinfo.data.name}\nSay \`bloxlink\` or \`rover\` to select an account.`)
-      const filter = async m => m.author.id === message.author.id
-      const received = message.channel.awaitMessages(await filter, { max: 1, time: 20000, errors: ['time'] }).catch(async () => {
-        return await message.channel.send('No response, not continuing.')
-      })
-      if (!received || received.size === 0) return
-      const choice = received.first()
-      if (choice.toLowerCase() === 'rover') robloxId = roverData.data.robloxId
-      else if (choice.toLowerCase() === 'bloxlink') robloxId = bloxlinkData.data.primaryAccount
-      else await message.channel.send('Invalid selection!')
-    }
-    if (!robloxId) return
-    const robloxData = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => {
+    if (roverData.status !== 200) return await message.channel.send('This user is not verified!')
+    const robloxData = await request(`https://users.roblox.com/v1/users/${roverData.data.robloxId}`).catch(e => {
       console.error(e)
       return message.channel.send('Hmm........ something broke. Roblox might be giving me garbage instead of data.')
     })
     let bio = robloxData.data.description
     const joinDate = new Date(robloxData.data.created)
     if (robloxData.data.isBanned) return message.channel.send('This account has been terminated by Roblox!')
-    let avatar = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${robloxId}&size=180x180&format=png`).catch(() => { return message.channel.send('I could not fetch this user\'s avatar!') })
+    let avatar = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${roverData.data.robloxId}&size=180x180&format=png`).catch(() => { return message.channel.send('I could not fetch this user\'s avatar!') })
     avatar = avatar.data.data[0].imageUrl
     while ((bio.match(/\n/mg) || []).length > 15 || bio.match(/\n\n\n/mg)) {
       const lastN = bio.lastIndexOf('\n')
@@ -56,7 +34,7 @@ module.exports = {
       bio = bio.substr(0, 500) + '...'
     }
     let pastNames = '_'
-    let pastNamesData = await request(`https://users.roblox.com/v1/users/${robloxId}/username-history?limit=50&sortOrder=Desc`).catch(e => {
+    let pastNamesData = await request(`https://users.roblox.com/v1/users/${roverData.data.robloxId}/username-history?limit=50&sortOrder=Desc`).catch(e => {
       console.error(e)
     })
     pastNamesData = pastNamesData.data.data
