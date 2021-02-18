@@ -6,7 +6,7 @@
   "repository": "github:Wolftallemo/Virgil",
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
-    "@google-cloud/storage": "^5.7.4",
+    "@google-cloud/storage": "^5.8.0",
     "axios": "^0.21.1",
     "bufferutil": "^4.0.3",
     "discord.js": "^12.5.1",
