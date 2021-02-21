@@ -294,8 +294,6 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       .setColor(3756250)
       .setTitle('Roles Updated')
     let diff = ''
-    const notdeleted = oldMember.roles.cache.every(role => !role.deleted)
-    if (!notdeleted) return
     let oldroles = ''
     oldMember.roles.cache.each(role => { oldroles += `<@&${role.id}> ` })
     embed.addField('Old Roles', oldroles)
