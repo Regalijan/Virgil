@@ -294,28 +294,19 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       .setColor(3756250)
       .setTitle('Roles Updated')
     let diff = ''
-    const oldrs = []
-    const newrs = []
-    const deleted = oldMember.roles.cache.every(role => !role.deleted)
-    if (deleted) return
-    oldMember.roles.cache.forEach(async role => oldrs.push(role.id))
-    newMember.roles.cache.forEach(async role => newrs.push(role.id))
+    const notdeleted = oldMember.roles.cache.every(role => !role.deleted)
+    if (!notdeleted) return
     let oldroles = ''
-    for (let i = 0; i < oldrs.length; i++) oldroles += `<@&${oldrs[i]}> `
+    oldMember.roles.cache.each(role => { oldroles += `<@&${role.id}> ` })
     embed.addField('Old Roles', oldroles)
-    if (oldrs.length > newrs.length) {
-      for (let i = 0; i < oldrs.length; i++) {
-        if (!newrs.includes(oldrs[i])) diff += `<@&${oldrs[i]}> `
-      }
+    if (oldMember.roles.cache.size > newMember.roles.cache.size) {
+      oldMember.roles.cache.each(role => { if (!newMember.roles.cache.get(role.id)) diff += `<@&${role.id}> ` })
       embed.addField('Roles Removed', diff)
-      await channel.send(embed)
-    } else if (oldrs.length < newrs.length) {
-      for (let i = 0; i < newrs.length; i++) {
-        if (!oldrs.includes(newrs[i])) diff += `<@&${newrs[i]}> `
-      }
+    } else {
+      newMember.roles.cache.each(role => { if (!oldMember.roles.cache.get(role.id)) diff += `<@${role.id}> ` })
       embed.addField('Roles Added', diff)
-      await channel.send(embed)
     }
+    await channel.send(embed)
   }
 })
 
