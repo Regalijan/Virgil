@@ -303,7 +303,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       oldMember.roles.cache.each(role => { if (!newMember.roles.cache.get(role.id)) diff += `<@&${role.id}> ` })
       embed.addField('Roles Removed', diff)
     } else {
-      newMember.roles.cache.each(role => { if (!oldMember.roles.cache.get(role.id)) diff += `<@${role.id}> ` })
+      newMember.roles.cache.each(role => { if (!oldMember.roles.cache.get(role.id)) diff += `<@&${role.id}> ` })
       embed.addField('Roles Added', diff)
     }
     await channel.send(embed)
