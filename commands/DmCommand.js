@@ -9,7 +9,8 @@ module.exports = {
     const { getuser } = require('../getuser')
     const user = await getuser(args[0], message)
     if (!user) return await message.channel.send('I could not find that member!')
-    await user.send(args.slice(1).join(' ')).catch(async () => { return await message.channel.send('I could not dm this user!') })
-    await message.channel.send('Message sent!')
+    const sent = await user.send(args.slice(1).join(' ')).catch(() => {})
+    if (sent) return await message.channel.send('Message sent!')
+    await message.channel.send('I could not dm this user!')
   }
 }
