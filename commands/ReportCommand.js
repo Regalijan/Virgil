@@ -21,13 +21,7 @@ module.exports = {
       reason = reason.replace(/<|>/g, '')
       const request = require('axios')
       const response = await request(`https://api.roblox.com/users/get-by-username?username=${username}`, { validateStatus: false })
-      let validurl = true
       if (response.data.Username) {
-        await request(args[1], { validateStatus: false }).catch(() => {
-          message.channel.send('This URL could not be reached or verified.')
-          validurl = false
-        })
-        if (!validurl) return
         const bancheck = await request(`https://storage.googleapis.com/${config.bucket}/${response.data.Id}.json`, { validateStatus: false })
         let banstatus = 'Not banned or blacklisted'
         if (bancheck.status === 200 && bancheck.data.usercode === '0x1') banstatus = 'Blacklisted'
