@@ -45,6 +45,7 @@ client.on('message', async message => {
     if (mee6) return await message.channel.send('MEE6 has been detected in your server! If you are a server admin, please remove MEE6 before continuing to use my services.')
   }
   if (command.guildOnly && message.channel.type === 'dm') return
+  if (!message.channel.type === 'dm' && !message.guild.me.hasPermission('SEND_MESSAGES')) return
   try {
     client.commands.get(command).execute(message, args)
   } catch (error) {
