@@ -290,6 +290,8 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
     if (!serversettings.role_log_channel) return
     const channel = newMember.guild.channels.cache.find(c => c.id === serversettings.role_log_channel.toString())
     if (!channel) return
+    const notdeleted = oldMember.roles.cache.every(role => !role.deleted)
+    if (!notdeleted) return
     const embed = new Discord.MessageEmbed()
       .setAuthor(newMember.user.tag, newMember.user.displayAvatarURL())
       .setColor(3756250)
