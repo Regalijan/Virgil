@@ -3,9 +3,13 @@ module.exports = {
   description: 'Issues a warning to a member',
   guildOnly: true,
   async execute (message, args) {
+    const db = require('../database')
+    const overrides = []
+    const overridedata = await db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
+    overridedata.rows.forEach(row => { if (row.type === ('warn' || 'mod')) overrides.push(row.role) })
+    if (!message.member.hasPermission('MANAGE_MESSAGES') && !message.member.roles.cache.some(role => overrides.includes(role.id))) return
     const { prefix } = require('../config.json')
     if (!args[0]) return message.channel.send(`Usage: \`${prefix}warn <user> [reason]\``)
-    const db = require('../database')
     const { MessageEmbed } = require('discord.js')
     let reason = args.slice(1).join(' ')
     const { getuser } = require('../getuser')
