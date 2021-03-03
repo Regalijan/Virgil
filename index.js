@@ -258,8 +258,28 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     change = `left \`#${oldState.channel.name}\``
     color = 16711680
   } else if (!oldState.channel && newState.channel) change = `joined \`#${newState.channel.name}\``
-  else if (oldState.channel.id === newState.channel.id) return
-  else change = `switched from \`#${oldState.channel.name}\` to \`#${newState.channel.name}\``
+  else if (oldState.channel.id !== newState.channel.id) change = `switched from \`#${oldState.channel.name}\` to \`#${newState.channel.name}\``
+  else if (oldState.selfDeaf !== newState.selfDeaf) {
+    if (newState.selfDeaf) {
+      change = 'deafened themself'
+      color = 16711680
+    } else change = 'undeafened themself'
+  } else if (oldState.selfMute !== newState.selfMute) {
+    if (newState.selfMute) {
+      change = 'muted themself'
+      color = 16711680
+    } else change = 'unmuted themself'
+  } else if (oldState.serverDeaf !== newState.serverDeaf) {
+    if (newState.serverDeaf) {
+      change = 'was server deafened'
+      color = 16711680
+    } else change = 'no longer server deafened'
+  } else if (oldState.serverMute !== newState.serverMute) {
+    if (newState.serverMute) {
+      change = 'was server muted'
+      color = 16711680
+    } else change = 'no longer server muted'
+  }
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
