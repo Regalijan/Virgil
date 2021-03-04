@@ -280,8 +280,14 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       color = 16711680
     } else change = 'no longer server muted'
   } else if (!oldState.selfVideo && newState.selfVideo) change = 'enabled their camera'
-  else if (oldState.selfVideo && !newState.selfVideo) change = 'disabled their camera'
-  else return
+  else if (oldState.selfVideo && !newState.selfVideo) {
+    change = 'disabled their camera'
+    color = 16711680
+  } else if (!oldState.streaming && newState.streaming) change = 'started streaming'
+  else if (oldState.streaming && !newState.streaming) {
+    change = 'stopped streaming'
+    color = 16711680
+  } else return
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
