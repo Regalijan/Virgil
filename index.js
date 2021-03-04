@@ -279,7 +279,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       change = 'was server muted'
       color = 16711680
     } else change = 'no longer server muted'
-  }
+  } else if (!oldState.selfVideo && newState.selfVideo) change = 'enabled their camera'
+  else if (oldState.selfVideo && !newState.selfVideo) change = 'disabled their camera'
+  else return
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
