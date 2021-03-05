@@ -2,7 +2,7 @@ module.exports = {
   name: 'cat',
   description: 'Gets cat image',
   async execute (message) {
-    const request = require('axios').default
+    const request = require('axios')
     const cat = await request('https://nekos.life/api/v2/img/meow').catch(() => {})
     if (!cat) return await message.channel.send('An error occured :(')
     const { MessageEmbed } = require('discord.js')
