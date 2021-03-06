@@ -1,5 +1,6 @@
 module.exports = {
   name: 'reload',
+  properName: 'Reload',
   description: 'Reload a command',
   async execute (message, args) {
     const app = require('../index')

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'verify',
+  properName: 'Verify',
   description: 'Adds roles based on your roblox badges and group rank (if applicable).',
   guildOnly: true,
   async execute (message) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'whois',
+  properName: 'Whois',
   description: 'User lookup',
   guildOnly: true,
   async execute (message, args) {

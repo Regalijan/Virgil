@@ -1,6 +1,7 @@
 module.exports = {
   name: 'owoify',
-  description: 'OwOifies text (200 characters maximum)',
+  properName: 'Owoify',
+  description: 'OwOifies text',
   async execute (message, args) {
     if (args.length === 0) return await message.channel.send('I need some text first!')
     const body = args.slice(0).join(' ')

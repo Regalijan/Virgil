@@ -2,6 +2,7 @@ const db = require('../database')
 
 module.exports = {
   name: 'clearqueue',
+  properName: 'ClearQueue',
   description: 'Clears music queue',
   guildOnly: true,
   async execute (message) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'disabledeletelog',
+  properName: 'DisableDeleteLog',
   description: 'Disables delete logging',
   guildOnly: true,
   async execute (message, args) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'deny',
+  properName: 'Deny',
   description: 'Denies a user\'s appeal',
   guildOnly: true,
   async execute (message, args) {

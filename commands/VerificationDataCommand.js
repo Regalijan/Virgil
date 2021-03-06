@@ -1,5 +1,6 @@
 module.exports = {
   name: 'verificationdata',
+  properName: 'VerificationData',
   description: 'Displays your verification data from the RoVer and BloxLink registries',
   async execute (message) {
     const { MessageEmbed } = require('discord.js')

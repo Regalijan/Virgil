@@ -1,5 +1,6 @@
 module.exports = {
   name: 'roblox',
+  properName: 'Roblox',
   description: "Looks up a user's roblox information",
   guildOnly: true,
   async execute (message, args) {

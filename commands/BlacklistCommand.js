@@ -1,5 +1,6 @@
 module.exports = {
   name: 'blacklist',
+  properName: 'Blacklist',
   description: 'Blacklists user from game',
   guildOnly: true,
   async execute (message, args) {

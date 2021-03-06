@@ -1,5 +1,6 @@
 module.exports = {
   name: 'skip',
+  properName: 'Skip',
   description: 'Skips current track.',
   guildOnly: true,
   async execute (message) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'exit',
+  properName: 'Exit',
   description: 'Exits the bot process',
   async execute (message) {
     const app = require('../index')

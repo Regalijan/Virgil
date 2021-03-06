@@ -1,5 +1,6 @@
 module.exports = {
   name: 'say',
+  properName: 'Say',
   description: 'Repeats text input',
   guildOnly: true,
   async execute (message, args) {

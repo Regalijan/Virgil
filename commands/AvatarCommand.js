@@ -1,5 +1,6 @@
 module.exports = {
   name: 'avatar',
+  properName: 'Avatar',
   description: 'Displays a user\'s avatar',
   guildOnly: true,
   async execute (message, args) {

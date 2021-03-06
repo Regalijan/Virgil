@@ -1,5 +1,6 @@
 module.exports = {
   name: 'editlog',
+  properName: 'EditLog',
   description: 'Sets edit log channel',
   guildOnly: true,
   async execute (message, args) {

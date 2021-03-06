@@ -1,5 +1,6 @@
 module.exports = {
   name: 'getlatest',
+  properName: 'GetLatest',
   description: 'Pulls latest version from GitHub',
   async execute (message) {
     const app = require('../index')

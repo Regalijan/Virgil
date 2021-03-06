@@ -1,5 +1,6 @@
 module.exports = {
   name: 'ping',
+  properName: 'Ping',
   description: 'Pong',
   async execute (message) {
     const beginningTS = Date.now()

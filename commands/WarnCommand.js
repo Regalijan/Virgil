@@ -1,5 +1,6 @@
 module.exports = {
   name: 'warn',
+  properName: 'Warn',
   description: 'Issues a warning to a member',
   guildOnly: true,
   async execute (message, args) {

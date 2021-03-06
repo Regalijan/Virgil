@@ -1,5 +1,6 @@
 module.exports = {
   name: 'resume',
+  properName: 'Resume',
   description: 'Resumes audio',
   guildOnly: true,
   async execute (message) {

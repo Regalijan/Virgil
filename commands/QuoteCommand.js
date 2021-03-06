@@ -1,5 +1,6 @@
 module.exports = {
   name: 'quote',
+  properName: 'Quote',
   description: 'Gets a quote from InspiroBot',
   async execute (message) {
     try {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'addgrouprank',
+  properName: 'AddGroupRank',
   description: 'Bind a group role to a discord role',
   guildOnly: true,
   async execute (message, args) {

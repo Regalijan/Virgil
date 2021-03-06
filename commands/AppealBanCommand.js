@@ -1,5 +1,6 @@
 module.exports = {
   name: 'appealban',
+  properName: 'AppealBan',
   description: 'Bans a user from the appeal form',
   guildOnly: true,
   async execute (message, args) {

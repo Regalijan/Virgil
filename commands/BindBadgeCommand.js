@@ -1,5 +1,6 @@
 module.exports = {
   name: 'bindbadge',
+  properName: 'BindBadge',
   description: 'Binds a badge to a discord role',
   guildOnly: true,
   async execute (message, args) {

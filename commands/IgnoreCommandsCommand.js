@@ -1,5 +1,6 @@
 module.exports = {
   name: 'ignorecommands',
+  properName: 'IgnoreCommands',
   description: 'Ignores a channel for commands',
   guildOnly: true,
   async execute (message, args) {

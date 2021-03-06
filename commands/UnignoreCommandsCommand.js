@@ -1,5 +1,6 @@
 module.exports = {
   name: 'unignorecommands',
+  properName: 'UnignoreCommands',
   description: 'Unignores commands in a channel',
   guildOnly: true,
   async execute (message, args) {

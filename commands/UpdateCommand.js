@@ -1,5 +1,6 @@
 module.exports = {
   name: 'update',
+  properName: 'Update',
   description: "Updates the target user's role bindings.",
   guildOnly: true,
   async execute (message, args) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'accept',
+  properName: 'Accept',
   description: 'Accepts a user\'s appeal',
   guildOnly: true,
   async execute (message, args) {

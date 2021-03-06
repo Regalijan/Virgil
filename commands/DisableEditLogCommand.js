@@ -1,5 +1,6 @@
 module.exports = {
   name: 'disableeditlog',
+  properName: 'DisableEditLog',
   description: 'Disables edit logging',
   guildOnly: true,
   async execute (message) {

@@ -1,13 +1,13 @@
-const Discord = require('discord.js')
-const request = require('axios')
-
 module.exports = {
   name: 'duck',
+  properName: 'Duck',
   description: 'Shows a random duck.',
   async execute (message) {
     try {
+      const request = require('axios')
       const response = await request('https://random-d.uk/api/v2/random')
-      const embed = new Discord.MessageEmbed()
+      const { MessageEmbed } = require('discord.js')
+      const embed = new MessageEmbed()
         .setTitle(':duck: QUACK! A random duck for you!')
         .setColor(3756250)
         .setImage(response.data.url)

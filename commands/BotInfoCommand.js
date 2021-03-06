@@ -1,5 +1,6 @@
 module.exports = {
   name: 'botinfo',
+  properName: 'BotInfo',
   description: 'Bot information',
   async execute (message) {
     const { MessageEmbed } = require('discord.js')

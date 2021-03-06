@@ -1,5 +1,6 @@
 module.exports = {
   name: 'pause',
+  properName: 'Pause',
   description: 'Pauses audio',
   guildOnly: true,
   async execute (message) {

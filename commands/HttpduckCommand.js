@@ -1,5 +1,6 @@
 module.exports = {
   name: 'httpduck',
+  properName: 'Httpduck',
   description: 'Gets a duck with the specified http status code if one exists',
   async execute (message, args) {
     const Discord = require('discord.js')

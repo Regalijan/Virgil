@@ -1,5 +1,6 @@
 module.exports = {
   name: 'noobdetector',
+  properName: 'NoobDetector',
   description: 'Find out how much of a noob you are',
   async execute (message, args) {
     const { getuser } = require('../getuser')

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'deletelog',
+  properName: 'DeleteLog',
   description: 'Sets delete log channel',
   guildOnly: true,
   async execute (message, args) {

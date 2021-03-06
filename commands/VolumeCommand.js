@@ -1,5 +1,6 @@
 module.exports = {
   name: 'volume',
+  properName: 'Volume',
   description: 'Changes volume of music anywhere between 0 and 100',
   guildOnly: true,
   async execute (message, args) {

@@ -1,5 +1,6 @@
 module.exports = {
   name: 'ban',
+  properName: 'Ban',
   description: 'What do you think this does lol.',
   guildOnly: true,
   async execute (message, args) {

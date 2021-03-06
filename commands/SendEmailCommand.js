@@ -1,5 +1,6 @@
 module.exports = {
   name: 'sendemail',
+  properName: 'SendEmail',
   description: 'Sends an email',
   guildOnly: true,
   async execute (message, args) {

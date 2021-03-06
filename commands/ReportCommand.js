@@ -1,6 +1,8 @@
 module.exports = {
   name: 'report',
+  properName: 'Report',
   description: 'Report an exploiter',
+  guildOnly: true,
   async execute (message, args) {
     const config = require('../config.json')
     const db = require('../database')

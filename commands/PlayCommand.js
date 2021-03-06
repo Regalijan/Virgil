@@ -1,5 +1,6 @@
 module.exports = {
   name: 'play',
+  properName: 'Play',
   description: 'Plays music from youtube',
   guildOnly: true,
   async execute (message, args) {

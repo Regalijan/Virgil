@@ -1,5 +1,6 @@
 module.exports = {
   name: 'queue',
+  properName: 'Queue',
   description: 'Shows all tracks in the queue',
   guildOnly: true,
   async execute (message) {

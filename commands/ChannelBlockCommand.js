@@ -1,5 +1,6 @@
 module.exports = {
   name: 'channelblock',
+  properName: 'ChannelBlock',
   description: 'Prevents a user from talking in a specific channel',
   guildOnly: true,
   async execute (message, args) {

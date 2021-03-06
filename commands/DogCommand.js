@@ -1,5 +1,6 @@
 module.exports = {
   name: 'dog',
+  properName: 'Dog',
   description: 'Gets dog picture',
   async execute (message) {
     const request = require('axios')

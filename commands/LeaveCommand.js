@@ -1,5 +1,6 @@
 module.exports = {
   name: 'leave',
+  properName: 'Leave',
   description: 'Leaves current voice channel',
   guildOnly: true,
   async execute (message) {

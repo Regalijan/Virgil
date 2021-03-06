@@ -1,5 +1,6 @@
 module.exports = {
   name: 'nowplaying',
+  properName: 'NowPlaying',
   description: 'Shows the currently playing track',
   guildOnly: true,
   async execute (message, args) {

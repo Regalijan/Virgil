@@ -1,5 +1,6 @@
 module.exports = {
   name: 'serverinfo',
+  properName: 'ServerInfo',
   description: 'Displays information of the current server',
   guildOnly: true,
   async execute (message) {

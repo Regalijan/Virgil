@@ -1,5 +1,6 @@
 module.exports = {
   name: 'mentionable',
+  properName: 'Mentionable',
   description: 'Makes a role mentionable',
   guildOnly: true,
   async execute (message, args) {

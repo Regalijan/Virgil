@@ -1,5 +1,6 @@
 module.exports = {
   name: 'getappeals',
+  properName: 'GetAppeals',
   description: 'Retrieves all open appeals',
   guildOnly: true,
   async execute (message) {

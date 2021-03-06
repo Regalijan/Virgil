@@ -1,5 +1,6 @@
 module.exports = {
   name: 'help',
+  properName: 'Help',
   description: 'Displays all commands',
   async execute (message, args) {
     const { prefix } = require('../config.json')

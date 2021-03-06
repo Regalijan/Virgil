@@ -1,5 +1,6 @@
 module.exports = {
   name: 'stock',
+  properName: 'Stock',
   description: 'Fetches stock information from Yahoo Finance',
   async execute (message, args) {
     const request = require('axios').default

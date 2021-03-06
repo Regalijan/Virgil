@@ -1,5 +1,6 @@
 module.exports = {
   name: 'findappeal',
+  properName: 'FindAppeal',
   description: 'Finds a user\'s appeal',
   guildOnly: true,
   async execute (message, args) {

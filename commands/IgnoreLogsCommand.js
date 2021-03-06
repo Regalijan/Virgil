@@ -1,5 +1,6 @@
 module.exports = {
   name: 'ignorelogs',
+  properName: 'IgnoreLogs',
   description: 'Ignores a channel (logging)',
   guildOnly: true,
   async execute (message, args) {

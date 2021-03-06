@@ -1,5 +1,6 @@
 module.exports = {
   name: 'tempban',
+  properName: 'Tempban',
   description: 'Temporarily bans a member',
   guildOnly: true,
   async execute (message, args) {

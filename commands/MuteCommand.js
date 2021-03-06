@@ -1,5 +1,6 @@
 module.exports = {
   name: 'mute',
+  properName: 'Mute',
   description: 'What do you think this does lmfao',
   guildOnly: true,
   async execute (message, args) {
