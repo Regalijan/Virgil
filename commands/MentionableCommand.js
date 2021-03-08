@@ -4,7 +4,11 @@ module.exports = {
   description: 'Makes a role mentionable',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send('You do not have permission to run this command!')
+    const db = require('../database')
+    const overrides = []
+    const overridedata = await db.query('SELECT * FROM overrides WHERE guild = $1;', [message.guild.id])
+    overridedata.rows.forEach(row => { if (row.type === 'mentionable') overrides.push(row.role) })
+    if (!message.member.hasPermission('MANAGE_ROLES') && !message.member.roles.cache.some(role => overrides.includes(role.id))) return message.channel.send('You do not have permission to run this command!')
     if (!args[0]) return message.channel.send('You did not give me a role!')
     let role = args.slice(0).join(' ')
     role = role.replace(/(<@&|>)/g, '')
