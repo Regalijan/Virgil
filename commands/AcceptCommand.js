@@ -26,9 +26,14 @@ module.exports = {
     try {
       let { appealAcceptedBody } = require('../config.json')
       if (appealAcceptedBody.startsWith('file:')) {
-        const { readFile } = require('fs')
+        const { readFileSync } = require('fs')
         appealAcceptedBody.replace('file:', '')
-        appealAcceptedBody = await readFile(appealAcceptedBody).catch(() => {})
+        try {
+          appealAcceptedBody = readFileSync(appealAcceptedBody)
+        } catch (e) {
+          console.error(e)
+          return message.channel.send('An error occured when reading the body!')
+        }
         if (!appealAcceptedBody) return
       }
       appealAcceptedBody.replace(/%NOTE%/, note)
