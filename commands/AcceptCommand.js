@@ -24,8 +24,14 @@ module.exports = {
       return message.channel.send('There was an error looking up this user!')
     })
     try {
-      const { appealAcceptedBody } = require('../config.json')
-        .replace(/%NOTE%/, note)
+      let { appealAcceptedBody } = require('../config.json')
+      if (appealAcceptedBody.startsWith('file:')) {
+        const { readFile } = require('fs')
+        appealAcceptedBody.replace('file:', '')
+        appealAcceptedBody = await readFile(appealAcceptedBody).catch(() => {})
+        if (!appealAcceptedBody) return
+      }
+      appealAcceptedBody.replace(/%NOTE%/, note)
       await mailer.execute('Appeal Accepted', appealAcceptedBody, user.rows[0].email)
     } catch (e) {
       console.error(e)
