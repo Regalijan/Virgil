@@ -24,12 +24,9 @@ module.exports = {
       return message.channel.send('There was an error looking up this user!')
     })
     try {
-      const appealsinvite = await db.query('SELECT appeals_invite FROM core_settings WHERE guild_id = $1;', [message.guild.id])
-      let body = '<html>Your appeal was accepted, you may join us again at our '
-      if (appealsinvite.rowCount > 0) body += `<a href="${appealsinvite.rows[0].appeals_invite}" target="_blank">discord server</a>`
-      else body += 'discord server'
-      body += `.<br/><br/>Note from the moderation team: ${note}</html>`
-      await mailer.execute('Appeal Accepted', body, user.rows[0].email)
+      const { appealAcceptedBody } = require('../config.json')
+        .replace(/%NOTE%/, note)
+      await mailer.execute('Appeal Accepted', appealAcceptedBody, user.rows[0].email)
     } catch (e) {
       console.error(e)
       return message.channel.send('The email could not be sent! Check the console for details.')

@@ -24,7 +24,9 @@ module.exports = {
       return message.channel.send('There was an error looking up this user!')
     })
     try {
-      await mailer.execute('Appeal Denied', `<html>After careful consideration, the moderation team has decided to deny your appeal. We understand that you wish to be unbanned but as of right now we will not accept your appeal. If you have more information that you believe may change this decision, you may send another appeal.<br/><br/>Note from the moderation team: ${note}</html>`, user.rows[0].email)
+      const { appealDeniedBody } = require('../config.json')
+        .replace(/%NOTE%/, note)
+      await mailer.execute('Appeal Denied', appealDeniedBody, user.rows[0].email)
     } catch (e) {
       console.error(e)
       return message.channel.send('The email could not be sent! Check the console for details.')
