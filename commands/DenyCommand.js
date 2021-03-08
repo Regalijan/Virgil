@@ -35,7 +35,7 @@ module.exports = {
         }
         if (!appealDeniedBody) return
       }
-      appealDeniedBody.replace(/%NOTE%/, note)
+      appealDeniedBody.replace(/%MODNOTE%/g, note)
       await mailer.execute('Appeal Denied', appealDeniedBody, user.rows[0].email)
     } catch (e) {
       console.error(e)
