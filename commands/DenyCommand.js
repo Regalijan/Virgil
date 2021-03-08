@@ -28,7 +28,7 @@ module.exports = {
       if (bodiesAreFiles) {
         const { readFileSync } = require('fs')
         try {
-          appealDeniedBody = readFileSync(appealDeniedBody)
+          appealDeniedBody = readFileSync(appealDeniedBody, { encoding: 'utf-8' })
         } catch (e) {
           console.error(e)
           return message.channel.send('An error occured while reading the body!')
