@@ -17,5 +17,6 @@
     "apiKey": null,
     "fromAddress": null,
     "appealAcceptedBody":"<html><body>something here</body></html>",
-    "appealDeniedBody":"<html><body>something here</body></html>"
+    "appealDeniedBody":"<html><body>something here</body></html>",
+    "bodiesAreFiles":false
 }

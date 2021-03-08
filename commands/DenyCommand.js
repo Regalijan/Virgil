@@ -24,10 +24,9 @@ module.exports = {
       return message.channel.send('There was an error looking up this user!')
     })
     try {
-      let { appealDeniedBody } = require('../config.json')
-      if (appealDeniedBody.startsWith('file:')) {
+      let { appealDeniedBody, bodiesAreFiles } = require('../config.json')
+      if (bodiesAreFiles) {
         const { readFileSync } = require('fs')
-        appealDeniedBody.replace('file:', '')
         try {
           appealDeniedBody = readFileSync(appealDeniedBody)
         } catch (e) {
