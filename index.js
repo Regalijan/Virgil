@@ -166,7 +166,7 @@ client.on('messageDelete', async message => {
     auditlogs = auditlogs.entries.first()
     let messagecontent = `Message ${message.id} deleted from ${message.channel}`
     if (auditlogs.createdTimestamp !== lastlogtime && Date.now() - auditlogs.createdTimestamp < 5000 && auditlogs.executor.id !== message.author.id) {
-      if (auditlogs.executor) messagecontent += `by \`${auditlogs.executor.tag}\``
+      if (auditlogs.executor) messagecontent += ` by \`${auditlogs.executor.tag}\``
       lastlogtime = auditlogs.createdTimestamp
     }
     if (message.content) {
