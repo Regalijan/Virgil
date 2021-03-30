@@ -35,8 +35,8 @@ module.exports = {
         }
         if (!appealAcceptedBody) return
       }
-      appealAcceptedBody = appealAcceptedBody.replace(/%MODNOTE%/g, note)
-      await mailer.execute('Appeal Accepted', appealAcceptedBody, user.rows[0].email)
+      const body = appealAcceptedBody.replace('{{note}}', note)
+      await mailer.execute('Appeal Accepted', body, user.rows[0].email)
     } catch (e) {
       console.error(e)
       return message.channel.send('The email could not be sent! Check the console for details.')
