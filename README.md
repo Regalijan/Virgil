@@ -5,8 +5,8 @@
 ### Windows
 
 1. Download the <a href="https://nodejs.org/en/download/current/">current release</a> of NodeJS.
-2. Launch the installer, and check the box to install Chocolatey.
-3. When Chocolatey finishes installing, open a PowerShell or Command Prompt window as administrator and run the following: `choco install visualstudio2019buildtools`
+2. Download the <a href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16">Visual Studio Build Tools Installer</a>.
+3. Install NodeJS and the Build Tools with the C/C++ toolchain.
 4. Navigate into the repo folder and install the node modules: `npm i`
 5. To ensure the bot stays online, a process manager such as PM2 will be handy.
 6. To enable music, read the ffmpeg compilation guide at the bottom.
