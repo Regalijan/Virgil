@@ -25,7 +25,7 @@ module.exports = {
     let bio = robloxData.data.description
     const joinDate = new Date(robloxData.data.created)
     if (robloxData.data.isBanned) return message.channel.send('This account has been terminated by Roblox!')
-    let avatar = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${roverData.data.robloxId}&size=180x180&format=png`).catch(() => { return message.channel.send('I could not fetch this user\'s avatar!') })
+    let avatar = await request(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${roverData.data.robloxId}&size=720x720&format=png`).catch(() => { return message.channel.send('I could not fetch this user\'s avatar!') })
     avatar = avatar.data.data[0].imageUrl
     while ((bio.match(/\n/mg) || []).length > 15 || bio.match(/\n\n\n/mg)) {
       const lastN = bio.lastIndexOf('\n')
