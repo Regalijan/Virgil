@@ -9,7 +9,7 @@ module.exports = {
     const modroles = await db.query('SELECT * FROM gamemods WHERE guild = $1 AND type = \'role\';', [message.guild.id])
     const roles = []
     modroles.rows.forEach(row => roles.push(row.id))
-    if (usermodcheck.rowCount === 0 && !message.members.roles.cache.some(role => roles.includes(role.id))) return
+    if (usermodcheck.rowCount === 0 && !message.member.roles.cache.some(role => roles.includes(role.id))) return
     const modsettings = await db.query('SELECT * FROM gamemod_settings WHERE guild = $1;', [message.guild.id])
     if (modsettings.rowCount === 0) return
     const fs = require('fs')
