@@ -289,6 +289,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     color = 16711680
   } else return
   const channel = newState.guild.channels.cache.find(ch => ch.id === serversettings.voice_log_channel.toString())
+  if (!newState.member || !oldState.member) return
   const embed = new Discord.MessageEmbed()
     .setAuthor(newState.member.user.tag, newState.member.user.displayAvatarURL())
     .setDescription(`${newState.member} ${change}`)
@@ -298,7 +299,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 })
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
-  if (!newMember.guild.available) return
+  if (!newMember.guild || !newMember.guild.available) return
   const mee6 = newMember.guild.members.cache.find(m => m.id === '159985870458322944')
   if (mee6 && !mee6.deleted) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [newMember.guild.id])
