@@ -18,21 +18,27 @@ module.exports = {
       const reason = appeal.reason || 'No reason provided'
       const why = appeal.why || 'No response provided'
       const comment = appeal.comment || 'No comment provided'
-      const { MessageEmbed } = require('discord.js')
       if (reason.length + why.length + comment.length > 1750) {
-        const { writeFile } = require('fs')
+        const { rm, writeFile } = require('fs/promises')
         const { randomBytes } = require('crypto')
         const attname = `${randomBytes(12).toString('hex')}.txt`
         const attbody = `Submitter: ${appeal.username}#${('0000' + appeal.discriminator).slice(-4)} (${appeal.discord_id})\n\nReason for ban: ${reason}\n\nWhy they believe they should be unbanned: ${why}\n\nComment: ${comment}\n\nTime: ${appeal.date}`
-        await writeFile(attname, attbody, 'utf8', err => { if (err) console.error(err) })
+        const fileData = await writeFile(attname, attbody, 'utf8').catch(e => {
+          console.error(e)
+          return true
+        })
+        // fsPromises.writeFile() returns undefined on success, catch and return true if error occurs
+        if (fileData) return await message.channel.send('An error occured when writing the file!')
         const filemsg = await message.channel.send('This appeal is too large to send as an embed, you can view it in this text file.', {
           files: [{
-            attachment: `./${attname}.txt`
+            attachment: `./${attname}`
           }]
         })
         if (filemsg.attachments.size === 0) filemsg.edit('An error occured when writing the file!')
+        await rm(`./${attname}`).catch(e => console.error(e))
         return
       }
+      const { MessageEmbed } = require('discord.js')
       const embed = new MessageEmbed()
         .setTitle(`Appeal for ${appeal.username}#${('0000' + appeal.discriminator).slice(-4)} (${appeal.discord_id})`)
         .setColor(3756250)
