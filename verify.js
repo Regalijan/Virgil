@@ -9,7 +9,9 @@ module.exports = {
     const request = require('axios')
     const verificationData = await request(`https://verify.eryn.io/api/user/${user}`, { validateStatus: false })
     if (verificationData.status !== 200) {
-      const unvRoleSetting = await db.query('SELECT unverified_role FROM core_settings WHERE guild_id = $1;', [message.guild.id]).rows[0].unverified_role.toString()
+      let unvRoleSetting = await db.query('SELECT unverified_role FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+      if (unvRoleSetting.rows[0].unverified_role) unvRoleSetting = unvRoleSetting.rows[0].unverified_role.toString()
+      else unvRoleSetting = false
       if (unvRoleSetting && message.guild.me.hasPermission('MANAGE_ROLES') && message.guild.roles.cache.find(r => r.id === unvRoleSetting)) {
         const unvRoleServer = message.guild.roles.cache.find(r => r.id === unvRoleSetting)
         if (unvRoleServer && unvRoleServer.rawPosition < message.guild.me.roles.highest.rawPosition) {
