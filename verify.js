@@ -25,8 +25,9 @@ module.exports = {
     }
     const robloxId = verificationData.data.robloxId
     if (message.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
-      const shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id]).rows[0].use_roblox_names
-      if (shouldName) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
+      let shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+      shouldName = shouldName.rows[0]
+      if (shouldName.use_roblox_names) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
@@ -91,10 +92,13 @@ module.exports = {
     const request = require('axios')
     const verificationData = await request(`https://verify.eryn.io/api/user/${member.user.id}`, { validateStatus: false })
     if (verificationData.status !== 200) {
-      const unvRoleSetting = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id]).rows[0].unverified_role.toString()
+      let unvRoleSetting = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
+      unvRoleSetting = unvRoleSetting.rows[0]
+      if (unvRoleSetting.unverified_role) unvRoleSetting = unvRoleSetting.unverified_role.toString()
+      else unvRoleSetting = null
       if (member.guild.roles.cache.find(r => r.id === unvRoleSetting) && member.guild.me.hasPermission('MANAGE_ROLES')) {
         const unvRoleServer = member.guild.roles.cache.find(r => r.id === unvRoleSetting)
-        if (!unvRoleServer || unvRoleServer.rawPosition > member.guild.me.roles.highest.rawPosition) return
+        if (!unvRoleServer || unvRoleServer.rawPosition >= member.guild.me.roles.highest.rawPosition) return
         try {
           member.roles.add(unvRoleServer)
         } catch (e) {
