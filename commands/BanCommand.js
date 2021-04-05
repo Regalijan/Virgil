@@ -17,6 +17,8 @@ module.exports = {
     if (args.length === 0) return message.channel.send(`Usage: \`${prefix}ban <user> [reason]\``)
     const member = await getuser(args.slice(0).join(' '), message, message.guild)
     if (!member) return message.channel.send('I could not find this user!')
+    const app = require('../index')
+    if (member.id === (await app).owner.id) return message.channel.send('I will not ban my master.')
     if (message.author.id === member.id) return message.channel.send('You will **not** ban yourself.')
     if (member.roles.cache.some(role => overrides.includes(role.id.toString()))) return message.channel.send('I cannot ban moderators.')
     if (!message.guild.member(member).bannable) return message.channel.send('This user cannot be banned!')
