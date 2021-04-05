@@ -25,7 +25,7 @@ module.exports = {
     }
     const robloxId = verificationData.data.robloxId
     if (message.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
-      const shouldName = await db.query('SELECT use_roblox_names FROM core_settings WHERE guild_id = $1;', [message.guild.id]).rows[0].use_roblox_names
+      const shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id]).rows[0].use_roblox_names
       if (shouldName) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
     }
     if (linkedRoles.rowCount === 0) return message.channel.send('User has been verified')
@@ -105,7 +105,7 @@ module.exports = {
     }
     const robloxId = verificationData.data.robloxId
     if (member.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
-      const shouldName = await db.query('SELECT use_roblox_names FROM core_settings WHERE guild_id = $1;', [member.guild.id]).rows[0].use_roblox_names
+      const shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id]).rows[0].use_roblox_names
       if (shouldName) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
     }
     const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => { return console.error(e) })
