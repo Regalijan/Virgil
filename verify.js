@@ -111,8 +111,8 @@ module.exports = {
     }
     const robloxId = verificationData.data.robloxId
     if (member.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
-      const shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id]).rows[0].use_roblox_names
-      if (shouldName) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
+      const shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [member.guild.id])
+      if (shouldName.rows[0].use_roblox_names) await member.setNickname(verificationData.data.robloxUsername).catch((e) => console.error(e))
     }
     const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(e => { return console.error(e) })
     if (bancheck.data.isBanned) return
