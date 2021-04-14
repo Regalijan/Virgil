@@ -10,6 +10,6 @@ module.exports = {
     await message.channel.send('Sending virus...')
     const dispatcher = vc.play(join(__dirname, '../media/virus.mp3'))
     dispatcher.on('error', e => console.error(e))
-    dispatcher.on('finish', () => vc.leave())
+    dispatcher.on('finish', () => vc.disconnect())
   }
 }
