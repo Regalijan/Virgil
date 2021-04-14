@@ -25,6 +25,18 @@ module.exports = {
       }
       return await message.channel.send('You are not verified, you may verify at <https://verify.eryn.io>')
     }
+    const verifiedRoleSetting = await db.query('SELECT verified_role FROM core_settings WHERE guild_id = $1;', [message.guild.id])
+    if (message.guild.me.hasPermission('MANAGE_ROLES') && verifiedRoleSetting.rowCount > 0 && verifiedRoleSetting.rows[0].verified_role) {
+      const verifiedRoleServer = message.guild.roles.cache.find(r => r.id === verifiedRoleSetting.rows[0].verified_role)
+      if (verifiedRoleServer && verifiedRoleServer.rawPosition < message.guild.me.roles.highest.rawPosition) {
+        try {
+          member.roles.add(verifiedRoleServer)
+        } catch (e) {
+          console.error(e)
+          await message.channel.send(`An error occured when adding the role ${verifiedRoleServer.name}: \`${e}\``)
+        }
+      }
+    }
     const robloxId = verificationData.data.robloxId
     if (message.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
       let shouldName = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
@@ -108,6 +120,17 @@ module.exports = {
         }
       }
       return
+    }
+    const verRoleSet = await db.query('SELECT verified_role FROM core_settings WHERE guild_id = $1;', [member.guild.id])
+    if (verRoleSet.rowCount > 0 && verRoleSet.rows[0].verified_role) {
+      const verRoleServer = member.guild.roles.cache.find(r => r.id === verRoleSet.rows[0].verified_role)
+      if (verRoleServer && verRoleServer.rawPosition < member.guild.me.roles.highest.rawPosition) {
+        try {
+          await member.roles.add(verRoleServer)
+        } catch (e) {
+          console.error(e)
+        }
+      }
     }
     const robloxId = verificationData.data.robloxId
     if (member.guild.me.hasPermission('MANAGE_NICKNAMES') && member.manageable) {
