@@ -4,7 +4,7 @@ module.exports = {
   description: 'Binds a badge to a discord role',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.hasPermission('MANAGE_SERVER')) return message.channel.send('You do not have permission to run this command!')
+    if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send('You do not have permission to run this command!')
     const { prefix } = require('../config.json')
     if (!args[0]) return message.channel.send(`Usage: \`${prefix} <Role> <BadgeID>\`\nIf a role has spaces you **MUST** use the id or it **WILL** not work.`)
     if (!args[1]) return message.channel.send('You did not provide a badge id!')
