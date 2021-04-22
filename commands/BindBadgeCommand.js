@@ -19,12 +19,11 @@ module.exports = {
     if (args[0].match(/(<@&[0-9]*>)/)) role = role.replace(/(<@&|>)/g, '')
     if (args[0].match(/^\d+$/)) {
       role = message.guild.roles.cache.find(r => r.id === args[0])
-      role = role.id
     } else {
       role = message.guild.roles.cache.find(r => r.name.toLowerCase() === args[0].toLowerCase())
-      role = role.id
     }
     if (!role) return message.channel.send('I could not find that role')
+    role = role.id
     try {
       await db.query('INSERT INTO roblox_roles(role_id,type,link_id,guild) VALUES($1,$2,$3,$4);', [role, 'Badge', args[1], message.guild.id])
     } catch (e) {
