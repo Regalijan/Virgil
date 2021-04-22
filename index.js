@@ -50,6 +50,7 @@ client.on('message', async message => {
     client.commands.get(command).execute(message, args)
   } catch (error) {
     console.error(error)
+    message.channel.send(`An error occured when executing the command: \`${error}\``)
   }
 })
 
