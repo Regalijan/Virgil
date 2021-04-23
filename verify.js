@@ -64,7 +64,7 @@ module.exports = {
             const role = message.guild.roles.cache.find(role => role.id === row.role_id)
             if (role.position < message.guild.me.roles.highest.position) member.roles.add(row.role_id).catch(e => console.error(e))
           } else {
-            message.channel.send(`Role \`${row.role_id}\`not given, it was probably deleted!`)
+            message.channel.send(`Role \`${row.role_id}\` not given, it was probably deleted!`)
           }
         }
       } else {
