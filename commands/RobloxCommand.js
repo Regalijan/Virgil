@@ -54,7 +54,7 @@ module.exports = {
       .setThumbnail(avatar)
       .setDescription(bio)
       .addFields(
-        { name: 'Join Date', value: `${joinDate.getMonth() + 1}/${joinDate.getDate()}/${joinDate.getFullYear()}`, inline: true },
+        { name: 'Join Date', value: `${joinDate.getFullYear()}-${joinDate.getMonth() + 1}-${joinDate.getDate()}`, inline: true },
         { name: 'Past Usernames', value: pastNames, inline: true }
       )
     if ((await app).owner.id === user) embed.addField('User Tags', 'Bot Creator', true)
