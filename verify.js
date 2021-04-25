@@ -47,7 +47,7 @@ module.exports = {
     if (!robloxId) return message.channel.send('An unexpected error occured when fetching data.')
     const bancheck = await request(`https://users.roblox.com/v1/users/${robloxId}`).catch(() => { message.channel.send('An error occured when fetching data from Roblox!') })
     if (!bancheck) return message.channel.send(`An error occured when fetching information from Roblox! \`(HTTP ${bancheck.status})\``)
-    if (bancheck.data.isBanned) return
+    if (bancheck.data.isBanned) return message.channel.send('An error occured when fetching account information: `Details: Account Terminated`')
     let groupdata = await request(`https://groups.roblox.com/v2/users/${robloxId}/groups/roles`, { validateStatus: false })
     if (groupdata.status !== 200) return message.channel.send('An error occured when looking up group roles!')
     groupdata = groupdata.data.data
