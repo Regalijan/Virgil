@@ -17,7 +17,7 @@
     "utf-8-validate": "^5.0.4",
     "ytdl-core": "^4.5.0",
     "ytpl": "^2.2.0",
-    "ytsr": "^3.4.1",
+    "ytsr": "^3.5.0",
     "zlib-sync": "^0.1.7"
   },
   "scripts": {
