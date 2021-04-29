@@ -27,6 +27,7 @@ async function getApp () {
 const app = getApp()
 module.exports = app
 client.on('message', async message => {
+  if (message.channel.type === 'text' && (message.channel.permissionOverwrites.find(c => c.deny.has('SEND_MESSAGES')) || (!message.guild.me.hasPermission('SEND_MESSAGES') && !message.channel.permissionOverwrites.find(c => c.allow.has('SEND_MESSAGES'))))) return
   if (message.content.match(/discord\.gg\/\S*|discord\.com\/invite\/\S*|discordapp\.com\/invite\/\S*/gim)) {
     await onInvite(message)
     return
@@ -70,7 +71,7 @@ client.on('guildMemberAdd', async member => {
       .setColor(3756250)
       .addField('Registration Date', new Intl.DateTimeFormat(member.guild.preferredLocale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(member.user.createdTimestamp)))
       .setFooter(`ID: ${member.id}`)
-    await channel.send(embed)
+    if (member.guild.hasPermission('SEND_MESSAGES') || (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
     if (member.bot) return
     const dmtext = `Thank you for joining ${member.guild.name}! Due to our security settings,`
     const secLevel = member.guild.verificationLevel
@@ -100,7 +101,7 @@ client.on('guildMemberRemove', async member => {
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setColor(16711680)
       .setFooter(`ID: ${member.id}`)
-    channel.send(embed)
+    if (member.guild.hasPermission('SEND_MESSAGES') || (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
   } catch (e) {
     console.error(e)
   }
@@ -122,7 +123,7 @@ client.on('guildBanAdd', async (guild, user) => {
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .setColor(16711680)
       .setFooter(`ID: ${user.id}`)
-    channel.send(embed)
+    if (guild.hasPermission('SEND_MESSAGES') || (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
   } catch (e) {
     console.error(e)
   }
@@ -144,7 +145,7 @@ client.on('guildBanRemove', async (guild, user) => {
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .setColor(3756250)
       .setFooter(`ID: ${user.id}`)
-    channel.send(embed)
+    if (guild.hasPermission('SEND_MESSAGES') || (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
   } catch (e) {
     console.error(e)
   }
@@ -178,12 +179,10 @@ client.on('messageDelete', async message => {
       .setAuthor(`${message.author.username}#${message.author.discriminator} (${message.author.id})`, message.author.displayAvatarURL())
       .setDescription(messagecontent)
       .setColor(3756250)
-    if (message.attachments) {
-      message.attachments.forEach(attachment => {
-        embed.addField('Attachment', `[Link to Attachment](${attachment.url})`, true)
-      })
-    }
-    channel.send(embed).catch(e => console.error(e))
+    message.attachments.forEach(attachment => {
+      embed.addField('Attachment', `[Link to Attachment](${attachment.url})`, true)
+    })
+    if (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (message.guild.me.hasPermission('SEND_MESSAGES') && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed).catch(e => console.error(e))
   } catch (e) {
     console.error(e)
   }
@@ -207,7 +206,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
         .addField('Before', oldMessage.content)
         .addField('After', newMessage.content)
         .setColor(3756250)
-      channel.send(embed).catch(e => console.error(e))
+      if (newMessage.channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (newMessage.guild.me.hasPermission('SEND_MESSAGES') && !newMessage.channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed).catch(e => console.error(e))
     } catch (e) {
       console.error(e)
     }
@@ -242,7 +241,7 @@ client.on('messageDeleteBulk', async (messages) => {
     .setColor(3756250)
     .setDescription(`Bulk delete for ${channel}`)
     .attachFiles(file)
-  await logchannel.send(embed)
+  if (logchannel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (logchannel.guild.me.hasPermission('SEND_MESSAGES') && !logchannel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await logchannel.send(embed)
   fs.unlink(fileName, err => { if (err) return console.error(err) })
 })
 
@@ -296,7 +295,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     .setDescription(`${newState.member} ${change}`)
     .setColor(color)
     .setFooter(`ID: ${newState.member.id}`)
-  await channel.send(embed).catch(e => console.error(e))
+  if (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (channel.guild.me.hasPermission('SEND_MESSAGES') && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed).catch(e => console.error(e))
 })
 
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
@@ -339,7 +338,7 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
       if (!diff) return
       embed.addField('Roles Added', diff)
     }
-    await channel.send(embed)
+    if (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (channel.guild.me.hasPermission('SEND_MESSAGES') && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
   }
 })
 
@@ -360,7 +359,7 @@ client.on('channelCreate', async channel => {
     .setColor(3756250)
     .setDescription(`Channel \`${channel.name}\` has been created.`)
   if (auditlogs) embed.setAuthor(auditlogs.executor.tag, auditlogs.executor.displayAvatarURL())
-  await logchannel.send(embed)
+  if (logchannel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (logchannel.guild.me.hasPermission('SEND_MESSAGES') && !logchannel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await logchannel.send(embed)
 })
 
 client.on('channelDelete', async channel => {
@@ -380,7 +379,7 @@ client.on('channelDelete', async channel => {
     .setColor(16711680)
     .setDescription(`Channel \`${channel.name}\` has been deleted.`)
   if (auditlogs) embed.setAuthor(auditlogs.executor.tag, auditlogs.executor.displayAvatarURL())
-  await logchannel.send(embed)
+  if (logchannel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (logchannel.guild.me.hasPermission('SEND_MESSAGES') && !logchannel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await logchannel.send(embed)
 })
 
 client.on('channelUpdate', async (oldChannel, newChannel) => {
@@ -404,6 +403,7 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
     .setColor(3756250)
     .setDescription(text)
   if (auditlog) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
+  if (logchannel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (logchannel.guild.me.hasPermission('SEND_MESSAGES') && !logchannel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await logchannel.send(embed)
 })
 
 client.on('roleCreate', async role => {
@@ -425,7 +425,7 @@ client.on('roleCreate', async role => {
     auditlog = auditlog.entries.first()
     if (Date.now() - auditlog.createdTimestamp < 3000) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
   }
-  await channel.send(embed)
+  if (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (channel.guild.me.hasPermission('SEND_MESSAGES') && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
 })
 
 client.on('roleDelete', async role => {
@@ -445,7 +445,7 @@ client.on('roleDelete', async role => {
     auditlog = auditlog.entries.first()
     if (Date.now() - auditlog.createdTimestamp < 3000) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
   }
-  await channel.send(embed)
+  if (channel.permissionOverwrites.find(p => p.allow.has('SEND_MESSAGES')) || (channel.guild.me.hasPermission('SEND_MESSAGES') && !channel.permissionOverwrites.find(p => p.deny.has('SEND_MESSAGES')))) await channel.send(embed)
 })
 
 client.on('guildCreate', async guild => {
@@ -475,6 +475,7 @@ client.on('shardError', error => {
 
 async function onInvite (message) {
   if (message.channel.type === 'dm' || message.author.bot) return
+  if ((!message.guild.me.hasPermission('MANAGE_MESSAGES') && !message.channel.permissionOverwrites.find(c => c.allow.has('MANAGE_MESSAGES'))) || message.channel.permissionOverwrites.find(c => c.deny.has('MANAGE_MESSAGES'))) return
   let serversettings = await db.query('SELECT * FROM core_settings WHERE guild_id = $1;', [message.guild.id])
   if (serversettings.rowCount === 0) return
   serversettings = serversettings.rows[0]
