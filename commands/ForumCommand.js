@@ -21,7 +21,8 @@ module.exports = {
     const { MessageEmbed } = require('discord.js')
     const embed = new MessageEmbed()
       .setAuthor(member.user.tag, member.user.displayAvatarURL({ dynamic: true }))
-      .setTitle(`[${forumData.data.user.username}](${forumBaseUrl}/u/${forumData.data.user.username})`)
+      .setTitle(forumData.data.user.username)
+      .setURL(`${forumBaseUrl}/u/${forumData.data.user.username}`)
       .setThumbnail(`${forumBaseUrl}${forumData.data.user.avatar_template.replace('{size}', '360')}`)
       .addFields(
         { name: 'Is Admin', value: forumData.data.user.admin },
