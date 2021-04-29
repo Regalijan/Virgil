@@ -33,7 +33,7 @@ module.exports = {
         { name: 'Signup Date', value: new Intl.DateTimeFormat(message.guild.preferredLocale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(new Date(forumData.data.user.created_at)) }
       )
     if (forumData.data.user.name) embed.addField('Display Name', forumData.data.user.name)
-    if (forumData.data.user.featured_topic) embed.addField('Featured Topic', forumData.data.user.featured_topic)
+    if (forumData.data.user.featured_topic) embed.addField('Featured Topic', `[${forumData.data.user.featured_topic.title}](${forumBaseUrl}/t/${forumData.data.user.featured_topic.slug}/${forumData.data.user.featured_topic.id})`)
     await message.channel.send(embed)
   }
 }
