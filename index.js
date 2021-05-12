@@ -406,6 +406,7 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
   let text = `Channel \`${newChannel.name}\` updated!`
   if (newChannel.name !== oldChannel.name) text += `\nChannel renamed from \`${oldChannel.name}\` to \`${newChannel.name}\``
   if (oldChannel.position !== newChannel.position) text += `\nChannel position changed from \`${oldChannel.position}\` to \`${newChannel.position}\``
+  if (text === `Channel \`${newChannel.name}\` updated!`) return
   const embed = new Discord.MessageEmbed()
     .setColor(3756250)
     .setDescription(text)
