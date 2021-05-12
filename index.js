@@ -400,16 +400,17 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
   if (!serversettings.channel_log_channel) return
   const logchannel = newChannel.guild.channels.cache.find(c => c.id === serversettings.channel_log_channel.toString())
   if (!logchannel) return
+  const embed = new Discord.MessageEmbed()
+    .setColor(3756250)
   let auditlog
   if (newChannel.guild.me.hasPermission('VIEW_AUDIT_LOG')) auditlog = await newChannel.guild.fetchAuditLogs({ limit: 1, type: 11 })
   if (auditlog) auditlog = auditlog.entries.first()
   let text = `Channel \`${newChannel.name}\` updated!`
+  const startText = text
   if (newChannel.name !== oldChannel.name) text += `\nChannel renamed from \`${oldChannel.name}\` to \`${newChannel.name}\``
-  if (oldChannel.position !== newChannel.position) text += `\nChannel position changed from \`${oldChannel.position}\` to \`${newChannel.position}\``
-  if (text === `Channel \`${newChannel.name}\` updated!`) return
-  const embed = new Discord.MessageEmbed()
-    .setColor(3756250)
-    .setDescription(text)
+  if (oldChannel.rawPosition !== newChannel.rawPosition) text += `\nThe position of <#${newChannel.id}> was changed from ${oldChannel.rawPosition} to ${newChannel.rawPosition}`
+  embed.setDescription(text)
+  if (text === startText) return
   if (auditlog) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
   if (checkIfSendable(logchannel)) await logchannel.send(embed)
 })
