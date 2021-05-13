@@ -408,6 +408,7 @@ client.on('channelUpdate', async (oldChannel, newChannel) => {
   let text = `Channel \`${newChannel.name}\` updated!`
   const startText = text
   if (newChannel.name !== oldChannel.name) text += `\nChannel renamed from \`${oldChannel.name}\` to \`${newChannel.name}\``
+  if (oldChannel.rawPosition > newChannel.rawPosition - 1 || oldChannel.rawPosition < newChannel.rawPosition + 1) text += `\nChannel <#newChannel.id> moved from position \`${oldChannel.rawPosition}\` to \`${newChannel.rawPosition}\``
   embed.setDescription(text)
   if (text === startText) return
   if (auditlog) embed.setAuthor(auditlog.executor.tag, auditlog.executor.displayAvatarURL())
