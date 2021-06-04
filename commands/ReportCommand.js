@@ -42,6 +42,7 @@ module.exports = {
             { name: 'Evidence', value: url },
             { name: 'Current user status', value: banstatus }
           )
+          .setFooter(`ID: ${message.author.id}`)
         await channel.send(embed).catch(() => {})
         const confirmation = await message.reply('Report sent!')
         message.delete({ timeout: 10000 }).catch(e => console.error(e))
