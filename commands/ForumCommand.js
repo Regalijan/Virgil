@@ -8,7 +8,7 @@ module.exports = {
     if (!forumApiKey || !forumApiUser || !forumBaseUrl) return await message.channel.send('This command is disabled as the bot owner did not set any credentials.')
     const request = require('axios')
     const { getuser } = require('../getuser')
-    let member = await getuser(args.slice(0).join(' '), message)
+    const member = await getuser(args.slice(0).join(' '), message)
     if (!member) return await message.channel.send('I could not find this user.')
     const forumData = await request(`${forumBaseUrl}/u/by-external/discord/${member.id}.json`, {
       headers: {
