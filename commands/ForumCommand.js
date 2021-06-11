@@ -9,7 +9,7 @@ module.exports = {
     const request = require('axios')
     const { getuser } = require('../getuser')
     let member = await getuser(args.slice(0).join(' '), message)
-    if (!member) member = message.member
+    if (!member) return await message.channel.send('I could not find this user.')
     const forumData = await request(`${forumBaseUrl}/u/by-external/discord/${member.id}.json`, {
       headers: {
         'Api-Key': forumApiKey,
@@ -17,6 +17,7 @@ module.exports = {
       },
       validateStatus: false
     })
+    if (forumData.status === 404) return await message.channel.send('This user does not have a linked forum account.')
     if (forumData.status !== 200) return await message.channel.send('An error occured when looking up information on that account!')
     const { MessageEmbed } = require('discord.js')
     const embed = new MessageEmbed()
