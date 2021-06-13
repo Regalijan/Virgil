@@ -4,7 +4,7 @@ module.exports = {
   description: 'Sends a dm to a user',
   guildOnly: true,
   async execute (message, args) {
-    if (!message.member.hasPermission('MANAGE_MESSAGES')) return await message.channel.send('You cannot run this command!')
+    if (!message.member.hasPermission('MANAGE_GUILD')) return await message.channel.send('You cannot run this command!')
     const { prefix } = require('../config.json')
     if (args.length < 2) return await message.channel.send(`Usage: \`${prefix}dm <user> <message>\``)
     const { getuser } = require('../getuser')
