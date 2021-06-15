@@ -51,8 +51,9 @@ module.exports = {
       .setURL(profile)
       .setAuthor(robloxData.data.name, avatar, profile)
       .setColor(3756250)
-      .setThumbnail(avatar)
       .setDescription(bio)
+      .setFooter('Information provided by Roblox Corporation and verify.eryn.io')
+      .setThumbnail(avatar)
       .addFields(
         { name: 'Join Date', value: `${joinDate.getFullYear()}-${joinDate.getMonth() + 1}-${joinDate.getDate()}`, inline: true },
         { name: 'Past Usernames', value: pastNames, inline: true }
