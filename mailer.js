@@ -5,7 +5,7 @@ module.exports = {
   async execute (subject, body, recipient) {
     if (!config.provider || config.provider.toLowerCase() === 'mailgun') {
       const form = new FormData()
-      form.append('from', 'noreply@ccdiscussion.com')
+      form.append('from', config.fromAddress)
       form.append('to', recipient)
       form.append('subject', subject)
       form.append('html', body)
