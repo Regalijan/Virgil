@@ -1,0 +1,34 @@
+{
+  "name": "virgil",
+  "version": "0.0.1",
+  "description": "Discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wolftallemo/Virgil.git"
+  },
+  "author": "Wolftallemo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wolftallemo/Virgil/issues"
+  },
+  "homepage": "https://github.com/Wolftallemo/Virgil#readme",
+  "dependencies": {
+    "@discordjs/voice": "^0.6.0",
+    "bufferutil": "^4.0.3",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "erlpack": "github:Wolftallemo/erlpack",
+    "ioredis": "^4.27.8",
+    "libsodium-wrappers": "^0.7.9",
+    "mongodb": "^4.1.1",
+    "utf-8-validate": "^5.0.5",
+    "zlib-sync": "^0.1.7"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
