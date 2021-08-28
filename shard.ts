@@ -5,16 +5,21 @@ import {
   Client,
   CommandInteraction,
   Interaction,
+  MessageEmbed,
   PermissionResolvable
 } from 'discord.js'
+import mongo from './mongo'
 
 dotenv()
 
 const cmds: Map<string, {
   name: string,
   permissions: PermissionResolvable[],
+  privileged?: boolean,
   exec (i: CommandInteraction): Promise<void>
 }> = new Map()
+
+mongo.connect()
 
 for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {
   const commandFile = require(`./commands/${file}`)
@@ -54,6 +59,19 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     }
 
     await command.exec(i)
+    if (!command.privileged) return
+    const settings = await mongo.db().collection('settings').findOne({ guild: i.guild.id })
+    if (!settings.commandLogChannel) return
+    const logChannel = await i.guild.channels.fetch(settings.commandLogChannel).catch(e => console.error(e))
+    if (!logChannel || logChannel.type !== 'GUILD_TEXT') return
+    const embed = new MessageEmbed({
+      author: {
+        name: i.user.tag,
+        iconURL: i.user.displayAvatarURL({ dynamic: true })
+      },
+      color: settings.commandLogColor ?? 3756250
+    })
+    await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
     console.error(e)
     await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`${e}\``, ephemeral: true }).catch(e => console.error(e))
