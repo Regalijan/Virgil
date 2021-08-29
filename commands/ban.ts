@@ -4,6 +4,7 @@ import mongo from '../mongo'
 export = {
   name: 'ban',
   permissions: ['BAN_MEMBERS'],
+  privileged: true,
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guild.me.permissions.has('BAN_MEMBERS')) {
       await i.reply({ content: 'I was unable to ban this user because I do not have the Ban Members permission.', ephemeral: true })
