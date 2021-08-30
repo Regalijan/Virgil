@@ -17,6 +17,17 @@ export = {
       return
     }
 
+    let aheadToUnban = 0
+    const minutes = i.options.getInteger('minutes', false)
+    if (minutes) aheadToUnban += minutes * 60000
+    const hours = i.options.getInteger('hours', false)
+    if (hours) aheadToUnban += hours * 60 * 60000
+    const days = i.options.getInteger('days', false)
+    if (days) aheadToUnban += days * 1440 * 60000
+
     await target.ban({ reason: i.options.getString('reason', false) ?? 'No reason provided.' })
+    if (!aheadToUnban) return
+    aheadToUnban += Date.now()
+    await mongo.db().collection('bans').insertOne({ user: target.id, unban: aheadToUnban })
   }
 }
