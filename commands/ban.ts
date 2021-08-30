@@ -24,7 +24,7 @@ export = {
     if (hours) aheadToUnban += hours * 60 * 60000
     const days = i.options.getInteger('days', false)
     if (days) aheadToUnban += days * 1440 * 60000
-
+    await target.send({ content: `You have been banned from ${i.guild.name} for the following reason:\n\n${i.options.getString('reason')}` }).catch(e => console.error(e))
     await target.ban({ reason: i.options.getString('reason', false) ?? 'No reason provided.' })
     if (!aheadToUnban) return
     aheadToUnban += Date.now()
