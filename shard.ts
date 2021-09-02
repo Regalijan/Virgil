@@ -6,10 +6,12 @@ import {
   CommandInteraction,
   Interaction,
   MessageEmbed,
-  PermissionResolvable
+  PermissionResolvable,
+  ShardClientUtil
 } from 'discord.js'
-import mongo from './mongo'
+import db from './mongo'
 
+db.connect()
 dotenv()
 
 const cmds: Map<string, {
@@ -18,8 +20,6 @@ const cmds: Map<string, {
   privileged?: boolean,
   exec (i: CommandInteraction): Promise<void>
 }> = new Map()
-
-mongo.connect()
 
 for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {
   const commandFile = require(`./commands/${file}`)
@@ -34,6 +34,8 @@ bot.login().catch(e => {
   console.error(e)
   process.exit()
 })
+
+const mongo = db.db()
 
 if (process.env.ENABLEDEBUG) bot.on('debug', function (m) {
   console.log(m)
@@ -60,7 +62,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
 
     await command.exec(i)
     if (!command.privileged) return
-    const settings = await mongo.db().collection('settings').findOne({ guild: i.guild.id })
+    const settings = await mongo.collection('settings').findOne({ guild: i.guild.id })
     if (!settings.commandLogChannel) return
     const logChannel = await i.guild.channels.fetch(settings.commandLogChannel).catch(e => console.error(e))
     if (!logChannel || logChannel.type !== 'GUILD_TEXT') return
@@ -77,3 +79,33 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`${e}\``, ephemeral: true }).catch(e => console.error(e))
   }
 })
+
+setInterval(async function (): Promise<void> {
+  try {
+    const bansDoc = mongo.collection('bans').find({ unban: { $lte: Date.now() } })
+    let bans = []
+
+    bansDoc.forEach(function (ban) {
+      bans.push(ban) // Callbacks suck
+    })
+
+    for (const ban of bans) {
+      const shard = ShardClientUtil.shardIdForGuildId(ban.server, bot.shard.count)
+      await bot.shard.broadcastEval(async c => {
+        const server = await c.guilds.fetch(ban.server).catch(() => {})
+        if (!server || !server.me.permissions.has('BAN_MEMBERS')) return
+        const member = await server.bans.fetch(ban.user).catch(() => {})
+        if (!member) return
+        try {
+          await server.bans.remove(member.user.id, 'Temporary ban expired.')
+          await mongo.collection('bans').findOneAndDelete({ user: member.user.id })
+        } catch (e) {
+          console.error(e)
+        }
+      }, { shard: shard })
+    }
+  } catch(e) {
+    console.error(e)
+    return
+  }
+}, 30000)
