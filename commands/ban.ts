@@ -12,7 +12,7 @@ export = {
     }
 
     const target = await i.guild.members.fetch(i.options.getUser('user'))
-    if (!target.bannable) {
+    if (!target.bannable || target.id === i.user.id || i.guild.members.cache.find(u => u.id === i.user.id).roles.highest.comparePositionTo(target.roles.highest) <= 0) {
       await i.reply('This user cannot be banned.')
       return
     }
