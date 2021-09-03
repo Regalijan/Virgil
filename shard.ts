@@ -42,29 +42,29 @@ if (process.env.ENABLEDEBUG) bot.on('debug', function (m) {
 })
 
 bot.once('ready', function (client) {
-  console.log(`Shard ${client.shard.ids[0]} ready with ${client.guilds.cache.size} guilds.`)
+  console.log(`Shard ${client.shard?.ids[0]} ready with ${client.guilds.cache.size} guilds.`)
 })
 
 bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
   if (!i.isCommand() || !cmds.has(i.commandName)) return
   try {
     const command = cmds.get(i.commandName)
-    if (!['GUILD_PRIVATE_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_TEXT'].includes(i.channel.type)) {
+    if (!i.channel || !['GUILD_PRIVATE_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_TEXT'].includes(i.channel.type)) {
       await i.reply({ content: 'Hey! You can\'t run commands here! They may only be run in a thread or a standard text channel.', ephemeral: true }).catch(e => console.error(e))
       return
     }
 
-    const interactionUser = await i.guild.members.fetch(i.user.id)
-    if (command.permissions.length && !interactionUser.permissions.has(command.permissions)) {
+    const interactionUser = await i.guild?.members.fetch(i.user.id)
+    if (command?.permissions.length && !interactionUser?.permissions.has(command.permissions)) {
       await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => console.error(e))
       return
     }
 
-    await command.exec(i)
-    if (!command.privileged) return
-    const settings = await mongo.collection('settings').findOne({ guild: i.guild.id })
-    if (!settings.commandLogChannel) return
-    const logChannel = await i.guild.channels.fetch(settings.commandLogChannel).catch(e => console.error(e))
+    await command?.exec(i)
+    if (!command?.privileged) return
+    const settings = await mongo.collection('settings').findOne({ guild: i.guild?.id })
+    if (!settings?.commandLogChannel) return
+    const logChannel = await i.guild?.channels.fetch(settings.commandLogChannel).catch(e => console.error(e))
     if (!logChannel || logChannel.type !== 'GUILD_TEXT') return
     const embed = new MessageEmbed({
       author: {
@@ -83,17 +83,17 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
 setInterval(async function (): Promise<void> {
   try {
     const bansDoc = mongo.collection('bans').find({ unban: { $lte: Date.now() } })
-    let bans = []
+    let bans: any[] = []
 
     bansDoc.forEach(function (ban) {
       bans.push(ban) // Callbacks suck
     })
 
     for (const ban of bans) {
-      const shard = ShardClientUtil.shardIdForGuildId(ban.server, bot.shard.count)
-      await bot.shard.broadcastEval(async c => {
+      const shard = ShardClientUtil.shardIdForGuildId(ban.server, bot.shard?.count ?? 1)
+      await bot.shard?.broadcastEval(async c => {
         const server = await c.guilds.fetch(ban.server).catch(() => {})
-        if (!server || !server.me.permissions.has('BAN_MEMBERS')) return
+        if (!server || !server.me?.permissions.has('BAN_MEMBERS')) return
         const member = await server.bans.fetch(ban.user).catch(() => {})
         if (!member) return
         try {
