@@ -1,5 +1,7 @@
 import axios from 'axios'
 import redis from './redis'
+import mongo from './mongo'
+import { GuildMember } from 'discord.js'
 
 export = {
   async getRobloxMemberGroups (user: number): Promise<{ group: { id: number, name: string, memberCount: number }, role : { id: number, name: string, rank: number } }[]> {
@@ -123,5 +125,51 @@ export = {
       .replaceAll('{{SMARTNAME}}', robloxUsername === displayName ? robloxUsername : `${displayName} (${robloxUsername})`)
     
     return name.length > 32 ? name.substr(0, 32) : name
-  }
+  },
+
+  async verify (member: GuildMember, self: boolean = true): Promise<string> {
+    if (!member.guild.me?.permissions.has('MANAGE_ROLES')) return 'I do not have permission to manage roles!'
+    const db = mongo.db().collection('binds')
+    const verifyApiData = await axios(`https://verify.eryn.io/api/user/${member.id}`).catch(e => console.error(e))
+    if (!verifyApiData) {
+      const unverifiedBindDoc = db.find({ server: member.guild.id, type: 'unverified' })
+      const unvBinds: any = []
+      unverifiedBindDoc.forEach(doc => { unvBinds.push(doc) })
+      for (const unverifiedBind of unvBinds) {
+        const unvRole = await member.guild.roles.fetch(unverifiedBind.role).catch(e => console.error(e))
+        if (!unvRole || unvRole.comparePositionTo(member.guild.me.roles.highest) >= 0) continue
+        await member.roles.add(unvRole).catch(e => console.error(e))
+      }
+      return self ? 'You must be new, visit <https://verify.eryn.io> to get started.' : `${member.user.username} appears to not be verified.`
+    }
+    const userProfileData = await this.getRobloxUserProfile(parseInt(verifyApiData.data.robloxId))
+    if (!userProfileData) return `An error occured when verifying ${self ? 'you' : member.user.username}, please try again later.`
+    const serversettings = await mongo.db().collection('settings').findOne({ guild: member.guild.id }).catch(e => console.error(e))
+    if (!serversettings) return `An error occured when verifying ${self ? 'you' : member.user.username}, please try again later.`
+    const bindCursorDoc = db.find({ server: member.guild.id })
+    const binds: { server: string, type: string, role: string, asset?: number, group?: number, rank?: number }[] = []
+    bindCursorDoc.forEach((doc: any) => { binds.push(doc) })
+    const groupData = await this.getRobloxMemberGroups(parseInt(verifyApiData.data.robloxId))
+    for (const bind of binds) {
+      switch (bind.type) {
+        case 'verified':
+          const verifiedRole = await member.guild.roles.fetch(bind.role).catch(e => console.error(e))
+          if (!verifiedRole) break
+          if (verifiedRole.comparePositionTo(member.guild.me.roles.highest) >= 0) await member.roles.add(verifiedRole).catch(e => console.error(e))
+          break
+
+        case 'group':
+
+          for (const group of groupData) {
+            if ([0, bind.group].includes(group.group.id) && (!bind.rank || group.role.rank === bind.rank)) {
+              const groupBindRole = await member.guild.roles.fetch(bind.role).catch(e => console.error(e))
+              if (!groupBindRole || groupBindRole.comparePositionTo(member.guild.me.roles.highest) >= 0) continue
+              await member.roles.add(groupBindRole).catch(e => console.error(e))
+            }
+          }
+
+      }
+    }
+    return self ? `Welcome ${verifyApiData.data.robloxUsername}!` : `${verifyApiData.data.robloxUsername} has been updated.`
+  } 
 }
