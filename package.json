@@ -7,7 +7,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
     "@google-cloud/storage": "^5.14.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bufferutil": "^4.0.3",
     "discord.js": "^12.5.3",
     "erlpack": "^0.1.3",
