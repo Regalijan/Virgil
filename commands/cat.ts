@@ -13,9 +13,10 @@ export = {
 
     const embed = new MessageEmbed()
       .setTitle('Meow :cat:')
-      .setColor((await i.guild.members.fetch(i.user.id)).displayColor ?? 3756250)
       .setImage(cat.data.url)
       .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
+    const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
+    if (member) embed.setColor(member.displayColor)
     await i.reply({ embeds: [embed] })
   }
 }

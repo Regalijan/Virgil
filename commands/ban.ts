@@ -6,13 +6,13 @@ export = {
   permissions: ['BAN_MEMBERS'],
   privileged: true,
   async exec (i: CommandInteraction): Promise<void> {
-    if (!i.guild.me.permissions.has('BAN_MEMBERS')) {
+    if (!i.guild?.me?.permissions.has('BAN_MEMBERS')) {
       await i.reply({ content: 'I was unable to ban this user because I do not have the Ban Members permission.', ephemeral: true })
       return
     }
 
-    const target = await i.guild.members.fetch(i.options.getUser('user'))
-    if (!target.bannable || target.id === i.user.id || i.guild.members.cache.find(u => u.id === i.user.id).roles.highest.comparePositionTo(target.roles.highest) <= 0) {
+    const target = await i.guild.members.fetch(i.options.getUser('user', true))
+    if (!target.bannable || target.id === i.user.id || target.roles.highest.comparePositionTo(target.roles.highest) <= 0) {
       await i.reply('This user cannot be banned.')
       return
     }

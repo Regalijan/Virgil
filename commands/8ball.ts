@@ -18,8 +18,8 @@ export = {
       description: eightballresponse.data.response,
       image: eightballresponse.data.url
     })
-    const member = await i.guild.members.fetch(i.user.id)
-    if (member.displayColor) embed.setColor(member.displayColor)
+    const member = await i.guild?.members.fetch(i.user.id)
+    if (member?.displayColor) embed.setColor(member.displayColor)
     await i.reply({ embeds: [embed] })
   }
 }

@@ -5,12 +5,12 @@ export = {
   permissions: ['KICK_MEMBERS'],
   privileged: true,
   async exec (i: CommandInteraction): Promise<void> {
-    if (!i.guild.me.permissions.has('KICK_MEMBERS')) {
+    if (!i.guild?.me?.permissions.has('KICK_MEMBERS')) {
       await i.reply({ content: 'I cannot kick that user because I do not have the "Kick Members" permission.', ephemeral: true })
       return
     }
 
-    const user = i.options.getUser('user')
+    const user = i.options.getUser('user', true)
     const reason = i.options.getString('reason', false) ?? 'No reason provided.'
     const member = await i.guild.members.fetch(user.id).catch(e => console.error(e))
     if (!member) {

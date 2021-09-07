@@ -11,8 +11,8 @@ export = {
         .setTitle(':dog: Woof!')
         .setImage(dog.data.message)
 
-      const member = await i.guild.members.fetch(i.user.id).catch(e => console.error(e))
-      if (member && member.displayColor) embed.setColor(member.displayColor)
+      const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
+      if (member) embed.setColor(member.displayColor)
       await i.reply({ embeds: [embed] })
     } catch (e) {
       console.error(e)

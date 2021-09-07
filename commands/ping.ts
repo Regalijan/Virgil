@@ -14,7 +14,6 @@ export = {
     await db.findOne({ server: i.guildId })
     const mongoAfter = Date.now()
     const embed = new MessageEmbed()
-      .setColor(i.guild.members.cache.find(i => i.id === i.user.id).displayColor)
       .setDescription('Latency')
       .addFields(
         { name: 'Database (MongoDB)', value: `${mongoAfter - mongoBefore}` },
@@ -23,6 +22,8 @@ export = {
         { name: 'Round Trip (since you ran the command)', value: `${Date.now() - i.createdTimestamp}ms` }
       )
 
+    const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
+    if (member) embed.setColor(member.displayColor)
     await i.reply({ embeds: [embed] })
   }
 }
