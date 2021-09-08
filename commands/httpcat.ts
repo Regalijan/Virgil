@@ -3,6 +3,18 @@ import { CommandInteraction, MessageEmbed } from 'discord.js'
 export = {
   name: 'httpcat',
   permissions: [],
+  interactionData: {
+    name: 'httpcat',
+    description: 'Get an http cat',
+    options: [
+      {
+        type: 4,
+        name: 'status',
+        description: 'HTTP status',
+        required: true
+      }
+    ]
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed()
       .setTitle(':cat: Meow!')
