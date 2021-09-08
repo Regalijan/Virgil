@@ -20,8 +20,8 @@ export = {
     const embed = new MessageEmbed()
       .setDescription('Latency')
       .addFields(
-        { name: 'Database (MongoDB)', value: `${mongoAfter - mongoBefore}` },
-        { name: 'Cache (Redis)', value: `${redisAfter - redisBefore}` },
+        { name: 'Database (MongoDB)', value: `${mongoAfter - mongoBefore}ms` },
+        { name: 'Cache (Redis)', value: `${redisAfter - redisBefore}ms` },
         { name: 'Gateway', value: `${i.client.ws.ping}ms` },
         { name: 'Round Trip (since you ran the command)', value: `${Date.now() - i.createdTimestamp}ms` }
       )
