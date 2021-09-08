@@ -167,3 +167,18 @@ setInterval(async function (): Promise<void> {
     return
   }
 }, 30000)
+
+process.on('SIGTERM', function () {
+  bot.destroy()
+  process.exit()
+})
+
+process.on('SIGINT', function () {
+  bot.destroy()
+  process.exit()
+})
+
+process.on('SIGHUP', function () {
+  bot.destroy()
+  process.exit()
+})
