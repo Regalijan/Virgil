@@ -2,6 +2,7 @@ import { config as dotenv } from 'dotenv'
 import { readdirSync } from 'fs'
 import { join } from 'path'
 import {
+  ApplicationCommandData,
   Client,
   CommandInteraction,
   Interaction,
@@ -17,6 +18,7 @@ dotenv()
 const cmds: Map<string, {
   name: string,
   permissions: PermissionResolvable[],
+  interactionData: ApplicationCommandData,
   privileged?: boolean,
   exec (i: CommandInteraction): Promise<void>
 }> = new Map()
