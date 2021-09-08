@@ -84,14 +84,52 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
 
 bot.on('channelCreate', async function (channel): Promise<void> {
   const settings = await mongo.collection('settings').findOne({ guild: channel.guild.id }).catch(e => console.error(e))
-  if (!settings?.channelEventLogChannel) return
-  const logChannel = await channel.guild.channels.fetch(settings.channelEventLogChannel).catch(e => console.error(e))
+  if (!settings?.channelCreateLogChannel) return
+  const logChannel = await channel.guild.channels.fetch(settings.channelCreateLogChannel).catch(e => console.error(e))
   if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !channel.guild.me || !channel.permissionsFor(channel.guild.me.id)?.has('SEND_MESSAGES')) return
   const embed = new MessageEmbed()
     .setDescription(`${channel} has been created.`)
   if (settings.embedColor) embed.setColor(settings.embedColor)
   if (channel.guild.me.permissions.has('VIEW_AUDIT_LOG')) {
-    let auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).catch(e => console.error(e))
+    const auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).catch(e => console.error(e))
+    if (auditlogs?.entries.size) {
+      const auditEntry = auditlogs.entries.first()
+      embed.setAuthor(`${auditEntry?.executor?.tag}`, auditEntry?.executor?.displayAvatarURL({ dynamic: true }))
+    }
+  }
+  await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
+})
+
+bot.on('channelDelete', async function (channel): Promise<void> {
+  if (channel.type === 'DM') return
+  const settings = await mongo.collection('settings').findOne({ guild: channel.guild.id }).catch(e => console.error(e))
+  if (!settings?.channelDeleteLogChannel) return
+  const logChannel = await channel.guild.channels.fetch(settings.channelDeleteLogChannel).catch(e => console.error(e))
+  if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !channel.guild.me || !channel.permissionsFor(channel.guild.me.id)?.has('SEND_MESSAGES')) return
+  const embed = new MessageEmbed()
+    .setDescription(`${channel} has been deleted.`)
+  if (settings.embedColor) embed.setColor(settings.embedColor)
+  if (channel.guild.me.permissions.has('VIEW_AUDIT_LOG')) {
+    const auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 12 }).catch(e => console.error(e))
+    if (auditlogs?.entries.size) {
+      const auditEntry = auditlogs.entries.first()
+      embed.setAuthor(`${auditEntry?.executor?.tag}`, auditEntry?.executor?.displayAvatarURL({ dynamic: true }))
+    }
+  }
+  await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
+})
+
+bot.on('channelUpdate', async function (oldChannel, newChannel): Promise<void> {
+  if (newChannel.type === 'DM') return
+  const settings = await mongo.collection('settings').findOne({ guild: newChannel.guild.id }).catch(e => console.error(e))
+  if (!settings?.channelUpdateLogChannel) return
+  const logChannel = await newChannel.guild.channels.fetch(settings.channelUpdateLogChannel).catch(e => console.error(e))
+  if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !newChannel.guild.me || !logChannel.permissionsFor(newChannel.guild.me).has('SEND_MESSAGES')) return
+  const embed = new MessageEmbed()
+    .setDescription(`${newChannel} has been updated. See audit logs for details.`)
+  if (settings.embedColor) embed.setColor(settings.embedColor)
+  if (newChannel.guild.me.permissions.has('VIEW_AUDIT_LOG')) {
+    const auditlogs = await newChannel.guild.fetchAuditLogs({ limit: 1, type: 11 }).catch(e => console.error(e))
     if (auditlogs?.entries.size) {
       const auditEntry = auditlogs.entries.first()
       embed.setAuthor(`${auditEntry?.executor?.tag}`, auditEntry?.executor?.displayAvatarURL({ dynamic: true }))
