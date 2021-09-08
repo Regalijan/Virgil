@@ -12,6 +12,7 @@ export = {
       .setURL('https://rover.link/my/verification')
       .setEmoji('✏️')
       .setLabel('Change Account')
+      .setStyle('LINK')
     await i.reply({ content: 'To change your verified account, click the link below.', ephemeral: true, components: [new MessageActionRow({ components: [button] })] })
   }
 }
