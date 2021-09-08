@@ -82,6 +82,24 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
   }
 })
 
+bot.on('channelCreate', async function (channel): Promise<void> {
+  const settings = await mongo.collection('settings').findOne({ guild: channel.guild.id }).catch(e => console.error(e))
+  if (!settings?.channelEventLogChannel) return
+  const logChannel = await channel.guild.channels.fetch(settings.channelEventLogChannel).catch(e => console.error(e))
+  if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !channel.guild.me || !channel.permissionsFor(channel.guild.me.id)?.has('SEND_MESSAGES')) return
+  const embed = new MessageEmbed()
+    .setDescription(`${channel} has been created.`)
+  if (settings.embedColor) embed.setColor(settings.embedColor)
+  if (channel.guild.me.permissions.has('VIEW_AUDIT_LOG')) {
+    let auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).catch(e => console.error(e))
+    if (auditlogs?.entries.size) {
+      const auditEntry = auditlogs.entries.first()
+      embed.setAuthor(`${auditEntry?.executor?.tag}`, auditEntry?.executor?.displayAvatarURL({ dynamic: true }))
+    }
+  }
+  await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
+})
+
 setInterval(async function (): Promise<void> {
   try {
     const bansDoc = mongo.collection('bans').find({ unban: { $lte: Date.now() } })
