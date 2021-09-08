@@ -10,7 +10,7 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
       .setURL('https://rover.link/my/verification')
-      .setEmoji(':pencil2:')
+      .setEmoji('✏️')
       .setLabel('Change Account')
     await i.reply({ content: 'To change your verified account, click the link below.', ephemeral: true, components: [new MessageActionRow({ components: [button] })] })
   }
