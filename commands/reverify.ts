@@ -13,6 +13,6 @@ export = {
       .setEmoji('✏️')
       .setLabel('Change Account')
       .setStyle('LINK')
-    await i.reply({ content: 'To change your verified account, click the link below.', ephemeral: true, components: [new MessageActionRow({ components: [button] })] })
+    await i.reply({ content: 'To change your verified account, click the link below.', components: [new MessageActionRow({ components: [button] })] })
   }
 }
