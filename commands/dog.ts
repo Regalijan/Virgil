@@ -4,6 +4,10 @@ import axios from 'axios'
 export = {
   name: 'dog',
   permissions: [],
+  interactionData: {
+    name: 'dog',
+    description: 'Woof'
+  },
   async exec (i: CommandInteraction): Promise<void> {
     try {
       const dog = await axios('https://dog.ceo/api/breeds/image/random')
