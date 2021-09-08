@@ -4,6 +4,10 @@ import axios from 'axios'
 export = {
   name: 'fact',
   permissions: [],
+  interactionData: {
+    name: 'fact',
+    description: 'Gets a fact'
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const fact = await axios('https://nekos.life/api/v2/fact').catch(e => console.error(e))
     if (!fact) {

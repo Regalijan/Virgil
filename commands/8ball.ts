@@ -4,6 +4,18 @@ import axios from 'axios'
 export = {
   name: '8ball',
   permissions: [],
+  interactionData: {
+    name: '8ball',
+    description: 'What does the future hold?',
+    options: [
+      {
+        type: 3,
+        name: 'question',
+        description: 'What do you wwant to know?',
+        required: true
+      }
+    ]
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const eightballresponse = await axios('https://nekos.life/api/v2/8ball').catch(e => console.error(e))
     if (!eightballresponse) {

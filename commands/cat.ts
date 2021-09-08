@@ -4,6 +4,10 @@ import axios from 'axios'
 export = {
   name: 'cat',
   permissions: [],
+  interactionData: {
+    name: 'cat',
+    description: 'Gets picture of cat'
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const cat = await axios('https://nekos.life/api/v2/img/meow').catch(e => console.error(e))
     if (!cat) {

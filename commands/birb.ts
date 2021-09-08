@@ -4,6 +4,10 @@ import axios from 'axios'
 export = {
   name: 'birb',
   permissions: [],
+  interactionData: {
+    name: 'birb',
+    description: 'Gets picture of birb'
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const imglist = await axios('https://random.birb.pw/img/')
     const images = imglist.data.match(/\/img\/\S[^.<]*\.[A-z]*/g)

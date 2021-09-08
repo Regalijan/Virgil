@@ -4,6 +4,33 @@ import mongo from '../mongo'
 export = {
   name: 'ban',
   permissions: ['BAN_MEMBERS'],
+  interactionData:   {
+    name: 'ban',
+    description: 'Bans a user',
+    options: [
+      {
+        type: 6,
+        name: 'user',
+        description: 'User to ban',
+        required: true
+      },
+      {
+        type: 4,
+        name: 'days',
+        description: 'Days to ban user'
+      },
+      {
+        type: 4,
+        name: 'hours',
+        description: 'Hours to ban user'
+      },
+      {
+        type: 4,
+        name: 'minutes',
+        description: 'Minutes to ban user'
+      }
+    ]
+  },
   privileged: true,
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guild?.me?.permissions.has('BAN_MEMBERS')) {
