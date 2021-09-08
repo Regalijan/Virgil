@@ -3,6 +3,10 @@ import { CommandInteraction, MessageEmbed } from 'discord.js'
 export = {
   name: 'internetspeed',
   permissions: [],
+  interactionData: {
+    name: 'internetspeed',
+    description: 'Show your internet speed'
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed()
       .setImage('https://thumbsnap.com/sc/3N5uU9CP.png')

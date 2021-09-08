@@ -3,6 +3,18 @@ import { CommandInteraction } from 'discord.js'
 export = {
   name: 'owoify',
   permissions: [],
+  interactionData: {
+    name: 'owoify',
+    description: 'OwOify some text',
+    options: [
+      {
+        type: 3,
+        name: 'text',
+        description: 'Text to OwOify',
+        required: true
+      }
+    ]
+  },
   async exec (i: CommandInteraction): Promise<void> {
     const text = i.options.getString('text', true)
       .replace(/[lr]/g, 'w')

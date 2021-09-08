@@ -4,6 +4,18 @@ import axios from 'axios'
 export = {
   name: 'hug',
   permissions: [],
+  interactionData: {
+    name: 'hug',
+    description: 'Hug someone',
+    options: [
+      {
+        type: 6,
+        name: 'person',
+        description: 'Person to hug',
+        required: true
+      }
+    ]
+  },
   async exec (i: CommandInteraction): Promise<void> {
     try {
       const target = i.options.getUser('person', true)

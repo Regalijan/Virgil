@@ -3,6 +3,18 @@ import { CommandInteraction } from 'discord.js'
 export = {
   name: 'kick',
   permissions: ['KICK_MEMBERS'],
+  interactionData: {
+    name: 'kick',
+    description: 'Kick a user',
+    options: [
+      {
+        type: 6,
+        name: 'user',
+        description: 'Person to kick',
+        required: true
+      }
+    ]
+  },
   privileged: true,
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guild?.me?.permissions.has('KICK_MEMBERS')) {
