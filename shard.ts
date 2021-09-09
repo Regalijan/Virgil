@@ -67,7 +67,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     const settings = await mongo.collection('settings').findOne({ guild: i.guild?.id })
     if (!settings?.commandLogChannel) return
     const logChannel = await i.guild?.channels.fetch(settings.commandLogChannel).catch(e => console.error(e))
-    if (!logChannel || logChannel.type !== 'GUILD_TEXT') return
+    if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !bot.user || !logChannel.permissionsFor(bot.user.id)?.has('SEND_MESSAGES')) return
     const embed = new MessageEmbed({
       author: {
         name: i.user.tag,
