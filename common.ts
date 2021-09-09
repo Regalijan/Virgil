@@ -159,6 +159,11 @@ export = {
     const binds: { server: string, type: string, role: string, asset?: number, group?: number, rank?: number }[] = []
     bindCursorDoc.forEach((doc: any) => { binds.push(doc) })
     const groupData = await this.getRobloxMemberGroups(robloxUserId)
+    const groupObjs: { [k: number]: number } = {}
+    groupData.forEach(g => {
+      groupObjs[g.group.id] = g.role.rank
+    })
+
     for (const bind of binds) {
       const bindRole = await member.guild.roles.fetch(bind.role).catch(e => console.error(e))
       if (!bindRole || bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0) continue
@@ -170,13 +175,11 @@ export = {
 
         case 'group':
 
-          for (const group of groupData) {
-            if ([0, bind.group].includes(group.group.id) && (!bind.rank || group.role.rank === bind.rank)) {
-              await member.roles.add(bindRole).catch(e => console.error(e))
-            }
+          if (typeof bind.group === 'undefined') continue
+          if (!groupObjs[bind.group] && bind.rank === 0 || groupObjs[bind.group] && !bind.rank || bind.rank === groupObjs[bind.group]) {
+            await member.roles.add(bindRole).catch(e => console.error(e))
           }
-          continue
-        
+
         case 'badge':
 
           if (!bind.asset) continue
