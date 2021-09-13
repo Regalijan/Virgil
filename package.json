@@ -17,14 +17,12 @@
   },
   "homepage": "https://github.com/Wolftallemo/Virgil#readme",
   "dependencies": {
-    "@discordjs/voice": "^0.6.0",
     "axios": "^0.21.1",
     "bufferutil": "^4.0.3",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "erlpack": "github:Wolftallemo/erlpack",
     "ioredis": "^4.27.9",
-    "libsodium-wrappers": "^0.7.9",
     "mongodb": "^4.1.1",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
