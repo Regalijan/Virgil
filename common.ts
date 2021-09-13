@@ -9,8 +9,8 @@ export = {
     if (cachedData) return JSON.parse(cachedData)
     try {
       const apiResponse = await axios(`https://groups.roblox.com/v2/users/${user}/groups/roles`)
-      await redis.set(`robloxgroups_${user}`, JSON.stringify(apiResponse.data), 'EX', 900).catch(e => console.error(e))
-      return apiResponse.data
+      await redis.set(`robloxgroups_${user}`, JSON.stringify(apiResponse.data.data), 'EX', 900).catch(e => console.error(e))
+      return apiResponse.data.data
     } catch (e) {
       console.error(e)
       return []
