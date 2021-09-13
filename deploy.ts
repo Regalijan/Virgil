@@ -27,7 +27,10 @@ const commands: ApplicationCommandData[] = []
       'content-type': 'application/json'
     },
     method: 'PUT',
-    data: JSON.stringify(commands)
+    data: JSON.stringify(commands),
+    validateStatus: (() => {
+      return true
+    })
   })
-  console.log(registerResponse.data)
+  console.log(registerResponse.status === 200 ? 'Deployment succeeded' : `${registerResponse.data}\nAn error occured while deploying! Read the logs above.`)
 }())
