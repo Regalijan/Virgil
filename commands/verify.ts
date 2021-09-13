@@ -1,4 +1,5 @@
-import { CommandInteraction } from 'discord.js'
+import { CommandInteraction, MessageActionRow, MessageButton } from 'discord.js'
+import { MessageButtonStyles } from 'discord.js/typings/enums'
 import Common from '../common'
 
 export = {
@@ -11,6 +12,12 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     const member = await i.guild?.members.fetch(i.user.id)
     if (!member) return await i.reply({ content: 'An error occured when attempting to verify you - please try again later.', ephemeral: true })
-    await i.reply({ content: await Common.verify(member) })
+    const resultString = await Common.verify(member)
+    const replyOpts: { content: string, components?: MessageActionRow[] } = { content: await Common.verify(member) }
+    if (resultString === 'You must be new, click the button to get started.') {
+      const notVerifiedLinkButton = new MessageButton({ emoji: '🔗', label: 'Verify your account', style: 'LINK', url: 'https://rover.link/my/verification'})
+      replyOpts.components = [new MessageActionRow({ components: [notVerifiedLinkButton] })]
+    }
+    await i.reply(replyOpts)
   }
 }
