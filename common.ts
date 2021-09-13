@@ -160,9 +160,7 @@ export = {
     bindCursorDoc.forEach((doc: any) => { binds.push(doc) })
     const groupData = await this.getRobloxMemberGroups(robloxUserId)
     const groupObjs: { [k: number]: number } = {}
-    groupData.forEach(g => {
-      groupObjs[g.group.id] = g.role.rank
-    })
+    for (const group of groupData) groupObjs[group.group.id] = group.role.rank
 
     for (const bind of binds) {
       const bindRole = await member.guild.roles.fetch(bind.role).catch(e => console.error(e))
