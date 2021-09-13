@@ -16,10 +16,10 @@ export = {
     ]
   },
   async exec (i: CommandInteraction): Promise<void> {
-    const embed = new MessageEmbed({ title: 'Noob Detector', author: { name: i.user.tag, icon_url: i.user.displayAvatarURL({ dynamic: true }) } })
     const target = i.options.getUser('person', true)
     const member = await i.guild?.members.fetch(target.id).catch(e => console.error(e))
-    if (member) embed.setColor(member.displayColor)
+    if (!member) return await i.reply({ content: 'Oops! I could not find that member in the server.', ephemeral: true })
+    const embed = new MessageEmbed({ title: 'Noob Detector', author: { name: member.user.tag, icon_url: member.user.displayAvatarURL({ dynamic: true }) }, color: member.displayColor })
     embed.addField('Noob Level', `${Math.round(Math.random() * 100)}`)
     await i.reply({ embeds: [embed] })
   }
