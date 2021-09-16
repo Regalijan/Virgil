@@ -12,10 +12,12 @@ module.exports = {
     if (usermodcheck.rowCount === 0 && !message.member.roles.cache.some(role => roles.includes(role.id))) return
     const modsettings = await db.query('SELECT * FROM gamemod_settings WHERE guild = $1;', [message.guild.id])
     if (modsettings.rowCount === 0) return
-    const fs = require('fs')
+    const fs = require('fs/promises')
     const request = require('axios')
     const { Storage } = require('@google-cloud/storage')
     const storage = new Storage({ keyFilename: `./servicekeys/${message.guild.id}.json` })
+    const { Datastore } = require('@google-cloud/datastore')
+    const banStore = new Datastore({ keyFile: './servicekeys/banstore.json' }) // This is temporary while the ban system is migrated as both are needed for the time being
     const reason = args.slice(1).join(' ')
     if ((args[0]) && (reason)) {
       const robloxData = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`).catch(e => {
@@ -24,7 +26,8 @@ module.exports = {
       })
       if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
       try {
-        fs.writeFileSync(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
+        await banStore.save({ key: banStore.key(['bans', robloxData.data.Id]), data: { roblox_id: robloxData.data.id, banned: true, hidden_from_leaderboards: false, radio_disabled: false, radio_disabled_until: null } })
+        await fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
       } catch (e) {
         message.channel.send('There was an error writing the file!')
         return console.error(e)
@@ -44,7 +47,7 @@ module.exports = {
         })
       }
       await message.channel.send(`${robloxData.data.Username} successfully banned from the game!`)
-      fs.unlink(`./${robloxData.data.Id}.json`, e => { if (e) console.error(e) })
+      await fs.unlink(`./${robloxData.data.Id}.json`, e => { if (e) console.error(e) })
     } else if (!args[0]) {
       return message.reply('You did not provide a username!')
     } else if (!reason) {
