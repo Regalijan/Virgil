@@ -33,4 +33,5 @@ const commands: ApplicationCommandData[] = []
     })
   })
   console.log(registerResponse.status === 200 ? 'Deployment succeeded' : `${registerResponse.data}\nAn error occured while deploying! Read the logs above.`)
+  process.exit()
 }())
