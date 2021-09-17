@@ -15,7 +15,7 @@ module.exports = {
     const { Storage } = require('@google-cloud/storage')
     const storage = new Storage({ keyFilename: `./servicekeys/${message.guild.id}.json` })
     const { Datastore } = require('@google-cloud/datastore')
-    const banStore = new Datastore({ keyFile: './servicekeys/banstore.json' })
+    const banStore = new Datastore({ keyFilename: './servicekeys/banstore.json' })
     const fs = require('fs/promises')
     const request = require('axios')
     if (args[0]) {

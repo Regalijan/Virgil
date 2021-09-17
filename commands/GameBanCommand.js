@@ -17,7 +17,7 @@ module.exports = {
     const { Storage } = require('@google-cloud/storage')
     const storage = new Storage({ keyFilename: `./servicekeys/${message.guild.id}.json` })
     const { Datastore } = require('@google-cloud/datastore')
-    const banStore = new Datastore({ keyFile: './servicekeys/banstore.json' }) // This is temporary while the ban system is migrated as both are needed for the time being
+    const banStore = new Datastore({ keyFilename: './servicekeys/banstore.json' }) // This is temporary while the ban system is migrated as both are needed for the time being
     const reason = args.slice(1).join(' ')
     if ((args[0]) && (reason)) {
       const robloxData = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`).catch(e => {
