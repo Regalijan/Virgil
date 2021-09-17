@@ -26,7 +26,7 @@ module.exports = {
       })
       if (!robloxData.data.Id || robloxData.data.Id === '') return message.channel.send(`I could not find a Roblox user with the name of ${args[0]}.`)
       try {
-        await banStore.save({ key: banStore.key(['bans', robloxData.data.Id]), data: { roblox_id: robloxData.data.id, banned: true, hidden_from_leaderboards: false, radio_disabled: false, radio_disabled_until: null } })
+        await banStore.save({ key: banStore.key(['bans', 'robloxuser' + robloxData.data.Id]), data: { roblox_id: robloxData.data.id, banned: true, hidden_from_leaderboards: false, radio_disabled: false, radio_disabled_until: null } })
         await fs.writeFile(`./${robloxData.data.Id}.json`, `{"usercode":"0x2","reason":"${reason}"}`)
       } catch (e) {
         message.channel.send('There was an error writing the file!')
