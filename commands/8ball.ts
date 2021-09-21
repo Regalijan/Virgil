@@ -11,7 +11,7 @@ export = {
       {
         type: 3,
         name: 'question',
-        description: 'What do you wwant to know?',
+        description: 'What do you want to know?',
         required: true
       }
     ]
