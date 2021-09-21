@@ -155,6 +155,15 @@ export = {
     if (!userProfileData) return `An error occured when verifying ${self ? 'you' : member.user.username}, please try again later.`
     const serversettings = await mongo.db().collection('settings').findOne({ guild: member.guild.id }).catch(e => console.error(e))
     if (!serversettings) return `The server settings are not ready, ${member.permissions.has('MANAGE_GUILD') ? '' : 'ask your server admin to' } run the \`/initialize\` command.`
+    if (member.manageable && member.guild.me.permissions.has('MANAGE_NICKNAMES')) await member.setNickname(this.formatName(
+      serversettings.nicknameformat ?? '{{SMARTNAME}}',
+      member.user.username,
+      member.id,
+      member.guild.name,
+      userProfileData.name ?? verifyApiData.data.robloxUsername,
+      verifyApiData.data.robloxId,
+      userProfileData.displayName ?? verifyApiData.data.robloxUsername
+    )).catch(e => console.error(e))
     const bindCursorDoc = db.find({ server: member.guild.id })
     const binds: { server: string, type: string, role: string, asset?: number, group?: number, rank?: number }[] = []
     bindCursorDoc.forEach((doc: any) => { binds.push(doc) })
