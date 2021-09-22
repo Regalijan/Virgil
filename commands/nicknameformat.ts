@@ -19,6 +19,6 @@ export = {
     ]
   },
   async exec (i: CommandInteraction): Promise<void> {
-    settingsDB.findOneAndUpdate({ server: i.guildId }, { nicknameformat: i.options.get('format', true) })
+    settingsDB.findOneAndUpdate({ server: i.guildId }, { $set: { nicknameformat: i.options.get('format', true) } })
   }
 }
