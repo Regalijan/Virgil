@@ -2,6 +2,8 @@ import { CommandInteraction, GuildMember, MessageEmbed } from 'discord.js'
 import mongo from '../mongo'
 import { Document } from 'mongodb'
 
+const binds = mongo.db('bot').collection('binds')
+
 export = {
   name: 'listbinds',
   description: 'Shows all server binds',
@@ -10,15 +12,13 @@ export = {
     description: 'Shows all server binds'
   },
   async exec (i: CommandInteraction): Promise<void> {
-    const binds: Document[] = []
-    const bindDoc = mongo.db('bot').collection('binds').find({ server: i.guildId })
-    bindDoc.forEach(doc => { binds.push(doc) })
-    console.log(bindDoc)
+    if (!i.guildId) throw Error('<CommandInteraction>.guildId was null despite command being run in a guild.')
+    const bindsList = await binds.find({ server: i.guildId }).toArray()
     const embed = new MessageEmbed()
-      .setDescription('\u200B')
+      .setDescription(bindsList.length ? 'List of binds for this server' : 'No binds are set for this server')
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
-    for (const bind of binds) {
-      embed.addField(bind.type + bind.asset ?? bind.group, `<@&${bind.role.id}>`)
+    for (const bind of bindsList) {
+      embed.addField(bind.type[0].toUpperCase() + bind.type.slice(1) + `${bind.asset ? bind.asset : bind.group + ' - ' + bind.rank ?? 0}`, '')
     }
     await i.reply({ embeds: [embed] })
   }
