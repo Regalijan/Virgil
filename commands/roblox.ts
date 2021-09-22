@@ -47,7 +47,7 @@ export = {
       }
       embed.addField('Past Usernames', pastNamesString)
     }
-    const thumbnailData = await axios(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.robloxId}&size=720=720&format=png`).catch(e => console.error(e))
+    const thumbnailData = await axios(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`).catch(e => console.error(e))
     if (thumbnailData) {
       embed.setThumbnail(thumbnailData.data.data[0].imageUrl)
       embed.setAuthor(robloxData.name, thumbnailData.data.data[0].imageUrl, `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`)
