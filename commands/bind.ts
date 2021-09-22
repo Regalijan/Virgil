@@ -163,7 +163,7 @@ export = {
           if (i.options.getInteger('bundle_id', true) < 1) return await i.reply({ content: 'Bundle IDs cannot be less than 1!' })
           const bundleVerify = await axios(`https://catalog.roblox.com/v1/bundles/${i.options.getInteger('bundle_id', true)}/details`, {
             validateStatus: ((s) => {
-              if (s === 400) return false
+              if ([200,400].includes(s)) return false
               return true
             })
           }).catch(e => console.error(e))
@@ -176,7 +176,7 @@ export = {
           if (i.options.getInteger('gamepass_id', true) < 1) return await i.reply({ content: 'GamePass IDs cannot be less than 1!', ephemeral: true })
           const gamePassVerify = await axios(`https://api.roblox.com/marketplace/game-pass-product-info?gamePassId=${i.options.getInteger('gamepass_id', true)}`, {
             validateStatus: (s) => {
-              if (s === 400) return false
+              if ([200,400].includes(s)) return false
               return true
             }
           }).catch(e => console.error(e))
@@ -189,7 +189,7 @@ export = {
           if (i.options.getInteger('asset_id', true) < 1) return await i.reply({ content: 'Asset IDs cannot be less than 1!', ephemeral: true })
           const assetVerify = await axios(`https://api.roblox.com/marketplace/productinfo?assetId=${i.options.getInteger('asset_id', true)}`, {
             validateStatus: (s) => {
-              if (s === 400) return false
+              if ([200,400].includes(s)) return false
               return true
             }
           }).catch(e => console.error(e))

@@ -21,7 +21,7 @@ export = {
     const embed = new MessageEmbed({ footer: { text: 'Information provided by Roblox Corporation and RoVer Registry' } })
     const verifyRegistryData = await axios('https://registry.rover.link/discord-to-roblox/' + user.id, {
       validateStatus: (s => {
-        if (s === 404) return true
+        if ([200, 400].includes(s)) return true
         return false
       })
     }).catch(e => console.error(e))
