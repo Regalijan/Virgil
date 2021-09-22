@@ -73,7 +73,8 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         name: i.user.tag,
         iconURL: i.user.displayAvatarURL({ dynamic: true })
       },
-      color: settings.commandLogColor ?? 3756250
+      color: settings.commandLogColor ?? 3756250,
+      description: `Ran the \`${command.name}\` command.`
     })
     await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
