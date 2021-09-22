@@ -189,8 +189,3 @@ process.on('SIGHUP', function () {
   bot.destroy()
   process.exit()
 })
-
-process.on('SIGKILL', function () {
-  bot.destroy()
-  process.exit()
-})
