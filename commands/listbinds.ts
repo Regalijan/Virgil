@@ -1,6 +1,5 @@
 import { CommandInteraction, GuildMember, MessageEmbed } from 'discord.js'
 import mongo from '../mongo'
-import { Document } from 'mongodb'
 
 const binds = mongo.db('bot').collection('binds')
 
@@ -18,7 +17,9 @@ export = {
       .setDescription(bindsList.length ? 'List of binds for this server' : 'No binds are set for this server')
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     for (const bind of bindsList) {
-      embed.addField(bind.type[0].toUpperCase() + bind.type.slice(1) + `${bind.asset ? bind.asset : bind.group + ' - ' + bind.rank ?? 0}`, '<@&' + bind.role + '>')
+      let bindString = bind.type[0].toUpperCase() + bind.type.slice(1)
+      if (bind.group) bindString += `${bind.group} - ${bind.rank ? `Rank ${bind.rank}` : 'All ranks' }`
+      embed.addField(bindString, `<@&${bind.role}>`)
     }
     await i.reply({ embeds: [embed] })
   }
