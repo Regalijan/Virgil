@@ -169,7 +169,7 @@ export = {
           }).catch(e => console.error(e))
           if (!bundleVerify) return await i.reply({ content: 'An error occured when looking up the bundle! Please try again later.', ephemeral: true })
           if (bundleVerify.status === 400) return await i.reply({ content: 'The bundle you specified does not exist.', ephemeral: true })
-          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'bundle', role: i.options.getRole('role', true), asset: i.options.getInteger('bundle_id', true) })
+          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'bundle', role: i.options.getRole('role', true).id, asset: i.options.getInteger('bundle_id', true) })
           break
 
         case 'gamepass':
@@ -182,7 +182,7 @@ export = {
           }).catch(e => console.error(e))
           if (!gamePassVerify) return await i.reply({ content: 'An error occured when looking up that GamePass! Please try again later.' })
           if (gamePassVerify.status === 400) return await i.reply({ content: 'GamePass does not exist! Try again.', ephemeral: true })
-          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'gamepass', role: i.options.getRole('role', true), asset: i.options.getInteger('gamepass_id', true) })
+          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'gamepass', role: i.options.getRole('role', true).id, asset: i.options.getInteger('gamepass_id', true) })
           break
 
         case 'asset':
@@ -199,7 +199,7 @@ export = {
           break
 
         case 'verified_status':
-          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'verified', role: i.options.getRole('role', true) })
+          await bindDb.insertOne({ id: bindId, server: i.guildId, type: 'verified', role: i.options.getRole('role', true).id })
           break
 
         case 'unverified_status':
