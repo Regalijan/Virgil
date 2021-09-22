@@ -17,7 +17,7 @@ dotenv()
 
 const cmds: Map<string, {
   name: string,
-  permissions: PermissionResolvable[],
+  permissions?: PermissionResolvable[],
   interactionData: ApplicationCommandData,
   privileged?: boolean,
   exec (i: CommandInteraction): Promise<void>
@@ -57,7 +57,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     }
 
     const interactionUser = await i.guild?.members.fetch(i.user.id)
-    if (command?.permissions.length && !interactionUser?.permissions.has(command.permissions)) {
+    if (command?.permissions?.length && !interactionUser?.permissions.has(command.permissions)) {
       await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => console.error(e))
       return
     }
