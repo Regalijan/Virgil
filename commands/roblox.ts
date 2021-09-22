@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed, Team, User } from 'discord.js'
+import { CommandInteraction, GuildMember, MessageEmbed, Team, User } from 'discord.js'
 import common from '../common'
 import axios from 'axios'
 
@@ -32,6 +32,7 @@ export = {
     const robloxData = await common.getRobloxUserProfile(verifyRegistryData.data.robloxId)
     if (!robloxData) return await i.reply({ content: 'An error occured when retrieving information from Roblox! Please try again later.', ephemeral: true })
     embed.setAuthor(robloxData.name)
+    if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     let bio = robloxData.description
     while ((bio.match(/\n/mg) || []).length > 15 || bio.match(/\n\n\n/mg)) {
       const lastN = bio.lastIndexOf('\n')
