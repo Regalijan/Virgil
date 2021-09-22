@@ -10,8 +10,8 @@ export = {
     description: 'Erases all settings of the bot and leaves the server',
   },
   async exec (i: CommandInteraction): Promise<void> {
-    const serversettings = await mongo.db().collection('settings').findOneAndDelete({ server: i.guildId })
-    await mongo.db().collection('binds').deleteMany({ server: i.guildId })
+    const serversettings = await mongo.db('bot').collection('settings').findOneAndDelete({ server: i.guildId })
+    await mongo.db('bot').collection('binds').deleteMany({ server: i.guildId })
     await i.reply({ content: 'Settings deleted! Leaving the server...', ephemeral: true })
     const logChannel = await i.guild?.channels.fetch(serversettings.value?.commandLogChannel).catch(e => console.error(e))
     const me = await i.guild?.me?.fetch()

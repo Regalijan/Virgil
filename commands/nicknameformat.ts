@@ -1,7 +1,7 @@
 import { CommandInteraction } from 'discord.js'
 import mongo from '../mongo'
 
-const settingsDB = mongo.db().collection('settings')
+const settingsDB = mongo.db('bot').collection('settings')
 
 export = {
   name: 'nicknameformat',

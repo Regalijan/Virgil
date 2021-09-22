@@ -1,7 +1,7 @@
 import { CommandInteraction } from 'discord.js'
 import mongo from '../mongo'
 
-const bindDb = mongo.db().collection('binds')
+const bindDb = mongo.db('bot').collection('binds')
 
 export = {
   name: 'deletebind',

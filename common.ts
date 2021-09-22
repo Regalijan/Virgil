@@ -137,7 +137,7 @@ export = {
 
   async verify (member: GuildMember, self: boolean = true): Promise<string> {
     if (!member.guild.me?.permissions.has('MANAGE_ROLES')) return 'I do not have permission to manage roles!'
-    const db = mongo.db().collection('binds')
+    const db = mongo.db('bot').collection('binds')
     const verifyApiData = await axios(`https://registry.rover.link/discord-to-roblox/${member.id}`).catch(e => console.error(e))
     if (!verifyApiData) {
       const unverifiedBindDoc = db.find({ server: member.guild.id, type: 'unverified' })
@@ -153,7 +153,7 @@ export = {
     const robloxUserId = parseInt(verifyApiData.data.robloxId)
     const userProfileData = await this.getRobloxUserProfile(robloxUserId)
     if (!userProfileData) return `An error occured when verifying ${self ? 'you' : member.user.username}, please try again later.`
-    const serversettings = await mongo.db().collection('settings').findOne({ guild: member.guild.id }).catch(e => console.error(e))
+    const serversettings = await mongo.db('bot').collection('settings').findOne({ guild: member.guild.id }).catch(e => console.error(e))
     if (!serversettings) return `The server settings are not ready, ${member.permissions.has('MANAGE_GUILD') ? '' : 'ask your server admin to' } run the \`/initialize\` command.`
     if (member.manageable && member.guild.me.permissions.has('MANAGE_NICKNAMES')) await member.setNickname(this.formatName(
       serversettings.nicknameformat ?? '{{SMARTNAME}}',

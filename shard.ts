@@ -37,7 +37,7 @@ bot.login().catch(e => {
   process.exit()
 })
 
-const mongo = db.db()
+const mongo = db.db('bot')
 
 if (process.env.ENABLEDEBUG) bot.on('debug', function (m) {
   console.log(m)

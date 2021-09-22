@@ -140,7 +140,7 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guild) throw Error('<CommandInteraction>.guild is null')
     const subc = i.options.getSubcommand(true)
-    const bindDb = mongo.db().collection('binds')
+    const bindDb = mongo.db('bot').collection('binds')
       const bindId = createHash('sha256').update(randomBytes(256)).digest('base64')
       switch (subc) {
         case 'group':

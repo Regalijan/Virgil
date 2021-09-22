@@ -13,7 +13,7 @@ export = {
     const redisBefore = Date.now()
     await redis.ping()
     const redisAfter = Date.now()
-    const db = mongo.db().collection('settings')
+    const db = mongo.db('bot').collection('settings')
     const mongoBefore = Date.now()
     await db.findOne({ server: i.guildId })
     const mongoAfter = Date.now()
@@ -25,7 +25,6 @@ export = {
         { name: 'Gateway', value: `${i.client.ws.ping}ms` },
         { name: 'Round Trip (since you ran the command)', value: `${Date.now() - redisBefore}ms` }
       )
-
     const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
     if (member) embed.setColor(member.displayColor)
     await i.reply({ embeds: [embed] })

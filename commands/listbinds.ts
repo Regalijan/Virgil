@@ -11,7 +11,9 @@ export = {
   },
   async exec (i: CommandInteraction): Promise<void> {
     const binds: Document[] = []
-    mongo.db().collection('binds').find({ server: i.guildId }).forEach(doc => { binds.push(doc) })
+    const bindDoc = mongo.db('bot').collection('binds').find({ server: i.guildId })
+    bindDoc.forEach(doc => { binds.push(doc) })
+    console.log(bindDoc)
     const embed = new MessageEmbed()
       .setDescription('\u200B')
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)

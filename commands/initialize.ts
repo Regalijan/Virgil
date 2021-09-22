@@ -14,7 +14,7 @@ export = {
       return
     }
 
-    const currentSettings = await mongo.db().collection('settings').findOne({ guild: i.guildId }).catch(e => console.error(e))
+    const currentSettings = await mongo.db('bot').collection('settings').findOne({ guild: i.guildId }).catch(e => console.error(e))
 
     if (typeof currentSettings === 'undefined') {
       await i.reply({ content: 'Uh oh! Something happened during the pre-run check - but don\'t worry, nothing was modified!', ephemeral: true })
@@ -26,7 +26,7 @@ export = {
       return
     }
     try {
-      await mongo.db().collection('settings').insertOne({ guild: i.guildId })
+      await mongo.db('bot').collection('settings').insertOne({ guild: i.guildId })
     } catch (e) {
       console.error(e)
       await i.reply({ content: 'Uh oh! Something happened when trying to initialize! Please try again in a few minutes.', ephemeral: true })

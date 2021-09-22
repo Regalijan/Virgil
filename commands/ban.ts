@@ -55,6 +55,6 @@ export = {
     await target.ban({ reason: i.options.getString('reason', false) ?? 'No reason provided.' })
     if (!aheadToUnban) return
     aheadToUnban += Date.now()
-    await mongo.db().collection('bans').insertOne({ server: i.guildId, unban: aheadToUnban, user: target.id  })
+    await mongo.db('bot').collection('bans').insertOne({ server: i.guildId, unban: aheadToUnban, user: target.id  })
   }
 }
