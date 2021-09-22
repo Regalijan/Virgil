@@ -139,6 +139,12 @@ bot.on('channelUpdate', async function (oldChannel, newChannel): Promise<void> {
   await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
 })
 
+bot.on('guildCreate', async function (guild): Promise<void> {
+  const existingSettings = await mongo.collection('settings').findOne({ guild: guild.id }).catch(e => console.error(e))
+  if (typeof existingSettings === 'undefined' || existingSettings) return
+  await mongo.collection('settings').insertOne({ guild: guild.id }).catch(e => console.error(e))
+})
+
 setInterval(async function (): Promise<void> {
   try {
     const bansDoc = mongo.collection('bans').find({ unban: { $lte: Date.now() } })
@@ -180,6 +186,11 @@ process.on('SIGINT', function () {
 })
 
 process.on('SIGHUP', function () {
+  bot.destroy()
+  process.exit()
+})
+
+process.on('SIGKILL', function () {
   bot.destroy()
   process.exit()
 })
