@@ -22,7 +22,7 @@ export = {
     }
 
     if (currentSettings) {
-      await i.reply({ content: `Existing settings were found for this server! If you wish to start from scratch,${i.guild?.ownerId === i.user.id ? '' : 'ask the server owner toA'} run the \`/factoryreset\` command`, ephemeral: true })
+      await i.reply({ content: `Existing settings were found for this server! If you wish to start from scratch,${i.guild?.ownerId === i.user.id ? '' : ' ask the server owner to '} run the \`/factoryreset\` command`, ephemeral: true })
       return
     }
     try {
