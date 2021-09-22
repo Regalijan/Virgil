@@ -98,6 +98,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData)
     try {
       const apiResponse = await axios(`https://users.roblox.com/v1/users/${user}`)
+      apiResponse.data.created = new Date(apiResponse.data.created) // Dates are outputted as strings
       await redis.set(`robloxprofile_${user}`, JSON.stringify(apiResponse.data), 'EX', 900).catch(e => console.error(e))
       return apiResponse.data
     } catch (e) {
