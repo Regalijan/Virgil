@@ -37,15 +37,16 @@ export = {
       const lastN = bio.lastIndexOf('\n')
       bio = bio.slice(0, lastN) + bio.slice(lastN + 1)
     }
+    embed.setDescription(bio)
     const pastNamesData = await axios(`https://users.roblox.com/v1/users/${verifyRegistryData.data.robloxId}/username-history?limit=25&sortOrder=Desc`).catch(e => console.error(e))
-    embed.addField('Join Date', new Intl.DateTimeFormat(i.guild?.preferredLocale ?? 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' } ).format(robloxData.created))
+    embed.addField('Join Date', new Intl.DateTimeFormat(i.guild?.preferredLocale ?? 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' } ).format(robloxData.created), true)
     if (pastNamesData?.data.data) {
       let pastNamesString = ''
       for (let i = 0; i < pastNamesData.data.data.length; i++) {
         pastNamesString += pastNamesData.data.data[i].name
         if (i < pastNamesData.data.data.length - 1) pastNamesString += ', '
       }
-      embed.addField('Past Usernames', pastNamesString)
+      embed.addField('Past Usernames', pastNamesString, true)
     }
     const thumbnailData = await axios(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`).catch(e => console.error(e))
     if (thumbnailData) {
