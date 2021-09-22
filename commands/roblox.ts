@@ -42,7 +42,7 @@ export = {
     if (pastNamesData?.data.data) {
       let pastNamesString = ''
       for (let i = 0; i < pastNamesData.data.data.length; i++) {
-        pastNamesString += pastNamesData.data.data[i]
+        pastNamesString += pastNamesData.data.data[i].name
         if (i < pastNamesData.data.data.length - 1) pastNamesString += ', '
       }
       embed.addField('Past Usernames', pastNamesString)
