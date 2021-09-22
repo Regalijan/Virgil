@@ -17,12 +17,11 @@ export = {
   },
   async exec (i: CommandInteraction): Promise<void> {
     const member = await i.guild?.members.fetch(i.options.getUser('user') ?? i.user.id).catch(e => console.error(e))
-
-    if (member?.id !== i.user.id && !member?.permissions.has('MANAGE_GUILD')) {
-      await i.reply({ content: 'Oops! You do not have permission to use this command; if you want to verify yourself, please run `/verify`', ephemeral: true })
-      return
+    if (!member) throw Error('Interaction-provided GuildMember is undefined')
+    if (member.id !== i.user.id) {
+      const executorMember = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
+      if (!executorMember?.permissions.has('MANAGE_GUILD')) return await i.reply({ content: 'Oops! You do not have permission to use this command; if you want to verify yourself, please run `/verify`', ephemeral: true })
     }
-
     await i.reply({ content: await Common.verify(member, member.id === i.user.id) })
   }
 }
