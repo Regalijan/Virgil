@@ -13,6 +13,7 @@ export = {
     const binds: Document[] = []
     mongo.db().collection('binds').find({ server: i.guildId }).forEach(doc => { binds.push(doc) })
     const embed = new MessageEmbed()
+      .setDescription('\u200B')
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     for (const bind of binds) {
       embed.addField(bind.type + bind.asset ?? bind.group, `<@&${bind.role.id}>`)
