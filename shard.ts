@@ -162,15 +162,17 @@ bot.on('messageDelete', async function (message): Promise<void> {
   await channel.send({ embeds: [embed] }).catch(e => console.error(e))
 })
 
+bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
+  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild) return
+  const settings = await mongo.collection('settings').findOne({ guild: newMessage.guild.id }).catch(e => console.error(e))
+  if (!settings?.editLogChannel) return
+  const embed = new MessageEmbed()
+    .setAuthor(`${oldMessage.author.tag} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL({ dynamic: true }))
+})
+
 setInterval(async function (): Promise<void> {
   try {
-    const bansDoc = mongo.collection('bans').find({ unban: { $lte: Date.now() } })
-    let bans: any[] = []
-
-    bansDoc.forEach(function (ban) {
-      bans.push(ban) // Callbacks suck
-    })
-
+    const bans = await mongo.collection('bans').find({ unban: { $lte: Date.now() } }).toArray()
     for (const ban of bans) {
       const shard = ShardClientUtil.shardIdForGuildId(ban.server, bot.shard?.count ?? 1)
       await bot.shard?.broadcastEval(async c => {
