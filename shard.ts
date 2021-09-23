@@ -168,6 +168,14 @@ bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
   if (!settings?.editLogChannel) return
   const embed = new MessageEmbed()
     .setAuthor(`${oldMessage.author.tag} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL({ dynamic: true }))
+    .setDescription(`Message edited in <#${newMessage.channel.id}> [Go to message](${newMessage.url})`)
+    .addFields(
+      { name: 'Before', value: oldMessage.content ?? 'Unknown content' },
+      { name: 'After', value: newMessage.content ?? 'Unknown content' }
+    )
+  const channel = await newMessage.guild.channels.fetch(settings.editLogChannel).catch(e => console.error(e))
+  if (!channel || !(channel instanceof TextChannel) || !newMessage.client.user?.id || !channel.permissionsFor(newMessage.client.user.id)?.has('SEND_MESSAGES')) return
+  await channel.send({ embeds: [embed] }).catch(e => console.error(e))
 })
 
 setInterval(async function (): Promise<void> {
