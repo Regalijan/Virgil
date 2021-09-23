@@ -5,10 +5,12 @@ import {
   ApplicationCommandData,
   Client,
   CommandInteraction,
+  GuildMember,
   Interaction,
   MessageEmbed,
   PermissionResolvable,
-  ShardClientUtil
+  ShardClientUtil,
+  TextChannel
 } from 'discord.js'
 import db from './mongo'
 
@@ -73,9 +75,9 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         name: i.user.tag,
         iconURL: i.user.displayAvatarURL({ dynamic: true })
       },
-      color: settings.commandLogColor ?? 3756250,
       description: `Ran the \`${command.name}\` command.`
     })
+    if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
     console.error(e)
@@ -143,6 +145,21 @@ bot.on('guildCreate', async function (guild): Promise<void> {
   const existingSettings = await mongo.collection('settings').findOne({ guild: guild.id }).catch(e => console.error(e))
   if (typeof existingSettings === 'undefined' || existingSettings) return
   await mongo.collection('settings').insertOne({ guild: guild.id }).catch(e => console.error(e))
+})
+
+bot.on('messageDelete', async function (message): Promise<void> {
+  if (!message.guild || !message.author) return
+  const settings = await mongo.collection('settings').findOne({ guild: message.guild.id }).catch(e => console.error(e))
+  if (!settings?.deleteLogChannel) return
+  const embed = new MessageEmbed()
+    .setAuthor(`${message.author.tag} (${message.author.id})`, message.author.displayAvatarURL({ dynamic: true }))
+    .setDescription(`Message ${message.id} deleted from <#${message.channel.id}>${message.thread ? ` - Thread ${message.thread.name}` : ''}${message.content ? `\n**Content:** ${message.content}` : ''}`)
+  if (message.member) embed.setColor(message.member.displayColor)
+  const channel = await message.guild.channels.fetch(settings.deleteLogChannel).catch(e => console.error(e))
+  if (!(channel instanceof TextChannel)) return
+  if (!message.client.user?.id) return
+  if (!channel?.permissionsFor(message.client.user.id)?.has('SEND_MESSAGES')) return
+  await channel.send({ embeds: [embed] }).catch(e => console.error(e))
 })
 
 setInterval(async function (): Promise<void> {
