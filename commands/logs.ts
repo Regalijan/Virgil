@@ -124,42 +124,44 @@ export = {
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     const settingsList = await settingsDB.findOne({ guild: i.guildId })
     if (!settingsList) return await i.reply({ content: `The server settings are not ready, ${i.member instanceof GuildMember ? i.member.permissions.has('MANAGE_GUILD') ? '' : 'ask your server admin to' : 'ask your server admin to' } run the \`/initialize\` command.`})
-    const choiceToSettingObj = {
-      ban: 'banLogChannel',
-      delete: 'deleteLogChannel',
-      edit: 'editLogChannel',
-      nickname: 'nicknameLogChannel',
-      role: 'roleLogChannel',
-      unban: 'unbanLogChannel',
-      voice_join: 'voiceJoinLogChannel',
-      voice_leave: 'voiceLeaveLogChannel'
-    }
+    const choiceToSettingMap: Map<string, string> = new Map()
+      .set('ban', 'banLogChannel')
+      .set('delete', 'deleteLogChannel')
+      .set('edit', 'editLogChannel')
+      .set('nickname', 'nicknameLogChannel')
+      .set('role', 'roleLogChannel')
+      .set('unban', 'unbanLogChannel')
+      .set('voice_join', 'voiceJoinLogChannel')
+      .set('voice_leave', 'voiceLeaveLogChannel')
+
     switch (i.options.getSubcommand(true)) {
       case 'list':
         embed.setTitle('Log channels for ' + i.guild?.name)
         embed.setDescription('\u200B')
         embed.addFields(
-          { name: 'Ban logs', value: settingsList?.banLogChannel ?? 'Not set' },
-          { name: 'Delete logs', value: settingsList?.deleteLogChannel ?? 'Not set' },
-          { name: 'Edit logs', value: settingsList?.editLogChannel ?? 'Not set' },
-          { name: 'Nickname logs', value: settingsList?.nicknameLogChannel ?? 'Not set'},
-          { name: 'Role logs', value: settingsList?.roleLogChannel ?? 'Not set' },
-          { name: 'Unban logs', value: settingsList?.unbanLogChannel ?? 'Not set' },
-          { name: 'Voice join logs', value: settingsList?.voiceJoinLogChannel ?? 'Not set' },
-          { name: 'Voice leave logs', value: settingsList?.voiceLeaveLogChannel ?? 'Not set' }
+          { name: 'Ban logs', value: settingsList?.banLogChannel ? `<#${settingsList.banLogChannel}>` : 'Not set' },
+          { name: 'Delete logs', value: settingsList?.deleteLogChannel ? `<#${settingsList.deleteLogChannel}>` : 'Not set' },
+          { name: 'Edit logs', value: settingsList?.editLogChannel ? `<#${settingsList.editLogChannel}>` : 'Not set' },
+          { name: 'Nickname logs', value: settingsList?.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set' },
+          { name: 'Role logs', value: settingsList?.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set' },
+          { name: 'Unban logs', value: settingsList?.unbanLogChannel ? `<#${settingsList.unbanLogChannel}>` : 'Not set' },
+          { name: 'Voice join logs', value: settingsList?.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set' },
+          { name: 'Voice leave logs', value: settingsList?.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set' }
         )
         return await i.reply({ embeds: [embed] })
 
       case 'remove':
         const removalChoice = i.options.getString('log', true)
-        delete settingsList[removalChoice]
-        await settingsDB.replaceOne({ guild: i.guildId }, settingsList)
+        const $yeet: any = { $unset: {} }
+        $yeet.$unset[choiceToSettingMap.get(removalChoice) ?? ''] = ''
+        await settingsDB.updateOne({ guild: i.guildId }, $yeet)
         return await i.reply({ content: `\`${removalChoice}\` log disabled!` })
 
       case 'set':
         const setChoice = i.options.getString('log', true)
-        settingsList[setChoice] = i.options.getChannel('channel', true).id
-        await settingsDB.replaceOne({ guild: i.guildId }, settingsList)
+        const $set: any = { $set: {} }
+        $set.$set[choiceToSettingMap.get(setChoice) ?? ''] = channel?.id
+        await settingsDB.updateOne({ guild: i.guildId }, $set)
         return await i.reply({ content: `\`${setChoice}\` log set to <#${i.options.getChannel('channel', true).id}>!` })
     }
   }
