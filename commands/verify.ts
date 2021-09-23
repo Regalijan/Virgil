@@ -1,5 +1,4 @@
 import { CommandInteraction, MessageActionRow, MessageButton } from 'discord.js'
-import { MessageButtonStyles } from 'discord.js/typings/enums'
 import Common from '../common'
 
 export = {
