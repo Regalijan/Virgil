@@ -1,6 +1,7 @@
 import axios from 'axios'
 import redis from './redis'
 import mongo from './mongo'
+import Sentry from './sentry'
 import { GuildMember } from 'discord.js'
 
 export = {
@@ -13,6 +14,7 @@ export = {
       return apiResponse.data.data
     } catch (e) {
       console.error(e)
+      Sentry.captureException(e)
       return []
     }
   },
@@ -36,6 +38,7 @@ export = {
       return friendIds
     } catch (e) {
       console.error(e)
+      Sentry.captureException(e)
       return []
     }
   },
@@ -51,6 +54,7 @@ export = {
       return ownsItem
     } catch (e) {
       console.error(e)
+      Sentry.captureException(e)
       return false
     }
   },
@@ -89,6 +93,7 @@ export = {
      return badgeIds
    } catch (e) {
      console.error(e)
+     Sentry.captureException(e)
      return []
    }
   },
@@ -103,6 +108,7 @@ export = {
       return apiResponse.data
     } catch (e) {
       console.error(e)
+      Sentry.captureException(e)
       return
     }
   },

@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember, MessageEmbed, Team, User } from 'discord.js'
 import common from '../common'
 import axios from 'axios'
+import Sentry from '../sentry'
 
 export = {
   name: 'roblox',
@@ -21,10 +22,13 @@ export = {
     const embed = new MessageEmbed({ footer: { text: 'Information provided by Roblox Corporation and RoVer Registry' } })
     const verifyRegistryData = await axios('https://registry.rover.link/discord-to-roblox/' + user.id, {
       validateStatus: (s => {
-        if ([200, 400].includes(s)) return true
+        if ([200, 404].includes(s)) return true
         return false
       })
-    }).catch(e => console.error(e))
+    }).catch(e => {
+      console.error(e)
+      Sentry.captureException(e)
+    })
     if (!verifyRegistryData) return await i.reply({ content: 'An error occured when looking up this user! Please try again later.', ephemeral: true })
     if (verifyRegistryData.status === 404) return await i.reply({ content: 'This user is not verified!', ephemeral: true })
     embed.setURL(`https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`)
