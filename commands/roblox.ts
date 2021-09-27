@@ -45,7 +45,7 @@ export = {
     embed.setDescription(bio)
     const pastNamesData = await axios(`https://users.roblox.com/v1/users/${verifyRegistryData.data.robloxId}/username-history?limit=25&sortOrder=Desc`).catch(e => console.error(e))
     embed.addField('Join Date', new Intl.DateTimeFormat(i.guild?.preferredLocale ?? 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' } ).format(robloxData.created), true)
-    if (pastNamesData?.data.data) {
+    if (pastNamesData?.data.data?.length) {
       let pastNamesString = ''
       for (let i = 0; i < pastNamesData.data.data.length; i++) {
         pastNamesString += pastNamesData.data.data[i].name
