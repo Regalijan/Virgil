@@ -12,6 +12,7 @@ import {
   ShardClientUtil,
   TextChannel
 } from 'discord.js'
+import Sentry from './sentry'
 import db from './mongo'
 
 db.connect()
@@ -81,7 +82,8 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
     console.error(e)
-    await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`${e}\``, ephemeral: true }).catch(e => console.error(e))
+    const eventId = Sentry.captureException(e)
+    await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Event ID: ${eventId}\``, ephemeral: true }).catch(e => console.error(e))
   }
 })
 
