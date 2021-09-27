@@ -25,7 +25,7 @@
     "erlpack": "github:Wolftallemo/erlpack",
     "ioredis": "^4.27.9",
     "mongodb": "^4.1.2",
-    "utf-8-validate": "^5.0.5",
+    "utf-8-validate": "^5.0.6",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
