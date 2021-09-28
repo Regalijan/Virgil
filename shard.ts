@@ -143,6 +143,39 @@ bot.on('channelUpdate', async function (oldChannel, newChannel): Promise<void> {
   await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
 })
 
+bot.on('guildBanAdd', async function (ban): Promise<void> {
+  const settings = await mongo.collection('settings').findOne({ guild: ban.guild.id }).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+  if (!settings?.banLogChannel) return
+  const banChannel = await ban.guild.channels.fetch(settings.banLogChannel).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+
+  if (banChannel?.type !== 'GUILD_TEXT') return
+  if (!ban.guild.me || !banChannel.permissionsFor(ban.guild.me).has('SEND_MESSAGES')) return
+
+  const embed = new MessageEmbed()
+    .setThumbnail('Member Banned')
+    .setDescription(`<@${ban.user.id}> ${ban.user.tag}`)
+    .addField('Reason', ban.reason ?? 'No reason provided')
+
+  if (ban.guild.me?.permissions.has('VIEW_AUDIT_LOG')) {
+    const auditEntry = (await ban.guild.fetchAuditLogs({ type: 22, limit: 1 }).catch(e => {
+      console.error(e)
+      Sentry.captureException(e)
+    }))?.entries.first()
+    if (auditEntry?.executor?.id === ban.guild.me.id) return
+    embed.setAuthor(auditEntry?.executor?.tag ?? 'Unknown')
+  }
+  await banChannel.send({ embeds: [embed] }).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+})
+
 bot.on('guildCreate', async function (guild): Promise<void> {
   const existingSettings = await mongo.collection('settings').findOne({ guild: guild.id }).catch(e => console.error(e))
   if (typeof existingSettings === 'undefined' || existingSettings) return
