@@ -182,6 +182,17 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
       console.error(e)
       Sentry.captureException(e)
     })
+  } else if (oldMember.nickname !== newMember.nickname) {
+    if (!settings.nicknameLogChannel) return
+    const nicknameLogChannel = await newMember.guild.channels.fetch(settings.nicknameLogChannel).catch(e => {
+      console.error(e)
+      Sentry.captureException(e)
+    })
+    if (nicknameLogChannel?.type !== 'GUILD_TEXT') return
+    if (!newMember.client.user || !nicknameLogChannel.permissionsFor(newMember.client.user.id)?.has('SEND_MESSAGES')) return
+    embed.setTitle('Nickname Updated')
+    embed.setDescription(`\`${oldMember.nickname ?? 'None'}\` -> \`${newMember.nickname ?? 'None'}\``)
+    await nicknameLogChannel.send({ embeds: [embed] }).catch(Sentry.captureException)
   }
 })
 
