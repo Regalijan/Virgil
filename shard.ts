@@ -356,7 +356,7 @@ bot.on('voiceStateUpdate', async function (oldState, newState): Promise<void> {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
   }
-  if (newState.selfMute !== oldState.selfMute && settings.voiceMuteLogChannel) {
+  else if (newState.selfMute !== oldState.selfMute && settings.voiceMuteLogChannel) {
     actionstring += `${newState.mute ? 'muted' : 'unmuted'} themself.`
     logChannel = await newState.guild.channels.fetch(settings.voiceMuteLogChannel).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
