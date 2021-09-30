@@ -1,5 +1,6 @@
 import { config as dotenv } from 'dotenv'
 import { readdirSync } from 'fs'
+import { unlink, writeFile } from 'fs/promises'
 import { join } from 'path'
 import {
   ApplicationCommandData,
@@ -32,7 +33,13 @@ for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWi
 }
 
 const bot = new Client({
-  intents: 519
+  intents: [
+    'GUILDS',
+    'GUILD_BANS',
+    'GUILD_MEMBERS',
+    'GUILD_MESSAGES',
+    'GUILD_VOICE_STATES'
+  ]
 })
 
 bot.login().catch(e => {
@@ -242,6 +249,40 @@ bot.on('messageDelete', async function (message): Promise<void> {
   if (!message.client.user?.id) return
   if (!channel?.permissionsFor(message.client.user.id)?.has('SEND_MESSAGES')) return
   await channel.send({ embeds: [embed] }).catch(e => console.error(e))
+})
+
+bot.on('messageDeleteBulk', async function (messages): Promise<void> {
+  if (!messages.first() || messages.first()?.channel.type === 'DM') return
+  const settings = await mongo.collection('settings').findOne({ guild: messages.first()?.guild?.id }).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+  if (!settings?.deleteLogChannel) return
+  let fileBody = `${new Intl.DateTimeFormat(messages.first()?.guild?.preferredLocale ?? 'en-US', { minute: '2-digit', hour: '2-digit', second: '2-digit', dateStyle: 'medium', month: 'short', year: 'numeric' }).format(Date.now())}`
+  messages.each(function (msg) {
+    fileBody += `\n\n${msg.author?.tag ?? 'Unknown#0000'} (${msg.author?.id ?? 'Unknown'}): ${msg.content}`
+  })
+  const filePath = join(__dirname, Date.now().toString() + Math.round(Math.random() * 1000000).toString() + '.txt')
+  try {
+    await writeFile(filePath, fileBody)
+  } catch (e) {
+    console.error(e)
+    Sentry.captureException(e)
+    return
+  }
+  const logChannel = await messages.first()?.guild?.channels.fetch(settings.deleteLogChannel).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+  if (logChannel?.type !== 'GUILD_TEXT' || !logChannel.client.user || !logChannel.permissionsFor(logChannel.client.user.id)?.has('SEND_MESSAGES')) return
+  await logChannel.send({ files: [filePath] }).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
+  await unlink(filePath).catch(e => {
+    console.error(e)
+    Sentry.captureException(e)
+  })
 })
 
 bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
