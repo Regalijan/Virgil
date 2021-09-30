@@ -184,6 +184,7 @@ export = {
           { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}` : 'Not set' },
           { name: 'Voice join logs', value: settingsList.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set' },
           { name: 'Voice leave logs', value: settingsList.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set' },
+          { name: 'Voice mute logs', value: settingsList.voiceMuteLogChannel ? `<#${settingsList.voiceMuteLogChannel}>` : 'Not set' },
           { name: 'Voice channel switch logs', value: settingsList.voiceSwitchLogChannel ? `<#${settingsList.voiceSwitchLogChannel}>` : 'Not set' },
           { name: 'Voice video logs', value: settingsList.voiceVideoLogChannel ? `<#${settingsList.voiceVideoLogChannel}>` : 'Not set' }
         )
