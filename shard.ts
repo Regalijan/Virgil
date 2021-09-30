@@ -43,7 +43,7 @@ const bot = new Client({
 })
 
 bot.login().catch(e => {
-  console.error(e)
+  process.env.DSN ? Sentry.captureException(e) : console.error(e)
   process.exit()
 })
 
@@ -62,13 +62,17 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
   try {
     const command = cmds.get(i.commandName)
     if (!i.channel || !['GUILD_PRIVATE_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_TEXT'].includes(i.channel.type)) {
-      await i.reply({ content: 'Hey! You can\'t run commands here! They may only be run in a thread or a standard text channel.', ephemeral: true }).catch(e => console.error(e))
+      await i.reply({ content: 'Hey! You can\'t run commands here! They may only be run in a thread or a standard text channel.', ephemeral: true }).catch(e => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e)
+      })
       return
     }
 
     const interactionUser = await i.guild?.members.fetch(i.user.id)
     if (command?.permissions?.length && !interactionUser?.permissions.has(command.permissions)) {
-      await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => console.error(e))
+      await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e)
+      })
       return
     }
 
@@ -88,28 +92,35 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor)
     await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
-    console.error(e)
-    const eventId = Sentry.captureException(e)
-    await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Event ID: ${eventId}\``, ephemeral: true }).catch(e => console.error(e))
+    if (!process.env.DSN) console.error(e)
+    await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => console.error(e))
   }
 })
 
 bot.on('channelCreate', async function (channel): Promise<void> {
-  const settings = await mongo.collection('settings').findOne({ guild: channel.guild.id }).catch(e => console.error(e))
+  const settings = await mongo.collection('settings').findOne({ guild: channel.guild.id }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!settings?.channelCreateLogChannel) return
-  const logChannel = await channel.guild.channels.fetch(settings.channelCreateLogChannel).catch(e => console.error(e))
+  const logChannel = await channel.guild.channels.fetch(settings.channelCreateLogChannel).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!logChannel || logChannel.type !== 'GUILD_TEXT' || !channel.guild.me || !channel.permissionsFor(channel.guild.me.id)?.has('SEND_MESSAGES')) return
   const embed = new MessageEmbed()
     .setDescription(`${channel} has been created.`)
   if (settings.embedColor) embed.setColor(settings.embedColor)
   if (channel.guild.me.permissions.has('VIEW_AUDIT_LOG')) {
-    const auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).catch(e => console.error(e))
+    const auditlogs = await channel.guild.fetchAuditLogs({ limit: 1, type: 10 }).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
     if (auditlogs?.entries.size) {
       const auditEntry = auditlogs.entries.first()
       embed.setAuthor(`${auditEntry?.executor?.tag}`, auditEntry?.executor?.displayAvatarURL({ dynamic: true }))
     }
   }
-  await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
+  await logChannel.send({ embeds: [embed] }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
 })
 
 bot.on('channelDelete', async function (channel): Promise<void> {
@@ -152,13 +163,11 @@ bot.on('channelUpdate', async function (oldChannel, newChannel): Promise<void> {
 
 bot.on('guildBanAdd', async function (ban): Promise<void> {
   const settings = await mongo.collection('settings').findOne({ guild: ban.guild.id }).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
   if (!settings?.banLogChannel) return
   const banChannel = await ban.guild.channels.fetch(settings.banLogChannel).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
 
   if (banChannel?.type !== 'GUILD_TEXT') return
@@ -171,22 +180,24 @@ bot.on('guildBanAdd', async function (ban): Promise<void> {
 
   if (ban.guild.me?.permissions.has('VIEW_AUDIT_LOG')) {
     const auditEntry = (await ban.guild.fetchAuditLogs({ type: 22, limit: 1 }).catch(e => {
-      console.error(e)
-      Sentry.captureException(e)
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
     }))?.entries.first()
     if (auditEntry?.executor?.id === ban.guild.me.id) return
     embed.setAuthor(auditEntry?.executor?.tag ?? 'Unknown')
   }
   await banChannel.send({ embeds: [embed] }).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
 })
 
 bot.on('guildCreate', async function (guild): Promise<void> {
-  const existingSettings = await mongo.collection('settings').findOne({ guild: guild.id }).catch(e => console.error(e))
+  const existingSettings = await mongo.collection('settings').findOne({ guild: guild.id }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (typeof existingSettings === 'undefined' || existingSettings) return
-  await mongo.collection('settings').insertOne({ guild: guild.id }).catch(e => console.error(e))
+  await mongo.collection('settings').insertOne({ guild: guild.id }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
 })
 
 bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void> {
@@ -195,7 +206,9 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
   const embed = new MessageEmbed()
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
     if (!settings.roleLogChannel) return
-    const roleLogChannel = await newMember.guild.channels.fetch(settings.roleLogChannel)
+    const roleLogChannel = await newMember.guild.channels.fetch(settings.roleLogChannel).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
     if (roleLogChannel?.type !== 'GUILD_TEXT') return
     if (!newMember.client.user || !roleLogChannel.permissionsFor(newMember.client.user.id)?.has('SEND_MESSAGES')) return
     embed.setTitle('Roles Updated')
@@ -219,43 +232,48 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
       embed.addField('Roles Added', rolesadded)
     }
     await roleLogChannel.send({ embeds: [embed] }).catch(e => {
-      console.error(e)
-      Sentry.captureException(e)
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
   } else if (oldMember.nickname !== newMember.nickname) {
     if (!settings.nicknameLogChannel) return
     const nicknameLogChannel = await newMember.guild.channels.fetch(settings.nicknameLogChannel).catch(e => {
-      console.error(e)
-      Sentry.captureException(e)
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
     if (nicknameLogChannel?.type !== 'GUILD_TEXT') return
     if (!newMember.client.user || !nicknameLogChannel.permissionsFor(newMember.client.user.id)?.has('SEND_MESSAGES')) return
     embed.setTitle('Nickname Updated')
     embed.setDescription(`\`${oldMember.nickname ?? 'None'}\` -> \`${newMember.nickname ?? 'None'}\``)
-    await nicknameLogChannel.send({ embeds: [embed] }).catch(Sentry.captureException)
+    await nicknameLogChannel.send({ embeds: [embed] }).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
   }
 })
 
 bot.on('messageDelete', async function (message): Promise<void> {
   if (!message.guild || !message.author || message.author.bot) return
-  const settings = await mongo.collection('settings').findOne({ guild: message.guild.id }).catch(e => console.error(e))
+  const settings = await mongo.collection('settings').findOne({ guild: message.guild.id }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!settings?.deleteLogChannel) return
   const embed = new MessageEmbed()
     .setAuthor(`${message.author.tag} (${message.author.id})`, message.author.displayAvatarURL({ dynamic: true }))
     .setDescription(`Message ${message.id} deleted from <#${message.channel.id}>${message.thread ? ` - Thread ${message.thread.name}` : ''}${message.content ? `\n**Content:** ${message.content}` : ''}`)
   if (message.member) embed.setColor(message.member.displayColor)
-  const channel = await message.guild.channels.fetch(settings.deleteLogChannel).catch(e => console.error(e))
+  const channel = await message.guild.channels.fetch(settings.deleteLogChannel).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!(channel instanceof TextChannel)) return
   if (!message.client.user?.id) return
   if (!channel?.permissionsFor(message.client.user.id)?.has('SEND_MESSAGES')) return
-  await channel.send({ embeds: [embed] }).catch(e => console.error(e))
+  await channel.send({ embeds: [embed] }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
 })
 
 bot.on('messageDeleteBulk', async function (messages): Promise<void> {
   if (!messages.first() || messages.first()?.channel.type === 'DM') return
   const settings = await mongo.collection('settings').findOne({ guild: messages.first()?.guild?.id }).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
   if (!settings?.deleteLogChannel) return
   let fileBody = `${new Intl.DateTimeFormat(messages.first()?.guild?.preferredLocale ?? 'en-US', { minute: '2-digit', hour: '2-digit', second: '2-digit', dateStyle: 'medium', month: 'short', year: 'numeric' }).format(Date.now())}`
@@ -266,28 +284,26 @@ bot.on('messageDeleteBulk', async function (messages): Promise<void> {
   try {
     await writeFile(filePath, fileBody)
   } catch (e) {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
     return
   }
   const logChannel = await messages.first()?.guild?.channels.fetch(settings.deleteLogChannel).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
   if (logChannel?.type !== 'GUILD_TEXT' || !logChannel.client.user || !logChannel.permissionsFor(logChannel.client.user.id)?.has('SEND_MESSAGES')) return
   await logChannel.send({ files: [filePath] }).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
   await unlink(filePath).catch(e => {
-    console.error(e)
-    Sentry.captureException(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
 })
 
 bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
-  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild || newMessage.author?.bot) return
-  const settings = await mongo.collection('settings').findOne({ guild: newMessage.guild.id }).catch(e => console.error(e))
+  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild || oldMessage.author.bot) return
+  const settings = await mongo.collection('settings').findOne({ guild: newMessage.guild.id }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!settings?.editLogChannel) return
   const embed = new MessageEmbed()
     .setAuthor(`${oldMessage.author.tag} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL({ dynamic: true }))
@@ -296,9 +312,13 @@ bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
       { name: 'Before', value: oldMessage.content ?? 'Unknown content' },
       { name: 'After', value: newMessage.content ?? 'Unknown content' }
     )
-  const channel = await newMessage.guild.channels.fetch(settings.editLogChannel).catch(e => console.error(e))
+  const channel = await newMessage.guild.channels.fetch(settings.editLogChannel).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
   if (!channel || !(channel instanceof TextChannel) || !newMessage.client.user?.id || !channel.permissionsFor(newMessage.client.user.id)?.has('SEND_MESSAGES')) return
-  await channel.send({ embeds: [embed] }).catch(e => console.error(e))
+  await channel.send({ embeds: [embed] }).catch(e => {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
+  })
 })
 
 setInterval(async function (): Promise<void> {
@@ -320,7 +340,7 @@ setInterval(async function (): Promise<void> {
       }, { shard: shard })
     }
   } catch(e) {
-    console.error(e)
+    process.env.DSN ? Sentry.captureException(e) : console.error(e)
     return
   }
 }, 30000)
