@@ -1,0 +1,31 @@
+name: Sentry Release
+
+on:
+  push:
+    branches:
+      - rewrite
+      
+jobs:
+  release:
+    name: Create Sentry Release
+    runs-on: ubuntu-latest
+        
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Install Sentry SDK
+        run : |
+          curl -sL https://sentry.io/get-cli/ | bash
+          
+      - name: Create Release
+        run: |
+          VERSION=$(sentry-cli releases propose-version)
+          sentry-cli releases new $VERSION
+          sentry-cli releases set-commits --auto $VERSION
+          sentry-cli releases finalize $VERSION
+          
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
