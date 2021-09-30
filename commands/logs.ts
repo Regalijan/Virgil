@@ -99,12 +99,28 @@ export = {
                 value: 'unban'
               },
               {
+                name: 'voice_deafen',
+                value: 'voice_deafen'
+              },
+              {
                 name: 'voice_join',
                 value: 'voice_join'
               },
               {
                 name: 'voice_leave',
                 value: 'voice_leave'
+              },
+              {
+                name: 'voice_mute',
+                value: 'voice_mute'
+              },
+              {
+                name: 'voice_switch',
+                value: 'voice_switch'
+              },
+              {
+                nave: 'voice_video',
+                value: 'voice_video'
               }
             ]
           },
@@ -131,8 +147,12 @@ export = {
       .set('nickname', 'nicknameLogChannel')
       .set('role', 'roleLogChannel')
       .set('unban', 'unbanLogChannel')
+      .set('voice_deafen', 'voiceDeafenLogChannel')
       .set('voice_join', 'voiceJoinLogChannel')
       .set('voice_leave', 'voiceLeaveLogChannel')
+      .set('voice_mute', 'voiceMuteLogChannel')
+      .set('voice_switch', 'voiceSwitchLogChannel')
+      .set('voice_video', 'voiceVideoLogChannel')
 
     switch (i.options.getSubcommand(true)) {
       case 'list':
