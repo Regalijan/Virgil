@@ -18,3 +18,10 @@
 8. Deploy the slash commands: `node dist/deploy.js`
 9. Start the mongo and redis servers if they are not already running
 10. Start the bot: `node dist`
+
+## Environment Variables
+```
+DISCORDTOKEN: The bot token
+DSN: Your sentry dsn
+MONGOURL?: Mongo connection string, only needed if using external mongo instance or development copy outside of docker.
+REDIS?: Redis connection string, only needed if using external redis instance or development copy outside of docker.
