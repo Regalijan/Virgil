@@ -237,7 +237,7 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
 })
 
 bot.on('messageDelete', async function (message): Promise<void> {
-  if (!message.guild || !message.author) return
+  if (!message.guild || !message.author || message.author.bot) return
   const settings = await mongo.collection('settings').findOne({ guild: message.guild.id }).catch(e => console.error(e))
   if (!settings?.deleteLogChannel) return
   const embed = new MessageEmbed()
@@ -286,7 +286,7 @@ bot.on('messageDeleteBulk', async function (messages): Promise<void> {
 })
 
 bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
-  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild) return
+  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild || newMessage.author?.bot) return
   const settings = await mongo.collection('settings').findOne({ guild: newMessage.guild.id }).catch(e => console.error(e))
   if (!settings?.editLogChannel) return
   const embed = new MessageEmbed()
