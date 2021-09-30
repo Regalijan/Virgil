@@ -309,7 +309,7 @@ bot.on('messageDeleteBulk', async function (messages): Promise<void> {
 })
 
 bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
-  if (!oldMessage || !oldMessage.content || !oldMessage.author  || !newMessage.guild || oldMessage.author.bot) return
+  if (!oldMessage || !oldMessage.content || !oldMessage.author  || oldMessage.content === newMessage.content || !newMessage.guild || oldMessage.author.bot) return
   const settings = await mongo.collection('settings').findOne({ guild: newMessage.guild.id }).catch(e => {
     process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
