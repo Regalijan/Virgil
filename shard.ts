@@ -375,7 +375,7 @@ bot.on('voiceStateUpdate', async function (oldState, newState): Promise<void> {
     })
   }
   else if (newState.serverDeaf !== oldState.serverDeaf && settings.voiceDeafenLogChannel) {
-    actionstring += `was ${newState.serverDeaf ? 'deafened' : 'undeafened' }`
+    actionstring += `was ${newState.serverDeaf ? 'deafened' : 'undeafened' } by a server moderator.`
     logChannel = await newState.guild.channels.fetch(settings.voiceDeafenLogChannel).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
