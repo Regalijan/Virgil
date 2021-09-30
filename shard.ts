@@ -344,6 +344,18 @@ bot.on('voiceStateUpdate', async function (oldState, newState): Promise<void> {
 
   let actionstring = `<@${newState.member.id}> `
   let logChannel: void | TextChannel | NewsChannel | VoiceChannel | CategoryChannel | StoreChannel | StageChannel | null
+  if (newState.channel && !oldState.channel && settings.voiceJoinLogChannel) {
+    actionstring += `joined <#${newState.channelId}>`
+    logChannel = await newState.guild.channels.fetch(settings.voiceJoinLogChannel).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
+  }
+  else if (!newState.channel && oldState.channel && settings.voiceLeaveLogChannel) {
+    actionstring += `left <#${oldState.channelId}>`
+    logChannel = await newState.guild.channels.fetch(settings.voiceLeaveLogChannel).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
+  }
   if (newState.selfMute !== oldState.selfMute && settings.voiceMuteLogChannel) {
     actionstring += `${newState.mute ? 'muted' : 'unmuted'} themself.`
     logChannel = await newState.guild.channels.fetch(settings.voiceMuteLogChannel).catch(e => {
@@ -371,18 +383,6 @@ bot.on('voiceStateUpdate', async function (oldState, newState): Promise<void> {
   else if (newState.selfVideo !== oldState.selfVideo && settings.voiceVideoLogChannel) {
     actionstring += `${newState.selfVideo ? 'enabled' : 'disabled'} their video feed.`
     logChannel = await newState.guild.channels.fetch(settings.voiceVideoLogChannel).catch(e => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e)
-    })
-  }
-  else if (newState.channel && !oldState.channel && settings.voiceJoinLogChannel) {
-    actionstring += `joined <#${newState.channelId}>`
-    logChannel = await newState.guild.channels.fetch(settings.voiceJoinLogChannel).catch(e => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e)
-    })
-  }
-  else if (!newState.channel && oldState.channel && settings.voiceLeaveLogChannel) {
-    actionstring += `left <#${oldState.channelId}>`
-    logChannel = await newState.guild.channels.fetch(settings.voiceLeaveLogChannel).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
   }
