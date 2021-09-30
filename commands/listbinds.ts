@@ -20,7 +20,7 @@ export = {
       let bindString = bind.type[0].toUpperCase() + bind.type.slice(1)
       if (bind.group) bindString += ` ${bind.group} - ${bind.rank ? `Rank ${bind.rank}` : 'All ranks' }`
       if (bind.asset) bindString += ` ${bind.asset}`
-      embed.addField(bindString, `<@&${bind.role}>`)
+      embed.addField(bindString, `<@&${bind.role}>\nBind ID: ${bind.id}`)
     }
     await i.reply({ embeds: [embed] })
   }
