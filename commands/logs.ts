@@ -72,7 +72,7 @@ export = {
                 value: 'voice_switch'
               },
               {
-                nave: 'voice_video',
+                name: 'voice_video',
                 value: 'voice_video'
               }
             ]
@@ -135,7 +135,7 @@ export = {
                 value: 'voice_switch'
               },
               {
-                nave: 'voice_video',
+                name: 'voice_video',
                 value: 'voice_video'
               }
             ]
