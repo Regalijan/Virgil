@@ -181,7 +181,7 @@ export = {
           { name: 'Nickname logs', value: settingsList.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set' },
           { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set' },
           { name: 'Unban logs', value: settingsList.unbanLogChannel ? `<#${settingsList.unbanLogChannel}>` : 'Not set' },
-          { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}` : 'Not set' },
+          { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}>` : 'Not set' },
           { name: 'Voice join logs', value: settingsList.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set' },
           { name: 'Voice leave logs', value: settingsList.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set' },
           { name: 'Voice mute logs', value: settingsList.voiceMuteLogChannel ? `<#${settingsList.voiceMuteLogChannel}>` : 'Not set' },
