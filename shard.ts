@@ -248,7 +248,10 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
     if (!newMember.client.user || !nicknameLogChannel.permissionsFor(newMember.client.user.id)?.has('SEND_MESSAGES')) return
     embed.setTitle('Nickname Updated')
     embed.setDescription(`\`${oldMember.nickname ?? 'None'}\` -> \`${newMember.nickname ?? 'None'}\``)
-    embed.setColor(oldMember.displayColor)
+    await newMember.fetch().catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
+    embed.setColor(newMember.displayColor)
     await nicknameLogChannel.send({ embeds: [embed] }).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
