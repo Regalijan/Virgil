@@ -209,6 +209,7 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
   const settings = await mongo.collection('settings').findOne({ guild: newMember.guild.id }).catch(e => console.error(e))
   if (!settings) return
   const embed = new MessageEmbed()
+  embed.setAuthor(newMember.user.tag, newMember.user.displayAvatarURL({ dynamic: true }))
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
     if (!settings.roleLogChannel) return
     const roleLogChannel = await newMember.guild.channels.fetch(settings.roleLogChannel).catch(e => {
@@ -217,7 +218,6 @@ bot.on('guildMemberUpdate', async function (oldMember, newMember): Promise<void>
     if (roleLogChannel?.type !== 'GUILD_TEXT') return
     if (!newMember.client.user || !roleLogChannel.permissionsFor(newMember.client.user.id)?.has('SEND_MESSAGES')) return
     embed.setTitle('Roles Updated')
-    embed.setAuthor(newMember.user.tag, newMember.user.displayAvatarURL({ dynamic: true }))
     let oldrolesstring = ''
     oldMember.roles.cache.forEach(r => {
       oldrolesstring += ` <@&${r.id}>`
