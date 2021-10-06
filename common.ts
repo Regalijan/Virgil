@@ -2,7 +2,7 @@ import axios from 'axios'
 import redis from './redis'
 import mongo from './mongo'
 import Sentry from './sentry'
-import { GuildMember } from 'discord.js'
+import { Guild, GuildMember, Team, User } from 'discord.js'
 
 export = {
   async getRobloxMemberGroups (user: number): Promise<{ group: { id: number, name: string, memberCount: number }, role : { id: number, name: string, rank: number } }[]> {
@@ -220,5 +220,36 @@ export = {
       await member.roles.add(bindRole).catch(e => console.error(e))
     }
     return self ? `Welcome ${verifyApiData.data.robloxUsername}!` : `${verifyApiData.data.robloxUsername} has been updated.`
-  } 
+  },
+  
+  async isPremium(guild: Guild): Promise<boolean> {
+    function getTeamMemberIds (): string[] {
+      if (!(guild.client.application?.owner instanceof Team)) return []
+      const ids: string[] = []
+      guild.client.application.owner.members.each(member => {
+        ids.push(member.id)
+      })
+      return ids
+    }
+
+    if (
+      guild.client.application?.owner instanceof User &&
+      await guild.members.fetch(guild.client.application?.owner.id).catch(() => {})
+    ) return true
+
+    if (
+      guild.client.application?.owner instanceof Team &&
+      getTeamMemberIds().length &&
+      guild.members.cache.hasAny(...getTeamMemberIds())
+    ) return true
+
+    const premiumStore = mongo.db('bot').collection('premium')
+    const premiumDoc = await premiumStore.findOne({ guild: guild.id }).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
+
+    if (premiumDoc) return true
+
+    return false
+  }
 }
