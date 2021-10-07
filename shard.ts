@@ -381,7 +381,7 @@ bot.on('voiceStateUpdate', async function (oldState, newState): Promise<void> {
     })
   }
   else if (newState.selfVideo !== oldState.selfVideo && settings.voiceVideoLogChannel) {
-    actionstring += `${newState.selfVideo ? 'enabled' : 'disabled'} their video feed.`
+    actionstring += `${newState.selfVideo ? 'enabled' : 'disabled'} their camera.`
     logChannel = await newState.guild.channels.fetch(settings.voiceVideoLogChannel).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
