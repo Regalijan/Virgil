@@ -9,7 +9,7 @@ export = {
   },
   async exec (i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
-      .setURL(`https://rover.link/validate/${Buffer.from(`${i.user.id};${i.user.username}#${i.user.tag}`).toString('base64')}`)
+      .setURL(`https://rover.link/validate/${Buffer.from(`${i.user.id};${i.user.tag}`).toString('base64')}`)
       .setEmoji('ℹ️')
       .setLabel('Open Troubleshooting Page')
       .setStyle('LINK')
