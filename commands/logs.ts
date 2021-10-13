@@ -175,18 +175,18 @@ export = {
         embed.setTitle('Log channels for ' + i.guild?.name)
         embed.setDescription('\u200B')
         embed.addFields(
-          { name: 'Ban logs', value: settingsList.banLogChannel ? `<#${settingsList.banLogChannel}>` : 'Not set' },
-          { name: 'Delete logs', value: settingsList.deleteLogChannel ? `<#${settingsList.deleteLogChannel}>` : 'Not set' },
-          { name: 'Edit logs', value: settingsList.editLogChannel ? `<#${settingsList.editLogChannel}>` : 'Not set' },
-          { name: 'Nickname logs', value: settingsList.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set' },
-          { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set' },
-          { name: 'Unban logs', value: settingsList.unbanLogChannel ? `<#${settingsList.unbanLogChannel}>` : 'Not set' },
-          { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}>` : 'Not set' },
-          { name: 'Voice join logs', value: settingsList.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set' },
-          { name: 'Voice leave logs', value: settingsList.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set' },
-          { name: 'Voice mute logs', value: settingsList.voiceMuteLogChannel ? `<#${settingsList.voiceMuteLogChannel}>` : 'Not set' },
-          { name: 'Voice channel switch logs', value: settingsList.voiceSwitchLogChannel ? `<#${settingsList.voiceSwitchLogChannel}>` : 'Not set' },
-          { name: 'Voice video logs', value: settingsList.voiceVideoLogChannel ? `<#${settingsList.voiceVideoLogChannel}>` : 'Not set' }
+          { name: 'Ban logs', value: settingsList.banLogChannel ? `<#${settingsList.banLogChannel}>` : 'Not set', inline: true },
+          { name: 'Delete logs', value: settingsList.deleteLogChannel ? `<#${settingsList.deleteLogChannel}>` : 'Not set', inline: true },
+          { name: 'Edit logs', value: settingsList.editLogChannel ? `<#${settingsList.editLogChannel}>` : 'Not set', inline: true },
+          { name: 'Nickname logs', value: settingsList.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set', inline: true },
+          { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set', inline: true },
+          { name: 'Unban logs', value: settingsList.unbanLogChannel ? `<#${settingsList.unbanLogChannel}>` : 'Not set', inline: true },
+          { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}>` : 'Not set', inline: true },
+          { name: 'Voice join logs', value: settingsList.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set', inline: true },
+          { name: 'Voice leave logs', value: settingsList.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set', inline: true },
+          { name: 'Voice mute logs', value: settingsList.voiceMuteLogChannel ? `<#${settingsList.voiceMuteLogChannel}>` : 'Not set', inline: true },
+          { name: 'Voice channel switch logs', value: settingsList.voiceSwitchLogChannel ? `<#${settingsList.voiceSwitchLogChannel}>` : 'Not set', inline: true },
+          { name: 'Voice video logs', value: settingsList.voiceVideoLogChannel ? `<#${settingsList.voiceVideoLogChannel}>` : 'Not set', inline: true }
         )
         return await i.reply({ embeds: [embed] })
 
