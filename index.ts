@@ -21,11 +21,6 @@ shardMgr.on('shardCreate', function (shard) {
 
 shardMgr.spawn()
 
-process.on('SIGINT', async function () {
-  await shardMgr.broadcastEval(bot => bot.destroy())
-  process.exit()
-})
-
 if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   const WRClient = new WebRiskServiceClient()
   const wrStore = mongo.db('bot').collection('webrisk')
