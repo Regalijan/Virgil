@@ -6,8 +6,7 @@ export = {
   permissions: [],
   interactionData: {
     name: 'context_update',
-    type: 2,
-    description: 'Context command for updating user'
+    type: 2
   },
 
   async exec (i: ContextMenuInteraction): Promise<void> {
