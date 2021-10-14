@@ -21,18 +21,8 @@ shardMgr.on('shardCreate', function (shard) {
 
 shardMgr.spawn()
 
-process.on('SIGTERM', function () {
-  shardMgr.broadcastEval(bot => bot.destroy())
-  process.exit()
-})
-
-process.on('SIGINT', function () {
-  shardMgr.broadcastEval(bot => bot.destroy())
-  process.exit()
-})
-
-process.on('SIGHUP', function () {
-  shardMgr.broadcastEval(bot => bot.destroy())
+process.on('SIGINT', async function () {
+  await shardMgr.broadcastEval(bot => bot.destroy())
   process.exit()
 })
 
