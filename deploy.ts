@@ -37,5 +37,6 @@ axios('https://discord.com/api/v9/users/@me', {
     })
   }).then(regResponse => {
     console.log(regResponse.status === 200 ? 'Deployment Succeeded': `${JSON.stringify(regResponse.data)}\nAn error occured while deploying! Read the logs above.`)
+    process.kill(process.pid) // ioredis starts for some unknown reason and the process continues to run because of it
   })
 })
