@@ -45,6 +45,11 @@ for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWi
   cmds.set(commandFile.name, commandFile)
 }
 
+for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.endsWith('.js'))) {
+  const ucFile = require(`./usercontext/${file}`)
+  userContextCommands.set(ucFile.name, ucFile)
+}
+
 const bot = new Client({
   intents: [
     'GUILDS',
@@ -71,6 +76,29 @@ bot.once('ready', function (client) {
 })
 
 bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
+  if (i.isContextMenu()) {
+    i.member
+    if (!userContextCommands.has(i.commandName)) return
+    const contextCommand = userContextCommands.get(i.commandName)
+    const contextMember = await i.guild?.members.fetch(i.user.id).catch(e => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e)
+    })
+    if (contextCommand?.permissions?.length && !contextMember?.permissions.has(contextCommand.permissions)) {
+      return i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e)
+      })
+    }
+    try {
+      await contextCommand?.exec(i)
+    } catch (e) {
+      if (!process.env.DSN) console.error(e)
+      await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give then this information: \`Error:${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e)
+      })
+    }
+    return
+  }
+
   if (!i.isCommand() || !cmds.has(i.commandName)) return
   try {
     const command = cmds.get(i.commandName)
