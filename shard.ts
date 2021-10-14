@@ -7,6 +7,7 @@ import {
   CategoryChannel,
   Client,
   CommandInteraction,
+  ContextMenuInteraction,
   GuildMember,
   Interaction,
   MessageEmbed,
@@ -30,6 +31,13 @@ const cmds: Map<string, {
   interactionData: ApplicationCommandData,
   privileged?: boolean,
   exec (i: CommandInteraction): Promise<void>
+}> = new Map()
+
+const userContextCommands: Map<string, {
+  name: string,
+  permissions?: PermissionResolvable[],
+  interactionData: ApplicationCommandData,
+  exec (i: ContextMenuInteraction): Promise<void>
 }> = new Map()
 
 for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {
