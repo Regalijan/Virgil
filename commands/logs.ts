@@ -60,6 +60,10 @@ export = {
                 value: 'thread_delete'
               },
               {
+                name: 'thread_update',
+                value: 'thread_update'
+              },
+              {
                 name: 'voice_deafen',
                 value: 'voice_deafen'
               },
@@ -131,6 +135,10 @@ export = {
                 value: 'thread_delete'
               },
               {
+                name: 'thread_update',
+                value: 'thread_update'
+              },
+              {
                 name: 'voice_deafen',
                 value: 'voice_deafen'
               },
@@ -181,6 +189,7 @@ export = {
       .set('unban', 'unbanLogChannel')
       .set('thread_create', 'threadCreateLogChannel')
       .set('thread_delete', 'threadDeleteLogChannel')
+      .set('thread_update', 'threadUpdateLogChannel')
       .set('voice_deafen', 'voiceDeafenLogChannel')
       .set('voice_join', 'voiceJoinLogChannel')
       .set('voice_leave', 'voiceLeaveLogChannel')
@@ -200,6 +209,7 @@ export = {
           { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set', inline: true },
           { name: 'Thread creation logs', value: settingsList.threadCreateLogChannel ? `<#${settingsList.threadCreateLogChannel}` : 'Not set', inline: true },
           { name: 'Thread delete logs', value: settingsList.threadDeleteLogChannel ? `<#${settingsList.threadDeleteLogChannel}` : 'Not set', inline: true },
+          { name: 'Thread update logs', value: settingsList.threadUpdateLogChannel ? `<#${settingsList.threadUpdateLogChannel}>` : 'Not set', inline: true },
           { name: 'Unban logs', value: settingsList.unbanLogChannel ? `<#${settingsList.unbanLogChannel}>` : 'Not set', inline: true },
           { name: 'Voice deafen logs', value: settingsList.voiceDeafenLogChannel ? `<#${settingsList.voiceDeafenLogChannel}>` : 'Not set', inline: true },
           { name: 'Voice join logs', value: settingsList.voiceJoinLogChannel ? `<#${settingsList.voiceJoinLogChannel}>`: 'Not set', inline: true },
