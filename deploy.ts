@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { config as dotenv } from 'dotenv'
-import { readdir } from 'fs/promises'
+import { readdirSync } from 'fs'
 import { join } from 'path'
 import { ApplicationCommandData } from 'discord.js'
 
@@ -10,18 +10,22 @@ if (!process.env.DISCORDTOKEN) throw Error('No token found in environment!')
 
 const commands: ApplicationCommandData[] = []
 
-;(async function (): Promise<void> {
-  const apiSelf = await axios('https://discord.com/api/v9/users/@me', {
-    headers: {
-      authorization: `Bot ${process.env.DISCORDTOKEN}`
-    }
-  })
-  const uid = apiSelf.data.id
-  for (const file of await readdir(join(__dirname, 'commands'))) {
-    const cFile = require(`./commands/${file}`)
-    commands.push(cFile.interactionData)
+for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {
+  const cFile = require(`./commands/${file}`)
+  commands.push(cFile.interactionData)
+}
+
+for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.endsWith('.js'))) {
+  const ucFile = require(`./usercontext/${file}`)
+  commands.push(ucFile.interactionData)
+}
+
+axios('https://discord.com/api/v9/users/@me', {
+  headers: {
+    authorization: `Bot ${process.env.DISCORDTOKEN}`
   }
-  const registerResponse = await axios(`https://discord.com/api/v9/applications/${uid}/commands`, {
+}).then(me => {
+  axios(`https://discord.com/api/v9/applications/${me.data.id}/commands`, {
     headers: {
       authorization: `Bot ${process.env.DISCORDTOKEN}`,
       'content-type': 'application/json'
@@ -31,7 +35,7 @@ const commands: ApplicationCommandData[] = []
     validateStatus: (() => {
       return true
     })
+  }).then(regResponse => {
+    console.log(regResponse.status === 200 ? 'Deployment Succeeded': `${JSON.stringify(regResponse.data)}\nAn error occured while deploying! Read the logs above.`)
   })
-  console.log(registerResponse.status === 200 ? 'Deployment succeeded' : `${JSON.stringify(registerResponse.data)}\nAn error occured while deploying! Read the logs above.`)
-  process.exit()
-}())
+})
