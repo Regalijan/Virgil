@@ -414,6 +414,7 @@ bot.on('threadUpdate', async function (oldThread, newThread): Promise<void> {
   const embed = new MessageEmbed()
     .setTitle('Thread Updated')
     .setColor([0,0,255])
+    .setFooter(`Thread ${newThread.id}`)
 
   let actionstring = ''
   if (!oldThread.archived && newThread.archived) {
@@ -435,6 +436,7 @@ bot.on('threadUpdate', async function (oldThread, newThread): Promise<void> {
   } else if (oldThread.autoArchiveDuration !== newThread.autoArchiveDuration) {
     actionstring = `Auto archive timer of <#${newThread.id}> changed from ${oldThread.autoArchiveDuration} minutes to ${newThread.autoArchiveDuration} minutes.`
   }
+  if (!actionstring) return
   embed.setDescription(actionstring)
   const channel = await newThread.guild.channels.fetch(settings.threadUpdateLogChannel).catch(e => {
     process.env.DSN ? Sentry.captureException(e) : console.error(e)
