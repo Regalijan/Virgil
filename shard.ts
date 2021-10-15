@@ -216,7 +216,8 @@ bot.on('guildBanAdd', async function (ban): Promise<void> {
   if (!ban.guild.me || !banChannel.permissionsFor(ban.guild.me).has('SEND_MESSAGES')) return
 
   const embed = new MessageEmbed()
-    .setThumbnail('Member Banned')
+    .setTitle('Member Banned')
+    .setAuthor(ban.user.tag, ban.user.displayAvatarURL({ dynamic: true }))
     .setDescription(`<@${ban.user.id}> ${ban.user.tag}`)
     .addField('Reason', ban.reason ?? 'No reason provided')
 
