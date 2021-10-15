@@ -86,6 +86,10 @@ export = {
               {
                 name: 'voice_video',
                 value: 'voice_video'
+              },
+              {
+                name: 'warn',
+                value: 'warn'
               }
             ]
           }
@@ -161,6 +165,10 @@ export = {
               {
                 name: 'voice_video',
                 value: 'voice_video'
+              },
+              {
+                name: 'warn',
+                value: 'warn'
               }
             ]
           },
@@ -196,6 +204,7 @@ export = {
       .set('voice_mute', 'voiceMuteLogChannel')
       .set('voice_switch', 'voiceSwitchLogChannel')
       .set('voice_video', 'voiceVideoLogChannel')
+      .set('warn', 'warnLogChannel')
 
     switch (i.options.getSubcommand(true)) {
       case 'list':
@@ -216,7 +225,8 @@ export = {
           { name: 'Voice leave logs', value: settingsList.voiceLeaveLogChannel ? `<#${settingsList.voiceLeaveLogChannel}>` : 'Not set', inline: true },
           { name: 'Voice mute logs', value: settingsList.voiceMuteLogChannel ? `<#${settingsList.voiceMuteLogChannel}>` : 'Not set', inline: true },
           { name: 'Voice channel switch logs', value: settingsList.voiceSwitchLogChannel ? `<#${settingsList.voiceSwitchLogChannel}>` : 'Not set', inline: true },
-          { name: 'Voice video logs', value: settingsList.voiceVideoLogChannel ? `<#${settingsList.voiceVideoLogChannel}>` : 'Not set', inline: true }
+          { name: 'Voice video logs', value: settingsList.voiceVideoLogChannel ? `<#${settingsList.voiceVideoLogChannel}>` : 'Not set', inline: true },
+          { name: 'Warn logs', value: settingsList.warnLogChannel ? `<#${settingsList.warnLogChannel}>` : 'Not set', inline: true }
         )
         return await i.reply({ embeds: [embed] })
 
