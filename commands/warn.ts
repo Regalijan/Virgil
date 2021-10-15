@@ -1,6 +1,7 @@
 import { CommandInteraction, MessageEmbed } from 'discord.js'
 import mongo from '../mongo'
 import { createHash, randomBytes } from 'crypto'
+const modlogStore = mongo.db('bot').collection('modlogs')
 
 export = {
   name: 'warn',
@@ -27,7 +28,6 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     const reason = i.options.getString('reason') ?? 'No reason provided.'
     const user = i.options.getUser('user', true)
-    const modlogStore = mongo.db('bot').collection('modlogs')
     const logId = createHash('sha256').update(randomBytes(256)).digest('base64')
     const logObj = { id: logId, moderator: `${i.user.tag} (${i.user.id})`, action: 'warn', time: Date.now(), target: user.id, reason: reason }
     await i.reply({ content: `Warned ${user.tag}`, ephemeral: true })
