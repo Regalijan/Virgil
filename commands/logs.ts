@@ -214,6 +214,7 @@ export = {
           { name: 'Ban logs', value: settingsList.banLogChannel ? `<#${settingsList.banLogChannel}>` : 'Not set', inline: true },
           { name: 'Delete logs', value: settingsList.deleteLogChannel ? `<#${settingsList.deleteLogChannel}>` : 'Not set', inline: true },
           { name: 'Edit logs', value: settingsList.editLogChannel ? `<#${settingsList.editLogChannel}>` : 'Not set', inline: true },
+          { name: 'Mute role', value: settingsList.muteRole ? `<@&${settingsList.muteRole}>` : 'Not set', inline: true },
           { name: 'Nickname logs', value: settingsList.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set', inline: true },
           { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set', inline: true },
           { name: 'Thread creation logs', value: settingsList.threadCreateLogChannel ? `<#${settingsList.threadCreateLogChannel}>` : 'Not set', inline: true },
