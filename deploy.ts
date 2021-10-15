@@ -17,7 +17,7 @@ for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWi
 
 for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.endsWith('.js'))) {
   const ucFile = require(`./usercontext/${file}`)
-  commands.push(ucFile.interactionData)
+  if (ucFile.interactionData.type === 2) commands.push(ucFile.interactionData)
 }
 
 axios('https://discord.com/api/v9/users/@me', {
