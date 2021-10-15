@@ -40,6 +40,10 @@ export = {
                 value: 'edit'
               },
               {
+                name: 'message_reports',
+                value: 'message_reports'
+              },
+              {
                 name: 'nickname',
                 value: 'nickname'
               },
@@ -119,6 +123,10 @@ export = {
                 value: 'edit'
               },
               {
+                name: 'message_reports',
+                value: 'message_reports'
+              },
+              {
                 name: 'nickname',
                 value: 'nickname'
               },
@@ -192,6 +200,7 @@ export = {
       .set('ban', 'banLogChannel')
       .set('delete', 'deleteLogChannel')
       .set('edit', 'editLogChannel')
+      .set('message_reports', 'messageReportChannel')
       .set('nickname', 'nicknameLogChannel')
       .set('role', 'roleLogChannel')
       .set('thread_create', 'threadCreateLogChannel')
@@ -214,6 +223,7 @@ export = {
           { name: 'Ban logs', value: settingsList.banLogChannel ? `<#${settingsList.banLogChannel}>` : 'Not set', inline: true },
           { name: 'Delete logs', value: settingsList.deleteLogChannel ? `<#${settingsList.deleteLogChannel}>` : 'Not set', inline: true },
           { name: 'Edit logs', value: settingsList.editLogChannel ? `<#${settingsList.editLogChannel}>` : 'Not set', inline: true },
+          { name: 'Message reports', value: settingsList.messageReportChannel ? `<#${settingsList.messageReportChannel}>` : 'Not set', inline: true },
           { name: 'Mute role', value: settingsList.muteRole ? `<@&${settingsList.muteRole}>` : 'Not set', inline: true },
           { name: 'Nickname logs', value: settingsList.nicknameLogChannel ? `<#${settingsList.nicknameLogChannel}>` : 'Not set', inline: true },
           { name: 'Role logs', value: settingsList.roleLogChannel ? `<#${settingsList.roleLogChannel}>` : 'Not set', inline: true },
