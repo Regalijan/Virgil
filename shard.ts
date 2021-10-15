@@ -40,6 +40,13 @@ const userContextCommands: Map<string, {
   exec (i: ContextMenuInteraction): Promise<void>
 }> = new Map()
 
+const messageContextCommands: Map<string, {
+  name: string,
+  permissions?: PermissionResolvable[],
+  interactionData: ApplicationCommandData,
+  exec (i: ContextMenuInteraction): Promise<void>
+}> = new Map()
+
 for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {
   const commandFile = require(`./commands/${file}`)
   cmds.set(commandFile.name, commandFile)
@@ -84,7 +91,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         process.env.DSN ? Sentry.captureException(e) : console.error(e)
       })
       if (contextCommand?.permissions?.length && !contextMember?.permissions.has(contextCommand.permissions)) {
-        return i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => {
+        return await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e)
         })
       }
@@ -92,12 +99,30 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         await contextCommand?.exec(i)
       } catch (e) {
         if (!process.env.DSN) console.error(e)
-        await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give then this information: \`Error:${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
+        await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give then this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e)
         })
       }
-      return
+    } else if (i.targetType === 'MESSAGE') {
+      const msgCommand = messageContextCommands.get(i.commandName)
+      const msgContextMember = await i.guild?.members.fetch(i.user.id).catch(e => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e)
+      })
+      if (msgCommand?.permissions?.length && !msgContextMember?.permissions.has(msgCommand.permissions)) {
+        return await i.reply({ content: 'You cannot run this command!', ephemeral: true }).catch(e => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e)
+        })
+      }
+      try {
+        await msgCommand?.exec(i)
+      } catch (e) {
+        if (!process.env.DSN) console.error(e)
+        await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e)
+        })
+      }
     }
+    return
   }
 
   if (!i.isCommand() || !cmds.has(i.commandName)) return
