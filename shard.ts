@@ -323,7 +323,7 @@ bot.on('messageDeleteBulk', async function (messages): Promise<void> {
     process.env.DSN ? Sentry.captureException(e) : console.error(e)
   })
   if (!settings?.deleteLogChannel) return
-  let fileBody = `${new Intl.DateTimeFormat(messages.first()?.guild?.preferredLocale ?? 'en-US', { minute: '2-digit', hour: '2-digit', second: '2-digit', dateStyle: 'medium', month: 'short', year: 'numeric' }).format(Date.now())}`
+  let fileBody = `${new Intl.DateTimeFormat(messages.first()?.guild?.preferredLocale ?? 'en-US', { minute: '2-digit', hour: '2-digit', second: '2-digit', day: '2-digit', month: 'short', year: 'numeric' }).format(Date.now())}`
   messages.each(function (msg) {
     fileBody += `\n\n${msg.author?.tag ?? 'Unknown#0000'} (${msg.author?.id ?? 'Unknown'}): ${msg.content}`
   })
