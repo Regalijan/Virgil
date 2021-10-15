@@ -355,8 +355,8 @@ bot.on('messageUpdate', async function (oldMessage, newMessage): Promise<void> {
     .setAuthor(`${oldMessage.author.tag} (${oldMessage.author.id})`, oldMessage.author.displayAvatarURL({ dynamic: true }))
     .setDescription(`Message edited in <#${newMessage.channel.id}> [Go to message](${newMessage.url})`)
     .addFields(
-      { name: 'Before', value: oldMessage.content ?? 'Unknown content' },
-      { name: 'After', value: newMessage.content ?? 'Unknown content' }
+      { name: 'Before', value: `${oldMessage.content.substr(0, 1021)}...` ?? 'Unknown content' },
+      { name: 'After', value: `${newMessage.content?.substr(0, 1021)}...` ?? 'Unknown content' }
     )
   if (newMessage.member) embed.setColor(newMessage.member.displayColor)
   const channel = await newMessage.guild.channels.fetch(settings.editLogChannel).catch(e => {
