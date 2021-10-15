@@ -20,6 +20,11 @@ for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.end
   if (ucFile.interactionData.type === 2) commands.push(ucFile.interactionData)
 }
 
+for (const file of readdirSync(join(__dirname, 'messagecontext')).filter(f => f.endsWith('.js'))) {
+  const mcFile = require(`./messagecontext/${file}`)
+  if (mcFile.interactionData.type === 3) commands.push(mcFile.interactionData)
+}
+
 axios('https://discord.com/api/v9/users/@me', {
   headers: {
     authorization: `Bot ${process.env.DISCORDTOKEN}`
