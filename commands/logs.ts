@@ -48,10 +48,6 @@ export = {
                 value: 'role'
               },
               {
-                name: 'unban',
-                value: 'unban'
-              },
-              {
                 name: 'thread_create',
                 value: 'thread_create'
               },
@@ -62,6 +58,10 @@ export = {
               {
                 name: 'thread_update',
                 value: 'thread_update'
+              },
+              {
+                name: 'unban',
+                value: 'unban'
               },
               {
                 name: 'voice_deafen',
@@ -127,10 +127,6 @@ export = {
                 value: 'role'
               },
               {
-                name: 'unban',
-                value: 'unban'
-              },
-              {
                 name: 'thread_create',
                 value: 'thread_create'
               },
@@ -141,6 +137,10 @@ export = {
               {
                 name: 'thread_update',
                 value: 'thread_update'
+              },
+              {
+                name: 'unban',
+                value: 'unban'
               },
               {
                 name: 'voice_deafen',
@@ -194,10 +194,10 @@ export = {
       .set('edit', 'editLogChannel')
       .set('nickname', 'nicknameLogChannel')
       .set('role', 'roleLogChannel')
-      .set('unban', 'unbanLogChannel')
       .set('thread_create', 'threadCreateLogChannel')
       .set('thread_delete', 'threadDeleteLogChannel')
       .set('thread_update', 'threadUpdateLogChannel')
+      .set('unban', 'unbanLogChannel')
       .set('voice_deafen', 'voiceDeafenLogChannel')
       .set('voice_join', 'voiceJoinLogChannel')
       .set('voice_leave', 'voiceLeaveLogChannel')
