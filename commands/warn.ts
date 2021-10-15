@@ -20,9 +20,9 @@ export = {
         name: 'reason',
         description: 'Reason for warn'
       }
-    ],
-    privileged: true
+    ]
   },
+  privileged: true,
 
   async exec (i: CommandInteraction): Promise<void> {
     const reason = i.options.getString('reason') ?? 'No reason provided.'
