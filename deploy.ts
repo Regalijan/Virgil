@@ -8,6 +8,11 @@ dotenv()
 
 if (!process.env.DISCORDTOKEN) throw Error('No token found in environment!')
 
+if (process.env.SKIPDEPLOY) {
+  console.log('Skipping deploy...')
+  process.exit()
+}
+
 const commands: ApplicationCommandData[] = []
 
 for (const file of readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))) {

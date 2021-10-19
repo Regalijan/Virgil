@@ -25,3 +25,6 @@ DISCORDTOKEN: The bot token
 DSN: Your sentry dsn
 MONGOURL?: Mongo connection string, only needed if using external mongo instance or development copy outside of docker.
 REDIS?: Redis connection string, only needed if using external redis instance or development copy outside of docker.
+SKIPDEPLOY?: Set this to anything to skip deploying slash commands when starting container.
+```
+- "?" denotes an optional variable
