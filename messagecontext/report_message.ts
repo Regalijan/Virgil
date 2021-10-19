@@ -28,11 +28,9 @@ export = {
       .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
       .setTitle('Message Report')
       .setColor([255,0,0])
-      .addFields(
-        { name: 'Reported Message', value: message.content },
-        { name: 'Message Author', value: `${message.author.tag} (${message.author.id})` }
-      )
-    
+      .setDescription(`**Reported Message:** ${message.content}`)
+      .addField('Message Author', `${message.author.tag} (${message.author.id})`)
+
     const actionRow = new MessageActionRow({ components: [
     new MessageButton({ customId: 'msg_report_ban', emoji: '🔨', label: 'Ban', style: 'DANGER', type: 'BUTTON' }),
     new MessageButton({ customId: 'msg_report_delete', emoji: '❌', label: 'Delete', style: 'SUCCESS', type: 'BUTTON' }),
@@ -41,7 +39,8 @@ export = {
     new MessageButton({ customId: 'msg_report_mute', emoji: '🔇', label: 'Mute', style: 'DANGER', type: 'BUTTON' }),
     new MessageButton({ customId: 'msg_report_warn', emoji: '⚠️', label: 'Warn', style: 'PRIMARY', type: 'BUTTON' })
     ] })
-    
+
     await channel.send({ embeds: [embed], components: [actionRow] })
+    await i.reply({ content: 'Report sent!', ephemeral: true })
   }
 }
