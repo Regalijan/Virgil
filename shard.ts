@@ -57,7 +57,7 @@ for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.end
   userContextCommands.set(ucFile.name, ucFile)
 }
 
-for (const file of readdirSync(join(__dirname, 'messagecontent')).filter(f => f.endsWith('.js'))) {
+for (const file of readdirSync(join(__dirname, 'messagecontext')).filter(f => f.endsWith('.js'))) {
   const mcFile = require(`./messagecontext/${file}`)
   messageContextCommands.set(mcFile.name, mcFile)
 }
