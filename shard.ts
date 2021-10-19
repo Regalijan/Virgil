@@ -57,6 +57,11 @@ for (const file of readdirSync(join(__dirname, 'usercontext')).filter(f => f.end
   userContextCommands.set(ucFile.name, ucFile)
 }
 
+for (const file of readdirSync(join(__dirname, 'messagecontent')).filter(f => f.endsWith('.js'))) {
+  const mcFile = require(`./messagecontext/${file}`)
+  messageContextCommands.set(mcFile.name, mcFile)
+}
+
 const bot = new Client({
   intents: [
     'GUILDS',
@@ -105,6 +110,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
       }
     } else if (i.targetType === 'MESSAGE') {
       const msgCommand = messageContextCommands.get(i.commandName)
+      if (!msgCommand) return await i.reply({ content: 'Uh oh! The command could not be found! This might mean that a command was removed from the bot but the context app still exists.', ephemeral: true })
       const msgContextMember = await i.guild?.members.fetch(i.user.id).catch(e => {
         process.env.DSN ? Sentry.captureException(e) : console.error(e)
       })
