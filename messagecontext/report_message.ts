@@ -16,7 +16,7 @@ export = {
     const message = await i.channel?.messages.fetch(i.targetId).catch(e => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e)
     })
-    if (!message) return await i.reply({ content: 'An error occured locating the message! Was it deleted?', ephemeral: true })
+    if (!message) return await i.reply({ content: 'An error occurred locating the message! Was it deleted?', ephemeral: true })
     const settings = await settingsStore.findOne({ guild: i.guildId })
     if (!settings?.messageReportChannel) return await i.reply({ content: 'Message reporting is disabled in the server.', ephemeral: true })
     const channel = await i.guild?.channels.fetch(settings.messageReportChannel).catch(e => {
