@@ -1,7 +1,7 @@
 services:
   mongo:
     image: "mongo"
-    expose: 
+    expose:
       - 27017
     volumes:
       - "./mongo/db:/data/db"
@@ -19,4 +19,3 @@ services:
     links:
       - mongo
       - redis
-      

@@ -1,18 +1,25 @@
-import { CommandInteraction, MessageActionRow, MessageButton } from 'discord.js'
+import {
+  CommandInteraction,
+  MessageActionRow,
+  MessageButton,
+} from "discord.js";
 
 export = {
-  name: 'reverify',
+  name: "reverify",
   permissions: [],
   interactionData: {
-    name: 'reverify',
-    description: 'Change your linked Roblox account'
+    name: "reverify",
+    description: "Change your linked Roblox account",
   },
-  async exec (i: CommandInteraction): Promise<void> {
+  async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
-      .setURL('https://rover.link/my/verification')
-      .setEmoji('✏️')
-      .setLabel('Change Account')
-      .setStyle('LINK')
-    await i.reply({ content: 'To change your verified account, click the link below.', components: [new MessageActionRow({ components: [button] })] })
-  }
-}
+      .setURL("https://rover.link/my/verification")
+      .setEmoji("✏️")
+      .setLabel("Change Account")
+      .setStyle("LINK");
+    await i.reply({
+      content: "To change your verified account, click the link below.",
+      components: [new MessageActionRow({ components: [button] })],
+    });
+  },
+};

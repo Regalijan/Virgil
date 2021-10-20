@@ -1,37 +1,41 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js'
-import axios from 'axios'
+import { CommandInteraction, MessageEmbed } from "discord.js";
+import axios from "axios";
 
 export = {
-  name: '8ball',
+  name: "8ball",
   permissions: [],
   interactionData: {
-    name: '8ball',
-    description: 'What does the future hold?',
+    name: "8ball",
+    description: "What does the future hold?",
     options: [
       {
         type: 3,
-        name: 'question',
-        description: 'What do you want to know?',
-        required: true
-      }
-    ]
+        name: "question",
+        description: "What do you want to know?",
+        required: true,
+      },
+    ],
   },
-  async exec (i: CommandInteraction): Promise<void> {
-    const eightballresponse = await axios('https://nekos.life/api/v2/8ball').catch(e => console.error(e))
+  async exec(i: CommandInteraction): Promise<void> {
+    const eightballresponse = await axios(
+      "https://nekos.life/api/v2/8ball"
+    ).catch((e) => console.error(e));
     if (!eightballresponse) {
-      await i.reply({ content: `The 8-ball declined to give a response - please try again later.`})
-      return
+      await i.reply({
+        content: `The 8-ball declined to give a response - please try again later.`,
+      });
+      return;
     }
     const embed = new MessageEmbed({
       author: {
         name: i.user.tag,
-        icon_url: i.user.displayAvatarURL({ dynamic: true })
+        icon_url: i.user.displayAvatarURL({ dynamic: true }),
       },
       description: eightballresponse.data.response,
-      image: eightballresponse.data.url
-    })
-    const member = await i.guild?.members.fetch(i.user.id)
-    if (member?.displayColor) embed.setColor(member.displayColor)
-    await i.reply({ embeds: [embed] })
-  }
-}
+      image: eightballresponse.data.url,
+    });
+    const member = await i.guild?.members.fetch(i.user.id);
+    if (member?.displayColor) embed.setColor(member.displayColor);
+    await i.reply({ embeds: [embed] });
+  },
+};

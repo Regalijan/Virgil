@@ -1,35 +1,41 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js'
-import axios from 'axios'
+import { CommandInteraction, MessageEmbed } from "discord.js";
+import axios from "axios";
 
 export = {
-  name: 'hug',
+  name: "hug",
   permissions: [],
   interactionData: {
-    name: 'hug',
-    description: 'Hug someone',
+    name: "hug",
+    description: "Hug someone",
     options: [
       {
         type: 6,
-        name: 'person',
-        description: 'Person to hug',
-        required: true
-      }
-    ]
+        name: "person",
+        description: "Person to hug",
+        required: true,
+      },
+    ],
   },
-  async exec (i: CommandInteraction): Promise<void> {
+  async exec(i: CommandInteraction): Promise<void> {
     try {
-      const target = i.options.getUser('person', true)
-      const hug = await axios('https://nekos.life/api/v2/img/hug')
+      const target = i.options.getUser("person", true);
+      const hug = await axios("https://nekos.life/api/v2/img/hug");
       const embed = new MessageEmbed()
         .setImage(hug.data.url)
-        .setDescription(`<@${i.user.id}> gives >@${target.id}> a big hug!`)
+        .setDescription(`<@${i.user.id}> gives >@${target.id}> a big hug!`);
 
-      const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
-      if (member) embed.setColor(member.displayColor)
-      await i.reply({ embeds: [embed] })
+      const member = await i.guild?.members
+        .fetch(i.user.id)
+        .catch((e) => console.error(e));
+      if (member) embed.setColor(member.displayColor);
+      await i.reply({ embeds: [embed] });
     } catch (e) {
-      console.error(e)
-      await i.reply({ content: 'The server is out of hugs, please try again later. (HTTP error)', ephemeral: true })
+      console.error(e);
+      await i.reply({
+        content:
+          "The server is out of hugs, please try again later. (HTTP error)",
+        ephemeral: true,
+      });
     }
-  }
-}
+  },
+};

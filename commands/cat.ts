@@ -1,26 +1,33 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js'
-import axios from 'axios'
+import { CommandInteraction, MessageEmbed } from "discord.js";
+import axios from "axios";
 
 export = {
-  name: 'cat',
+  name: "cat",
   permissions: [],
   interactionData: {
-    name: 'cat',
-    description: 'Gets picture of cat'
+    name: "cat",
+    description: "Gets picture of cat",
   },
-  async exec (i: CommandInteraction): Promise<void> {
-    const cat = await axios('https://nekos.life/api/v2/img/meow').catch(e => console.error(e))
+  async exec(i: CommandInteraction): Promise<void> {
+    const cat = await axios("https://nekos.life/api/v2/img/meow").catch((e) =>
+      console.error(e)
+    );
     if (!cat) {
-      await i.reply({ content: 'The server decided no cat pic for you - please try again later.' })
-      return
+      await i.reply({
+        content:
+          "The server decided no cat pic for you - please try again later.",
+      });
+      return;
     }
 
     const embed = new MessageEmbed()
-      .setTitle('Meow :cat:')
+      .setTitle("Meow :cat:")
       .setImage(cat.data.url)
-      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
-    const member = await i.guild?.members.fetch(i.user.id).catch(e => console.error(e))
-    if (member) embed.setColor(member.displayColor)
-    await i.reply({ embeds: [embed] })
-  }
-}
+      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }));
+    const member = await i.guild?.members
+      .fetch(i.user.id)
+      .catch((e) => console.error(e));
+    if (member) embed.setColor(member.displayColor);
+    await i.reply({ embeds: [embed] });
+  },
+};
