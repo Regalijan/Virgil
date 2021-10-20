@@ -104,7 +104,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         await contextCommand?.exec(i)
       } catch (e) {
         if (!process.env.DSN) console.error(e)
-        await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give then this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
+        await i.reply({ content: `Oops! An error occurred when running this command! If you contact the developer, give then this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e)
         })
       }
@@ -123,7 +123,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
         await msgCommand?.exec(i)
       } catch (e) {
         if (!process.env.DSN) console.error(e)
-        await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
+        await i.reply({ content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e)
         })
       }
@@ -166,7 +166,7 @@ bot.on('interactionCreate', async function (i: Interaction): Promise<void> {
     await logChannel.send({ embeds: [embed] }).catch(e => console.error(e))
   } catch (e) {
     if (!process.env.DSN) console.error(e)
-    await i.reply({ content: `Oops! An error occured when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => console.error(e))
+    await i.reply({ content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${process.env.DSN ? Sentry.captureException(e) : e}\``, ephemeral: true }).catch(e => console.error(e))
   }
 })
 
