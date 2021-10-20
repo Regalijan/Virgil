@@ -48,16 +48,14 @@ export = {
         content: "The user already has the mute role.",
         ephemeral: true,
       });
-    await db
-      .collection("mutes")
-      .insertOne({
-        guild: i.guild.id,
-        member: targetGuildMember.id,
-        expires:
-          Date.now() +
-          (i.options.getInteger("hours") ?? 0 * 360000) +
-          (i.options.getInteger("minutes") ?? 0 * 60000),
-      });
+    await db.collection("mutes").insertOne({
+      guild: i.guild.id,
+      member: targetGuildMember.id,
+      expires:
+        Date.now() +
+        (i.options.getInteger("hours") ?? 0 * 360000) +
+        (i.options.getInteger("minutes") ?? 0 * 60000),
+    });
     await i.reply({ content: targetUser.username + " has been muted." });
   },
 };

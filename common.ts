@@ -5,9 +5,7 @@ import Sentry from "./sentry";
 import { Guild, GuildMember, Team, User } from "discord.js";
 
 export = {
-  async getRobloxMemberGroups(
-    user: number
-  ): Promise<
+  async getRobloxMemberGroups(user: number): Promise<
     {
       group: { id: number; name: string; memberCount: number };
       role: { id: number; name: string; rank: number };
@@ -141,9 +139,7 @@ export = {
     }
   },
 
-  async getRobloxUserProfile(
-    user: number
-  ): Promise<{
+  async getRobloxUserProfile(user: number): Promise<{
     description: string;
     created: Date;
     isBanned: boolean;
