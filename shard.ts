@@ -4,6 +4,7 @@ import { unlink, writeFile } from "fs/promises";
 import { join } from "path";
 import {
   ApplicationCommandData,
+  ButtonInteraction,
   CategoryChannel,
   Client,
   CommandInteraction,
@@ -56,6 +57,16 @@ const messageContextCommands: Map<
   }
 > = new Map();
 
+const buttonCommands: Map<
+  string,
+  {
+    name: string;
+    permissions?: PermissionResolvable[];
+    interactionData: ApplicationCommandData;
+    exec(i: ButtonInteraction): Promise<void>;
+  }
+> = new Map();
+
 for (const file of readdirSync(join(__dirname, "commands")).filter((f) =>
   f.endsWith(".js")
 )) {
@@ -75,6 +86,13 @@ for (const file of readdirSync(join(__dirname, "messagecontext")).filter((f) =>
 )) {
   const mcFile = require(`./messagecontext/${file}`);
   messageContextCommands.set(mcFile.name, mcFile);
+}
+
+for (const file of readdirSync(join(__dirname, "button")).filter((f) =>
+  f.endsWith(".js")
+)) {
+  const bFile = require(`./button/${file}`);
+  buttonCommands.set(bFile.name, bFile);
 }
 
 const bot = new Client({
@@ -182,6 +200,31 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
     return;
   }
 
+  if (i.isButton()) {
+    const buttonCommand = buttonCommands.get(i.customId);
+    if (!buttonCommand) {
+      return await i.reply({
+        content:
+          "Uh oh! Looks like this button is no longer active! This means that the command associated with this button was removed.",
+        ephemeral: true,
+      });
+    }
+    if (
+      buttonCommand?.permissions?.length &&
+      !i.memberPermissions?.has(buttonCommand.permissions)
+    ) {
+      return await i.reply({
+        content: "You cannot run this command!",
+        ephemeral: true,
+      });
+    }
+    try {
+      await buttonCommand.exec(i);
+    } catch (e) {
+      if (!process.env.DSN) console.error(e);
+    }
+  }
+
   if (!i.isCommand() || !cmds.has(i.commandName)) return;
   try {
     const command = cmds.get(i.commandName);
@@ -197,7 +240,7 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
             "Hey! You can't run commands here! They may only be run in a thread or a standard text channel.",
           ephemeral: true,
         })
-        .catch((e) => {
+        .catch((e: any) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });
       return;
@@ -210,7 +253,7 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
     ) {
       await i
         .reply({ content: "You cannot run this command!", ephemeral: true })
-        .catch((e) => {
+        .catch((e: any) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });
       return;
@@ -250,7 +293,7 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
         }\``,
         ephemeral: true,
       })
-      .catch((e) => console.error(e));
+      .catch((e: any) => console.error(e));
   }
 });
 
