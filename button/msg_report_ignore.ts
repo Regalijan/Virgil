@@ -25,6 +25,13 @@ export = {
     await reportStore.deleteOne({
       reportEmbedId: i.message.id,
     });
+    const reportMessage = await i.channel?.messages.fetch(i.message.id);
+    if (
+      reportMessage &&
+      i.guild.me.permissionsIn(i.channelId).has("MANAGE_MESSAGES")
+    ) {
+      await reportMessage.delete();
+    }
     await i.reply({
       content: "Report ignored!",
       ephemeral: true,
