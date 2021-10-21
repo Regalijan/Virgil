@@ -4,9 +4,11 @@ import {
   MessageButton,
   MessageEmbed,
 } from "discord.js";
+import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 import Sentry from "../sentry";
 const settingsStore = mongo.db("bot").collection("settings");
+const reportStore = mongo.db("bot").collection("reports");
 
 export = {
   name: "Report Message to Server Mods",
@@ -94,7 +96,7 @@ export = {
         }),
         new MessageButton({
           customId: "msg_report_warn",
-          emoji: "⚠️",
+          emoji: "⚠",
           label: "Warn",
           style: "PRIMARY",
           type: "BUTTON",
@@ -114,10 +116,25 @@ export = {
       ],
     });
 
-    await channel.send({
+    const reportMessageEmb = await channel.send({
       embeds: [embed],
       components: [actionRow1, ignActionRow],
     });
-    await i.reply({ content: "Report sent!", ephemeral: true });
+    const reportId = createHash("sha256")
+      .update(randomBytes(256))
+      .digest("base64");
+    await reportStore.insertOne({
+      reportId,
+      message: {
+        content: message.content,
+        id: message.id,
+        author: message.author.id,
+      },
+      reportEmbedId: reportMessageEmb.id,
+    });
+    await i.reply({
+      content: `Report sent! For reference, your report ID is \`${reportId}\``,
+      ephemeral: true,
+    });
   },
 };
