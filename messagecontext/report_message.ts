@@ -131,6 +131,10 @@ export = {
         author: message.author.id,
       },
       reportEmbedId: reportMessageEmb.id,
+      reporter: {
+        id: i.user.id,
+        tag: i.user.tag,
+      },
     });
     await i.reply({
       content: `Report sent! For reference, your report ID is \`${reportId}\``,
