@@ -79,3 +79,5 @@ If the bot is not online, check the logs with `sudo journalctl -eu virgil`
 9. `make` (You can always run more or less jobs if you wish)
 10. When compilation completes, open `C:\msys64\home\yourname\ffmpeg` and drag `ffmpeg.exe` into `C:\Windows`
 11. Run `ffmpeg` in command prompt to make sure it works.
+
+NOTICE: Virgil V2 is NOT MIT licensed! GitHub doesn't correctly display that the new version is Apache 2 licensed.
