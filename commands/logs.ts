@@ -40,6 +40,10 @@ export = {
                 value: "edit",
               },
               {
+                name: "message_report_actions",
+                value: "message_report_actions",
+              },
+              {
                 name: "message_reports",
                 value: "message_reports",
               },
@@ -121,6 +125,10 @@ export = {
               {
                 name: "edit",
                 value: "edit",
+              },
+              {
+                name: "message_report_actions",
+                value: "message_report_actions",
               },
               {
                 name: "message_reports",
@@ -209,6 +217,7 @@ export = {
       .set("ban", "banLogChannel")
       .set("delete", "deleteLogChannel")
       .set("edit", "editLogChannel")
+      .set("message_report_actions", "messageReportActionLogChannel")
       .set("message_reports", "messageReportChannel")
       .set("nickname", "nicknameLogChannel")
       .set("role", "roleLogChannel")
@@ -247,6 +256,13 @@ export = {
             name: "Edit logs",
             value: settingsList.editLogChannel
               ? `<#${settingsList.editLogChannel}>`
+              : "Not set",
+            inline: true,
+          },
+          {
+            name: "Message report action logs",
+            value: settingsList.messageReportActionLogChannel
+              ? `<#${settingsList.messageReportActionLogChannel}>`
               : "Not set",
             inline: true,
           },
