@@ -2,7 +2,6 @@ import { config as dotenv } from "dotenv";
 import { ShardingManager } from "discord.js";
 import { join } from "path";
 import mongo from "./mongo";
-import { WebRiskServiceClient } from "@google-cloud/web-risk";
 import Sentry from "./sentry";
 
 dotenv();
@@ -21,23 +20,3 @@ shardMgr.on("shardCreate", function (shard) {
 });
 
 shardMgr.spawn();
-
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  const WRClient = new WebRiskServiceClient();
-  const wrStore = mongo.db("bot").collection("webrisk");
-  setInterval(async function (): Promise<void> {
-    const nextDiffTime = await wrStore
-      .findOne({ malwareRecommendedNextDiff: { $lte: Date.now() } })
-      .catch(() => {});
-    if (!nextDiffTime) {
-      const malwareListArr = await WRClient.computeThreatListDiff({
-        threatType: "MALWARE",
-      }).catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
-      if (!malwareListArr) return;
-      const malwareList = malwareListArr[0];
-      const malwareChecksum = malwareList.checksum?.sha256;
-    }
-  }, 45000);
-}
