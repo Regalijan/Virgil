@@ -20,6 +20,7 @@ import {
   TextChannel,
   VoiceChannel,
 } from "discord.js";
+import axios from "axios";
 import Sentry from "./sentry";
 import db from "./mongo";
 
@@ -550,6 +551,69 @@ bot.on(
     }
   }
 );
+
+bot.on("messageCreate", async function (message): Promise<void> {
+  if (
+    !message.content ||
+    !message.author ||
+    message.channel.type !== "GUILD_TEXT"
+  )
+    return;
+  const settings = await db
+    .db("bot")
+    .collection("settings")
+    .findOne({ guild: message.guild })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (!settings?.antiphish) return;
+  const linkMatches = message.content.match(
+    /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
+  );
+  if (!linkMatches) return;
+  for (const link of linkMatches) {
+    const phishCheckReq = await axios(
+      `https://api.phisherman.gg/v1/domains/${link}`,
+      {
+        headers: {
+          "user-agent":
+            "Virgil Bot +https://github.com/Wolftallemo/Virgil/tree/rewrite",
+        },
+        validateStatus: () => false,
+      }
+    ).catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+    if (phishCheckReq?.status !== 200) return;
+    if (phishCheckReq.data) {
+      if (message.deletable) {
+        await message.delete().catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
+      }
+      if (!settings?.autobanPhishers) return;
+      const member =
+        message.member ||
+        (await message.guild?.members.fetch(message.author.id).catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        }));
+      if (!member?.bannable) return;
+      await member.send({
+        content: `You were banned from ${
+          message.guild?.name
+        } for sending a phishing link.${
+          settings.phishAutobanMessage
+            ? "\n\n" + settings.phishAutobanMessage
+            : ""
+        }`,
+      });
+      await member.ban({ reason: "User posted a phishing link" }).catch((e) => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      });
+      break;
+    }
+  }
+});
 
 bot.on("messageDelete", async function (message): Promise<void> {
   if (!message.guild || !message.author || message.author.bot) return;
