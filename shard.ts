@@ -633,6 +633,9 @@ bot.on("messageDelete", async function (message): Promise<void> {
       }${message.content ? `\n**Content:** ${message.content}` : ""}`
     );
   if (message.member) embed.setColor(message.member.displayColor);
+  message.attachments.forEach((att) => {
+    embed.addField("Attachment", att.url);
+  });
   const channel = await message.guild.channels
     .fetch(settings.deleteLogChannel)
     .catch((e) => {
