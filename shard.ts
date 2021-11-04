@@ -23,6 +23,7 @@ import {
 import axios from "axios";
 import Sentry from "./sentry";
 import db from "./mongo";
+import { randomBytes } from "crypto";
 
 db.connect();
 dotenv();
@@ -571,7 +572,26 @@ bot.on("messageCreate", async function (message): Promise<void> {
     /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
   );
   if (!linkMatches) return;
-  for (const link of linkMatches) {
+  for (let link of linkMatches) {
+    if (
+      [
+        "bit.ly",
+        "tinyurl.com",
+        "tiny.cc",
+        "goo-gl.me",
+        "cutt.ly",
+        "urlchill.com",
+        "shorturl.at",
+        "rb.gy",
+      ].includes(link)
+    ) {
+      const redirCh = await axios(`https://${link}`, {
+        headers: {
+          "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
+        },
+      }); // Axios will follow up to 5 redirects by default
+      link = redirCh.request.host;
+    }
     const phishCheckReq = await axios(
       `https://api.phisherman.gg/v1/domains/${link}`,
       {
