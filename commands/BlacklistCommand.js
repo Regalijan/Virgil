@@ -14,7 +14,6 @@ module.exports = {
     if (modsettings.rowCount === 0) return
     const { Datastore } = require('@google-cloud/datastore')
     const banStore = new Datastore({ keyFilename: './servicekeys/banstore.json' })
-    const fs = require('fs/promises')
     const request = require('axios')
     if (args[0]) {
       const robloxData = await request(`https://api.roblox.com/users/get-by-username?username=${args[0]}`).catch(e => {
