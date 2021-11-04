@@ -564,7 +564,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
   const settings = await db
     .db("bot")
     .collection("settings")
-    .findOne({ guild: message.guild })
+    .findOne({ guild: message.guildId })
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
