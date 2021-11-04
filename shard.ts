@@ -583,6 +583,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
         headers: {
           "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
         },
+        validateStatus: () => true,
       }); // Axios will follow up to 5 redirects by default
       link = redirReq.request.host;
       const phishCheckReq = await axios(
