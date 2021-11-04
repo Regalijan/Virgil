@@ -23,6 +23,7 @@ import {
 import axios from "axios";
 import Sentry from "./sentry";
 import db from "./mongo";
+import redis from "./redis";
 import { randomBytes } from "crypto";
 
 db.connect();
@@ -573,39 +574,45 @@ bot.on("messageCreate", async function (message): Promise<void> {
   );
   if (!linkMatches) return;
   for (let link of linkMatches) {
-    if (
-      [
-        "bit.ly",
-        "tinyurl.com",
-        "tiny.cc",
-        "goo-gl.me",
-        "cutt.ly",
-        "urlchill.com",
-        "shorturl.at",
-        "rb.gy",
-      ].includes(link)
-    ) {
-      const redirCh = await axios(`https://${link}`, {
+    let malicious = false;
+    const cache = await redis.get(`linkcheck_${link}`).catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+    if (!cache) {
+      const redirReq = await axios(`https://${link}`, {
         headers: {
           "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
         },
       }); // Axios will follow up to 5 redirects by default
-      link = redirCh.request.host;
+      link = redirReq.request.host;
+      const phishCheckReq = await axios(
+        `https://api.phisherman.gg/v1/domains/${link}`,
+        {
+          headers: {
+            "user-agent":
+              "Virgil Bot +https://github.com/Wolftallemo/Virgil/tree/rewrite",
+          },
+          validateStatus: () => false,
+        }
+      ).catch((e) => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      });
+      if (phishCheckReq?.status !== 200) continue;
+      if (phishCheckReq.data) malicious = true;
+      await redis
+        .set(
+          `linkcheck_${link}`,
+          JSON.stringify(phishCheckReq.data),
+          "EX",
+          1800
+        )
+        .catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
+    } else {
+      malicious = JSON.parse(cache);
     }
-    const phishCheckReq = await axios(
-      `https://api.phisherman.gg/v1/domains/${link}`,
-      {
-        headers: {
-          "user-agent":
-            "Virgil Bot +https://github.com/Wolftallemo/Virgil/tree/rewrite",
-        },
-        validateStatus: () => false,
-      }
-    ).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
-    if (phishCheckReq?.status !== 200) return;
-    if (phishCheckReq.data) {
+    if (malicious) {
       if (message.deletable) {
         await message.delete().catch((e) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
