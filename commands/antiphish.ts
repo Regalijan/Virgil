@@ -24,6 +24,19 @@ export = {
         name: "toggle-autoban",
         description: "Toggle auto-banning of phishers",
       },
+      {
+        type: 1,
+        name: "set-message",
+        description:
+          "Set the message a user receives when banned, or leave blank for none",
+        options: [
+          {
+            type: 3,
+            name: "message",
+            description: "Message to send to banned user",
+          },
+        ],
+      },
     ],
   },
   async exec(i: CommandInteraction): Promise<void> {
@@ -57,10 +70,9 @@ export = {
         phishSettings.antiphish = !phishSettings.antiphish;
         await settings.replaceOne({ guild: i.guildId }, phishSettings);
         await i.reply({
-          content:
-            "Anti-phishing has been " + phishSettings.antiphish
-              ? "enabled!"
-              : "disabled!",
+          content: `Anti-phish has been ${
+            phishSettings.antiphish ? "enabled" : "disabled"
+          }!`,
         });
         break;
 
@@ -68,11 +80,29 @@ export = {
         phishSettings.autobanPhishers = !phishSettings.autobanPhishers;
         await settings.replaceOne({ guild: i.guildId }, phishSettings);
         await i.reply({
-          content:
-            "Autoban has been " + phishSettings.autobanPhishers
-              ? "enabled!"
-              : "disabled!",
+          content: `Autoban has been ${
+            phishSettings.autobanPhishers ? "enabled" : "disabled"
+          }!`,
         });
+        break;
+
+      case "set-message":
+        const message = i.options.getString("message", false);
+        if (!phishSettings.antiphishMessage && !message)
+          return await i.reply({
+            content:
+              "There is nothing to do here because there is no message set.",
+          });
+        if (message) {
+          phishSettings.antiphishMessage = message;
+          await settings.replaceOne({ guild: i.guildId }, phishSettings);
+          return await i.reply({ content: "Message set!" });
+        }
+        await settings.updateOne(
+          { guild: i.guildId },
+          { $unset: { antiphishMessage: "" } }
+        );
+        await i.reply({ content: "Message removed!" });
         break;
     }
   },
