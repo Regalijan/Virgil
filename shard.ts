@@ -592,7 +592,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
             "user-agent":
               "Virgil Bot +https://github.com/Wolftallemo/Virgil/tree/rewrite",
           },
-          validateStatus: () => false,
+          validateStatus: () => true,
         }
       ).catch((e) => {
         process.env.DSN ? Sentry.captureException(e) : console.error(e);
