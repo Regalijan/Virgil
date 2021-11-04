@@ -570,7 +570,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
     });
   if (!settings?.antiphish) return;
   const linkMatches = message.content.match(
-    /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
+    /https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
   );
   if (!linkMatches) return;
   for (let link of linkMatches) {
@@ -579,7 +579,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
     if (!cache) {
-      const redirReq = await axios(`https://${link}`, {
+      const redirReq = await axios(link, {
         headers: {
           "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
         },
