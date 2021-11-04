@@ -602,9 +602,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
         content: `You were banned from ${
           message.guild?.name
         } for sending a phishing link.${
-          settings.phishAutobanMessage
-            ? "\n\n" + settings.phishAutobanMessage
-            : ""
+          settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
         }`,
       });
       await member.ban({ reason: "User posted a phishing link" }).catch((e) => {
