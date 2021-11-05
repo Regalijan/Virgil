@@ -636,9 +636,11 @@ bot.on("messageCreate", async function (message): Promise<void> {
           settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
         }`,
       });
-      await member.ban({ reason: "User posted a phishing link" }).catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+      await member
+        .ban({ reason: "User posted a phishing link", days: 1 })
+        .catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
       break;
     }
   }
