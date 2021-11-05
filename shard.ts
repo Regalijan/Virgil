@@ -584,7 +584,10 @@ bot.on("messageCreate", async function (message): Promise<void> {
           "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
         },
         validateStatus: () => true,
+      }).catch((e) => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e);
       }); // Axios will follow up to 5 redirects by default
+      if (!redirReq) continue;
       link = redirReq.request.host;
       const phishCheckReq = await axios(
         `https://api.phisherman.gg/v1/domains/${link}`,
