@@ -593,7 +593,6 @@ bot.on("messageCreate", async function (message): Promise<void> {
       }); // Axios will follow up to 5 redirects by default
       if (!redirReq) continue;
       link = redirReq.request.host;
-      console.log(link);
       const phishCheckReq = await axios(
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
@@ -608,7 +607,6 @@ bot.on("messageCreate", async function (message): Promise<void> {
       });
       if (phishCheckReq?.status !== 200) continue;
       if (phishCheckReq.data) malicious = true;
-      console.log(phishCheckReq.data);
       await redis
         .set(
           `linkcheck_${link}`,
