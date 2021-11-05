@@ -25,6 +25,7 @@ import Sentry from "./sentry";
 import db from "./mongo";
 import redis from "./redis";
 import { randomBytes } from "crypto";
+import { Agent } from "https";
 
 db.connect();
 dotenv();
@@ -575,20 +576,24 @@ bot.on("messageCreate", async function (message): Promise<void> {
   if (!linkMatches) return;
   for (let link of linkMatches) {
     let malicious = false;
-    const cache = await redis.get(`linkcheck_${link}`).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    const cache = await redis
+      .get(`linkcheck_${link.replace(/^https?:\/\//, "")}`)
+      .catch((e) => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      });
     if (!cache) {
       const redirReq = await axios(link, {
         headers: {
           "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
         },
+        httpsAgent: new Agent({ rejectUnauthorized: false }), // Prevent self-signed certs from breaking validation
         validateStatus: () => true,
       }).catch((e) => {
         process.env.DSN ? Sentry.captureException(e) : console.error(e);
       }); // Axios will follow up to 5 redirects by default
       if (!redirReq) continue;
       link = redirReq.request.host;
+      console.log(link);
       const phishCheckReq = await axios(
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
@@ -603,6 +608,7 @@ bot.on("messageCreate", async function (message): Promise<void> {
       });
       if (phishCheckReq?.status !== 200) continue;
       if (phishCheckReq.data) malicious = true;
+      console.log(phishCheckReq.data);
       await redis
         .set(
           `linkcheck_${link}`,
