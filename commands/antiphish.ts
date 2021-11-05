@@ -60,6 +60,14 @@ export = {
             {
               name: "Autoban",
               value: phishSettings?.autobanPhishers ? "Enabled" : "Disabled",
+            },
+            {
+              name: "Autoban Message",
+              value: phishSettings?.anitphishMessage
+                ? phishSettings.antiphishMessage.length > 1024
+                  ? phishSettings.antiphishMessage.substr(0, 1021) + "..."
+                  : phishSettings.antiphishMessage
+                : "None set",
             }
           );
 
