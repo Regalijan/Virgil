@@ -15,10 +15,10 @@ export = {
     const button = new MessageButton()
       .setURL(
         `https://rover.link/validate/${Buffer.from(
-          `${i.user.id};${i.user.tag}`
+          encodeURIComponent(`${i.user.id};${i.user.tag}`)
         ).toString("base64")}`
       )
-      .setEmoji("ℹ️")
+      .setEmoji("ℹ")
       .setLabel("Open Troubleshooting Page")
       .setStyle("LINK");
 
