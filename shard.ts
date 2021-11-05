@@ -772,11 +772,19 @@ bot.on("messageUpdate", async function (oldMessage, newMessage): Promise<void> {
     .addFields(
       {
         name: "Before",
-        value: `${oldMessage.content.substr(0, 1021)}...` ?? "Unknown content",
+        value: oldMessage.content
+          ? oldMessage.content.length > 1024
+            ? oldMessage.content.substr(0, 1021) + "..."
+            : oldMessage.content
+          : "Unknown content",
       },
       {
         name: "After",
-        value: `${newMessage.content?.substr(0, 1021)}...` ?? "Unknown content",
+        value: newMessage.content
+          ? newMessage.content.length > 1024
+            ? newMessage.content.substr(0, 1021) + "..."
+            : newMessage.content
+          : "Unknown content",
       }
     );
   if (newMessage.member) embed.setColor(newMessage.member.displayColor);
