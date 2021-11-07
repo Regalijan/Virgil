@@ -1,7 +1,13 @@
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import {
+  CommandInteraction,
+  GuildMember,
+  MessageEmbed,
+  ThreadChannel,
+} from "discord.js";
 import mongo from "../mongo";
 
 const settingsDB = mongo.db("bot").collection("settings");
+const ignoredDB = mongo.db("bot").collection("ignored");
 
 export = {
   name: "logs",
@@ -9,8 +15,100 @@ export = {
   permissions: ["MANAGE_GUILD"],
   interactionData: {
     name: "logs",
-    description: "View,set, or remove a log channel",
+    description: "View, set, ignore, unignore, or remove a log channel",
     options: [
+      {
+        type: 1,
+        name: "ignore",
+        description: "Ignores a channel from logs",
+        options: [
+          {
+            type: 7,
+            name: "channel",
+            description: "Channel to ignore",
+            required: true,
+          },
+          {
+            type: 3,
+            name: "log",
+            description: "Log to ignore",
+            choices: [
+              {
+                name: "ban",
+                value: "ban",
+              },
+              {
+                name: "delete",
+                value: "delete",
+              },
+              {
+                name: "edit",
+                value: "edit",
+              },
+              {
+                name: "message_report_actions",
+                value: "message_report_actions",
+              },
+              {
+                name: "message_reports",
+                value: "message_reports",
+              },
+              {
+                name: "nickname",
+                value: "nickname",
+              },
+              {
+                name: "role",
+                value: "role",
+              },
+              {
+                name: "thread_create",
+                value: "thread_create",
+              },
+              {
+                name: "thread_delete",
+                value: "thread_delete",
+              },
+              {
+                name: "thread_update",
+                value: "thread_update",
+              },
+              {
+                name: "unban",
+                value: "unban",
+              },
+              {
+                name: "voice_deafen",
+                value: "voice_deafen",
+              },
+              {
+                name: "voice_join",
+                value: "voice_join",
+              },
+              {
+                name: "voice_leave",
+                value: "voice_leave",
+              },
+              {
+                name: "voice_mute",
+                value: "voice_mute",
+              },
+              {
+                name: "voice_switch",
+                value: "voice_switch",
+              },
+              {
+                name: "voice_video",
+                value: "voice_video",
+              },
+              {
+                name: "warn",
+                value: "warn",
+              },
+            ],
+          },
+        ],
+      },
       {
         type: 1,
         name: "list",
@@ -196,6 +294,98 @@ export = {
           },
         ],
       },
+      {
+        type: 1,
+        name: "unignore",
+        description: "Unignore a channel",
+        options: [
+          {
+            type: 7,
+            name: "channel",
+            description: "Channel to unignore",
+            required: true,
+          },
+          {
+            type: 3,
+            name: "log",
+            description: "Log to unignore",
+            choices: [
+              {
+                name: "ban",
+                value: "ban",
+              },
+              {
+                name: "delete",
+                value: "delete",
+              },
+              {
+                name: "edit",
+                value: "edit",
+              },
+              {
+                name: "message_report_actions",
+                value: "message_report_actions",
+              },
+              {
+                name: "message_reports",
+                value: "message_reports",
+              },
+              {
+                name: "nickname",
+                value: "nickname",
+              },
+              {
+                name: "role",
+                value: "role",
+              },
+              {
+                name: "thread_create",
+                value: "thread_create",
+              },
+              {
+                name: "thread_delete",
+                value: "thread_delete",
+              },
+              {
+                name: "thread_update",
+                value: "thread_update",
+              },
+              {
+                name: "unban",
+                value: "unban",
+              },
+              {
+                name: "voice_deafen",
+                value: "voice_deafen",
+              },
+              {
+                name: "voice_join",
+                value: "voice_join",
+              },
+              {
+                name: "voice_leave",
+                value: "voice_leave",
+              },
+              {
+                name: "voice_mute",
+                value: "voice_mute",
+              },
+              {
+                name: "voice_switch",
+                value: "voice_switch",
+              },
+              {
+                name: "voice_video",
+                value: "voice_video",
+              },
+              {
+                name: "warn",
+                value: "warn",
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   async exec(i: CommandInteraction): Promise<void> {
@@ -234,6 +424,29 @@ export = {
       .set("warn", "warnLogChannel");
 
     switch (i.options.getSubcommand(true)) {
+      case "ignore":
+        const ignoringChannel = i.options.getChannel("channel", true);
+        if (ignoringChannel instanceof ThreadChannel)
+          return await i.reply({
+            content:
+              "Threads cannot be ignored (they inherit the settings of their parent channel)",
+            ephemeral: true,
+          });
+        const doesIgnoreExist = await ignoredDB.findOne({
+          channel: ignoringChannel.id,
+          log: i.options.getString("log", false),
+        });
+        if (doesIgnoreExist)
+          return await i.reply({
+            content:
+              "An ignore of that type or a global ignore was already set for the channel!",
+            ephemeral: true,
+          });
+        await ignoredDB.insertOne({
+          channel: ignoringChannel.id,
+          log: i.options.getString("log", false),
+        });
+
       case "list":
         embed.setTitle("Log channels for " + i.guild?.name);
         embed.setDescription("\u200B");
@@ -391,6 +604,14 @@ export = {
             i.options.getChannel("channel", true).id
           }>!`,
         });
+
+      case "unignore":
+        const unignoringChannel = i.options.getChannel("channel", true);
+        await ignoredDB.deleteOne({
+          channel: unignoringChannel.id,
+          log: i.options.getString("log", false),
+        });
+        await i.reply({ content: "Channel unignored!" });
     }
   },
 };
