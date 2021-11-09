@@ -201,6 +201,13 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
           });
       }
     }
+    if (process.env.DSN) {
+      Sentry.captureEvent({
+        user: { id: i.user.id },
+        timestamp: Date.now(),
+        message: `${i.commandName} was ran`,
+      });
+    }
     return;
   }
 
@@ -226,6 +233,13 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
       await buttonCommand.exec(i);
     } catch (e) {
       if (!process.env.DSN) console.error(e);
+    }
+    if (process.env.DSN) {
+      Sentry.captureEvent({
+        user: { id: i.user.id },
+        timestamp: Date.now(),
+        message: `Button ${i.customId} was ran`,
+      });
     }
   }
 
@@ -298,6 +312,13 @@ bot.on("interactionCreate", async function (i: Interaction): Promise<void> {
         ephemeral: true,
       })
       .catch((e: any) => console.error(e));
+  }
+  if (process.env.DSN) {
+    Sentry.captureEvent({
+      user: { id: i.user.id },
+      timestamp: Date.now(),
+      message: `${i.commandName} was ran`,
+    });
   }
 });
 
