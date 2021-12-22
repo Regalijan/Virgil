@@ -86,7 +86,10 @@ export = {
 
       case "toggle-autoban":
         phishSettings.autobanPhishers = !phishSettings.autobanPhishers;
-        await settings.replaceOne({ guild: i.guildId }, phishSettings);
+        const updateObj = phishSettings.autobanPhishers
+          ? { $unset: { autobanPhishers: "" } }
+          : { $set: { autobanPhishers: true } };
+        await settings.updateOne({ guild: i.guildId }, updateObj);
         await i.reply({
           content: `Autoban has been ${
             phishSettings.autobanPhishers ? "enabled" : "disabled"
@@ -106,7 +109,6 @@ export = {
             { guild: i.guildId },
             { $set: { antiphishMessage: message } }
           );
-          await settings.replaceOne({ guild: i.guildId }, phishSettings);
           return await i.reply({ content: "Message set!" });
         }
         await settings.updateOne(
