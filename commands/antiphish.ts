@@ -102,7 +102,10 @@ export = {
               "There is nothing to do here because there is no message set.",
           });
         if (message) {
-          phishSettings.antiphishMessage = message;
+          await settings.updateOne(
+            { guild: i.guildId },
+            { $set: { antiphishMessage: message } }
+          );
           await settings.replaceOne({ guild: i.guildId }, phishSettings);
           return await i.reply({ content: "Message set!" });
         }
