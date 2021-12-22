@@ -91,7 +91,7 @@ export = {
         await settings.updateOne({ guild: i.guildId }, updateObj);
         await i.reply({
           content: `Autoban has been ${
-            phishSettings.autobanPhishers ? "enabled" : "disabled"
+            phishSettings.autobanPhishers ? "disabled" : "enabled"
           }!`,
         });
         break;
@@ -115,7 +115,6 @@ export = {
           { $unset: { antiphishMessage: "" } }
         );
         await i.reply({ content: "Message removed!" });
-        break;
     }
   },
 };
