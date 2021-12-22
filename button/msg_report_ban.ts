@@ -39,10 +39,14 @@ export = {
         content: "Failed to locate message! Was it deleted?",
         ephemeral: true,
       });
-    const settings = await settingsStore.findOne({ guild: i.guildId })
+    const settings = await settingsStore.findOne({ guild: i.guildId });
     await reportMessage.author
       .send({
-        content: `You have been banned from ${reportMessage.guild?.name} due to a member report.${settings?.banMessage ? `\n\n${settings.banMessage}` : ""}`,
+        content: `You have been banned from ${
+          reportMessage.guild?.name
+        } due to a member report.${
+          settings?.banMessage ? `\n\n${settings.banMessage}` : ""
+        }`,
       })
       .catch(() => {});
     await reportMessage.member?.ban();
@@ -52,7 +56,10 @@ export = {
     ) {
       await reportMessage.delete();
     }
-    await i.reply({ content: `${reportMessage.author.tag} banned!`, ephemeral: true })
+    await i.reply({
+      content: `${reportMessage.author.tag} banned!`,
+      ephemeral: true,
+    });
     if (!settings?.messageReportActionLogChannel) return;
     const channel = await i.guild?.channels.fetch(
       settings.messageReportActionLogChannel
