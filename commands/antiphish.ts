@@ -85,7 +85,6 @@ export = {
         break;
 
       case "toggle-autoban":
-        phishSettings.autobanPhishers = !phishSettings.autobanPhishers;
         const updateObj = phishSettings.autobanPhishers
           ? { $unset: { autobanPhishers: "" } }
           : { $set: { autobanPhishers: true } };
