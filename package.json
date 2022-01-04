@@ -26,7 +26,7 @@
     "erlpack": "github:discord/erlpack",
     "ioredis": "^4.28.2",
     "mongodb": "^4.2.2",
-    "utf-8-validate": "^5.0.7",
+    "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
