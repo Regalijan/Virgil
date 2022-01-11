@@ -24,7 +24,7 @@
     "discord.js": "^13.5.1",
     "dotenv": "^10.0.0",
     "erlpack": "github:discord/erlpack",
-    "ioredis": "^4.28.2",
+    "ioredis": "^4.28.3",
     "mongodb": "^4.3.0",
     "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
