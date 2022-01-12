@@ -14,7 +14,7 @@
 2. Install [MongoDB](https://www.mongodb.com/try/download/community)
 3. Install [Redis](https://redis.io/download) - on Windows you will be better off using WSL
 4. Install [Python](https://www.python.org) - you may want to use your package manage on linux
-5. Linux: Install `gcc` `g++` `make` | Windows: Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16)
+5. Linux: Install `gcc` `g++` `make` | Windows: Install [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe)
 6. Create a `.env` file with the variables in the table at the bottom
 7. Compile: `npx tsc`
 8. Deploy the slash commands: `node dist/deploy.js`
