@@ -55,7 +55,10 @@ export = {
     const member = await i.guild.members.fetch(i.user.id);
     const embed = new MessageEmbed()
       .setTitle("Member Warned")
-      .setAuthor(user.tag, user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({
+        name: user.tag,
+        iconURL: user.displayAvatarURL({ dynamic: true }),
+      })
       .addFields(
         { name: "Member", value: `<@${user.id}> (${user.id})` },
         { name: "Moderator", value: `<@${i.user.id}> (${i.user.id})` },
