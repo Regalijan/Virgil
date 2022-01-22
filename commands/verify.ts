@@ -17,7 +17,7 @@ export = {
     if (!member)
       return await i.reply({
         content:
-          "An error occured when attempting to verify you - please try again later.",
+          "An error occurred when attempting to verify you - please try again later.",
         ephemeral: true,
       });
     const resultString = await Common.verify(member);
