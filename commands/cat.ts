@@ -23,7 +23,10 @@ export = {
     const embed = new MessageEmbed()
       .setTitle("Meow :cat:")
       .setImage(cat.data.url)
-      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }));
+      .setAuthor({
+        name: i.user.tag,
+        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+      });
     const member = await i.guild?.members
       .fetch(i.user.id)
       .catch((e) => console.error(e));

@@ -66,7 +66,7 @@ export = {
           "An error occured when retrieving information from Roblox! Please try again later.",
         ephemeral: true,
       });
-    embed.setAuthor(robloxData.name);
+    embed.setAuthor({ name: robloxData.name });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     let bio = robloxData.description;
     while ((bio.match(/\n/gm) || []).length > 15 || bio.match(/\n\n\n/gm)) {
