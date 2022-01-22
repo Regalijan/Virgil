@@ -20,9 +20,10 @@ export = {
     ],
   },
   async exec(i: CommandInteraction): Promise<void> {
-    settingsDB.findOneAndUpdate(
+    await settingsDB.findOneAndUpdate(
       { server: i.guildId },
       { $set: { nicknameformat: i.options.get("format", true) } }
     );
+    await i.reply({ content: "Nickname format updated!", ephemeral: true });
   },
 };
