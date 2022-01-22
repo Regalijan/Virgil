@@ -29,7 +29,10 @@ export = {
       logChannel.type === "GUILD_TEXT"
     ) {
       const logEmbed = new MessageEmbed()
-        .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
+        .setAuthor({
+          name: i.user.tag,
+          iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        })
         .setColor(serversettings.value?.commandLogChannel ?? 3756250)
         .setDescription("Requested factory reset.");
 
