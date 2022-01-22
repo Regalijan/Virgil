@@ -39,7 +39,10 @@ export = {
     });
 
     const embed = new MessageEmbed()
-      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({
+        name: i.user.tag,
+        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+      })
       .addFields(
         { name: "Owner", value: `<@${i.guild.ownerId}>`, inline: true },
         {
