@@ -22,7 +22,7 @@ export = {
       { name: "Cache (Redis)", value: `${redisAfter - redisBefore}ms` },
       { name: "Gateway", value: `${i.client.ws.ping}ms` },
       {
-        name: "Round Trip (since you ran the command)",
+        name: "Command Processing",
         value: `${Date.now() - redisBefore}ms`,
       }
     );
