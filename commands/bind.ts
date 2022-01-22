@@ -144,8 +144,11 @@ export = {
     const subc = i.options.getSubcommand(true);
     const bindDb = mongo.db("bot").collection("binds");
     const bindId = createHash("sha256")
-      .update(randomBytes(256))
-      .digest("base64");
+      .update(randomBytes(512))
+      .digest("base64")
+      .replaceAll("=", "")
+      .replaceAll("/", "_")
+      .replaceAll("+", "-");
     switch (subc) {
       case "group":
         if (i.options.getInteger("group_id", true) < 1)

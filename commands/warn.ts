@@ -30,7 +30,10 @@ export = {
     const user = i.options.getUser("user", true);
     const logId = createHash("sha256")
       .update(randomBytes(256))
-      .digest("base64");
+      .digest("base64")
+      .replaceAll("=", "")
+      .replaceAll("/", "_")
+      .replaceAll("+", "-");
     const logObj = {
       id: logId,
       moderator: `${i.user.tag} (${i.user.id})`,
