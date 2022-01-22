@@ -1,4 +1,4 @@
-FROM node:16
+FROM node
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
 WORKDIR /home/nodeuser/virgil
 COPY . .
