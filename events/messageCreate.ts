@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, Team } from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import redis from "../redis";
@@ -49,7 +49,11 @@ module.exports = async function (message: Message) {
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
           headers: {
-            "user-agent": "Virgil Bot (+https://github.com/Wolftallemo/Virgil / )",
+            "user-agent": `Virgil Bot (+https://github.com/Wolftallemo/Virgil / ${
+              message.client.application?.owner instanceof Team
+                ? message.client.application.owner.members.first()?.id
+                : message.client.application?.owner?.id
+            }`,
           },
           validateStatus: () => true,
         }
@@ -72,13 +76,19 @@ module.exports = async function (message: Message) {
       malicious = JSON.parse(cache);
     }
     if (malicious) {
-      if (process.env.ROVER_REGISTRY_KEY && process.env.ROVER_REGISTRY_UNLINK_URL) {
-        await axios(process.env.ROVER_REGISTRY_UNLINK_URL + `/${message.author.id}`, {
-          method: "DELETE",
-          headers: {
-            authorization: `Bearer ${process.env.ROVER_REGISTRY_KEY}`
+      if (
+        process.env.ROVER_REGISTRY_KEY &&
+        process.env.ROVER_REGISTRY_UNLINK_URL
+      ) {
+        await axios(
+          process.env.ROVER_REGISTRY_UNLINK_URL + `/${message.author.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              authorization: `Bearer ${process.env.ROVER_REGISTRY_KEY}`,
+            },
           }
-        })
+        );
       }
       if (message.deletable) {
         await message.delete().catch((e) => {
