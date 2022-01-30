@@ -49,7 +49,7 @@ module.exports = async function (message: Message) {
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
           headers: {
-            "user-agent": "Virgil Bot +https://github.com/Wolftallemo/Virgil",
+            "user-agent": "Virgil Bot (+https://github.com/Wolftallemo/Virgil / )",
           },
           validateStatus: () => true,
         }
@@ -72,6 +72,14 @@ module.exports = async function (message: Message) {
       malicious = JSON.parse(cache);
     }
     if (malicious) {
+      if (process.env.ROVER_REGISTRY_KEY && process.env.ROVER_REGISTRY_UNLINK_URL) {
+        await axios(process.env.ROVER_REGISTRY_UNLINK_URL + `/${message.author.id}`, {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${process.env.ROVER_REGISTRY_KEY}`
+          }
+        })
+      }
       if (message.deletable) {
         await message.delete().catch((e) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
