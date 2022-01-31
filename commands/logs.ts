@@ -446,6 +446,7 @@ export = {
           channel: ignoringChannel.id,
           log: i.options.getString("log", false),
         });
+        break;
 
       case "list":
         embed.setTitle("Log channels for " + i.guild?.name);
