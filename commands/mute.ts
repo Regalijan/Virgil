@@ -53,8 +53,8 @@ export = {
       member: targetGuildMember.id,
       expires:
         Date.now() +
-        (i.options.getInteger("hours") ?? 0 * 360000) +
-        (i.options.getInteger("minutes") ?? 0 * 60000),
+        ((i.options.getInteger("hours") ?? 0) * 360000) +
+        ((i.options.getInteger("minutes") ?? 0) * 60000),
     });
     await i.reply({ content: targetUser.username + " has been muted." });
   },
