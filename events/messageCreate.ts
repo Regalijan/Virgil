@@ -87,6 +87,7 @@ module.exports = async function (message: Message) {
             headers: {
               authorization: `Bearer ${process.env.ROVER_REGISTRY_KEY}`,
             },
+            validateStatus: () => true,
           }
         );
       }
