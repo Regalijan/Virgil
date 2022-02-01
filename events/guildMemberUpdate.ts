@@ -1,5 +1,6 @@
 import { GuildMember, MessageEmbed, PartialGuildMember } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 
 const mongo = db.db("bot");
@@ -19,20 +20,7 @@ module.exports = async function (
     iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
   });
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
-    if (!settings.roleLogChannel) return;
-    const roleLogChannel = await newMember.guild.channels
-      .fetch(settings.roleLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
-    if (roleLogChannel?.type !== "GUILD_TEXT") return;
-    if (
-      !newMember.client.user ||
-      !roleLogChannel
-        .permissionsFor(newMember.client.user.id)
-        ?.has("SEND_MESSAGES")
-    )
-      return;
+    if (!settings.roleLogChannelWebhook) return;
     embed.setTitle("Roles Updated");
     let oldrolesstring = "";
     oldMember.roles.cache.forEach((r) => {
@@ -52,24 +40,14 @@ module.exports = async function (
       });
       embed.addField("Roles Added", rolesadded);
     }
-    await roleLogChannel.send({ embeds: [embed] }).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    await SendLog(
+      settings.roleLogChannelWebhook,
+      embed,
+      newMember.guild.id,
+      "roleLogChannelWebhook",
+    );
   } else if (oldMember.nickname !== newMember.nickname) {
-    if (!settings.nicknameLogChannel) return;
-    const nicknameLogChannel = await newMember.guild.channels
-      .fetch(settings.nicknameLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
-    if (nicknameLogChannel?.type !== "GUILD_TEXT") return;
-    if (
-      !newMember.client.user ||
-      !nicknameLogChannel
-        .permissionsFor(newMember.client.user.id)
-        ?.has("SEND_MESSAGES")
-    )
-      return;
+    if (!settings.nicknameLogChannelWebhook) return;
     embed.setTitle("Nickname Updated");
     embed.setDescription(
       `\`${oldMember.nickname ?? "None"}\` -> \`${
@@ -80,8 +58,11 @@ module.exports = async function (
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
     embed.setColor(newMember.displayColor);
-    await nicknameLogChannel.send({ embeds: [embed] }).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    await SendLog(
+      settings.nicknameLogChannelWebhook,
+      embed,
+      newMember.guild.id,
+      "nicknameLogChannelWebhook",
+    );
   }
 };

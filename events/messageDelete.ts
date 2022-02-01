@@ -1,5 +1,6 @@
-import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
+import { Message, MessageEmbed, PartialMessage } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 
 const mongo = db.db("bot");
@@ -12,7 +13,7 @@ module.exports = async function (message: Message<boolean> | PartialMessage) {
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-  if (!settings?.deleteLogChannel) return;
+  if (!settings?.deleteLogChannelWebhook) return;
   const embed = new MessageEmbed()
     .setAuthor({
       name: `${message.author.tag} (${message.author.id})`,
@@ -27,16 +28,10 @@ module.exports = async function (message: Message<boolean> | PartialMessage) {
   message.attachments.forEach((att) => {
     embed.addField("Attachment", att.url);
   });
-  const channel = await message.guild.channels
-    .fetch(settings.deleteLogChannel)
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
-  if (!(channel instanceof TextChannel)) return;
-  if (!message.client.user?.id) return;
-  if (!channel?.permissionsFor(message.client.user.id)?.has("SEND_MESSAGES"))
-    return;
-  await channel.send({ embeds: [embed] }).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-  });
+  await SendLog(
+    settings.deleteLogChannelWebhook,
+    embed,
+    message.guild.id,
+    "deleteLogChannelWebhook"
+  );
 };

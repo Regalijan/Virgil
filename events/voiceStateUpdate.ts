@@ -1,14 +1,6 @@
-import {
-  CategoryChannel,
-  MessageEmbed,
-  NewsChannel,
-  StageChannel,
-  StoreChannel,
-  TextChannel,
-  VoiceChannel,
-  VoiceState,
-} from "discord.js";
+import { MessageEmbed, VoiceState } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 
 const mongo = db.db("bot");
@@ -31,53 +23,29 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     .setFooter({ text: `ID: ${newState.member.id}` });
 
   let actionstring = `<@${newState.member.id}> `;
-  let logChannel:
-    | void
-    | TextChannel
-    | NewsChannel
-    | VoiceChannel
-    | CategoryChannel
-    | StageChannel
-    | StoreChannel
-    | null;
+  let settingName = "";
   if (newState.channel && !oldState.channel && settings.voiceJoinLogChannel) {
     actionstring += `joined <#${newState.channelId}>`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceJoinLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceJoinLogChannelWebhook";
   } else if (
     !newState.channel &&
     oldState.channel &&
     settings.voiceLeaveLogChannel
   ) {
     actionstring += `left <#${oldState.channelId}>`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceLeaveLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceLeaveLogChannelWebhook";
   } else if (
     newState.selfMute !== oldState.selfMute &&
     settings.voiceMuteLogChannel
   ) {
     actionstring += `${newState.mute ? "muted" : "unmuted"} themself.`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceMuteLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceMuteLogChannelWebhook";
   } else if (
     newState.selfDeaf !== oldState.selfDeaf &&
     settings.voiceDeafenLogChannel
   ) {
     actionstring += `${newState.deaf ? "deafened" : "undeafened"} themself.`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceDeafenLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceDeafenLogChannelWebhook";
   } else if (
     newState.serverMute !== oldState.serverMute &&
     settings.voiceMuteLogChannel
@@ -85,11 +53,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     actionstring += `was ${
       newState.serverMute ? "muted" : "unmuted"
     } by a server moderator.`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceMuteLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceMuteLogChannelWebhook";
   } else if (
     newState.serverDeaf !== oldState.serverDeaf &&
     settings.voiceDeafenLogChannel
@@ -97,11 +61,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     actionstring += `was ${
       newState.serverDeaf ? "deafened" : "undeafened"
     } by a server moderator.`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceDeafenLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceDeafenLogChannelWebhook";
   } else if (
     newState.selfVideo !== oldState.selfVideo &&
     settings.voiceVideoLogChannel
@@ -109,11 +69,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     actionstring += `${
       newState.selfVideo ? "enabled" : "disabled"
     } their camera.`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceVideoLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceVideoLogChannelWebhook";
   } else if (
     newState.channel &&
     oldState.channel &&
@@ -121,21 +77,9 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     newState.channelId !== oldState.channelId
   ) {
     actionstring += `switched from <#${oldState.channelId}> to <#${newState.channelId}>`;
-    logChannel = await newState.guild.channels
-      .fetch(settings.voiceSwitchLogChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+    settingName = "voiceSwitchLogChannelWebhook";
   }
-  if (
-    actionstring === `<@${newState.member.id}> ` ||
-    logChannel?.type !== "GUILD_TEXT" ||
-    !newState.client.user ||
-    !logChannel?.permissionsFor(newState.client.user.id)?.has("SEND_MESSAGES")
-  )
-    return;
+  if (actionstring === `<@${newState.member.id}> `) return;
   embed.setDescription(actionstring);
-  await logChannel.send({ embeds: [embed] }).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.log(e);
-  });
+  await SendLog(settings[settingName], embed, newState.guild.id, settingName);
 };

@@ -1,5 +1,6 @@
-import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
+import { Message, MessageEmbed, PartialMessage } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 
 const mongo = db.db("bot");
@@ -23,7 +24,7 @@ module.exports = async function (
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-  if (!settings?.editLogChannel) return;
+  if (!settings?.editLogChannelWebhook) return;
   const embed = new MessageEmbed()
     .setAuthor({
       name: `${oldMessage.author.tag} (${oldMessage.author.id})`,
@@ -51,19 +52,10 @@ module.exports = async function (
       }
     );
   if (newMessage.member) embed.setColor(newMessage.member.displayColor);
-  const channel = await newMessage.guild.channels
-    .fetch(settings.editLogChannel)
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
-  if (
-    !channel ||
-    !(channel instanceof TextChannel) ||
-    !newMessage.client.user?.id ||
-    !channel.permissionsFor(newMessage.client.user.id)?.has("SEND_MESSAGES")
-  )
-    return;
-  await channel.send({ embeds: [embed] }).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-  });
+  await SendLog(
+    settings.editLogChannelWebhook,
+    embed,
+    newMessage.guild.id,
+    "editLogChannelWebhook"
+  );
 };

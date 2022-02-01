@@ -1,6 +1,7 @@
 import Sentry from "../sentry";
 import { MessageEmbed, ThreadChannel } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 
 const mongo = db.db("bot");
 
@@ -14,7 +15,7 @@ module.exports = async function (
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-  if (!settings?.threadUpdateLogChannel) return;
+  if (!settings?.threadUpdateLogChannelWebhook) return;
   const embed = new MessageEmbed()
     .setTitle("Thread Updated")
     .setColor([0, 0, 255])
@@ -44,18 +45,10 @@ module.exports = async function (
   }
   if (!actionstring) return;
   embed.setDescription(actionstring);
-  const channel = await newThread.guild.channels
-    .fetch(settings.threadUpdateLogChannel)
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
-  if (
-    !channel ||
-    channel.type !== "GUILD_TEXT" ||
-    !newThread.guild.me?.permissionsIn(channel).has("SEND_MESSAGES")
-  )
-    return;
-  await channel.send({ embeds: [embed] }).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-  });
+  await SendLog(
+    settings.threadUpdateLogChannelWebhook,
+    embed,
+    newThread.guildId,
+    "threadUpdateLogChannelWebhook"
+  );
 };

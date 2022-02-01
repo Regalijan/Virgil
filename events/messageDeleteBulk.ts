@@ -1,4 +1,10 @@
-import { Collection, Message, PartialMessage, Snowflake } from "discord.js";
+import {
+  Collection,
+  DiscordAPIError,
+  Message,
+  PartialMessage,
+  Snowflake,
+} from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import { join } from "path";
@@ -16,7 +22,7 @@ module.exports = async function (
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-  if (!settings?.deleteLogChannel) return;
+  if (!settings?.deleteLogChannelWebhook) return;
   let fileBody = `${new Intl.DateTimeFormat(
     messages.first()?.guild?.preferredLocale ?? "en-US",
     {
@@ -45,21 +51,32 @@ module.exports = async function (
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
     return;
   }
-  const logChannel = await messages
+  const webhook = await messages
     .first()
-    ?.guild?.channels.fetch(settings.deleteLogChannel)
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
-  if (
-    logChannel?.type !== "GUILD_TEXT" ||
-    !logChannel.client.user ||
-    !logChannel.permissionsFor(logChannel.client.user.id)?.has("SEND_MESSAGES")
-  )
+    ?.client.fetchWebhook(
+      settings.deleteLogChannelWebhook.match(/\d{16,}/)[0],
+      settings.deleteLogChannelWebhook.replace(
+        /https:\/\/discorda?p?p?\.com\/api\/?v?\d*?\/webhooks\/\d{16,}\//,
+        ""
+      )
+    )
+    .catch((err: DiscordAPIError) => err);
+  if (!webhook) return;
+  if (webhook instanceof DiscordAPIError) {
+    if (webhook.httpStatus === 404) {
+      await mongo
+        .collection("settings")
+        .updateOne(
+          { guild: messages.first()?.guild?.id },
+          { $unset: { deleteLogChannel: "", deleteLogChannelWebhook: "" } }
+        )
+        .catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
+    }
     return;
-  await logChannel.send({ files: [filePath] }).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-  });
+  }
+  await webhook.send({ files: [filePath] }).catch(console.error);
   await unlink(filePath).catch((e) => {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
   });

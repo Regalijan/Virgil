@@ -9,6 +9,7 @@ import {
   PermissionResolvable,
 } from "discord.js";
 import db from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 import { readdirSync } from "fs";
 import { join } from "path";
@@ -239,17 +240,7 @@ module.exports = async function (i: Interaction) {
     const settings = await mongo
       .collection("settings")
       .findOne({ guild: i.guild?.id });
-    if (!settings?.commandLogChannel) return;
-    const logChannel = await i.guild?.channels
-      .fetch(settings.commandLogChannel)
-      .catch((e) => console.error(e));
-    if (
-      !logChannel ||
-      logChannel.type !== "GUILD_TEXT" ||
-      !i.client.user ||
-      !logChannel.permissionsFor(i.client.user.id)?.has("SEND_MESSAGES")
-    )
-      return;
+    if (!settings?.commandLogChannelWebhook) return;
     const embed = new MessageEmbed({
       author: {
         name: i.user.tag,
@@ -258,7 +249,12 @@ module.exports = async function (i: Interaction) {
       description: `Ran the \`${command.name}\` command.`,
     });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
-    await logChannel.send({ embeds: [embed] }).catch((e) => console.error(e));
+    await SendLog(
+      settings.commandLogChannelWebhook,
+      embed,
+      i.guildId ?? "0", // It should never be zero, since we would return before if the guild id is null, as there would be no server settings
+      "commandLogChannelWebhook",
+    );
   } catch (e) {
     if (!process.env.DSN) console.error(e);
     await i
@@ -268,7 +264,7 @@ module.exports = async function (i: Interaction) {
         }\``,
         ephemeral: true,
       })
-      .catch((e: any) => console.error(e));
+      .catch(console.error);
   }
   if (process.env.DSN) {
     Sentry.captureEvent({
