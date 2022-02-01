@@ -21,6 +21,7 @@ export default async function (
   if (logPostReq?.status === 404) {
     const $unset: any = {};
     $unset[settingName] = "";
+    $unset[settingName.replace("Webhook", "")] = "";
     await settings.updateOne({ guild: guild }, { $unset });
   }
 }
