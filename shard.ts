@@ -25,6 +25,7 @@ const bot = new Client({
     "GUILD_MEMBERS",
     "GUILD_MESSAGES",
     "GUILD_VOICE_STATES",
+    "GUILD_WEBHOOKS",
   ],
 });
 
