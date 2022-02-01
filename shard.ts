@@ -21,6 +21,7 @@ const bot = new Client({
   intents: [
     "GUILDS",
     "GUILD_BANS",
+    "GUILD_INTEGRATIONS",
     "GUILD_MEMBERS",
     "GUILD_MESSAGES",
     "GUILD_VOICE_STATES",
