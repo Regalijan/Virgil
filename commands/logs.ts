@@ -5,6 +5,7 @@ import {
   ThreadChannel,
 } from "discord.js";
 import mongo from "../mongo";
+import axios from "axios";
 
 const settingsDB = mongo.db("bot").collection("settings");
 const ignoredDB = mongo.db("bot").collection("ignored");
@@ -389,8 +390,12 @@ export = {
     ],
   },
   async exec(i: CommandInteraction): Promise<void> {
-    const channel = i.options.getChannel("channel");
     const embed = new MessageEmbed();
+    if (!i.guild?.me)
+      return await i.reply({
+        content: "Log configuration commands can only be run in a server!",
+        ephemeral: true,
+      });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     const settingsList = await settingsDB.findOne({ guild: i.guildId });
     if (!settingsList)
@@ -590,15 +595,50 @@ export = {
 
       case "remove":
         const removalChoice = i.options.getString("log", true);
+        if (
+          settingsList[
+            (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
+          ]
+        ) {
+          await axios
+            .delete(
+              settingsList[
+                (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
+              ]
+            )
+            .catch(console.error);
+        }
         const $yeet: any = { $unset: {} };
         $yeet.$unset[choiceToSettingMap.get(removalChoice) ?? ""] = "";
+        $yeet.$unset[
+          (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
+        ] = "";
         await settingsDB.updateOne({ guild: i.guildId }, $yeet);
         return await i.reply({ content: `\`${removalChoice}\` log disabled!` });
 
       case "set":
+        const setChannel = await i.guild.channels.fetch(
+          i.options.getChannel("channel", true).id
+        );
+        if (setChannel?.type !== "GUILD_TEXT")
+          return await i.reply({
+            content: "The log channel must be a normal text channel!",
+            ephemeral: true,
+          });
         const setChoice = i.options.getString("log", true);
         const $set: any = { $set: {} };
-        $set.$set[choiceToSettingMap.get(setChoice) ?? ""] = channel?.id;
+        $set.$set[choiceToSettingMap.get(setChoice) ?? ""] = setChannel?.id;
+        if (!setChannel?.permissionsFor(i.guild.me.id)?.has("MANAGE_WEBHOOKS"))
+          return await i.reply({
+            content:
+              "I cannot create the webhook for the log! Please grant me permission to manage webhooks!",
+            ephemeral: true,
+          });
+        const newWebhook = await setChannel.createWebhook(
+          `${i.client.user?.username} Logs`
+        );
+        $set.$set[(choiceToSettingMap.get(setChoice) ?? "") + "Webhook"] =
+          newWebhook.url;
         await settingsDB.updateOne({ guild: i.guildId }, $set);
         return await i.reply({
           content: `\`${setChoice}\` log set to <#${
