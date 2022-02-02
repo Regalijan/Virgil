@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MessageEmbed } from "discord.js";
+import { Guild, MessageEmbed } from "discord.js";
 import mongo from "./mongo";
 
 const settings = mongo.db("bot").collection("settings");
@@ -7,7 +7,7 @@ const settings = mongo.db("bot").collection("settings");
 export default async function (
   url: string,
   embed: MessageEmbed,
-  guild: string,
+  guild: Guild,
   settingName: string
 ): Promise<void> {
   const logPostReq = await axios(url, {
@@ -22,6 +22,6 @@ export default async function (
     const $unset: any = {};
     $unset[settingName] = "";
     $unset[settingName.replace("Webhook", "")] = "";
-    await settings.updateOne({ guild: guild }, { $unset });
+    await settings.updateOne({ guild: guild.id }, { $unset });
   }
 }

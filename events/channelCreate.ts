@@ -20,7 +20,7 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
   await SendLog(
     settings.channelCreateLogChannelWebhook,
     embed,
-    channel.guild.id,
+    channel.guild,
     "channelCreateLogChannelWebhook"
   );
 };

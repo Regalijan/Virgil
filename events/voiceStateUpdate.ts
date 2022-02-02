@@ -81,5 +81,5 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   }
   if (actionstring === `<@${newState.member.id}> `) return;
   embed.setDescription(actionstring);
-  await SendLog(settings[settingName], embed, newState.guild.id, settingName);
+  await SendLog(settings[settingName], embed, newState.guild, settingName);
 };

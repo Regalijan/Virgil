@@ -236,7 +236,7 @@ module.exports = async function (i: Interaction) {
     }
 
     await command?.exec(i);
-    if (!command?.privileged) return;
+    if (!command?.privileged || !i.guild) return;
     const settings = await mongo
       .collection("settings")
       .findOne({ guild: i.guild?.id });
@@ -252,8 +252,8 @@ module.exports = async function (i: Interaction) {
     await SendLog(
       settings.commandLogChannelWebhook,
       embed,
-      i.guildId ?? "0", // It should never be zero, since we would return before if the guild id is null, as there would be no server settings
-      "commandLogChannelWebhook",
+      i.guild,
+      "commandLogChannelWebhook"
     );
   } catch (e) {
     if (!process.env.DSN) console.error(e);

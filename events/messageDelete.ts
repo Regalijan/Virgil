@@ -31,7 +31,7 @@ module.exports = async function (message: Message<boolean> | PartialMessage) {
   await SendLog(
     settings.deleteLogChannelWebhook,
     embed,
-    message.guild.id,
+    message.guild,
     "deleteLogChannelWebhook"
   );
 };

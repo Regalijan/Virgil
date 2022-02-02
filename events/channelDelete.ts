@@ -24,7 +24,7 @@ module.exports = async function (
   await SendLog(
     settings.channelDeleteLogChannelWebhook,
     embed,
-    channel.guild.id,
+    channel.guild,
     "channelDeleteLogChannelWebhook"
   );
 };

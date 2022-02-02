@@ -25,7 +25,7 @@ module.exports = async function (ban: GuildBan) {
   await SendLog(
     settings.banLogChannelWebhook,
     embed,
-    ban.guild.id,
+    ban.guild,
     "banLogChannelWebhook"
   );
 };

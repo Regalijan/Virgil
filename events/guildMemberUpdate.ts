@@ -43,8 +43,8 @@ module.exports = async function (
     await SendLog(
       settings.roleLogChannelWebhook,
       embed,
-      newMember.guild.id,
-      "roleLogChannelWebhook",
+      newMember.guild,
+      "roleLogChannelWebhook"
     );
   } else if (oldMember.nickname !== newMember.nickname) {
     if (!settings.nicknameLogChannelWebhook) return;
@@ -61,8 +61,8 @@ module.exports = async function (
     await SendLog(
       settings.nicknameLogChannelWebhook,
       embed,
-      newMember.guild.id,
-      "nicknameLogChannelWebhook",
+      newMember.guild,
+      "nicknameLogChannelWebhook"
     );
   }
 };

@@ -20,7 +20,7 @@ module.exports = async function (thread: ThreadChannel) {
   await SendLog(
     settings.threadDeleteLogChannelWebhook,
     embed,
-    thread.guildId,
+    thread.guild,
     "threadDeleteLogChannelWebhook"
   );
 };

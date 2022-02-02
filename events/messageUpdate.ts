@@ -55,7 +55,7 @@ module.exports = async function (
   await SendLog(
     settings.editLogChannelWebhook,
     embed,
-    newMessage.guild.id,
+    newMessage.guild,
     "editLogChannelWebhook"
   );
 };

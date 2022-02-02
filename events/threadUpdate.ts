@@ -48,7 +48,7 @@ module.exports = async function (
   await SendLog(
     settings.threadUpdateLogChannelWebhook,
     embed,
-    newThread.guildId,
+    newThread.guild,
     "threadUpdateLogChannelWebhook"
   );
 };
