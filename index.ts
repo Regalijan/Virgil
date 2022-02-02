@@ -2,7 +2,6 @@ import { config as dotenv } from "dotenv";
 import { ShardingManager } from "discord.js";
 import { join } from "path";
 import mongo from "./mongo";
-import Sentry from "./sentry";
 
 dotenv();
 
