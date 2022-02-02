@@ -10,13 +10,17 @@ export default async function (
   guild: Guild,
   settingName: string
 ): Promise<void> {
+  const data: { [k: string]: any } = {
+    embeds: [embed.toJSON()],
+  };
+  if (guild.me) {
+    data.avatar_url = guild.me.displayAvatarURL();
+    data.username = guild.me.displayName;
+  }
   const logPostReq = await axios(url, {
-    headers: {
-      "content-type": "application/json",
-    },
     method: "POST",
     validateStatus: () => true,
-    data: JSON.stringify({ embeds: [embed.toJSON()] }),
+    data,
   }).catch(console.error);
   if (logPostReq?.status === 404) {
     const $unset: any = {};
