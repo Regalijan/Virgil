@@ -28,7 +28,8 @@ dotenv();
   let spawnBucketStart = Date.now();
   for (let i = 0; i < shardCount; i++) {
     if (
-      (i + 1) % maxConcurrency === 0 &&
+      i !== 0 &&
+      i % maxConcurrency === 0 &&
       Date.now() - 5000 < spawnBucketStart
     ) {
       await new Promise((r) => setTimeout(r, Date.now() - spawnBucketStart));
