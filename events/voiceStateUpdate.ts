@@ -15,7 +15,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     });
   if (!settings) return;
   const embed = new MessageEmbed()
-    .setColor(newState.member.displayColor)
+    .setColor(newState.member?.displayColor ?? 0)
     .setAuthor({
       name: newState.member.user.tag,
       iconURL: newState.member.user.displayAvatarURL({ dynamic: true }),
