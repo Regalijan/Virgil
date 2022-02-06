@@ -10,7 +10,7 @@ export default async function (
   settingName: string
 ): Promise<void> {
   const data: { [k: string]: any } = {
-    avatar_url: guild.me?.displayAvatarURL(),
+    avatarURL: guild.me?.displayAvatarURL(),
     embeds: [embed.toJSON()],
   };
   if (guild.me) {
