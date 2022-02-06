@@ -10,6 +10,89 @@ import axios from "axios";
 const settingsDB = mongo.db("bot").collection("settings");
 const ignoredDB = mongo.db("bot").collection("ignored");
 
+const logTypes = [
+  {
+    name: "ban",
+    value: "ban",
+  },
+  {
+    name: "delete",
+    value: "delete",
+  },
+  {
+    name: "edit",
+    value: "edit",
+  },
+  {
+    name: "member_join",
+    value: "member_join",
+  },
+  {
+    name: "member_leave",
+    value: "member_leave",
+  },
+  {
+    name: "message_report_actions",
+    value: "message_report_actions",
+  },
+  {
+    name: "message_reports",
+    value: "message_reports",
+  },
+  {
+    name: "nickname",
+    value: "nickname",
+  },
+  {
+    name: "role",
+    value: "role",
+  },
+  {
+    name: "thread_create",
+    value: "thread_create",
+  },
+  {
+    name: "thread_delete",
+    value: "thread_delete",
+  },
+  {
+    name: "thread_update",
+    value: "thread_update",
+  },
+  {
+    name: "unban",
+    value: "unban",
+  },
+  {
+    name: "voice_deafen",
+    value: "voice_deafen",
+  },
+  {
+    name: "voice_join",
+    value: "voice_join",
+  },
+  {
+    name: "voice_leave",
+    value: "voice_leave",
+  },
+  {
+    name: "voice_mute",
+    value: "voice_mute",
+  },
+  {
+    name: "voice_switch",
+    value: "voice_switch",
+  },
+  {
+    name: "voice_video",
+    value: "voice_video",
+  },
+  {
+    name: "warn",
+    value: "warn",
+  },
+];
+
 export = {
   name: "logs",
   description: "View, set, or remove a log channel",
@@ -33,80 +116,7 @@ export = {
             type: 3,
             name: "log",
             description: "Log to ignore",
-            choices: [
-              {
-                name: "ban",
-                value: "ban",
-              },
-              {
-                name: "delete",
-                value: "delete",
-              },
-              {
-                name: "edit",
-                value: "edit",
-              },
-              {
-                name: "message_report_actions",
-                value: "message_report_actions",
-              },
-              {
-                name: "message_reports",
-                value: "message_reports",
-              },
-              {
-                name: "nickname",
-                value: "nickname",
-              },
-              {
-                name: "role",
-                value: "role",
-              },
-              {
-                name: "thread_create",
-                value: "thread_create",
-              },
-              {
-                name: "thread_delete",
-                value: "thread_delete",
-              },
-              {
-                name: "thread_update",
-                value: "thread_update",
-              },
-              {
-                name: "unban",
-                value: "unban",
-              },
-              {
-                name: "voice_deafen",
-                value: "voice_deafen",
-              },
-              {
-                name: "voice_join",
-                value: "voice_join",
-              },
-              {
-                name: "voice_leave",
-                value: "voice_leave",
-              },
-              {
-                name: "voice_mute",
-                value: "voice_mute",
-              },
-              {
-                name: "voice_switch",
-                value: "voice_switch",
-              },
-              {
-                name: "voice_video",
-                value: "voice_video",
-              },
-              {
-                name: "warn",
-                value: "warn",
-              },
-            ],
+            choices: logTypes,
           },
         ],
       },
@@ -125,80 +135,7 @@ export = {
             name: "log",
             description: "Log to disable",
             required: true,
-            choices: [
-              {
-                name: "ban",
-                value: "ban",
-              },
-              {
-                name: "delete",
-                value: "delete",
-              },
-              {
-                name: "edit",
-                value: "edit",
-              },
-              {
-                name: "message_report_actions",
-                value: "message_report_actions",
-              },
-              {
-                name: "message_reports",
-                value: "message_reports",
-              },
-              {
-                name: "nickname",
-                value: "nickname",
-              },
-              {
-                name: "role",
-                value: "role",
-              },
-              {
-                name: "thread_create",
-                value: "thread_create",
-              },
-              {
-                name: "thread_delete",
-                value: "thread_delete",
-              },
-              {
-                name: "thread_update",
-                value: "thread_update",
-              },
-              {
-                name: "unban",
-                value: "unban",
-              },
-              {
-                name: "voice_deafen",
-                value: "voice_deafen",
-              },
-              {
-                name: "voice_join",
-                value: "voice_join",
-              },
-              {
-                name: "voice_leave",
-                value: "voice_leave",
-              },
-              {
-                name: "voice_mute",
-                value: "voice_mute",
-              },
-              {
-                name: "voice_switch",
-                value: "voice_switch",
-              },
-              {
-                name: "voice_video",
-                value: "voice_video",
-              },
-              {
-                name: "warn",
-                value: "warn",
-              },
-            ],
+            choices: logTypes,
           },
         ],
       },
@@ -212,80 +149,7 @@ export = {
             name: "log",
             description: "Type of log to enable",
             required: true,
-            choices: [
-              {
-                name: "ban",
-                value: "ban",
-              },
-              {
-                name: "delete",
-                value: "delete",
-              },
-              {
-                name: "edit",
-                value: "edit",
-              },
-              {
-                name: "message_report_actions",
-                value: "message_report_actions",
-              },
-              {
-                name: "message_reports",
-                value: "message_reports",
-              },
-              {
-                name: "nickname",
-                value: "nickname",
-              },
-              {
-                name: "role",
-                value: "role",
-              },
-              {
-                name: "thread_create",
-                value: "thread_create",
-              },
-              {
-                name: "thread_delete",
-                value: "thread_delete",
-              },
-              {
-                name: "thread_update",
-                value: "thread_update",
-              },
-              {
-                name: "unban",
-                value: "unban",
-              },
-              {
-                name: "voice_deafen",
-                value: "voice_deafen",
-              },
-              {
-                name: "voice_join",
-                value: "voice_join",
-              },
-              {
-                name: "voice_leave",
-                value: "voice_leave",
-              },
-              {
-                name: "voice_mute",
-                value: "voice_mute",
-              },
-              {
-                name: "voice_switch",
-                value: "voice_switch",
-              },
-              {
-                name: "voice_video",
-                value: "voice_video",
-              },
-              {
-                name: "warn",
-                value: "warn",
-              },
-            ],
+            choices: logTypes,
           },
           {
             type: 7,
@@ -310,80 +174,7 @@ export = {
             type: 3,
             name: "log",
             description: "Log to unignore",
-            choices: [
-              {
-                name: "ban",
-                value: "ban",
-              },
-              {
-                name: "delete",
-                value: "delete",
-              },
-              {
-                name: "edit",
-                value: "edit",
-              },
-              {
-                name: "message_report_actions",
-                value: "message_report_actions",
-              },
-              {
-                name: "message_reports",
-                value: "message_reports",
-              },
-              {
-                name: "nickname",
-                value: "nickname",
-              },
-              {
-                name: "role",
-                value: "role",
-              },
-              {
-                name: "thread_create",
-                value: "thread_create",
-              },
-              {
-                name: "thread_delete",
-                value: "thread_delete",
-              },
-              {
-                name: "thread_update",
-                value: "thread_update",
-              },
-              {
-                name: "unban",
-                value: "unban",
-              },
-              {
-                name: "voice_deafen",
-                value: "voice_deafen",
-              },
-              {
-                name: "voice_join",
-                value: "voice_join",
-              },
-              {
-                name: "voice_leave",
-                value: "voice_leave",
-              },
-              {
-                name: "voice_mute",
-                value: "voice_mute",
-              },
-              {
-                name: "voice_switch",
-                value: "voice_switch",
-              },
-              {
-                name: "voice_video",
-                value: "voice_video",
-              },
-              {
-                name: "warn",
-                value: "warn",
-              },
-            ],
+            choices: logTypes,
           },
         ],
       },
@@ -412,6 +203,8 @@ export = {
       .set("ban", "banLogChannel")
       .set("delete", "deleteLogChannel")
       .set("edit", "editLogChannel")
+      .set("member_join", "memberJoinLogChannel")
+      .set("member_leave", "memberLeaveLogChannel")
       .set("message_report_actions", "messageReportActionLogChannel")
       .set("message_reports", "messageReportChannel")
       .set("nickname", "nicknameLogChannel")
@@ -475,6 +268,20 @@ export = {
             name: "Edit logs",
             value: settingsList.editLogChannel
               ? `<#${settingsList.editLogChannel}>`
+              : "Not set",
+            inline: true,
+          },
+          {
+            name: "Member join logs",
+            value: settingsList.memberJoinLogChannel
+              ? `<#${settingsList.memberJoinLogChannel}>`
+              : "Not set",
+            inline: true,
+          },
+          {
+            name: "Member leave logs",
+            value: settingsList.memberLeaveLogChannel
+              ? `<#${settingsList.memberLeaveLogChannel}>`
               : "Not set",
             inline: true,
           },
