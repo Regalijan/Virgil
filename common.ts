@@ -258,7 +258,7 @@ export = {
         ? "You must be new, click the button to get started."
         : `${member.user.username} appears to not be verified.`;
     }
-    const robloxUserId = parseInt(verifyApiData.data.robloxId);
+    const robloxUserId: number = verifyApiData.data.robloxId;
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)
       return `An error occured when verifying ${
@@ -300,9 +300,12 @@ export = {
       group?: number;
       rank?: number;
     }[] = [];
-    bindCursorDoc.forEach((doc: any) => {
-      binds.push(doc);
-    });
+
+    for (const doc of await bindCursorDoc.toArray()) {
+      const anyDoc: any = doc;
+      binds.push(anyDoc);
+    }
+
     const groupData = await this.getRobloxMemberGroups(robloxUserId);
     const groupObjs: { [k: number]: number } = {};
     for (const group of groupData) groupObjs[group.group.id] = group.role.rank;
@@ -330,6 +333,7 @@ export = {
           ) {
             await member.roles.add(bindRole).catch((e) => console.error(e));
           }
+          continue;
 
         case "badge":
           if (!bind.asset) continue;
@@ -338,6 +342,7 @@ export = {
             bind.asset
           );
           if (!ownsBadge) continue;
+          break;
 
         case "gamepass":
           if (!bind.asset) continue;
@@ -347,6 +352,7 @@ export = {
             "GamePass"
           );
           if (!ownsGamePass) continue;
+          break;
 
         case "bundle":
           if (!bind.asset) continue;
@@ -356,6 +362,7 @@ export = {
             "Bundle"
           );
           if (!ownsBundle) continue;
+          break;
 
         case "asset":
           if (!bind.asset) continue;
@@ -365,6 +372,7 @@ export = {
             "Asset"
           );
           if (!ownsAsset) continue;
+          break;
       }
       await member.roles.add(bindRole).catch((e) => console.error(e));
     }
