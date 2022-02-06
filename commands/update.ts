@@ -31,6 +31,7 @@ export = {
           ephemeral: true,
         });
     }
+    await i.deferReply();
     await i.reply({
       content: await Common.verify(member, member.id === i.user.id),
     });

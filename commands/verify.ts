@@ -20,6 +20,7 @@ export = {
           "An error occurred when attempting to verify you - please try again later.",
         ephemeral: true,
       });
+    await i.deferReply();
     const resultString = await Common.verify(member);
     const replyOpts: { content: string; components?: MessageActionRow[] } = {
       content: await Common.verify(member),
