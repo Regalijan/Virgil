@@ -161,6 +161,11 @@ export = {
       },
       {
         type: 1,
+        name: "show_ignored",
+        description: "List all ignored channels and the log type",
+      },
+      {
+        type: 1,
         name: "unignore",
         description: "Unignore a channel",
         options: [
@@ -242,6 +247,7 @@ export = {
           });
         await ignoredDB.insertOne({
           channel: ignoringChannel.id,
+          guild: i.guildId,
           log: i.options.getString("log", false),
         });
         break;
@@ -452,6 +458,20 @@ export = {
             i.options.getChannel("channel", true).id
           }>!`,
         });
+
+      case "show_ignored":
+        const allIgnored = await (
+          await ignoredDB.find({
+            guild: i.guildId,
+          })
+        ).toArray();
+        embed.setDescription("All ignored channels for " + i.guild.name);
+        for (const ignored of allIgnored) {
+          const ignoredChannel = await i.guild.channels.fetch(ignored.channel).catch(() => {});
+          if (!ignoredChannel) continue;
+          embed.addField(`#${ignoredChannel.name}`, "Log: " + ignored.log ?? "All")
+        }
+        return await i.reply({ embeds: [embed] });
 
       case "unignore":
         const unignoringChannel = i.options.getChannel("channel", true);
