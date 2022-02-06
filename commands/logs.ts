@@ -467,9 +467,14 @@ export = {
         ).toArray();
         embed.setDescription("All ignored channels for " + i.guild.name);
         for (const ignored of allIgnored) {
-          const ignoredChannel = await i.guild.channels.fetch(ignored.channel).catch(() => {});
+          const ignoredChannel = await i.guild.channels
+            .fetch(ignored.channel)
+            .catch(() => {});
           if (!ignoredChannel) continue;
-          embed.addField(`#${ignoredChannel.name}`, "Log: " + ignored.log ?? "All")
+          embed.addField(
+            `#${ignoredChannel.name}`,
+            "Log: " + ignored.log ?? "All"
+          );
         }
         return await i.reply({ embeds: [embed] });
 
