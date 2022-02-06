@@ -79,7 +79,7 @@ export = {
       const apiResponse = await axios(
         `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}`
       );
-      const ownsItem = apiResponse.data.data.length ? true : false;
+      const ownsItem = !!apiResponse.data.data.length;
       await redis
         .set(`${itemType}_${item}_${user}`, JSON.stringify(ownsItem), "EX", 900)
         .catch((e) => console.error(e));
@@ -249,7 +249,7 @@ export = {
           .catch((e) => console.error(e));
         if (
           !unvRole ||
-          unvRole.comparePositionTo(member.guild.me.roles.highest) >= 0
+          unvRole.comparePositionTo(member.guild.me.roles.highest) <= 0
         )
           continue;
         await member.roles.add(unvRole).catch((e) => console.error(e));
@@ -275,7 +275,8 @@ export = {
       } run the \`/initialize\` command.`;
     if (
       member.manageable &&
-      member.guild.me.permissions.has("MANAGE_NICKNAMES")
+      member.guild.me.permissions.has("MANAGE_NICKNAMES") &&
+      serversettings.lockNicknames
     )
       await member
         .setNickname(
@@ -309,16 +310,16 @@ export = {
     for (const bind of binds) {
       const bindRole = await member.guild.roles
         .fetch(bind.role)
-        .catch((e) => console.error(e));
+        .catch(console.error);
       if (
         !bindRole ||
-        bindRole.comparePositionTo(member.guild.me.roles.highest) <= 0
+        bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0
       )
         continue;
       switch (bind.type) {
         case "verified":
           await member.roles.add(bindRole).catch((e) => console.error(e));
-          break;
+          continue;
 
         case "group":
           if (typeof bind.group === "undefined") continue;
@@ -404,8 +405,6 @@ export = {
         process.env.DSN ? Sentry.captureException(e) : console.error(e);
       });
 
-    if (premiumDoc) return true;
-
-    return false;
+    return Boolean(premiumDoc);
   },
 };
