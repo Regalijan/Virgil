@@ -21,6 +21,7 @@ export = {
   async exec(i: CommandInteraction): Promise<void> {
     const bind = await bindDb.findOneAndDelete({
       id: i.options.getString("id", true),
+      server: i.guildId,
     });
     await i.reply({
       content: bind.value ? "Bind deleted!" : "Bind does not exist!",
