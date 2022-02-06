@@ -32,7 +32,7 @@ export = {
         });
     }
     await i.deferReply();
-    await i.reply({
+    await i.followUp({
       content: await Common.verify(member, member.id === i.user.id),
     });
   },

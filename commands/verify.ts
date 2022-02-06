@@ -36,6 +36,6 @@ export = {
         new MessageActionRow({ components: [notVerifiedLinkButton] }),
       ];
     }
-    await i.reply(replyOpts);
+    await i.followUp(replyOpts);
   },
 };
