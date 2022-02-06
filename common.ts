@@ -312,7 +312,7 @@ export = {
         .catch((e) => console.error(e));
       if (
         !bindRole ||
-        bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0
+        bindRole.comparePositionTo(member.guild.me.roles.highest) <= 0
       )
         continue;
       switch (bind.type) {
