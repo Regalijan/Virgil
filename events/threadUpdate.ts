@@ -9,6 +9,16 @@ module.exports = async function (
   oldThread: ThreadChannel,
   newThread: ThreadChannel
 ) {
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: { $in: [newThread.parent?.id, newThread.parent?.parent?.id] },
+      log: { $in: ["thread_update", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newThread.guildId })

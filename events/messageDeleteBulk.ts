@@ -15,7 +15,25 @@ const mongo = db.db("bot");
 module.exports = async function (
   messages: Collection<Snowflake, Message | PartialMessage>
 ) {
-  if (!messages.first() || messages.first()?.channel.type === "DM") return;
+  const firstMessage = messages.first();
+  if (
+    !firstMessage ||
+    firstMessage.channel.type === "DM" ||
+    !firstMessage.guild
+  )
+    return;
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: {
+        $in: [firstMessage.channel.id, firstMessage.channel.parent?.id],
+      },
+      log: { $in: ["delete", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: messages.first()?.guild?.id })

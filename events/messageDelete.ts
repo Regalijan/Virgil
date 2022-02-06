@@ -6,7 +6,23 @@ import Sentry from "../sentry";
 const mongo = db.db("bot");
 
 module.exports = async function (message: Message<boolean> | PartialMessage) {
-  if (!message.guild || !message.author || message.author.bot) return;
+  if (
+    message.channel.type === "DM" ||
+    !message.guild ||
+    !message.author ||
+    message.author.bot
+  )
+    return;
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: { $in: [message.channel.id, message.channel.parent?.id] },
+      log: { $in: ["delete", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: message.guild.id })

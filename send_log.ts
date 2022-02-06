@@ -2,7 +2,6 @@ import { DiscordAPIError, Guild, MessageEmbed } from "discord.js";
 import mongo from "./mongo";
 
 const settings = mongo.db("bot").collection("settings");
-const ignoredDB = mongo.db("bot").collection("ignored");
 
 export default async function (
   url: string,
@@ -30,10 +29,5 @@ export default async function (
     }
     return;
   }
-  const isIgnoredData = await ignoredDB.findOne({
-    channel: webhookData.channelId,
-    log: settingName.replace("LogChannelWebhook", ""),
-  })
-  if (isIgnoredData) return;
   await webhookData.send({ avatarURL: guild.client.user?.displayAvatarURL(), embeds: [embed.toJSON()] }).catch(console.error);
 }

@@ -7,6 +7,10 @@ const mongo = db.db("bot");
 
 module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   if (!newState.member) return;
+  const ignoreData = await mongo.collection("ignored").findOne({
+    channel: { $in: [newState.channel?.id, newState.channel?.parent?.id] },
+    log: { $regex: "^voice_" },
+  });
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newState.guild.id })
@@ -25,6 +29,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   let actionstring = `<@${newState.member.id}> `;
   let settingName = "";
   if (newState.channel && !oldState.channel && settings.voiceJoinLogChannel) {
+    if (ignoreData?.log === "voice_join") return;
     actionstring += `joined <#${newState.channelId}>`;
     settingName = "voiceJoinLogChannelWebhook";
   } else if (
@@ -32,24 +37,28 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     oldState.channel &&
     settings.voiceLeaveLogChannel
   ) {
+    if (ignoreData?.log === "voice_leave") return;
     actionstring += `left <#${oldState.channelId}>`;
     settingName = "voiceLeaveLogChannelWebhook";
   } else if (
     newState.selfMute !== oldState.selfMute &&
     settings.voiceMuteLogChannel
   ) {
+    if (ignoreData?.log === "voice_mute") return;
     actionstring += `${newState.mute ? "muted" : "unmuted"} themself.`;
     settingName = "voiceMuteLogChannelWebhook";
   } else if (
     newState.selfDeaf !== oldState.selfDeaf &&
     settings.voiceDeafenLogChannel
   ) {
+    if (ignoreData?.log === "voice_deafen") return;
     actionstring += `${newState.deaf ? "deafened" : "undeafened"} themself.`;
     settingName = "voiceDeafenLogChannelWebhook";
   } else if (
     newState.serverMute !== oldState.serverMute &&
     settings.voiceMuteLogChannel
   ) {
+    if (ignoreData?.log === "voice_mute") return;
     actionstring += `was ${
       newState.serverMute ? "muted" : "unmuted"
     } by a server moderator.`;
@@ -58,6 +67,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     newState.serverDeaf !== oldState.serverDeaf &&
     settings.voiceDeafenLogChannel
   ) {
+    if (ignoreData?.log === "voice_deafen") return;
     actionstring += `was ${
       newState.serverDeaf ? "deafened" : "undeafened"
     } by a server moderator.`;
@@ -66,6 +76,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     newState.selfVideo !== oldState.selfVideo &&
     settings.voiceVideoLogChannel
   ) {
+    if (ignoreData?.log === "voice_video") return;
     actionstring += `${
       newState.selfVideo ? "enabled" : "disabled"
     } their camera.`;
@@ -76,6 +87,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     settings.voiceSwitchLogChannel &&
     newState.channelId !== oldState.channelId
   ) {
+    if (ignoreData?.log === "voice_video") return;
     actionstring += `switched from <#${oldState.channelId}> to <#${newState.channelId}>`;
     settingName = "voiceSwitchLogChannelWebhook";
   }

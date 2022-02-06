@@ -15,9 +15,20 @@ module.exports = async function (
     !oldMessage.author ||
     oldMessage.content === newMessage.content ||
     !newMessage.guild ||
+    newMessage.channel.type === "DM" ||
     oldMessage.author.bot
   )
     return;
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: { $in: [newMessage.channel.id, newMessage.channel.parent?.id] },
+      log: { $in: ["edit", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newMessage.guild.id })

@@ -6,6 +6,16 @@ import Sentry from "../sentry";
 const mongo = db.db("bot");
 
 module.exports = async function (thread: ThreadChannel) {
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: { $in: [thread.parent?.id, thread.parent?.parent?.id] },
+      log: { $in: ["thread_delete", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: thread.guildId })

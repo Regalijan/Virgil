@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
+import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -12,6 +13,16 @@ module.exports = async function (
   channel: DMChannel | NonThreadGuildBasedChannel
 ) {
   if (channel.type === "DM") return;
+  const ignoreData = await mongo
+    .collection("ignored")
+    .findOne({
+      channel: { $in: [channel.id, channel.parent?.id] },
+      log: { $in: ["channel_delete", null] },
+    })
+    .catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+  if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: channel.guild.id })
