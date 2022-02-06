@@ -9,14 +9,6 @@ export default async function (
   guild: Guild,
   settingName: string
 ): Promise<void> {
-  const data: { [k: string]: any } = {
-    avatarURL: guild.me?.displayAvatarURL(),
-    embeds: [embed.toJSON()],
-  };
-  if (guild.me) {
-    data.avatar_url = guild.me.displayAvatarURL();
-    data.username = guild.me.displayName;
-  }
   const webhookIdArr = url.match(/\d{17,19}/);
   if (!webhookIdArr) return;
   const webhookData = await guild.client
@@ -37,5 +29,5 @@ export default async function (
     }
     return;
   }
-  await webhookData.send(data).catch(console.error);
+  await webhookData.send({ avatarURL: guild.client.user?.displayAvatarURL(), embeds: [embed.toJSON()] }).catch(console.error);
 }
