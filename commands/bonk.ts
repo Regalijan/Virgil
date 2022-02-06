@@ -49,6 +49,6 @@ export = {
       return;
     }
     if (member) msg.color = member.displayColor;
-    else await i.reply({ embeds: [msg] });
+    await i.reply({ embeds: [msg] });
   },
 };
