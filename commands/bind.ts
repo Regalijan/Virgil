@@ -223,11 +223,10 @@ export = {
           )}/details`,
           {
             validateStatus: (s) => {
-              if ([200, 400].includes(s)) return false;
-              return true;
+              return [200, 400].includes(s);
             },
           }
-        ).catch((e) => console.error(e));
+        ).catch(() => {});
         if (!bundleVerify)
           return await i.reply({
             content:
@@ -261,8 +260,7 @@ export = {
           )}`,
           {
             validateStatus: (s) => {
-              if ([200, 400].includes(s)) return false;
-              return true;
+              return [200, 400].includes(s);
             },
           }
         ).catch((e) => console.error(e));
@@ -298,11 +296,10 @@ export = {
           )}`,
           {
             validateStatus: (s) => {
-              if ([200, 400].includes(s)) return false;
-              return true;
+              return [200, 400].includes(s);
             },
           }
-        ).catch((e) => console.error(e));
+        ).catch(() => {});
         if (!assetVerify)
           return await i.reply({
             content:
