@@ -234,25 +234,43 @@ export = {
     const verifyApiData = await axios(
       `https://registry.rover.link/discord-to-roblox/${member.id}`
     ).catch((e) => console.error(e));
+    const bindCursorDoc = db.find({ server: member.guild.id });
+    const binds: {
+      server: string;
+      type: string;
+      role: string;
+      asset?: number;
+      group?: number;
+      rank?: number;
+    }[] = [];
+    for (const doc of await bindCursorDoc.toArray()) {
+      const anyDoc: any = doc;
+      binds.push(anyDoc);
+    }
     if (!verifyApiData) {
-      const unverifiedBindDoc = db.find({
-        server: member.guild.id,
-        type: "unverified",
-      });
       const unvBinds: any = [];
-      unverifiedBindDoc.forEach((doc) => {
-        unvBinds.push(doc);
-      });
+      for (const b of binds) {
+        if (b.type === "unverified") unvBinds.push(b);
+        else {
+          if (member.roles.cache.has(b.role))
+            await member.roles.remove(b.role).catch((e) => {
+              process.env.DSN ? Sentry.captureException(e) : console.error(e);
+            });
+        }
+      }
       for (const unverifiedBind of unvBinds) {
         const unvRole = await member.guild.roles
           .fetch(unverifiedBind.role)
           .catch((e) => console.error(e));
         if (
           !unvRole ||
-          unvRole.comparePositionTo(member.guild.me.roles.highest) <= 0
+          unvRole.comparePositionTo(member.guild.me.roles.highest) <= 0 ||
+          member.roles.cache.has(unvRole.id)
         )
           continue;
-        await member.roles.add(unvRole).catch((e) => console.error(e));
+        await member.roles.add(unvRole).catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
       }
       return self
         ? "You must be new, click the button to get started."
@@ -291,20 +309,6 @@ export = {
           )
         )
         .catch((e) => console.error(e));
-    const bindCursorDoc = db.find({ server: member.guild.id });
-    const binds: {
-      server: string;
-      type: string;
-      role: string;
-      asset?: number;
-      group?: number;
-      rank?: number;
-    }[] = [];
-
-    for (const doc of await bindCursorDoc.toArray()) {
-      const anyDoc: any = doc;
-      binds.push(anyDoc);
-    }
 
     const groupData = await this.getRobloxMemberGroups(robloxUserId);
     const groupObjs: { [k: number]: number } = {};
@@ -316,7 +320,8 @@ export = {
         .catch(console.error);
       if (
         !bindRole ||
-        bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0
+        bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0 ||
+        member.roles.cache.has(bindRole.id)
       )
         continue;
       switch (bind.type) {
