@@ -324,10 +324,11 @@ export = {
         member.roles.cache.has(bindRole.id)
       )
         continue;
+      let giveRole = false;
       switch (bind.type) {
         case "verified":
-          await member.roles.add(bindRole).catch((e) => console.error(e));
-          continue;
+          giveRole = true;
+          break;
 
         case "group":
           if (typeof bind.group === "undefined") continue;
@@ -336,9 +337,9 @@ export = {
             (groupObjs[bind.group] && !bind.rank) ||
             bind.rank === groupObjs[bind.group]
           ) {
-            await member.roles.add(bindRole).catch((e) => console.error(e));
+            giveRole = true;
           }
-          continue;
+          break;
 
         case "badge":
           if (!bind.asset) continue;
@@ -346,7 +347,7 @@ export = {
             robloxUserId,
             bind.asset
           );
-          if (!ownsBadge) continue;
+          giveRole = ownsBadge;
           break;
 
         case "gamepass":
@@ -356,7 +357,7 @@ export = {
             bind.asset,
             "GamePass"
           );
-          if (!ownsGamePass) continue;
+          giveRole = ownsGamePass;
           break;
 
         case "bundle":
@@ -366,7 +367,7 @@ export = {
             bind.asset,
             "Bundle"
           );
-          if (!ownsBundle) continue;
+          giveRole = ownsBundle;
           break;
 
         case "asset":
@@ -376,10 +377,13 @@ export = {
             bind.asset,
             "Asset"
           );
-          if (!ownsAsset) continue;
+          giveRole = ownsAsset;
           break;
       }
-      await member.roles.add(bindRole).catch((e) => console.error(e));
+      if (giveRole && !member.roles.cache.has(bindRole.id))
+        await member.roles.add(bindRole);
+      else if (!giveRole && member.roles.cache.has(bindRole.id))
+        await member.roles.remove(bindRole);
     }
     return self
       ? `Welcome ${verifyApiData.data.robloxUsername}!`
