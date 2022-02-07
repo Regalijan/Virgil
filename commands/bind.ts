@@ -137,6 +137,25 @@ export = {
           },
         ],
       },
+      {
+        type: 1,
+        name: "friend_status",
+        description: "Creates a bind tied to being friends with a user",
+        options: [
+          {
+            type: 3,
+            name: "username",
+            description: "Username of target user",
+            required: true,
+          },
+          {
+            type: 8,
+            name: "role",
+            description: "Discord role to bind",
+            required: true,
+          },
+        ],
+      },
     ],
   },
   async exec(i: CommandInteraction): Promise<void> {
@@ -267,7 +286,7 @@ export = {
         if (!gamePassVerify)
           return await i.reply({
             content:
-              "An error occured when looking up that GamePass! Please try again later.",
+              "An error occurred when looking up that GamePass! Please try again later.",
           });
         if (gamePassVerify.status === 400)
           return await i.reply({
@@ -303,7 +322,7 @@ export = {
         if (!assetVerify)
           return await i.reply({
             content:
-              "An error occured when looking up that asset! Please try again later.",
+              "An error occurred when looking up that asset! Please try again later.",
             ephemeral: true,
           });
         if (assetVerify.status === 400)
@@ -335,6 +354,41 @@ export = {
           server: i.guildId,
           type: "unverified",
           role: i.options.getRole("role", true).id,
+        });
+        break;
+
+      case "friend_status":
+        const userVerifyReq = await axios(
+          "https://users.roblox.com/v1/usernames/users",
+          {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            data: JSON.stringify({
+              usernames: [i.options.getString("username", true)],
+              excludeBannedUsers: false,
+            }),
+          }
+        ).catch(() => {});
+        if (!userVerifyReq)
+          return await i.reply({
+            content:
+              "An error occurred when looking up that user! Please try again later.",
+            ephemeral: true,
+          });
+        if (!userVerifyReq.data.data?.length)
+          return await i.reply({
+            content:
+              "This user does not exist! Please make sure that you spelled it correctly.",
+            ephemeral: true,
+          });
+        await bindDb.insertOne({
+          id: bindId,
+          server: i.guildId,
+          type: "friend",
+          role: i.options.getRole("role", true).id,
+          friend: userVerifyReq.data.data[0].id,
         });
         break;
     }

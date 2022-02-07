@@ -239,6 +239,7 @@ export = {
       server: string;
       type: string;
       role: string;
+      friend?: number;
       asset?: number;
       group?: number;
       rank?: number;
@@ -378,6 +379,12 @@ export = {
             "Asset"
           );
           giveRole = ownsAsset;
+          break;
+
+        case "friend":
+          if (!bind.friend) continue;
+          const friends = await this.getRobloxUserFriends(robloxUserId);
+          giveRole = friends.includes(bind.friend);
           break;
       }
       if (giveRole && !member.roles.cache.has(bindRole.id))
