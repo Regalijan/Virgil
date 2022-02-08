@@ -55,7 +55,10 @@ export = {
         ephemeral: true,
       });
     const embed = new MessageEmbed()
-      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({
+        name: i.user.tag,
+        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+      })
       .setTitle("Message Report")
       .setColor([255, 0, 0])
       .setDescription(`**Reported Message:** ${message.content}`)
@@ -135,6 +138,7 @@ export = {
         id: i.user.id,
         tag: i.user.tag,
       },
+      created: Date.now(),
     });
     await i.reply({
       content: `Report sent! For reference, your report ID is \`${reportId}\``,

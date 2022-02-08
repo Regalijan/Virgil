@@ -81,4 +81,14 @@ setInterval(async function (): Promise<void> {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
     return;
   }
+  try {
+    await mongo
+      .collection("reports")
+      .updateMany(
+        { created: { $gte: Date.now() - 2592000000 } },
+        { "message.content": "[ Content Deleted ]" }
+      );
+  } catch (e) {
+    process.env.DSN ? Sentry.captureException(e) : console.error(e);
+  }
 }, 30000);
