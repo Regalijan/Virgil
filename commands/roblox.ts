@@ -44,7 +44,7 @@ export = {
     if (!verifyRegistryData)
       return await i.reply({
         content:
-          "An error occured when looking up this user! Please try again later.",
+          "An error occurred when looking up this user! Please try again later.",
         ephemeral: true,
       });
     if (verifyRegistryData.status === 404)
