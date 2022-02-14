@@ -34,8 +34,7 @@ export = {
       "https://registry.rover.link/discord-to-roblox/" + user.id,
       {
         validateStatus: (s) => {
-          if ([200, 404].includes(s)) return true;
-          return false;
+          return [200, 404].includes(s);
         },
       }
     ).catch((e) => {
