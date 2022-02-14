@@ -111,9 +111,15 @@ export = {
       });
     }
     if (robloxData.isBanned) embed.addField("Account Status", "Terminated");
+    await i.client.application?.fetch().catch(() => {});
     if (i.client.application?.owner instanceof Team) {
       if (i.client.application.owner.members.has(user.id))
-        embed.addField("User Tags", "Bot Development Team Member");
+        embed.addField(
+          "User Tags",
+          i.client.application.owner.ownerId === user.id
+            ? "Bot Owner"
+            : "Bot Development Team Member"
+        );
     } else if (
       i.client.application?.owner instanceof User &&
       i.client.application.owner.id === i.user.id
