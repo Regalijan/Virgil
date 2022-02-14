@@ -79,15 +79,17 @@ export = {
     ).catch((e) => console.error(e));
     embed.addField(
       "Join Date",
-      new Intl.DateTimeFormat(i.guild?.preferredLocale ?? "en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }).format(robloxData.created),
+      isNaN(robloxData.created.getTime())
+        ? "Unknown"
+        : new Intl.DateTimeFormat(i.guild?.preferredLocale ?? "en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }).format(robloxData.created),
       true
     );
     if (pastNamesData?.data.data?.length) {
@@ -103,11 +105,11 @@ export = {
     ).catch((e) => console.error(e));
     if (thumbnailData) {
       embed.setThumbnail(thumbnailData.data.data[0].imageUrl);
-      embed.setAuthor(
-        robloxData.name,
-        thumbnailData.data.data[0].imageUrl,
-        `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`
-      );
+      embed.setAuthor({
+        name: robloxData.name,
+        iconURL: thumbnailData.data.data[0].imageUrl,
+        url: `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`,
+      });
     }
     if (robloxData.isBanned) embed.addField("Account Status", "Terminated");
     if (i.client.application?.owner instanceof Team) {
