@@ -62,7 +62,7 @@ export = {
     if (!robloxData)
       return await i.reply({
         content:
-          "An error occured when retrieving information from Roblox! Please try again later.",
+          "An error occurred when retrieving information from Roblox! Please try again later.",
         ephemeral: true,
       });
     embed.setAuthor({ name: robloxData.name });
