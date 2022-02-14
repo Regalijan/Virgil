@@ -10,4 +10,5 @@ RUN npx tsc
 ENV NODE_ENV=production
 RUN npm prune
 RUN node dist/deploy.js
+RUN node dist/install_ffmpeg.js
 CMD ["node", "dist"]
