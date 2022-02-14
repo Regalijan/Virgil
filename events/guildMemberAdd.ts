@@ -26,7 +26,7 @@ module.exports = async function (member: GuildMember) {
         dateStyle: "medium",
         timeStyle: "medium",
       })
-        .format(new Date())
+        .format(member.user.createdTimestamp)
         .toString()
     )
     .setFooter({ text: `ID: ${member.id}` });
