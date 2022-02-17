@@ -252,11 +252,4 @@ module.exports = async function (i: Interaction) {
       })
       .catch(console.error);
   }
-  if (process.env.DSN) {
-    Sentry.captureEvent({
-      user: { id: i.user.id },
-      timestamp: Date.now(),
-      message: `${i.commandName} was ran`,
-    });
-  }
 };
