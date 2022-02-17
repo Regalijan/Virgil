@@ -29,5 +29,10 @@ export default async function (
     }
     return;
   }
-  await webhookData.send({ avatarURL: guild.client.user?.displayAvatarURL(), embeds: [embed.toJSON()] }).catch(console.error);
+  await webhookData
+    .send({
+      avatarURL: guild.client.user?.displayAvatarURL(),
+      embeds: [embed.toJSON()],
+    })
+    .catch(console.error);
 }

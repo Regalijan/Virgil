@@ -20,8 +20,8 @@ You have the right to:
 - Request a copy of your moderation history
 - Request a human review of an automatically issued punishment
 - Request that an incorrect moderation log be updated
-- Request that a log containing personally identifiable information (e.g addresses and phone numbers) be deleted*
+- Request that a log containing personally identifiable information (e.g addresses and phone numbers) be deleted\*
 
 To exercise these rights, contact server staff.
 
-*For the purposes of moderation, snowflakes (user ids) are not considered personally identifiable information.
+\*For the purposes of moderation, snowflakes (user ids) are not considered personally identifiable information.
