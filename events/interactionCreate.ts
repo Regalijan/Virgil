@@ -183,14 +183,7 @@ module.exports = async function (i: Interaction) {
     try {
       await buttonCommand.exec(i);
     } catch (e) {
-      if (!process.env.DSN) console.error(e);
-    }
-    if (process.env.DSN) {
-      Sentry.captureEvent({
-        user: { id: i.user.id },
-        timestamp: Date.now(),
-        message: `Button ${i.customId} was ran`,
-      });
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
     }
   }
 
