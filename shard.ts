@@ -86,7 +86,7 @@ setInterval(async function (): Promise<void> {
       .collection("reports")
       .updateMany(
         { created: { $gte: Date.now() - 2592000000 } },
-        { "message.content": "[ Content Deleted ]" }
+        { $set: { "message.content": "[ Content Deleted ]" } }
       );
   } catch (e) {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
