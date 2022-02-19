@@ -5,6 +5,89 @@ import Sentry from "./sentry";
 import { Guild, GuildMember, Team, User } from "discord.js";
 
 export = {
+  async isMFAEnabled(user: User): Promise<boolean> {
+    if (
+      !process.env.MFA_API_TOKEN ||
+      !process.env.MFA_CLIENT_ID ||
+      !process.env.MFA_CLIENT_SECRET
+    )
+      return false;
+    let enabled = await redis.get(`mfaEnabled_${user.id}`);
+    if (!enabled) {
+      let access_data = await mongo
+        .db("bot")
+        .collection("mfa_access_credentials")
+        .findOne({ user: user.id });
+      if (!access_data) {
+        const bridgeDataReq = await axios(
+          (process.env.MFA_API ?? "https://mfa.virgil.gg/bridge/") + user.id,
+          {
+            headers: {
+              authorization: process.env.MFA_API_TOKEN,
+            },
+          }
+        ).catch(console.error);
+        if (bridgeDataReq?.status !== 200) return false;
+        access_data = {
+          ...bridgeDataReq.data,
+          user: user.id,
+        };
+        await mongo
+          .db("bot")
+          .collection("mfa_access_credentials")
+          .insertOne({ ...access_data });
+      }
+      if (access_data?.expires_at < Date.now()) {
+        const refreshReq = await axios(
+          "https://discord.com/api/v10/oauth2/token",
+          {
+            headers: {
+              authorization: `Basic ${Buffer.from(
+                process.env.MFA_CLIENT_ID + ":" + process.env.MFA_CLIENT_SECRET
+              ).toString("base64")}`,
+              "content-type": "application/x-www-form-urlencoded",
+            },
+            method: "POST",
+            data: `grant_type=refresh_token&refresh_token=${access_data?.refresh_token}`,
+          }
+        ).catch(console.error);
+        if (!refreshReq) return false;
+        if (refreshReq.status === 401) {
+          await mongo
+            .db("bot")
+            .collection("mfa_access_credentials")
+            .deleteOne({ user: user.id });
+          return false;
+        }
+        const expires_at = Date.now() + refreshReq.data.expires_in * 1000;
+        delete refreshReq.data.expires_in;
+        access_data = {
+          ...refreshReq.data,
+          expires_at,
+          user: user.id,
+        };
+        await mongo
+          .db("bot")
+          .collection("mfa_access_credentials")
+          .insertOne({ ...access_data });
+      }
+      const mfaCheckReq = await axios("https://discord.com/api/v10/users/@me", {
+        headers: {
+          authorization: `${access_data?.token_type} ${access_data?.access_token}`,
+        },
+      }).catch(console.error);
+      if (!mfaCheckReq) return false;
+      if (mfaCheckReq.status === 401) {
+        await mongo
+          .db("bot")
+          .collection("mfa_access_credentials")
+          .deleteOne({ user: user.id });
+        return false;
+      }
+      return !!mfaCheckReq.data.mfa_enabled;
+    } else return JSON.parse(enabled);
+  },
+
   async getRobloxMemberGroups(user: number): Promise<
     {
       group: { id: number; name: string; memberCount: number };
