@@ -13,6 +13,7 @@ import SendLog from "../send_log";
 import Sentry from "../sentry";
 import { readdirSync } from "fs";
 import { join } from "path";
+import common from "../common";
 
 const mongo = db.db("bot");
 
@@ -219,6 +220,21 @@ module.exports = async function (i: Interaction) {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });
       return;
+    }
+
+    if (
+      i.guild?.mfaLevel === "ELEVATED" &&
+      command?.privileged &&
+      process.env.MFA_API_TOKEN &&
+      process.env.MFA_CLIENT_ID &&
+      process.env.MFA_CLIENT_SECRET &&
+      process.env.MFA_VERIFY_SITE
+    ) {
+      if (!(await common.isMFAEnabled(i.user)))
+        return await i.reply({
+          content: `Sorry, but you must verify that you have MFA enabled to use this command!\n\nVisit ${process.env.MFA_VERIFY_SITE} to verify.`,
+          ephemeral: true,
+        });
     }
 
     await command?.exec(i);
