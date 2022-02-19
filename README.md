@@ -25,8 +25,13 @@
 
 ```
 DISCORDTOKEN: The bot token
-DSN?: Your sentry dsn
+DSN?: Your Sentry dsn
 INSTALL_FFMPEG?: Set to any value to install FFmpeg.
+MFA_API?: Base URL of MFA bridge service.
+MFA_API_TOKEN?: API token of MFA bridge service.
+MFA_CLIENT_ID?: Discord client id of MFA service OAuth2 app.
+MFA_CLIENT_SECRET?: Discord client secret of MFA service OAuth2 app.
+MFA_VERIFY_SITE?: User-facing URL of MFA verification site.
 MONGOURL?: Mongo connection string, only needed if using external mongo instance or development copy outside of docker.
 REDIS?: Redis connection string, only needed if using external redis instance or development copy outside of docker.
 SKIPDEPLOY?: Set this to anything to skip deploying slash commands when starting container.
