@@ -78,7 +78,8 @@ export = {
     ).catch((e) => console.error(e));
     embed.addField(
       "Join Date",
-      isNaN(robloxData.created.getTime())
+      // @ts-ignore
+      isNaN(robloxData.created)
         ? "Unknown"
         : new Intl.DateTimeFormat(i.guild?.preferredLocale ?? "en-US", {
             weekday: "long",
