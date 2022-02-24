@@ -78,18 +78,15 @@ export = {
     ).catch((e) => console.error(e));
     embed.addField(
       "Join Date",
-      // @ts-ignore
-      isNaN(robloxData.created)
-        ? "Unknown"
-        : new Intl.DateTimeFormat(i.guild?.preferredLocale ?? "en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }).format(robloxData.created),
+      new Intl.DateTimeFormat(i.guild?.preferredLocale ?? "en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(robloxData.created.epochMilliseconds),
       true
     );
     if (pastNamesData?.data.data?.length) {
