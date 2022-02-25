@@ -86,7 +86,7 @@ export = {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-      }).format(robloxData.created.epochMilliseconds),
+      }).format(robloxData.created.getTime()),
       true
     );
     if (pastNamesData?.data.data?.length) {
