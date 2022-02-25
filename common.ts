@@ -3,7 +3,7 @@ import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
 import { Guild, GuildMember, Team, User } from "discord.js";
-import { Instant } from "@js-temporal/polyfill/lib/instant";
+import { Instant } from "temporal-polyfill";
 
 export = {
   async isMFAEnabled(user: User): Promise<boolean> {
