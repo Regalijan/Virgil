@@ -3,7 +3,6 @@ import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
 import { Guild, GuildMember, Team, User } from "discord.js";
-import { Instant } from "temporal-polyfill";
 
 export = {
   async isMFAEnabled(user: User): Promise<boolean> {
@@ -225,7 +224,7 @@ export = {
 
   async getRobloxUserProfile(user: number): Promise<{
     description: string;
-    created: Instant;
+    created: Date;
     isBanned: boolean;
     externalAppDisplayName: string;
     id: number;
@@ -235,14 +234,16 @@ export = {
     const cachedData = await redis
       .get(`robloxprofile_${user}`)
       .catch((e) => console.error(e));
-    if (cachedData) return JSON.parse(cachedData);
+    if (cachedData) {
+      const parsedCache = JSON.parse(cachedData);
+      parsedCache.created = new Date(parsedCache.created);
+      return parsedCache;
+    }
     try {
       const apiResponse = await axios(
         `https://users.roblox.com/v1/users/${user}`
       );
-      apiResponse.data.created = Instant.from(
-        apiResponse.data.created
-      );
+      apiResponse.data.created = new Date(apiResponse.data.created);
       await redis
         .set(
           `robloxprofile_${user}`,
