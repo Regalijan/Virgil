@@ -3,7 +3,7 @@ import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
 import { Guild, GuildMember, Team, User } from "discord.js";
-import Temporal from "@js-temporal/polyfill";
+import { Instant } from "@js-temporal/polyfill/lib/instant";
 
 export = {
   async isMFAEnabled(user: User): Promise<boolean> {
@@ -225,8 +225,7 @@ export = {
 
   async getRobloxUserProfile(user: number): Promise<{
     description: string;
-    // @ts-expect-error
-    created: Temporal.Instant;
+    created: Instant;
     isBanned: boolean;
     externalAppDisplayName: string;
     id: number;
@@ -241,8 +240,7 @@ export = {
       const apiResponse = await axios(
         `https://users.roblox.com/v1/users/${user}`
       );
-      // @ts-expect-error - Sure we could use `new Date()` but that's very unreliable, unreliable enough to use a polyfill of a stage 3 proposal
-      apiResponse.data.created = Temporal.Instant.from(
+      apiResponse.data.created = Instant.from(
         apiResponse.data.created
       );
       await redis
