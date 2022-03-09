@@ -4,6 +4,9 @@ WORKDIR /home/nodeuser/virgil
 COPY . .
 RUN rm -rf mongo node_modules
 RUN chown -R nodeuser:nodeuser .
+RUN if [ "$INSTALL_FFMPEG" = "1" ]; then \
+      DEBIAN_FRONTEND=noninteractive apt install -y ffmpeg \
+    fi
 USER nodeuser
 RUN npm install
 RUN npx tsc
