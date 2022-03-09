@@ -49,7 +49,7 @@ export default class VoicePacketReceiver {
       receiver.speaking.removeAllListeners();
       this.decoder.destroy();
     });
-    this.voiceConnection.on("stateChange", (_oldState, newState) => {
+    this.voiceConnection.on(VoiceConnectionStatus.Signalling, (_oldState, newState) => {
       if (!["destroyed", "disconnected"].includes(newState.status)) return;
       receiver.speaking.removeAllListeners();
       receiver.subscriptions.clear();
