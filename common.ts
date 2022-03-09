@@ -52,7 +52,7 @@ export = {
           }
         ).catch(console.error);
         if (!refreshReq) return false;
-        if (refreshReq.status === 401) {
+        if ([400, 401].includes(refreshReq.status)) {
           await mongo
             .db("bot")
             .collection("mfa_access_credentials")
