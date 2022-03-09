@@ -84,7 +84,14 @@ export = {
           .deleteOne({ user: user.id });
         return false;
       }
-      return !!mfaCheckReq.data.mfa_enabled;
+      const isEnabled = Boolean(mfaCheckReq.data.mfa_enabled);
+      await redis.set(
+        `mfaEnabled_${user.id}`,
+        JSON.stringify(isEnabled),
+        "EX",
+        900
+      );
+      return isEnabled;
     } else return JSON.parse(enabled);
   },
 
