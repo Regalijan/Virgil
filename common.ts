@@ -318,7 +318,7 @@ export = {
           : `${displayName} (${robloxUsername})`
       );
 
-    return name.length > 32 ? name.substr(0, 32) : name;
+    return name.length > 32 ? name.substring(0, 32) : name;
   },
 
   async verify(member: GuildMember, self: boolean = true): Promise<string> {
@@ -500,6 +500,9 @@ export = {
       });
       return ids;
     }
+
+    if (!guild.client.application?.owner)
+      await guild.client.application?.fetch();
 
     if (
       guild.client.application?.owner instanceof User &&
