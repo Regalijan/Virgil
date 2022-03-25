@@ -8,7 +8,7 @@ export = {
     name: "duck",
     name_localizations: {
       "es-ES": "pato",
-      "sv-SE": "duck",
+      "sv-SE": "anka",
     },
     description: "Quack",
     description_localizations: {
