@@ -36,12 +36,12 @@ for (const file of readdirSync(join(__dirname, "messagecontext")).filter((f) =>
   if (mcFile.interactionData.type === 3) commands.push(mcFile.interactionData);
 }
 
-axios("https://discord.com/api/v9/users/@me", {
+axios("https://discord.com/api/v10/users/@me", {
   headers: {
     authorization: `Bot ${process.env.DISCORDTOKEN}`,
   },
 }).then((me) => {
-  axios(`https://discord.com/api/v9/applications/${me.data.id}/commands`, {
+  axios(`https://discord.com/api/v10/applications/${me.data.id}/commands`, {
     headers: {
       authorization: `Bot ${process.env.DISCORDTOKEN}`,
       "content-type": "application/json",
@@ -57,7 +57,7 @@ axios("https://discord.com/api/v9/users/@me", {
         ? "Deployment Succeeded"
         : `${JSON.stringify(
             regResponse.data
-          )}\nAn error occured while deploying! Read the logs above.`
+          )}\nAn error occurred while deploying! Read the logs above.`
     );
     process.exit(); // ioredis starts for some unknown reason and the process continues to run because of it
   });
