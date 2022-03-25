@@ -35,8 +35,8 @@ export = {
             type: 4,
             name: "group_id",
             name_localizations: {
-              "es-ES": "ID del grupo",
-              "sv-SE": "Grupp id",
+              "es-ES": "id_del_grupo",
+              "sv-SE": "grupp_id",
             },
             description: "ID of Roblox group",
             description_localizations: {
@@ -91,8 +91,8 @@ export = {
             type: 4,
             name: "badge_id",
             name_localizations: {
-              "es-ES": "ID de la medalla",
-              "sv-SE": "Badge id",
+              "es-ES": "id_de_la_medalla",
+              "sv-SE": "badge_id",
             },
             description: "ID of experience badge",
             description_localizations: {
@@ -134,8 +134,8 @@ export = {
             type: 4,
             name: "bundle_id",
             name_localizations: {
-              "es-ES": "ID del manojo",
-              "sv-SE": "Bunt id",
+              "es-ES": "id_del_manojo",
+              "sv-SE": "bunt_id",
             },
             description: "ID of bundle",
             description_localizations: {
@@ -164,8 +164,8 @@ export = {
         type: 1,
         name: "gamepass",
         name_localizations: {
-          "es-ES": "Paso de juego",
-          "sv-SE": "Spelpass",
+          "es-ES": "paso_de_juego",
+          "sv-SE": "spelpass",
         },
         description: "Creates a bind tied to ownership of a gamepass",
         description_localizations: {
@@ -178,8 +178,8 @@ export = {
             type: 4,
             name: "gamepass_id",
             name_localizations: {
-              "es-ES": "ID del paso de juego",
-              "sv-SE": "Spelpass id",
+              "es-ES": "id_del_paso_de_juego",
+              "sv-SE": "spelpass_id",
             },
             description: "ID of gamepass",
             description_localizations: {
@@ -214,7 +214,7 @@ export = {
           "Creates a bind tied to a generic asset such an image, sound, or clothing article",
         description_localizations: {
           "es-ES":
-            "Crea una enlace con la propiedad de poseer un activo genérico, como una imagen, sonido o artículo de ropa",
+            "Crea un enlace vinculado a un activo genérico (cualquier activo que no esté en la lista)",
           "sv-SE":
             "Skapa en bind med ägandet av en generell tillgång, som en bild, ljud eller kläderartikel",
         },

@@ -9,9 +9,8 @@ export = {
   interactionData: {
     name: "listbinds",
     name_localizations: {
-      "en-US": "List binds",
-      "es-ES": "Listar enlaces",
-      "sv-SE": "Lista länkar",
+      "es-ES": "listar_enlaces",
+      "sv-SE": "lista_länkar",
     },
     description: "Shows all server binds",
     description_localizations: {

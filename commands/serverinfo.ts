@@ -4,10 +4,10 @@ export = {
   name: "serverinfo",
   permissions: [],
   interactionData: {
-    name: "server info",
+    name: "serverinfo",
     name_localizations: {
-      "es-ES": "Información del servidor",
-      "sv-SE": "Serverinformation",
+      "es-ES": "información_del_servidor",
+      "sv-SE": "serverinformation",
     },
     description: "Displays server information",
     description_localizations: {

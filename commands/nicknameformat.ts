@@ -9,9 +9,8 @@ export = {
   interactionData: {
     name: "nicknameformat",
     name_localizations: {
-      "en-US": "Nickname format",
-      "es-ES": "Formato de apodo",
-      "sv-SE": "Smeknamnformat",
+      "es-ES": "formato_de_apodo",
+      "sv-SE": "smeknamnformat",
     },
     description: "Set format of nicknames to",
     description_localizations: {
@@ -23,8 +22,8 @@ export = {
         type: 3,
         name: "format",
         name_localizations: {
-          "es-ES": "Formato",
-          "sv-SE": "Format",
+          "es-ES": "formato",
+          "sv-SE": "format",
         },
         description:
           "The format to use when nicknaming a user - Default {{SMARTNAME}}",

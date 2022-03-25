@@ -10,8 +10,8 @@ export = {
   interactionData: {
     name: "mute",
     name_localizations: {
-      "es-ES": "Silenciar",
-      "sv-SE": "Tysta",
+      "es-ES": "silenciar",
+      "sv-SE": "tysta",
     },
     description: "Mute a user to prevent them from chatting",
     description_localizations: {
@@ -23,8 +23,8 @@ export = {
         type: 6,
         name: "user",
         name_localizations: {
-          "es-ES": "Usuario",
-          "sv-SE": "Användare",
+          "es-ES": "usuario",
+          "sv-SE": "användare",
         },
         description: "User to mute",
         description_localizations: {
@@ -37,8 +37,8 @@ export = {
         type: 4,
         name: "hours",
         name_localizations: {
-          "es-ES": "Horas",
-          "sv-SE": "Timmar",
+          "es-ES": "horas",
+          "sv-SE": "timmar",
         },
         description: "How many hours to mute for",
         description_localizations: {
@@ -50,8 +50,8 @@ export = {
         type: 4,
         name: "minutes",
         name_localizations: {
-          "es-ES": "Minutos",
-          "sv-SE": "Minuter",
+          "es-ES": "minutos",
+          "sv-SE": "minuter",
         },
         description: "How many minutes to mute for",
         description_localizations: {

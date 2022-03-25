@@ -10,8 +10,8 @@ export = {
   interactionData: {
     name: "reverify",
     name_localizations: {
-      "es-ES": "Reverificar",
-      "sv-SE": "Verifiera igen",
+      "es-ES": "reverificar",
+      "sv-SE": "verifiera_igen",
     },
     description: "Change your linked Roblox account",
     description_localizations: {

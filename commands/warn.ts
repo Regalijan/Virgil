@@ -9,8 +9,8 @@ export = {
   interactionData: {
     name: "warn",
     name_localizations: {
-      "es-ES": "Advertencia",
-      "sv-SE": "Varna",
+      "es-ES": "advertencia",
+      "sv-SE": "varna",
     },
     description: "Warn a user for misbehavior",
     description_localizations: {
@@ -22,8 +22,8 @@ export = {
         type: 6,
         name: "user",
         name_localizations: {
-          "es-ES": "Usuario",
-          "sv-SE": "Användare",
+          "es-ES": "usuario",
+          "sv-SE": "användare",
         },
         description: "User to warn",
         description_localizations: {
@@ -36,8 +36,8 @@ export = {
         type: 3,
         name: "reason",
         name_localizations: {
-          "es-ES": "Razón",
-          "sv-SE": "Orsak",
+          "es-ES": "razón",
+          "sv-SE": "orsak",
         },
         description: "Reason for warn",
         description_localizations: {

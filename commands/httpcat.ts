@@ -4,11 +4,10 @@ export = {
   name: "httpcat",
   permissions: [],
   interactionData: {
-    name: "http_cat",
+    name: "httpcat",
     name_localizations: {
-      "en-US": "HTTP cat",
-      "es-ES": "Gato HTTP",
-      "sv-SE": "HTTP-katt",
+      "es-ES": "gato_http",
+      "sv-SE": "http_katt",
     },
     description: "Get an HTTP cat",
     description_localizations: {
@@ -20,8 +19,8 @@ export = {
         type: 4,
         name: "status",
         name_localizations: {
-          "es-ES": "Estado",
-          "sv-SE": "Status",
+          "es-ES": "estado",
+          "sv-SE": "status",
         },
         description: "HTTP status",
         description_localizations: {

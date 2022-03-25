@@ -10,8 +10,8 @@ export = {
   interactionData: {
     name: "troubleshoot",
     name_localizations: {
-      "es-ES": "Solución de problemas",
-      "sv-SE": "Lös problem",
+      "es-ES": "solución_de_problemas",
+      "sv-SE": "lös_problem",
     },
     description: "Troubleshoot Roblox verification connection issues.",
     description_localizations: {

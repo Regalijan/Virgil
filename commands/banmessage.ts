@@ -6,10 +6,10 @@ export = {
   name: "banmessage",
   permissions: ["MANAGE_GUILD"],
   interactionData: {
-    name: "ban message",
+    name: "banmessage",
     name_localizations: {
-      "es-ES": "Mensaje de ban",
-      "sv-SE": "Bannmeddelande",
+      "es-ES": "mensaje_de_ban",
+      "sv-SE": "bannmeddelande",
     },
     description: "Modify message to send to banned users",
     description_localizations: {
@@ -21,8 +21,8 @@ export = {
         type: 1,
         name: "set",
         name_localizations: {
-          "es-ES": "Establecer",
-          "sv-SE": "Ställ in",
+          "es-ES": "establecer",
+          "sv-SE": "ställ_in",
         },
         description: "Set message",
         description_localizations: {
@@ -34,8 +34,8 @@ export = {
             type: 3,
             name: "message",
             name_localizations: {
-              "es-ES": "Mensaje",
-              "sv-SE": "Meddelande",
+              "es-ES": "mensaje",
+              "sv-SE": "meddelande",
             },
             description: "Message to set",
             description_localizations: {
@@ -50,8 +50,8 @@ export = {
         type: 1,
         name: "clear",
         name_localizations: {
-          "es-ES": "Limpiar",
-          "sv-SE": "Rensa",
+          "es-ES": "limpiar",
+          "sv-SE": "rensa",
         },
         description: "Clear message",
         description_localizations: {

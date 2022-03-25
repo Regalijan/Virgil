@@ -14,160 +14,160 @@ const logTypes = [
   {
     name: "ban",
     name_localizations: {
-      "es-ES": "Interdicto",
-      "sv-SE": "Bann",
+      "es-ES": "interdicto",
+      "sv-SE": "bann",
     },
     value: "ban",
   },
   {
     name: "delete",
     name_localizations: {
-      "es-ES": "Borrado",
-      "sv-SE": "Raderad",
+      "es-ES": "borrado",
+      "sv-SE": "raderad",
     },
     value: "delete",
   },
   {
     name: "edit",
     name_localizations: {
-      "es-ES": "Editado",
-      "sv-SE": "Redigerad",
+      "es-ES": "editado",
+      "sv-SE": "redigerad",
     },
     value: "edit",
   },
   {
     name: "member_join",
     name_localizations: {
-      "es-ES": "Unido",
-      "sv-SE": "Gick med",
+      "es-ES": "unido",
+      "sv-SE": "gick_med",
     },
     value: "member_join",
   },
   {
     name: "member_leave",
     name_localizations: {
-      "es-ES": "Dejado",
-      "sv-SE": "Gick ur",
+      "es-ES": "dejado",
+      "sv-SE": "gick_ur",
     },
     value: "member_leave",
   },
   {
     name: "message_report_actions",
     name_localizations: {
-      "es-ES": "Reporte de acciones",
-      "sv-SE": "Rapportering av åtgärder",
+      "es-ES": "reporte_de_acciones",
+      "sv-SE": "rapportering_av_åtgärder",
     },
     value: "message_report_actions",
   },
   {
     name: "message_reports",
     name_localizations: {
-      "es-ES": "Reporte de mensajes",
-      "sv-SE": "Rapportering av meddelanden",
+      "es-ES": "reporte_de_mensajes",
+      "sv-SE": "rapportering_av_meddelanden",
     },
     value: "message_reports",
   },
   {
     name: "nickname",
     name_localizations: {
-      "es-ES": "Nombre de usuario",
-      "sv-SE": "Användarnamn",
+      "es-ES": "nombre_de_usuario",
+      "sv-SE": "användarnamn",
     },
     value: "nickname",
   },
   {
     name: "role",
     name_localizations: {
-      "es-ES": "Rol",
-      "sv-SE": "Roll",
+      "es-ES": "rol",
+      "sv-SE": "roll",
     },
     value: "role",
   },
   {
     name: "thread_create",
     name_localizations: {
-      "es-ES": "Creado hilo",
-      "sv-SE": "Skapad tråd",
+      "es-ES": "creado_hilo",
+      "sv-SE": "skapad_tråd",
     },
     value: "thread_create",
   },
   {
     name: "thread_delete",
     name_localizations: {
-      "es-ES": "Borrado hilo",
-      "sv-SE": "Raderad tråd",
+      "es-ES": "borrado_hilo",
+      "sv-SE": "raderad_tråd",
     },
     value: "thread_delete",
   },
   {
     name: "thread_update",
     name_localizations: {
-      "es-ES": "Actualizado hilo",
-      "sv-SE": "Uppdaterad tråd",
+      "es-ES": "actualizado_hilo",
+      "sv-SE": "uppdaterad_tråd",
     },
     value: "thread_update",
   },
   {
     name: "unban",
     name_localizations: {
-      "es-ES": "Desinterdicto",
-      "sv-SE": "Avbann",
+      "es-ES": "desinterdicto",
+      "sv-SE": "avbann",
     },
     value: "unban",
   },
   {
     name: "voice_deafen",
     name_localizations: {
-      "es-ES": "Ensordecido",
-      "sv-SE": "Ljudavakt",
+      "es-ES": "ensordecido",
+      "sv-SE": "ljudavakt",
     },
     value: "voice_deafen",
   },
   {
     name: "voice_join",
     name_localizations: {
-      "es-ES": "Unido a canal de voz",
-      "sv-SE": "Gick med i röstkanal",
+      "es-ES": "unido_a_canal_de_voz",
+      "sv-SE": "gick_med_i_röstkanal",
     },
     value: "voice_join",
   },
   {
     name: "voice_leave",
     name_localizations: {
-      "es-ES": "Dejado de canal de voz",
-      "sv-SE": "Gick ur röstkanal",
+      "es-ES": "dejado_de_canal_de_voz",
+      "sv-SE": "gick_ur_röstkanal",
     },
     value: "voice_leave",
   },
   {
     name: "voice_mute",
     name_localizations: {
-      "es-ES": "Enmudecido",
-      "sv-SE": "Ljudavakt",
+      "es-ES": "enmudecido",
+      "sv-SE": "ljudavakt",
     },
     value: "voice_mute",
   },
   {
     name: "voice_switch",
     name_localizations: {
-      "es-ES": "Canal de voz cambiado",
-      "sv-SE": "Röstkanal bytt",
+      "es-ES": "canal_de_voz_cambiado",
+      "sv-SE": "röstkanal_bytt",
     },
     value: "voice_switch",
   },
   {
     name: "voice_video",
     name_localizations: {
-      "es-ES": "Canal de voz a video",
-      "sv-SE": "Röstkanal till video",
+      "es-ES": "canal_de_voz_a_video",
+      "sv-SE": "röstkanal_till_video",
     },
     value: "voice_video",
   },
   {
     name: "warn",
     name_localizations: {
-      "es-ES": "Advertido",
-      "sv-SE": "Varnad",
+      "es-ES": "advertido",
+      "sv-SE": "varnad",
     },
     value: "warn",
   },
@@ -180,8 +180,8 @@ export = {
   interactionData: {
     name: "logs",
     name_localizations: {
-      "es-ES": "Registros",
-      "sv-SE": "Loggar",
+      "es-ES": "registros",
+      "sv-SE": "loggar",
     },
     description: "View, set, ignore, unignore, or remove a log channel",
     description_localizations: {
@@ -193,8 +193,8 @@ export = {
         type: 1,
         name: "ignore",
         name_localizations: {
-          "es-ES": "Ignorar",
-          "sv-SE": "Ignorera",
+          "es-ES": "ignorar",
+          "sv-SE": "ignorera",
         },
         description: "Ignores a channel from logs",
         description_localizations: {
@@ -206,8 +206,8 @@ export = {
             type: 7,
             name: "channel",
             name_localizations: {
-              "es-ES": "Canal",
-              "sv-SE": "Kanal",
+              "es-ES": "canal",
+              "sv-SE": "kanal",
             },
             description: "Channel to ignore",
             description_localizations: {
@@ -220,8 +220,8 @@ export = {
             type: 3,
             name: "log",
             name_localizations: {
-              "es-ES": "Registro",
-              "sv-SE": "Logg",
+              "es-ES": "registro",
+              "sv-SE": "logg",
             },
             description: "Log to ignore",
             choices: logTypes,
@@ -232,8 +232,8 @@ export = {
         type: 1,
         name: "list",
         name_localizations: {
-          "es-ES": "Listar",
-          "sv-SE": "Lista",
+          "es-ES": "listar",
+          "sv-SE": "lista",
         },
         description: "Lists set log channels",
         description_localizations: {
@@ -245,8 +245,8 @@ export = {
         type: 1,
         name: "remove",
         name_localizations: {
-          "es-ES": "Eliminar",
-          "sv-SE": "Ta bort",
+          "es-ES": "eliminar",
+          "sv-SE": "ta_bort",
         },
         description: "Disable a log",
         description_localizations: {
@@ -258,8 +258,8 @@ export = {
             type: 3,
             name: "log",
             name_localizations: {
-              "es-ES": "Registro",
-              "sv-SE": "Logg",
+              "es-ES": "registro",
+              "sv-SE": "logg",
             },
             description: "Log to disable",
             description_localizations: {
@@ -275,8 +275,8 @@ export = {
         type: 1,
         name: "set",
         name_localizations: {
-          "es-ES": "Configurar",
-          "sv-SE": "Konfigurera",
+          "es-ES": "configurar",
+          "sv-SE": "konfigurera",
         },
         description: "Sets a log channel",
         description_localizations: {
@@ -288,8 +288,8 @@ export = {
             type: 3,
             name: "log",
             name_localizations: {
-              "es-ES": "Registro",
-              "sv-SE": "Logg",
+              "es-ES": "registro",
+              "sv-SE": "logg",
             },
             description: "Type of log to enable",
             description_localizations: {
@@ -303,8 +303,8 @@ export = {
             type: 7,
             name: "channel",
             name_localizations: {
-              "es-ES": "Canal",
-              "sv-SE": "Kanal",
+              "es-ES": "canal",
+              "sv-SE": "kanal",
             },
             description: "Channel to enable logs in",
             description_localizations: {
@@ -319,9 +319,8 @@ export = {
         type: 1,
         name: "show_ignored",
         name_localizations: {
-          "en-US": "Show ignored",
-          "es-ES": "Mostrar ignorados",
-          "sv-SE": "Visa ignorerade",
+          "es-ES": "mostrar_ignorados",
+          "sv-SE": "visa_ignorerade",
         },
         description: "List all ignored channels and the log type",
         description_localizations: {
@@ -333,8 +332,8 @@ export = {
         type: 1,
         name: "unignore",
         name_localizations: {
-          "es-ES": "Designorar",
-          "sv-SE": "Ta bort ignorering",
+          "es-ES": "designorar",
+          "sv-SE": "ta_bort_ignorering",
         },
         description: "Unignore a channel",
         description_localizations: {
@@ -346,8 +345,8 @@ export = {
             type: 7,
             name: "channel",
             name_localizations: {
-              "es-ES": "Canal",
-              "sv-SE": "Kanal",
+              "es-ES": "canal",
+              "sv-SE": "kanal",
             },
             description: "Channel to unignore",
             description_localizations: {
@@ -360,8 +359,8 @@ export = {
             type: 3,
             name: "log",
             name_localizations: {
-              "es-ES": "Registro",
-              "sv-SE": "Logg",
+              "es-ES": "registro",
+              "sv-SE": "logg",
             },
             description: "Log to unignore",
             description_localizations: {

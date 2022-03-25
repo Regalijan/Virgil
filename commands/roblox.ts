@@ -24,8 +24,8 @@ export = {
         type: 6,
         name: "user",
         name_localizations: {
-          "es-ES": "Usuario",
-          "sv-SE": "Användare",
+          "es-ES": "usuario",
+          "sv-SE": "användare",
         },
         description: "User to look up",
         description_localizations: {

@@ -6,8 +6,8 @@ export = {
   interactionData: {
     name: "whois",
     name_localizations: {
-      "es-ES": "Quién es",
-      "sv-SE": "Vem är",
+      "es-ES": "quién_es",
+      "sv-SE": "vem_är",
     },
     description: "Get user information",
     description_localizations: {
@@ -19,8 +19,8 @@ export = {
         type: 6,
         name: "user",
         name_localizations: {
-          "es-ES": "Usuario",
-          "sv-SE": "Användare",
+          "es-ES": "usuario",
+          "sv-SE": "användare",
         },
         description: "User to look up",
         description_localizations: {

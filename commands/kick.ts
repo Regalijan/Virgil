@@ -18,7 +18,15 @@ export = {
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "usuario",
+          "sv-SE": "användare",
+        },
         description: "Person to kick",
+        description_localizations: {
+          "es-ES": "Usuario a expulsar",
+          "sv-SE": "Användare att sparka",
+        },
         required: true,
       },
     ],

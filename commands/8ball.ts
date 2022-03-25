@@ -7,7 +7,7 @@ export = {
   interactionData: {
     name: "8ball",
     name_localizations: {
-      "es-ES": "Bola-8",
+      "es-ES": "bola-8",
       "sv-SE": "8-boll",
     },
     description: "What does the future hold?",

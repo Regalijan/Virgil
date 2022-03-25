@@ -7,8 +7,8 @@ export = {
   interactionData: {
     name: "initialize",
     name_localizations: {
-      "es-ES": "Inicializar",
-      "sv-SE": "Initialisera",
+      "es-ES": "inicializar",
+      "sv-SE": "initialisera",
     },
     description: "Initialize server settings",
     description_localizations: {

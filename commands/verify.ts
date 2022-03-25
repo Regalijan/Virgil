@@ -11,8 +11,8 @@ export = {
   interactionData: {
     name: "verify",
     name_localizations: {
-      "es-ES": "Verificar",
-      "sv-SE": "Verifiera",
+      "es-ES": "verificar",
+      "sv-SE": "verifiera",
     },
     description: "Update your Roblox roles and name",
     description_localizations: {

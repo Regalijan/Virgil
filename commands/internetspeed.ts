@@ -6,9 +6,8 @@ export = {
   interactionData: {
     name: "internetspeed",
     name_localizations: {
-      "en-US": "Internet Speed",
-      "es-ES": "Velocidad de internet",
-      "sv-SE": "Internet hastighet",
+      "es-ES": "velocidad_de_internet",
+      "sv-SE": "internet_hastighet",
     },
     description: "Show your internet speed",
     description_localizations: {

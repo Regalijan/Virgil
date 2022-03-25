@@ -6,9 +6,8 @@ export = {
   interactionData: {
     name: "noobdetector",
     name_localizations: {
-      "en-US": "Noob detector",
-      "es-ES": "Detector de noobs",
-      "sv-SE": "Noob-detektor",
+      "es-ES": "detector_de_noobs",
+      "sv-SE": "noob_detektor",
     },
     description: "Detect noobiness",
     description_localizations: {
@@ -20,8 +19,8 @@ export = {
         type: 6,
         name: "person",
         name_localizations: {
-          "es-ES": "Persona",
-          "sv-SE": "Person",
+          "es-ES": "persona",
+          "sv-SE": "person",
         },
         description: "User to check noobiness of",
         description_localizations: {

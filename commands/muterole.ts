@@ -8,9 +8,8 @@ export = {
   interactionData: {
     name: "muterole",
     name_localizations: {
-      "en-US": "Mute role",
-      "es-ES": "Rol de muteo",
-      "sv-SE": "Mute-roll",
+      "es-ES": "rol_de_muteo",
+      "sv-SE": "mute_roll",
     },
     description: "Set or unset a role to use for mutes",
     description_localizations: {
@@ -23,8 +22,8 @@ export = {
         type: 8,
         name: "role",
         name_localizations: {
-          "es-ES": "Rol",
-          "sv-SE": "Roll",
+          "es-ES": "rol",
+          "sv-SE": "roll",
         },
         description:
           "Role to use (leave empty to reset - view with logs list command)",

@@ -10,9 +10,8 @@ export = {
   interactionData: {
     name: "nicknamelock",
     name_localizations: {
-      "en-US": "Nickname lock",
-      "es-ES": "Bloqueo de nombre",
-      "sv-SE": "Namnlock",
+      "es-ES": "bloqueo_de_nombre",
+      "sv-SE": "namnlock",
     },
     description:
       "Set whether or not users are renicknamed according to the set nickname format",
@@ -27,12 +26,11 @@ export = {
         type: 5,
         name: "should_nickname",
         name_localizations: {
-          "en-US": "Should nickname",
-          "es-ES": "¿Debe renombrarse?",
-          "sv-SE": "Skall namn bytas?",
+          "es-ES": "debe_renombrarse",
+          "sv-SE": "skall_namn_bytas",
         },
         description:
-          "Whether or not users should be renicknamed according to the set nickname format",
+          "Whether or not users should be nicknamed according to the set nickname format",
         description_localizations: {
           "es-ES":
             "¿Debe los usuarios renombrarse de acuerdo al formato de nombre?",
