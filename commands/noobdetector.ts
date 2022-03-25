@@ -5,12 +5,29 @@ export = {
   permissions: [],
   interactionData: {
     name: "noobdetector",
+    name_localizations: {
+      "en-US": "Noob detector",
+      "es-ES": "Detector de noobs",
+      "sv-SE": "Noob-detektor",
+    },
     description: "Detect noobiness",
+    description_localizations: {
+      "es-ES": "Detecta si un usuario es un noob",
+      "sv-SE": "Detekterar om en användare är en noob",
+    },
     options: [
       {
         type: 6,
         name: "person",
+        name_localizations: {
+          "es-ES": "Persona",
+          "sv-SE": "Person",
+        },
         description: "User to check noobiness of",
+        description_localizations: {
+          "es-ES": "Usuario a comprobar",
+          "sv-SE": "Användare att kontrollera",
+        },
         required: true,
       },
     ],

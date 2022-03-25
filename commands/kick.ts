@@ -5,7 +5,15 @@ export = {
   permissions: ["KICK_MEMBERS"],
   interactionData: {
     name: "kick",
+    name_localizations: {
+      "es-ES": "expulsar",
+      "sv-SE": "sparka",
+    },
     description: "Kick a user",
+    description_localizations: {
+      "es-ES": "Expulsa a un usuario del servidor",
+      "sv-SE": "Sparka en en användare från servern",
+    },
     options: [
       {
         type: 6,

@@ -6,11 +6,23 @@ export = {
   interactionData: {
     name: "bonk",
     description: "Bonk someone",
+    description_localizations: {
+      "es-ES": "Bonk alguien",
+      "sv-SE": "Bonk någon",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to bonk",
+        description_localizations: {
+          "es-ES": "Usuario a bonk",
+          "sv-SE": "Användare att bonk",
+        },
         required: true,
       },
     ],

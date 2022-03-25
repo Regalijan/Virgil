@@ -8,47 +8,111 @@ export = {
   permissions: ["MANAGE_GUILD"],
   interactionData: {
     name: "bind",
+    name_localizations: {
+      "es-ES": "enlazar",
+      "sv-SE": "binda",
+    },
     description: "Create a Roblox role bind",
+    description_localizations: {
+      "es-ES": "Crea una enlace de rol de Roblox",
+      "sv-SE": "Skapa en Roblox roll binda",
+    },
     options: [
       {
         type: 1,
         name: "group",
+        name_localizations: {
+          "es-ES": "grupo",
+          "sv-SE": "grupp",
+        },
         description: "Create a group rank bind",
+        description_localizations: {
+          "es-ES": "Crea una enlace de rango de grupo",
+          "sv-SE": "Skapa en grupp rank binda",
+        },
         options: [
           {
             type: 4,
             name: "group_id",
+            name_localizations: {
+              "es-ES": "ID del grupo",
+              "sv-SE": "Grupp id",
+            },
             description: "ID of Roblox group",
+            description_localizations: {
+              "es-ES": "ID del grupo de Roblox",
+              "sv-SE": "Roblox grupp id",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "The discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
             required: true,
           },
           {
             type: 4,
             name: "rank",
+            name_localizations: {
+              "es-ES": "rango",
+              "sv-SE": "rank",
+            },
             description: "Optional rank of group role",
+            description_localizations: {
+              "es-ES": "Rango opcional del rol de grupo",
+              "sv-SE": "Frivillig rank för grupp roll",
+            },
           },
         ],
       },
       {
         type: 1,
         name: "badge",
+        name_localizations: {
+          "es-ES": "medalla",
+          "sv-SE": "badge",
+        },
         description: "Create an experience badge bind",
+        description_localizations: {
+          "es-ES": "Crea una enlace de medalla de experiencia",
+          "sv-SE": "Skapa en erfarenhetsbadge binda",
+        },
         options: [
           {
             type: 4,
             name: "badge_id",
+            name_localizations: {
+              "es-ES": "ID de la medalla",
+              "sv-SE": "Badge id",
+            },
             description: "ID of experience badge",
+            description_localizations: {
+              "es-ES": "ID de la medalla de experiencia",
+              "sv-SE": "Erfarenhetsbadge id",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
             required: true,
           },
         ],
@@ -56,18 +120,42 @@ export = {
       {
         type: 1,
         name: "bundle",
+        name_localizations: {
+          "es-ES": "manojo",
+          "sv-SE": "bunt",
+        },
         description: "Create a bind tied to ownership of a bundle",
+        description_localizations: {
+          "es-ES": "Crea una enlace con la propiedad de poseer un manojo",
+          "sv-SE": "Skapa en bind med ägandet av en bunt",
+        },
         options: [
           {
             type: 4,
             name: "bundle_id",
+            name_localizations: {
+              "es-ES": "ID del manojo",
+              "sv-SE": "Bunt id",
+            },
             description: "ID of bundle",
+            description_localizations: {
+              "es-ES": "ID del manojo",
+              "sv-SE": "Bunt id",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de Discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
             required: true,
           },
         ],
@@ -75,37 +163,88 @@ export = {
       {
         type: 1,
         name: "gamepass",
+        name_localizations: {
+          "es-ES": "Paso de juego",
+          "sv-SE": "Spelpass",
+        },
         description: "Creates a bind tied to ownership of a gamepass",
+        description_localizations: {
+          "es-ES":
+            "Crea una enlace con la propiedad de poseer un paso de juego",
+          "sv-SE": "Skapa en bind med ägandet av ett spelpass",
+        },
         options: [
           {
             type: 4,
             name: "gamepass_id",
+            name_localizations: {
+              "es-ES": "ID del paso de juego",
+              "sv-SE": "Spelpass id",
+            },
             description: "ID of gamepass",
+            description_localizations: {
+              "es-ES": "ID del paso de juego",
+              "sv-SE": "Spelpass id",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de Discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
           },
         ],
       },
       {
         type: 1,
         name: "asset",
+        name_localizations: {
+          "es-ES": "activo",
+          "sv-SE": "tillgång",
+        },
         description:
           "Creates a bind tied to a generic asset such an image, sound, or clothing article",
+        description_localizations: {
+          "es-ES":
+            "Crea una enlace con la propiedad de poseer un activo genérico, como una imagen, sonido o artículo de ropa",
+          "sv-SE":
+            "Skapa en bind med ägandet av en generell tillgång, som en bild, ljud eller kläderartikel",
+        },
         options: [
           {
             type: 4,
             name: "asset_id",
+            name_localizations: {
+              "es-ES": "id_del_activo",
+              "sv-SE": "tillgång_id",
+            },
             description: "ID of asset",
+            description_localizations: {
+              "es-ES": "ID del activo",
+              "sv-SE": "Tillgång id",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de Discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
             required: true,
           },
         ],
@@ -113,13 +252,30 @@ export = {
       {
         type: 1,
         name: "verified_status",
+        name_localizations: {
+          "es-ES": "estado_de_verificación",
+          "sv-SE": "verifieringsstatus",
+        },
         description:
           "Creates a bind tied to being verified with the RoVer registry",
+        description_localizations: {
+          "es-ES":
+            "Crea una enlace con la propiedad de ser verificado con el registro RoVer",
+          "sv-SE": "Skapa en bind med att verifieras med RoVer registret",
+        },
         options: [
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Role to use for verified users",
+            description_localizations: {
+              "es-ES": "Rol a usar para usuarios verificados",
+              "sv-SE": "Roll att använda för verifierade användare",
+            },
             required: true,
           },
         ],
@@ -127,12 +283,28 @@ export = {
       {
         type: 1,
         name: "unverified_status",
+        name_localizations: {
+          "es-ES": "estado_de_no_verificación",
+          "sv-SE": "ej_verifieringsstatus",
+        },
         description: "Creates a bind tied to not being verified",
+        description_localizations: {
+          "es-ES": "Crea una enlace con la propiedad de no ser verificado",
+          "sv-SE": "Skapa en bind med att inte verifieras",
+        },
         options: [
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Role to use for unverified users",
+            description_localizations: {
+              "es-ES": "Rol a usar para usuarios no verificados",
+              "sv-SE": "Roll att använda för ej verifierade användare",
+            },
             required: true,
           },
         ],
@@ -140,18 +312,43 @@ export = {
       {
         type: 1,
         name: "friend_status",
+        name_localizations: {
+          "es-ES": "estado_de_amistad",
+          "sv-SE": "vänstatus",
+        },
         description: "Creates a bind tied to being friends with a user",
+        description_localizations: {
+          "es-ES":
+            "Crea una enlace con la propiedad de ser amigo de un usuario",
+          "sv-SE": "Skapa en bind med att vara vän med en användare",
+        },
         options: [
           {
             type: 3,
             name: "username",
+            name_localizations: {
+              "es-ES": "nombre_de_usuario",
+              "sv-SE": "användarnamn",
+            },
             description: "Username of target user",
+            description_localizations: {
+              "es-ES": "Nombre de usuario de la persona a la que se amigas",
+              "sv-SE": "Användarnamn på mål användare",
+            },
             required: true,
           },
           {
             type: 8,
             name: "role",
+            name_localizations: {
+              "es-ES": "rol",
+              "sv-SE": "roll",
+            },
             description: "Discord role to bind",
+            description_localizations: {
+              "es-ES": "El rol de Discord a enlazar",
+              "sv-SE": "Discord roll att binda",
+            },
             required: true,
           },
         ],

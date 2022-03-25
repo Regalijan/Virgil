@@ -8,7 +8,16 @@ export = {
   description: "Shows all server binds",
   interactionData: {
     name: "listbinds",
+    name_localizations: {
+      "en-US": "List binds",
+      "es-ES": "Listar enlaces",
+      "sv-SE": "Lista länkar",
+    },
     description: "Shows all server binds",
+    description_localizations: {
+      "es-ES": "Muestra todos los enlaces del servidor",
+      "sv-SE": "Visa alla serverlänkar",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guildId)

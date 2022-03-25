@@ -6,12 +6,28 @@ export = {
   permissions: [], // This is to allow users to update themselves as there is a misconception that the command to verify is this one
   interactionData: {
     name: "update",
+    name_localizations: {
+      "es-ES": "Actualizar",
+      "sv-SE": "Uppdatera",
+    },
     description: "Updates a user's name and Roblox roles",
+    description_localizations: {
+      "es-ES": "Actualiza el nombre y los roles de un usuario",
+      "sv-SE": "Uppdaterar en användares namn och Roblox roller",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to update",
+        description_localizations: {
+          "es-ES": "Usuario a actualizar",
+          "sv-SE": "Användare att uppdatera",
+        },
       },
     ],
   },

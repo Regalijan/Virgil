@@ -6,12 +6,28 @@ export = {
   permissions: [],
   interactionData: {
     name: "8ball",
+    name_localizations: {
+      "es-ES": "Bola-8",
+      "sv-SE": "8-boll",
+    },
     description: "What does the future hold?",
+    description_localizations: {
+      "es-ES": "¿Qué va a pasar en el futuro?",
+      "sv-SE": "Vad kommer fram i framtiden?",
+    },
     options: [
       {
         type: 3,
         name: "question",
+        name_localizations: {
+          "es-ES": "pregunta",
+          "sv-SE": "fråga",
+        },
         description: "What do you want to know?",
+        description_localizations: {
+          "es-ES": "¿Qué quieres saber?",
+          "sv-SE": "Vad vill du veta?",
+        },
         required: true,
       },
     ],

@@ -8,18 +8,42 @@ export = {
   permissions: ["MANAGE_MESSAGES"],
   interactionData: {
     name: "warn",
+    name_localizations: {
+      "es-ES": "Advertencia",
+      "sv-SE": "Varna",
+    },
     description: "Warn a user for misbehavior",
+    description_localizations: {
+      "es-ES": "Advertir a un usuario por comportamiento inadecuado",
+      "sv-SE": "Varna en användare för misstänkt misföra",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to warn",
+        description_localizations: {
+          "es-ES": "Usuario a advertir",
+          "sv-SE": "Användare att varna",
+        },
         required: true,
       },
       {
         type: 3,
         name: "reason",
+        name_localizations: {
+          "es-ES": "Razón",
+          "sv-SE": "Orsak",
+        },
         description: "Reason for warn",
+        description_localizations: {
+          "es-ES": "Razón de la advertencia",
+          "sv-SE": "Orsak till varning",
+        },
       },
     ],
   },

@@ -6,7 +6,15 @@ export = {
   permissions: ["MANAGE_GUILD"],
   interactionData: {
     name: "initialize",
+    name_localizations: {
+      "es-ES": "Inicializar",
+      "sv-SE": "Initialisera",
+    },
     description: "Initialize server settings",
+    description_localizations: {
+      "es-ES": "Inicializa los ajustes del servidor",
+      "sv-SE": "Initialisera serverinställningar",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guildId) {

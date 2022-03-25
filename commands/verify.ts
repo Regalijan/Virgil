@@ -10,7 +10,15 @@ export = {
   permissions: [],
   interactionData: {
     name: "verify",
+    name_localizations: {
+      "es-ES": "Verificar",
+      "sv-SE": "Verifiera",
+    },
     description: "Update your Roblox roles and name",
+    description_localizations: {
+      "es-ES": "Actualiza tus roles de Roblox y tu nombre",
+      "sv-SE": "Uppdatera dina Roblox roller och namn",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     const member = await i.guild?.members.fetch(i.user.id);

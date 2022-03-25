@@ -5,7 +5,16 @@ export = {
   permissions: [],
   interactionData: {
     name: "internetspeed",
+    name_localizations: {
+      "en-US": "Internet Speed",
+      "es-ES": "Velocidad de internet",
+      "sv-SE": "Internet hastighet",
+    },
     description: "Show your internet speed",
+    description_localizations: {
+      "es-ES": "Muestra tu velocidad de internet",
+      "sv-SE": "Visa din internet hastighet",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed().setImage(

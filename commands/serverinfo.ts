@@ -4,8 +4,16 @@ export = {
   name: "serverinfo",
   permissions: [],
   interactionData: {
-    name: "serverinfo",
+    name: "server info",
+    name_localizations: {
+      "es-ES": "Información del servidor",
+      "sv-SE": "Serverinformation",
+    },
     description: "Displays server information",
+    description_localizations: {
+      "es-ES": "Muestra información del servidor",
+      "sv-SE": "Visar serverinformation",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild) {

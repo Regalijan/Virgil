@@ -9,23 +9,55 @@ export = {
   privileged: true,
   interactionData: {
     name: "mute",
+    name_localizations: {
+      "es-ES": "Silenciar",
+      "sv-SE": "Tysta",
+    },
     description: "Mute a user to prevent them from chatting",
+    description_localizations: {
+      "es-ES": "Silencia a un usuario para que no pueda hablar",
+      "sv-SE": "Tysta en användaren för att förhindra att de kan prata",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to mute",
+        description_localizations: {
+          "es-ES": "Usuario a silenciar",
+          "sv-SE": "Användare att tysta",
+        },
         required: true,
       },
       {
         type: 4,
         name: "hours",
+        name_localizations: {
+          "es-ES": "Horas",
+          "sv-SE": "Timmar",
+        },
         description: "How many hours to mute for",
+        description_localizations: {
+          "es-ES": "Cuántas horas silenciar",
+          "sv-SE": "Hur många timmar att tysta",
+        },
       },
       {
         type: 4,
         name: "minutes",
+        name_localizations: {
+          "es-ES": "Minutos",
+          "sv-SE": "Minuter",
+        },
         description: "How many minutes to mute for",
+        description_localizations: {
+          "es-ES": "Cuántos minutos silenciar",
+          "sv-SE": "Hur många minuter att tysta",
+        },
       },
     ],
   },

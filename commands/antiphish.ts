@@ -7,6 +7,9 @@ export = {
   permissions: ["MANAGE_GUILD"],
   interactionData: {
     name: "antiphish",
+    name_localizations: {
+      "sv-SE": "antifisk",
+    },
     description: "Change anti-phishing settings",
     options: [
       {

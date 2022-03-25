@@ -15,11 +15,23 @@ export = {
   interactionData: {
     name: "roblox",
     description: "Whois command but for Roblox",
+    description_localization: {
+      "es-ES": "Comando whois pero para Roblox",
+      "sv-SE": "Whois kommando utom för roblox",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to look up",
+        description_localizations: {
+          "es-ES": "Usuario a buscar",
+          "sv-SE": "Användare att söka efter",
+        },
       },
     ],
   },

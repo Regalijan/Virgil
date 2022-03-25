@@ -9,7 +9,15 @@ export = {
   permissions: [],
   interactionData: {
     name: "troubleshoot",
+    name_localizations: {
+      "es-ES": "Solución de problemas",
+      "sv-SE": "Lös problem",
+    },
     description: "Troubleshoot Roblox verification connection issues.",
+    description_localizations: {
+      "es-ES": "Soluciona problemas de conexión con la verificación de Roblox.",
+      "sv-SE": "Lös problem med Roblox verifieringsanslutning.",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()

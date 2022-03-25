@@ -6,7 +6,15 @@ export = {
   permissions: [],
   interactionData: {
     name: "duck",
+    name_localizations: {
+      "es-ES": "pato",
+      "sv-SE": "duck",
+    },
     description: "Quack",
+    description_localizations: {
+      "es-ES": "Graznido",
+      "sv-SE": "Snatter",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed({

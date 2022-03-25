@@ -9,7 +9,15 @@ export = {
   permissions: [],
   interactionData: {
     name: "reverify",
+    name_localizations: {
+      "es-ES": "Reverificar",
+      "sv-SE": "Verifiera igen",
+    },
     description: "Change your linked Roblox account",
+    description_localizations: {
+      "es-ES": "Cambia tu cuenta de Roblox",
+      "sv-SE": "Ändra ditt Roblox-konto",
+    },
   },
   async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()

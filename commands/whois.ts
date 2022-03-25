@@ -5,12 +5,28 @@ export = {
   permissions: [],
   interactionData: {
     name: "whois",
+    name_localizations: {
+      "es-ES": "Quién es",
+      "sv-SE": "Vem är",
+    },
     description: "Get user information",
+    description_localizations: {
+      "es-ES": "Obtén información de un usuario",
+      "sv-SE": "Hämta användarinformation",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to look up",
+        description_localizations: {
+          "es-ES": "Usuario a buscar",
+          "sv-SE": "Användare att hämta",
+        },
       },
     ],
   },

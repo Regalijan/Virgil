@@ -6,11 +6,23 @@ export = {
   interactionData: {
     name: "avatar",
     description: "Gets avatar of user",
+    description_localizations: {
+      "es-ES": "Obtiene el avatar de un usuario",
+      "sv-SE": "Hämtar avatar för en användare",
+    },
     options: [
       {
         type: 6,
         name: "user",
+        name_localizations: {
+          "es-ES": "Usuario",
+          "sv-SE": "Användare",
+        },
         description: "User to get avatar of",
+        description_localizations: {
+          "es-ES": "Usuario al que obtener el avatar",
+          "sv-SE": "Användare för att hämta avatar",
+        },
       },
     ],
   },

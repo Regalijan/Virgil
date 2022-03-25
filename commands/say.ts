@@ -5,18 +5,42 @@ export = {
   permissions: ["ADMINISTRATOR"],
   interactionData: {
     name: "say",
+    name_localizations: {
+      "es-ES": "decir",
+      "sv-SE": "säga",
+    },
     description: "Say something",
+    description_localizations: {
+      "es-ES": "Decir algo",
+      "sv-SE": "Säga något",
+    },
     options: [
       {
         type: 3,
         name: "message",
+        name_localizations: {
+          "es-ES": "mensaje",
+          "sv-SE": "meddelande",
+        },
         description: "Message to say",
+        description_localizations: {
+          "es-ES": "Mensaje a decir",
+          "sv-SE": "Meddelande att säga",
+        },
         required: true,
       },
       {
         type: 7,
         name: "channel",
+        name_localizations: {
+          "es-ES": "canal",
+          "sv-SE": "kanal",
+        },
         description: "Where to send the message",
+        description_localizations: {
+          "es-ES": "Canal donde enviar el mensaje",
+          "sv-SE": "Vart ska meddelandet skickas",
+        },
       },
     ],
   },

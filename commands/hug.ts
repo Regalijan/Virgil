@@ -6,12 +6,28 @@ export = {
   permissions: [],
   interactionData: {
     name: "hug",
+    name_localizations: {
+      "es-ES": "abrazar",
+      "sv-SE": "hugga",
+    },
     description: "Hug someone",
+    description_localizations: {
+      "es-ES": "Abraza a alguien",
+      "sv-SE": "Hugga någon",
+    },
     options: [
       {
         type: 6,
         name: "person",
+        name_localizations: {
+          "es-ES": "persona",
+          "sv-SE": "person",
+        },
         description: "Person to hug",
+        description_localizations: {
+          "es-ES": "Persona a abrazar",
+          "sv-SE": "Person att hugga",
+        },
         required: true,
       },
     ],

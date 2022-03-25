@@ -38,8 +38,13 @@ export = {
         content: "Specified channel must be a voice channel!",
         ephemeral: true,
       });
-    const packetProcessor = new VoicePacketReceiver(channel);
+    if (!i.guild.me || !channel.permissionsFor(i.guild.me).has("CONNECT"))
+      return await i.reply({
+        content: "I do not have permission to join that voice channel!",
+        ephemeral: true,
+      });
     await i.deferReply();
+    const packetProcessor = new VoicePacketReceiver(channel);
     try {
       await packetProcessor.waitForJoin();
     } catch (e) {
@@ -55,7 +60,18 @@ export = {
       ephemeral: true,
     });
     try {
-      await packetProcessor.listenForPackets();
+      packetProcessor.voiceEvents.on("max", async (uid: string) => {
+        const voiceMember = await i.guild?.members
+          .fetch(uid)
+          .catch(console.error);
+        if (
+          !voiceMember?.voice ||
+          !i.guild?.me?.permissionsIn(channel).has("MUTE_MEMBERS")
+        )
+          return;
+        await voiceMember.voice.setMute(true, "User reached max volume");
+      });
+      packetProcessor.listenForPackets().then(() => {});
     } catch {}
   },
 };
