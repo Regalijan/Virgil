@@ -1,0 +1,12 @@
+{
+  "name": "help",
+  "name_localizations": {
+    "es-ES": "ayuda",
+    "sv-SE": "hjälp"
+  },
+  "description": "Sends link to user manual",
+  "description_localizations": {
+    "es-ES": "Envía un enlace al manual del usuario",
+    "sv-SE": "Skickar länk till användarmanualen"
+  }
+}
