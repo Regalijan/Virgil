@@ -1,5 +1,7 @@
 # Virgil V2
 
+[Were you looking for the user manual?](MANUAL.md)
+
 ## Self-hosting (production)
 
 1. Install [Docker Compose](https://docs.docker.com/compose/install/)
