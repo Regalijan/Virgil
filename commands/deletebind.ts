@@ -5,7 +5,6 @@ const bindDb = mongo.db("bot").collection("binds");
 
 export = {
   name: "deletebind",
-  description: "Deletes a bind",
   async exec(i: CommandInteraction): Promise<void> {
     const bind = await bindDb.findOneAndDelete({
       id: i.options.getString("id", true),
