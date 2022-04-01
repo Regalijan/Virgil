@@ -2,7 +2,13 @@ import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
-import { Guild, GuildMember, Team, User } from "discord.js";
+import {
+  Guild,
+  GuildMember,
+  RoleResolvable,
+  Team,
+  User,
+} from "discord.js";
 
 export = {
   async isMFAEnabled(user: User): Promise<boolean> {
@@ -223,8 +229,7 @@ export = {
       );
       return badgeIds;
     } catch (e) {
-      console.error(e);
-      Sentry.captureException(e);
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
       return [];
     }
   },
@@ -261,8 +266,7 @@ export = {
         .catch((e) => console.error(e));
       return apiResponse.data;
     } catch (e) {
-      console.error(e);
-      Sentry.captureException(e);
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
       return;
     }
   },
@@ -272,7 +276,7 @@ export = {
     relationship: "allies" | "enemies" = "allies"
   ): Promise<number[]> {
     if (!["allies", "enemies"].includes(relationship.toLowerCase()))
-      throw SyntaxError(
+      throw new TypeError(
         'relationship must be a value of "allies" or "enemies"'
       );
     const cachedData = await redis
@@ -286,7 +290,7 @@ export = {
       const groups: number[] = [];
       for (const group of apiResponse.data.relatedGroups) groups.push(group.id);
       await redis
-        .set(`${relationship}_${group}`, groups, "EX", 3600)
+        .set(`${relationship}_${group}`, JSON.stringify(groups), "EX", 3600)
         .catch((e) => console.error(e));
       return groups;
     } catch (e) {
@@ -344,14 +348,23 @@ export = {
     }
     if (!verifyApiData) {
       const unvBinds: any = [];
+      const unvRoles: RoleResolvable[] = [];
+      const rolesToRemove: RoleResolvable[] = [];
       for (const b of binds) {
         if (b.type === "unverified") unvBinds.push(b);
         else {
-          if (member.roles.cache.has(b.role))
-            await member.roles.remove(b.role).catch((e) => {
-              process.env.DSN ? Sentry.captureException(e) : console.error(e);
-            });
+          const roleToRemove = member.guild.roles.cache.get(b.role);
+          if (
+            roleToRemove &&
+            roleToRemove.position < member.guild.me?.roles.highest?.position
+          ) {
+            rolesToRemove.push(roleToRemove);
+          }
         }
+        if (rolesToRemove.length)
+          await member.roles.remove(rolesToRemove).catch((e) => {
+            process.env.DSN ? Sentry.captureException(e) : console.error(e);
+          });
       }
       for (const unverifiedBind of unvBinds) {
         const unvRole = await member.guild.roles
@@ -363,10 +376,11 @@ export = {
           member.roles.cache.has(unvRole.id)
         )
           continue;
-        await member.roles.add(unvRole).catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        unvRoles.push(unvRole);
       }
+      await member.roles.add(unvRoles).catch((e) => {
+        process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      });
       return self
         ? "You must be new, click the button to get started."
         : `${member.user.username} appears to not be verified.`;
@@ -408,7 +422,8 @@ export = {
     const groupData = await this.getRobloxMemberGroups(robloxUserId);
     const groupObjs: { [k: number]: number } = {};
     for (const group of groupData) groupObjs[group.group.id] = group.role.rank;
-
+    const rolesToAdd: RoleResolvable[] = [];
+    const rolesToRemove: RoleResolvable[] = [];
     for (const bind of binds) {
       const bindRole = await member.guild.roles
         .fetch(bind.role)
@@ -482,10 +497,16 @@ export = {
           break;
       }
       if (giveRole && !member.roles.cache.has(bindRole.id))
-        await member.roles.add(bindRole);
-      else if (!giveRole && member.roles.cache.has(bindRole.id))
-        await member.roles.remove(bindRole);
+        rolesToAdd.push(bindRole.id);
+      else if (
+        !giveRole &&
+        member.roles.cache.has(bindRole.id) &&
+        !rolesToAdd.includes(bindRole.id)
+      )
+        rolesToRemove.push(bindRole.id);
     }
+    await member.roles.add(rolesToAdd);
+    await member.roles.remove(rolesToRemove);
     return self
       ? `Welcome ${verifyApiData.data.robloxUsername}!`
       : `${verifyApiData.data.robloxUsername} has been updated.`;
