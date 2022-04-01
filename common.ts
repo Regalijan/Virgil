@@ -95,7 +95,7 @@ export = {
         `mfaEnabled_${user.id}`,
         JSON.stringify(isEnabled),
         "EX",
-        900
+        1800
       );
       return isEnabled;
     } else return JSON.parse(enabled);
