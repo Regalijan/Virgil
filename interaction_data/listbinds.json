@@ -1,0 +1,12 @@
+{
+  "name": "listbinds",
+  "name_localizations": {
+    "es-ES": "listar_enlaces",
+    "sv-SE": "lista_länkar"
+  },
+  "description": "Shows all server binds",
+  "description_localizations": {
+    "es-ES": "Muestra todos los enlaces del servidor",
+    "sv-SE": "Visa alla serverlänkar"
+  }
+}

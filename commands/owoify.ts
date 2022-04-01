@@ -3,30 +3,6 @@ import { CommandInteraction } from "discord.js";
 export = {
   name: "owoify",
   permissions: [],
-  interactionData: {
-    name: "owoify",
-    description: "OwOify some text",
-    description_localizations: {
-      "es-ES": "OwOify algo de texto",
-      "sv-SE": "OwOify något text",
-    },
-    options: [
-      {
-        type: 3,
-        name: "text",
-        name_localizations: {
-          "es-ES": "texto",
-          "sv-SE": "text",
-        },
-        description: "Text to OwOify",
-        description_localizations: {
-          "es-ES": "Texto a OwOify",
-          "sv-SE": "Text att OwOify",
-        },
-        required: true,
-      },
-    ],
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const text = i.options
       .getString("text", true)

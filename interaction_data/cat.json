@@ -1,0 +1,12 @@
+{
+  "name": "cat",
+  "name_localizations": {
+    "es-ES": "gato",
+    "sv-SE": "katt"
+  },
+  "description": "Gets picture of cat",
+  "description_localizations": {
+    "es-ES": "Obtiene una imagen de un gato",
+    "sv-SE": "Hämtar en bild av en katt"
+  }
+}

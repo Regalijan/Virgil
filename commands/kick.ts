@@ -3,34 +3,6 @@ import { CommandInteraction } from "discord.js";
 export = {
   name: "kick",
   permissions: ["KICK_MEMBERS"],
-  interactionData: {
-    name: "kick",
-    name_localizations: {
-      "es-ES": "expulsar",
-      "sv-SE": "sparka",
-    },
-    description: "Kick a user",
-    description_localizations: {
-      "es-ES": "Expulsa a un usuario del servidor",
-      "sv-SE": "Sparka en en användare från servern",
-    },
-    options: [
-      {
-        type: 6,
-        name: "user",
-        name_localizations: {
-          "es-ES": "usuario",
-          "sv-SE": "användare",
-        },
-        description: "Person to kick",
-        description_localizations: {
-          "es-ES": "Usuario a expulsar",
-          "sv-SE": "Användare att sparka",
-        },
-        required: true,
-      },
-    ],
-  },
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild?.me?.permissions.has("KICK_MEMBERS")) {

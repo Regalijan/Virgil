@@ -5,37 +5,6 @@ const settingsStore = mongo.db("bot").collection("settings");
 export = {
   name: "muterole",
   permissions: ["MANAGE_GUILD"],
-  interactionData: {
-    name: "muterole",
-    name_localizations: {
-      "es-ES": "rol_de_muteo",
-      "sv-SE": "mute_roll",
-    },
-    description: "Set or unset a role to use for mutes",
-    description_localizations: {
-      "es-ES": "Establece o desestablece un rol para usar para los mutes",
-      "sv-SE":
-        "Ställer in eller tar bort en roll för att använda för ljudborttagning",
-    },
-    options: [
-      {
-        type: 8,
-        name: "role",
-        name_localizations: {
-          "es-ES": "rol",
-          "sv-SE": "roll",
-        },
-        description:
-          "Role to use (leave empty to reset - view with logs list command)",
-        description_localizations: {
-          "es-ES":
-            "Rol a usar (dejar en blanco para resetear - ver con el comando listar logs)",
-          "sv-SE":
-            "Roll att använda (lämna tomt för att återställa - se med lista loggar-kommandot)",
-        },
-      },
-    ],
-  },
   privileged: true,
 
   async exec(i: CommandInteraction): Promise<void> {

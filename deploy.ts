@@ -15,25 +15,11 @@ if (process.env.SKIPDEPLOY) {
 
 const commands: ApplicationCommandData[] = [];
 
-for (const file of readdirSync(join(__dirname, "commands")).filter((f) =>
-  f.endsWith(".js")
+for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
+  (f) => f.endsWith(".json")
 )) {
-  const cFile = require(`./commands/${file}`);
-  commands.push(cFile.interactionData);
-}
-
-for (const file of readdirSync(join(__dirname, "usercontext")).filter((f) =>
-  f.endsWith(".js")
-)) {
-  const ucFile = require(`./usercontext/${file}`);
-  if (ucFile.interactionData.type === 2) commands.push(ucFile.interactionData);
-}
-
-for (const file of readdirSync(join(__dirname, "messagecontext")).filter((f) =>
-  f.endsWith(".js")
-)) {
-  const mcFile = require(`./messagecontext/${file}`);
-  if (mcFile.interactionData.type === 3) commands.push(mcFile.interactionData);
+  const data = require(join(__dirname, "interaction_data", file));
+  commands.push(data);
 }
 
 axios("https://discord.com/api/v10/users/@me", {

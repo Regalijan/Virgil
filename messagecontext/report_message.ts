@@ -13,11 +13,6 @@ const reportStore = mongo.db("bot").collection("reports");
 export = {
   name: "Report Message to Server Mods",
   permissions: [],
-  interactionData: {
-    name: "Report Message to Server Mods",
-    type: 3,
-  },
-
   async exec(i: ContextMenuInteraction): Promise<void> {
     if (i.targetType === "USER")
       throw Error(

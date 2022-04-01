@@ -6,26 +6,6 @@ import Sentry from "../sentry";
 export = {
   name: "autosilence",
   permissions: ["MUTE_MEMBERS"],
-  interactionData: {
-    name: "autosilence",
-    description:
-      "Automatically mute a user in voice chat if they exceed n decibels",
-    options: [
-      {
-        type: 7,
-        name: "channel",
-        description: "Voice channel to monitor",
-        required: true,
-        channel_types: [2],
-      },
-      {
-        type: 4,
-        name: "decibels",
-        description: "Decibel count to silence at",
-        required: true,
-      },
-    ],
-  },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild || !(await common.isPremium(i.guild)))
       return await i.reply({

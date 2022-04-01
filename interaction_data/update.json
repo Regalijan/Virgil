@@ -1,0 +1,27 @@
+{
+  "name": "update",
+  "name_localizations": {
+    "es-ES": "actualizar",
+    "sv-SE": "uppdatera"
+  },
+  "description": "Updates a user's name and Roblox roles",
+  "description_localizations": {
+    "es-ES": "Actualiza el nombre y los roles de un usuario",
+    "sv-SE": "Uppdaterar en användares namn och Roblox roller"
+  },
+  "options": [
+    {
+      "type": 6,
+      "name": "user",
+      "name_localizations": {
+        "es-ES": "usuario",
+        "sv-SE": "användare"
+      },
+      "description": "User to update",
+      "description_localizations": {
+        "es-ES": "Usuario a actualizar",
+        "sv-SE": "Användare att uppdatera"
+      }
+    }
+  ]
+}

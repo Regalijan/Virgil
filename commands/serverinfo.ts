@@ -3,18 +3,6 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 export = {
   name: "serverinfo",
   permissions: [],
-  interactionData: {
-    name: "serverinfo",
-    name_localizations: {
-      "es-ES": "información_del_servidor",
-      "sv-SE": "serverinformation",
-    },
-    description: "Displays server information",
-    description_localizations: {
-      "es-ES": "Muestra información del servidor",
-      "sv-SE": "Visar serverinformation",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild) {
       await i.reply({

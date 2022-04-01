@@ -1,0 +1,12 @@
+{
+  "name": "dog",
+  "name_localizations": {
+    "es-ES": "perro",
+    "sv-SE": "hund"
+  },
+  "description": "Woof",
+  "description_localizations": {
+    "es-ES": "Guau",
+    "sv-SE": "väft"
+  }
+}

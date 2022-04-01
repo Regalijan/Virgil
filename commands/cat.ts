@@ -4,18 +4,6 @@ import axios from "axios";
 export = {
   name: "cat",
   permissions: [],
-  interactionData: {
-    name: "cat",
-    name_localizations: {
-      "es-ES": "gato",
-      "sv-SE": "katt",
-    },
-    description: "Gets picture of cat",
-    description_localizations: {
-      "es-ES": "Obtiene una imagen de un gato",
-      "sv-SE": "Hämtar en bild av en katt",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const cat = await axios("https://nekos.life/api/v2/img/meow").catch((e) =>
       console.error(e)

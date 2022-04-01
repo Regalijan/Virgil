@@ -1,0 +1,27 @@
+{
+  "name": "whois",
+  "name_localizations": {
+    "es-ES": "quién_es",
+    "sv-SE": "vem_är"
+  },
+  "description": "Get user information",
+  "description_localizations": {
+    "es-ES": "Obtén información de un usuario",
+    "sv-SE": "Hämta användarinformation"
+  },
+  "options": [
+    {
+      "type": 6,
+      "name": "user",
+      "name_localizations": {
+        "es-ES": "usuario",
+        "sv-SE": "användare"
+      },
+      "description": "User to look up",
+      "description_localizations": {
+        "es-ES": "Usuario a buscar",
+        "sv-SE": "Användare att hämta"
+      }
+    }
+  ]
+}

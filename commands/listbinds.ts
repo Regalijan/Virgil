@@ -6,18 +6,6 @@ const binds = mongo.db("bot").collection("binds");
 export = {
   name: "listbinds",
   description: "Shows all server binds",
-  interactionData: {
-    name: "listbinds",
-    name_localizations: {
-      "es-ES": "listar_enlaces",
-      "sv-SE": "lista_länkar",
-    },
-    description: "Shows all server binds",
-    description_localizations: {
-      "es-ES": "Muestra todos los enlaces del servidor",
-      "sv-SE": "Visa alla serverlänkar",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guildId)
       throw Error(

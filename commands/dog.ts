@@ -4,18 +4,6 @@ import axios from "axios";
 export = {
   name: "dog",
   permissions: [],
-  interactionData: {
-    name: "dog",
-    name_localizations: {
-      "es-ES": "perro",
-      "sv-SE": "hund",
-    },
-    description: "Woof",
-    description_localizations: {
-      "es-ES": "Guau",
-      "sv-SE": "väft",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     try {
       const dog = await axios("https://dog.ceo/api/breeds/image/random");

@@ -1,5 +1,4 @@
 import {
-  ApplicationCommandData,
   ButtonInteraction,
   CommandInteraction,
   ContextMenuInteraction,
@@ -22,7 +21,6 @@ const cmds: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    interactionData: ApplicationCommandData;
     privileged?: boolean;
     exec(i: CommandInteraction): Promise<void>;
   }
@@ -33,7 +31,6 @@ const userContextCommands: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    interactionData: ApplicationCommandData;
     exec(i: ContextMenuInteraction): Promise<void>;
   }
 > = new Map();
@@ -43,7 +40,6 @@ const messageContextCommands: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    interactionData: ApplicationCommandData;
     exec(i: ContextMenuInteraction): Promise<void>;
   }
 > = new Map();
@@ -53,7 +49,6 @@ const buttonCommands: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    interactionData: ApplicationCommandData;
     exec(i: ButtonInteraction): Promise<void>;
   }
 > = new Map();

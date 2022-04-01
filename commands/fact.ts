@@ -4,18 +4,6 @@ import axios from "axios";
 export = {
   name: "fact",
   permissions: [],
-  interactionData: {
-    name: "fact",
-    name_localizations: {
-      "es-ES": "hecho",
-      "sv-SE": "fakta",
-    },
-    description: "Gets a fact",
-    description_localizations: {
-      "es-ES": "Obtiene un hecho",
-      "sv-SE": "Hämta en fakta",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const fact = await axios("https://nekos.life/api/v2/fact").catch((e) =>
       console.error(e)

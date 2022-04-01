@@ -5,19 +5,6 @@ export = {
   name: "factoryreset",
   description: "Erases all settings of the bot and leaves the server",
   permissions: ["ADMINISTRATOR"],
-  interactionData: {
-    name: "factoryreset",
-    name_localizations: {
-      "en-US": "Factory Reset",
-      "es-ES": "Reiniciar",
-      "sv-SE": "Återställ",
-    },
-    description: "Erases all settings of the bot and leaves the server",
-    description_localizations: {
-      "es-ES": "Elimina todos los ajustes del bot y deja el servidor",
-      "sv-SE": "Raderar alla inställningar och lämnar servern",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const serversettings = await mongo
       .db("bot")

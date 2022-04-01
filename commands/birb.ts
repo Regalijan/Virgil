@@ -4,18 +4,6 @@ import axios from "axios";
 export = {
   name: "birb",
   permissions: [],
-  interactionData: {
-    name: "birb",
-    name_localizations: {
-      "es-ES": "pájaro",
-      "sv-SE": "fågel",
-    },
-    description: "Gets picture of birb",
-    description_localizations: {
-      "es-ES": "Obtiene una imagen de un pájaro",
-      "sv-SE": "Hämta en bild på en fågel",
-    },
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed({ title: "Tweet Tweet..." });
     const member = await i.guild?.members

@@ -12,29 +12,6 @@ import Sentry from "../sentry";
 export = {
   name: "roblox",
   description: "Whois command but for Roblox",
-  interactionData: {
-    name: "roblox",
-    description: "Whois command but for Roblox",
-    description_localization: {
-      "es-ES": "Comando whois pero para Roblox",
-      "sv-SE": "Whois kommando utom för roblox",
-    },
-    options: [
-      {
-        type: 6,
-        name: "user",
-        name_localizations: {
-          "es-ES": "usuario",
-          "sv-SE": "användare",
-        },
-        description: "User to look up",
-        description_localizations: {
-          "es-ES": "Usuario a buscar",
-          "sv-SE": "Användare att söka efter",
-        },
-      },
-    ],
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const user = i.options.getUser("user") ?? i.user;
     const embed = new MessageEmbed({

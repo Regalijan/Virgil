@@ -5,43 +5,6 @@ const settings = mongo.db("bot").collection("settings");
 export = {
   name: "antiphish",
   permissions: ["MANAGE_GUILD"],
-  interactionData: {
-    name: "antiphish",
-    name_localizations: {
-      "sv-SE": "antifisk",
-    },
-    description: "Change anti-phishing settings",
-    options: [
-      {
-        type: 1,
-        name: "status",
-        description: "View current anti-phishing settings",
-      },
-      {
-        type: 1,
-        name: "toggle-antiphish",
-        description: "Toggle anti-phishing protection",
-      },
-      {
-        type: 1,
-        name: "toggle-autoban",
-        description: "Toggle auto-banning of phishers",
-      },
-      {
-        type: 1,
-        name: "set-message",
-        description:
-          "Set the message a user receives when banned, or leave blank for none",
-        options: [
-          {
-            type: 3,
-            name: "message",
-            description: "Message to send to banned user",
-          },
-        ],
-      },
-    ],
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const subcommand = i.options.getSubcommand(true);
     const phishSettings = await settings.findOne({ guild: i.guildId });

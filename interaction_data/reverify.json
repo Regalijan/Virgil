@@ -1,0 +1,12 @@
+{
+  "name": "reverify",
+  "name_localizations": {
+    "es-ES": "reverificar",
+    "sv-SE": "verifiera_igen"
+  },
+  "description": "Change your linked Roblox account",
+  "description_localizations": {
+    "es-ES": "Cambia tu cuenta de Roblox",
+    "sv-SE": "Ändra ditt Roblox-konto"
+  }
+}

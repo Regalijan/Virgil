@@ -4,11 +4,6 @@ import Common from "../common";
 export = {
   name: "Update Roblox Roles",
   permissions: [],
-  interactionData: {
-    name: "Update Roblox Roles",
-    type: 2,
-  },
-
   async exec(i: ContextMenuInteraction): Promise<void> {
     if (i.targetType !== "USER")
       return await i.reply({

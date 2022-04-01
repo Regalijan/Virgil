@@ -1,0 +1,12 @@
+{
+  "name": "duck",
+  "name_localizations": {
+    "es-ES": "pato",
+    "sv-SE": "anka"
+  },
+  "description": "Quack",
+  "description_localizations": {
+    "es-ES": "Graznido",
+    "sv-SE": "Snatter"
+  }
+}

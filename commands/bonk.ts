@@ -3,30 +3,6 @@ import { CommandInteraction, Team } from "discord.js";
 export = {
   name: "bonk",
   permissions: [],
-  interactionData: {
-    name: "bonk",
-    description: "Bonk someone",
-    description_localizations: {
-      "es-ES": "Bonk alguien",
-      "sv-SE": "Bonk någon",
-    },
-    options: [
-      {
-        type: 6,
-        name: "user",
-        name_localizations: {
-          "es-ES": "usuario",
-          "sv-SE": "användare",
-        },
-        description: "User to bonk",
-        description_localizations: {
-          "es-ES": "Usuario a bonk",
-          "sv-SE": "Användare att bonk",
-        },
-        required: true,
-      },
-    ],
-  },
   async exec(i: CommandInteraction): Promise<void> {
     const target = i.options.getUser("user", true);
     const owner = i.client.application?.owner;
