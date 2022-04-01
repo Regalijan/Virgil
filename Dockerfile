@@ -1,4 +1,8 @@
-FROM node
+FROM node:debian-slim
+RUN apt-get update
+RUN apt-get install curl
+RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | bash
+RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
 WORKDIR /home/nodeuser/virgil
 COPY . .
