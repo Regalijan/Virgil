@@ -50,10 +50,9 @@ export default class VoicePacketReceiver {
         try {
           returnedBuf = execSync(
             "ffmpeg -i - -filter:a volumedetect -f null /dev/null",
-            { input: data },
-
+            { input: data }
           );
-          console.log("LENGTH:", returnedBuf?.length ?? 0)
+          console.log("LENGTH:", returnedBuf?.length ?? 0);
           if (!returnedBuf) {
             console.log("Error:\n", returnedBuf);
             return;

@@ -2,13 +2,7 @@ import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
-import {
-  Guild,
-  GuildMember,
-  RoleResolvable,
-  Team,
-  User,
-} from "discord.js";
+import { Guild, GuildMember, RoleResolvable, Team, User } from "discord.js";
 
 export = {
   async isMFAEnabled(user: User): Promise<boolean> {
