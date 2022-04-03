@@ -18,6 +18,9 @@ for (const file of readdirSync(join(__dirname, "events")).filter((f) =>
 }
 
 const bot = new Client({
+  http: {
+    version: 10,
+  },
   intents: [
     "GUILDS",
     "GUILD_BANS",
@@ -27,6 +30,10 @@ const bot = new Client({
     "GUILD_VOICE_STATES",
     "GUILD_WEBHOOKS",
   ],
+  ws: {
+    // @ts-expect-error
+    version: 10,
+  },
 });
 
 bot.login().catch((e) => {
