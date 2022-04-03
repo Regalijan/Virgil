@@ -1,4 +1,4 @@
-FROM node:debian-slim
+FROM node:bullseye-slim
 RUN apt-get update
 RUN apt-get install curl
 RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | bash
