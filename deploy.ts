@@ -15,7 +15,8 @@ if (process.env.SKIPDEPLOY) {
 
 const commands: ApplicationCommandData[] = [];
 
-for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
+for (const file of readdirSync(join(__dirname, "../interaction_data")).filter(
+  // Interaction definitions are not copied over to the dist folder
   (f) => f.endsWith(".json")
 )) {
   const data = require(join(__dirname, "interaction_data", file));
