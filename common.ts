@@ -5,6 +5,24 @@ import Sentry from "./sentry";
 import { Guild, GuildMember, RoleResolvable, Team, User } from "discord.js";
 
 export = {
+  async isDeveloper(user: User): Promise<boolean> {
+    const cachedDevData = await redis.get("developers");
+    if (cachedDevData) {
+      const cachedDevs = JSON.parse(cachedDevData);
+      return cachedDevs.includes(user.id);
+    }
+    const app = await user.client.application?.fetch();
+    if (!app) return false;
+    const devs: string[] = [];
+    if (app.owner instanceof Team) {
+      devs.push(...app.owner.members.map((m) => m.id));
+    } else if (app.owner instanceof User) {
+      devs.push(app.owner.id);
+    }
+    await redis.set("developers", JSON.stringify(devs));
+    return devs.includes(user.id);
+  },
+
   async isMFAEnabled(user: User): Promise<boolean> {
     if (
       !process.env.MFA_API_TOKEN ||
