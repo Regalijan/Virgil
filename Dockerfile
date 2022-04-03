@@ -1,6 +1,6 @@
 FROM node:bullseye-slim
 RUN apt-get update
-RUN apt-get install -y curl gcc g++ make python3.10
+RUN apt-get install -y curl gcc g++ make python3
 RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | bash
 RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
