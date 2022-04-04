@@ -14,4 +14,5 @@ RUN npx tsc
 ENV NODE_ENV=production
 RUN npm prune
 RUN node dist/deploy.js
+RUN speedtest --accept-license
 CMD ["node", "dist"]
