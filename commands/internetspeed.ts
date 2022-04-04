@@ -67,8 +67,9 @@ export = {
       })
     );
     if (!modalReq.success) {
-      await i.editReply({
+      await i.reply({
         content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
+        ephermal: true,
       });
       return;
     }
