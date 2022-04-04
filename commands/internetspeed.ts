@@ -22,7 +22,7 @@ async function callback(
     data,
     validateStatus: () => true,
   });
-  return { success: req.status === 204, details: req.data };
+  return { success: req.status >= 200 && req.status < 300, details: req.data };
 }
 
 export = {
