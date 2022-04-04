@@ -29,6 +29,7 @@ const bot = new Client({
     "GUILD_MESSAGES",
     "GUILD_VOICE_STATES",
     "GUILD_WEBHOOKS",
+    1 << 15, // Message content
   ],
   ws: {
     // @ts-expect-error
