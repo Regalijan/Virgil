@@ -10,6 +10,22 @@ interface RawEvent {
   t?: string;
 }
 
+async function callback(
+  webhook: string,
+  data: string
+): Promise<{ success: boolean; details?: string }> {
+  const req = await axios(webhook, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    data,
+    validateStatus: () => true,
+  });
+  if (req.status !== 200) return { success: false, details: req.data };
+  return { success: true };
+}
+
 export = {
   name: "internetspeed",
   permissions: [],
@@ -25,38 +41,37 @@ export = {
       return await i.reply({ embeds: [embed] });
     }
     let result = "Test failed";
-    try {
-      await axios(
-        `https://discord.com/api/v10/interactions/${i.id}/${i.token}/callback`,
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "POST",
-          data: JSON.stringify({
-            type: 9,
-            data: {
-              title: "Select Speedtest Server",
-              custom_id: "st_server_component",
+    const modalReq = await callback(
+      `https://discord.com/api/v10/interactions/${i.id}/${i.token}/callback`,
+      JSON.stringify({
+        type: 9,
+        data: {
+          title: "Select Speedtest Server",
+          custom_id: "st_server_component",
+          components: [
+            {
+              type: 1,
               components: [
                 {
-                  type: 1,
-                  components: [
-                    {
-                      type: 4,
-                      custom_id: "st_server_modal",
-                      style: 1,
-                      label: "Select a server (leave empty for auto)",
-                      max_length: 6,
-                      required: true,
-                    },
-                  ],
+                  type: 4,
+                  custom_id: "st_server_modal",
+                  style: 1,
+                  label: "Select a server (leave empty for auto)",
+                  max_length: 6,
+                  required: true,
                 },
               ],
             },
-          }),
-        }
-      );
+          ],
+        },
+      })
+    );
+    if (!modalReq.success)
+      return await i.reply({
+        content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
+        ephemeral: true,
+      });
+    try {
       // This is a temporary "hack" until discord.js implements proper modal support.
       i.client.on("raw", async function (packet: RawEvent) {
         if (packet.op !== 0 || packet.t !== "INTERACTION_CREATE") return;
@@ -64,17 +79,20 @@ export = {
         if (data.type !== 5 || data.data.custom_id !== "st_server_component")
           return;
         const serverId = data.data.components[0].components[0].value;
-        await axios(
+        const deferReq = await callback(
           `https://discord.com/api/v10/interactions/${data.id}/${data.token}/callback`,
-          {
-            headers: {
-              "content-type": "application/json",
-            },
-            method: "POST",
-            data: '{"type":5}',
-            validateStatus: () => true,
-          }
+          '{"type":5}'
         );
+        if (!deferReq.success) {
+          i.client.removeListener("raw", () => {});
+          return await i.reply({
+            content: `Failed to defer modal: ${JSON.stringify(
+              deferReq.details
+            )}`,
+            ephemeral: true,
+          });
+        }
+        let success = true;
         try {
           result = JSON.parse(
             execSync(
@@ -83,17 +101,13 @@ export = {
               }`
             ).toString()
           ).result.url;
-        } catch {}
-        await axios(
+        } catch (e) {
+          success = false;
+          result = `Test failed. Details:\n${e}`;
+        }
+        await callback(
           `https://discord.com/api/v10/webhooks/${i.client.user?.id}/${data.token}`,
-          {
-            headers: {
-              "content-type": "application/json",
-            },
-            method: "POST",
-            data: `{"content":"${result}.png"}`,
-            validateStatus: () => true,
-          }
+          `{"content":"${result}${success ? ".png" : ""}"}`
         );
         i.client.removeListener("raw", () => {});
       });
