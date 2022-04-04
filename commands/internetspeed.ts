@@ -30,6 +30,7 @@ export = {
   name: "internetspeed",
   permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
+    await i.deferReply();
     if (!(await Common.isDeveloper(i.user))) {
       const embed = new MessageEmbed().setImage(
         "https://thumbsnap.com/sc/3N5uU9CP.png"
