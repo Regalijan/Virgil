@@ -66,11 +66,12 @@ export = {
         },
       })
     );
-    if (!modalReq.success)
-      return await i.reply({
+    if (!modalReq.success) {
+      await i.editReply({
         content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
-        ephemeral: true,
       });
+      return;
+    }
     try {
       // This is a temporary "hack" until discord.js implements proper modal support.
       i.client.on("raw", async function (packet: RawEvent) {
@@ -85,12 +86,12 @@ export = {
         );
         if (!deferReq.success) {
           i.client.removeListener("raw", () => {});
-          return await i.reply({
+          await i.editReply({
             content: `Failed to defer modal: ${JSON.stringify(
               deferReq.details
             )}`,
-            ephemeral: true,
           });
+          return;
         }
         let success = true;
         try {
@@ -112,10 +113,10 @@ export = {
         i.client.removeListener("raw", () => {});
       });
     } catch {
-      return await i.reply({
-        content: "An error occurred while running the speed test.",
-        ephemeral: true,
-      });
+      const content = "An error occurred while running the speed test.";
+      i.replied
+        ? await i.editReply({ content })
+        : await i.reply({ content, ephemeral: true });
     }
   },
 };
