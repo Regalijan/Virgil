@@ -58,7 +58,7 @@ export = {
                   style: 1,
                   label: "Select a server (leave empty for auto)",
                   max_length: 6,
-                  required: true,
+                  required: false,
                 },
               ],
             },
