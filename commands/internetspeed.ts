@@ -69,7 +69,7 @@ export = {
     if (!modalReq.success) {
       await i.reply({
         content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
-        ephermal: true,
+        ephemeral: true,
       });
       return;
     }
