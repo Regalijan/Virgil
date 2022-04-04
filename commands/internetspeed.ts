@@ -67,7 +67,7 @@ export = {
       })
     );
     if (!modalReq.success) {
-      await i.reply({
+      await i.followUp({
         content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
         ephemeral: true,
       });
@@ -87,10 +87,11 @@ export = {
         );
         if (!deferReq.success) {
           i.client.removeListener("raw", () => {});
-          await i.editReply({
+          await i.followUp({
             content: `Failed to defer modal: ${JSON.stringify(
               deferReq.details
             )}`,
+            ephemeral: true,
           });
           return;
         }
@@ -115,7 +116,7 @@ export = {
       });
     } catch {
       const content = "An error occurred while running the speed test.";
-      i.replied
+      i.replied || i.deferred
         ? await i.editReply({ content })
         : await i.reply({ content, ephemeral: true });
     }
