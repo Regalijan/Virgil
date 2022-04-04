@@ -66,7 +66,7 @@ export = {
       })
     );
     if (!modalReq.success) {
-      await i.followUp({
+      await i.reply({
         content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
         ephemeral: true,
       });
@@ -86,12 +86,12 @@ export = {
         );
         if (!deferReq.success) {
           i.client.removeListener("raw", () => {});
-          await i.followUp({
-            content: `Failed to defer modal: ${JSON.stringify(
+          await callback(
+            `https://discord.com/api/v10/webhooks/${i.client.user?.id}/${data.token}`,
+            `{"content":"Failed to defer modal:\n${JSON.stringify(
               deferReq.details
-            )}`,
-            ephemeral: true,
-          });
+            )}"}`
+          );
           return;
         }
         let success = true;
