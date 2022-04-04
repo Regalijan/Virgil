@@ -24,6 +24,7 @@ export = {
       if (member) embed.setColor(member.displayColor);
       return await i.reply({ embeds: [embed] });
     }
+    let result = "Test failed";
     try {
       await axios(
         `https://discord.com/api/v10/interactions/${i.id}/${i.token}/callback`,
@@ -71,9 +72,9 @@ export = {
             },
             method: "POST",
             data: '{"type":5}',
+            validateStatus: () => true,
           }
         );
-        let result: any;
         try {
           result = JSON.parse(
             execSync(
@@ -81,10 +82,8 @@ export = {
                 serverId ? ` -s ${serverId}` : ""
               }`
             ).toString()
-          ).result;
-        } catch {
-          result = "Test failed";
-        }
+          ).result.url;
+        } catch {}
         await axios(
           `https://discord.com/api/v10/webhooks/${i.client.user?.id}/${data.token}`,
           {
@@ -92,7 +91,8 @@ export = {
               "content-type": "application/json",
             },
             method: "POST",
-            data: `{"content":"${result.url}.png"}`,
+            data: `{"content":"${result}.png"}`,
+            validateStatus: () => true,
           }
         );
         i.client.removeListener("raw", () => {});
