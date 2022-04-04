@@ -13,7 +13,7 @@ interface RawEvent {
 async function callback(
   webhook: string,
   data: string
-): Promise<{ success: boolean; details?: string }> {
+): Promise<{ success: boolean; details: string | undefined }> {
   const req = await axios(webhook, {
     headers: {
       "Content-Type": "application/json",
@@ -22,15 +22,13 @@ async function callback(
     data,
     validateStatus: () => true,
   });
-  if (req.status !== 200) return { success: false, details: req.data };
-  return { success: true };
+  return { success: req.status === 204, details: req.data };
 }
 
 export = {
   name: "internetspeed",
   permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
-    await i.deferReply();
     if (!(await Common.isDeveloper(i.user))) {
       const embed = new MessageEmbed().setImage(
         "https://thumbsnap.com/sc/3N5uU9CP.png"
