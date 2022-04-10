@@ -342,8 +342,8 @@ export = {
       return "I do not have permission to manage roles!";
     const db = mongo.db("bot").collection("binds");
     const verifyApiData = await axios(
-      `https://registry.rover.link/discord-to-roblox/${member.id}`, {
-      }
+      `https://registry.rover.link/discord-to-roblox/${member.id}`,
+      {}
     ).catch(() => {});
     const bindCursorDoc = db.find({ server: member.guild.id });
     const binds: {
