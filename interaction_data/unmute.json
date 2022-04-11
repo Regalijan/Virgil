@@ -1,0 +1,28 @@
+{
+  "name": "unmute",
+  "name_localizations": {
+    "es-ES": "desactivar_silencio",
+    "sv-SE": "avaktivera_ljud"
+  },
+  "description": "Unmute a user",
+  "description_localizations": {
+    "es-ES": "Desactiva el silencio de un usuario",
+    "sv-SE": "Aktivera ljudet för en användare"
+  },
+  "options": [
+    {
+      "type": 6,
+      "name": "user",
+      "name_localizations": {
+        "es-ES": "usuario",
+        "sv-SE": "användare"
+      },
+      "description": "The user to unmute",
+      "description_localizations": {
+        "es-ES": "El usuario a desactivar el silencio",
+        "sv-SE": "Användaren som ska aktivera ljudet"
+      },
+      "required": true
+    }
+  ]
+}
