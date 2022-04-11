@@ -2,10 +2,14 @@ import { CommandInteraction } from "discord.js";
 
 export = {
   name: "mute",
-  permissions: ["MANAGE_MESSAGES"],
+  permissions: ["MODERATE_MEMBERS"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild) throw TypeError("<CommandInteraction>.guild is null");
+    if (!i.guild)
+      return i.reply({
+        content: "This command can only be used in a guild.",
+        ephemeral: true,
+      });
     if (!i.guild.me?.permissions.has("MODERATE_MEMBERS"))
       return await i.reply({
         content:
