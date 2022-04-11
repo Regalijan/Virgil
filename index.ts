@@ -8,7 +8,7 @@ dotenv();
 (async function () {
   if (!process.env.DISCORDTOKEN)
     return console.error("No token was detected in the environment!");
-  const gatewayRequest = await axios("https://discord.com/api/v9/gateway/bot", {
+  const gatewayRequest = await axios("https://discord.com/api/v10/gateway/bot", {
     headers: {
       authorization: `Bot ${process.env.DISCORDTOKEN}`,
     },
