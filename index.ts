@@ -12,7 +12,7 @@ async function getGatewayData() {
     return console.error("No token was detected in the environment!");
   const request = await axios("https://discord.com/api/v10/gateway/bot", {
     headers: {
-      authorization: process.env.DISCORDTOKEN,
+      authorization: `Bot ${process.env.DISCORDTOKEN}`,
     },
   });
   return request.data;
