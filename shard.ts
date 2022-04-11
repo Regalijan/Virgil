@@ -10,13 +10,6 @@ dotenv();
 
 const events: Map<string, any> = new Map();
 
-for (const file of readdirSync(join(__dirname, "events")).filter((f) =>
-  f.endsWith(".js")
-)) {
-  const requiredEvent = require(`./events/${file}`);
-  events.set(file.replace(".js", ""), requiredEvent);
-}
-
 const bot = new Client({
   http: {
     version: 10,
@@ -37,24 +30,33 @@ const bot = new Client({
   },
 });
 
+function loadEvents() {
+  if (process.env.ENABLEDEBUG)
+    bot.on("debug", function (m) {
+      console.log(m);
+    });
+  for (const file of readdirSync(join(__dirname, "events")).filter((f) =>
+    f.endsWith(".js")
+  )) {
+    const requiredEvent = require(`./events/${file}`);
+    events.set(file.replace(".js", ""), requiredEvent);
+  }
+  events.forEach((_value, key) => {
+    const event = events.get(key);
+    bot.on(key, async (...args: any[]) => {
+      await event(...args);
+    });
+  });
+}
+
+loadEvents();
+
 bot.login().catch((e) => {
   process.env.DSN ? Sentry.captureException(e) : console.error(e);
   process.exit();
 });
 
 const mongo = db.db("bot");
-
-if (process.env.ENABLEDEBUG)
-  bot.on("debug", function (m) {
-    console.log(m);
-  });
-
-events.forEach((_value, key) => {
-  const event = events.get(key);
-  bot.on(key, async (...args: any[]) => {
-    await event(...args);
-  });
-});
 
 setInterval(async function (): Promise<void> {
   try {
@@ -100,3 +102,13 @@ setInterval(async function (): Promise<void> {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
   }
 }, 30000);
+
+process.on("message", async function ({ code, data }) {
+  switch (code) {
+    case 1:
+      bot.removeAllListeners();
+      events.clear();
+      loadEvents();
+      break;
+  }
+})
