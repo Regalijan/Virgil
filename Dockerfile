@@ -1,5 +1,4 @@
 FROM node:bullseye
-RUN apt-get update
 RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | bash
 RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
