@@ -95,7 +95,7 @@ setInterval(async function (): Promise<void> {
     await mongo
       .collection("reports")
       .updateMany(
-        { created: { $gte: Date.now() - 2592000000 } },
+        { created: { $lte: Date.now() - 2592000000 } },
         { $set: { "message.content": "[ Content Deleted ]" } }
       );
   } catch (e) {
