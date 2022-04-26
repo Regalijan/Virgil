@@ -27,6 +27,7 @@
 
 ```
 BROKER_TOKEN?: Remote message broker auth token
+BROKER_URL?: Remote message broker URL
 DISCORDTOKEN: The bot token
 DSN?: Your Sentry dsn
 INSTALL_FFMPEG?: Set to any value to install FFmpeg.
