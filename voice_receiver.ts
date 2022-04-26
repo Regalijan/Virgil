@@ -6,12 +6,10 @@ import {
   VoiceConnectionStatus,
 } from "@discordjs/voice";
 import { VoiceChannel } from "discord.js";
-import { opus } from "prism-media";
 import { execSync } from "child_process";
 import { EventEmitter } from "events";
 
 export default class VoicePacketReceiver {
-  private readonly decoder: opus.Decoder;
   private readonly voiceConnection: VoiceConnection;
   private subscriptions: Map<string, AudioReceiveStream>;
   voiceEvents: EventEmitter;
@@ -19,16 +17,12 @@ export default class VoicePacketReceiver {
     if (channel.guild.me?.voice.channel)
       throw new Error("Already in voice channel for guild!");
     this.voiceConnection = joinVoiceChannel({
+      // @ts-expect-error Apparently this is a known bug, thanks discord.js
       adapterCreator: channel.guild.voiceAdapterCreator,
       channelId: channel.id,
       guildId: channel.guild.id,
       selfDeaf: false,
       selfMute: true,
-    });
-    this.decoder = new opus.Decoder({
-      rate: 48000,
-      channels: 2,
-      frameSize: 960,
     });
     this.subscriptions = new Map<string, AudioReceiveStream>();
     this.voiceEvents = new EventEmitter();
@@ -43,13 +37,13 @@ export default class VoicePacketReceiver {
 
     receiver.speaking.on("start", (uid) => {
       const stream = receiver.subscribe(uid);
-      this.decoder.on("data", (data) => {
+      stream.on("data", (data) => {
         if (!Buffer.from(data).toString("binary").match(/1/)) return; // Buffer is all zeroes (no data)
         let returnedBuf: Buffer;
         console.log("Attempting volume detection");
         try {
           returnedBuf = execSync(
-            "ffmpeg -i - -filter:a volumedetect -f null /dev/null",
+            "ffmpeg -f opus -i - -filter:a volumedetect -f null /dev/null",
             { input: data }
           );
           console.log("LENGTH:", returnedBuf?.length ?? 0);
@@ -73,7 +67,6 @@ export default class VoicePacketReceiver {
         if (maxVol === 0.0) this.voiceEvents.emit("max", uid);
         console.log(maxVol, meanVol);
       });
-      stream.pipe(this.decoder);
     });
     receiver.speaking.on("end", (uid) => {
       receiver.subscriptions.delete(uid);
@@ -81,13 +74,11 @@ export default class VoicePacketReceiver {
       this.voiceConnection.disconnect();
       this.voiceConnection.destroy();
       receiver.speaking.removeAllListeners();
-      this.decoder.destroy();
     });
     this.voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
       receiver.speaking.removeAllListeners();
       receiver.subscriptions.clear();
       this.voiceConnection.removeAllListeners();
-      this.decoder.destroy();
       try {
         this.voiceConnection.destroy();
       } catch {}
@@ -96,7 +87,6 @@ export default class VoicePacketReceiver {
       receiver.speaking.removeAllListeners();
       receiver.subscriptions.clear();
       this.voiceConnection.removeAllListeners();
-      this.decoder.destroy();
     });
   }
 }
