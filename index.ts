@@ -44,11 +44,13 @@ async function getGatewayData() {
   if (process.env.BROKER_TOKEN) {
     /*
       WS Event Codes:
-        0: Authentication
+        0: Authentication (send-only)
         1: Update all interactions
         2: Update core files (shard.ts, and dependencies)
         3: Update server settings
         4: Retrieve server settings
+        5: Recalculate shard count
+        6: Respawn specific shard
      */
     const broker = new WebSocket(
       process.env.BROKER_URL ?? "wss://broker.virgil.gg"
@@ -56,12 +58,15 @@ async function getGatewayData() {
     broker.on("open", function () {
       broker.send(
         JSON.stringify({
-          code: 0, // Authenticate
+          code: 0,
           data: {
             token: process.env.BROKER_TOKEN,
           },
         })
       );
+    });
+    broker.on("error", function (err) {
+      console.error(err);
     });
     broker.on("message", async function (message) {
       const { code, data, shard } = JSON.parse(message.toString());
@@ -84,6 +89,30 @@ async function getGatewayData() {
             const delay = Math.ceil(5000 / respawnMaxConcurrency);
             await shard.respawn({ delay }); // Sure we could kill all of them at once, but spawning all of them again after can result in some servers facing extended downtime depending on the number of shards.
           });
+          break;
+        case 3:
+          break; // Not implemented yet
+        case 4:
+          break; // Not implemented yet
+        case 5:
+          const upToDateGatewayData = await getGatewayData().catch(() => {});
+          if (!upToDateGatewayData) break;
+          const {
+            session_start_limit: { max_concurrency: currentMaxConcurrency },
+            shards: currentShardCount,
+          } = upToDateGatewayData;
+          if (currentShardCount > shardMgr.shards.size)
+            await shardMgr.spawn({
+              amount: currentShardCount - shardMgr.shards.size,
+              delay: Math.ceil(5000 / currentMaxConcurrency),
+            });
+          else if (currentShardCount < shardMgr.shards.size)
+            while (shardMgr.shards.size > currentShardCount)
+              await shardMgr.shards.last()?.kill();
+          break;
+        case 6:
+          await shardMgr.shards.get(shard)?.respawn();
+          break;
       }
     });
   }
