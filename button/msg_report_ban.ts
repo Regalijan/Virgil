@@ -1,5 +1,6 @@
 import { ButtonInteraction, MessageEmbed } from "discord.js";
 import mongo from "../mongo";
+import SendLog from "../send_log";
 const reportStore = mongo.db("bot").collection("reports");
 const settingsStore = mongo.db("bot").collection("settings");
 
@@ -16,14 +17,7 @@ export = {
         ephemeral: true,
       });
     }
-    if (!i.guild?.me?.permissionsIn(i.channelId).has(["MANAGE_MESSAGES"])) {
-      return await i.reply({
-        content:
-          "I do not have permission to manage messages in this channel! Please allow me to delete messages so reports can marked as resolved.",
-        ephemeral: true,
-      });
-    }
-    if (!i.guild.me.permissions.has("BAN_MEMBERS")) {
+    if (!i.guild?.me?.permissions.has("BAN_MEMBERS")) {
       return await i.reply({
         content:
           "I do not have permission to ban! Please check my permissions.",
@@ -42,9 +36,7 @@ export = {
     const settings = await settingsStore.findOne({ guild: i.guildId });
     await reportMessage.author
       .send({
-        content: `You have been banned from ${
-          reportMessage.guild?.name
-        } due to a member report.${
+        content: `You have been banned from ${reportMessage.guild?.name}.${
           settings?.banMessage ? `\n\n${settings.banMessage}` : ""
         }`,
       })
@@ -60,18 +52,13 @@ export = {
       content: `${reportMessage.author.tag} banned!`,
       ephemeral: true,
     });
-    if (!settings?.messageReportActionLogChannel) return;
-    const channel = await i.guild?.channels.fetch(
-      settings.messageReportActionLogChannel
-    );
-    if (
-      channel?.type !== "GUILD_TEXT" ||
-      !channel?.permissionsFor(i.guild.me).has("SEND_MESSAGES")
-    )
-      return;
+    if (!settings?.messageReportActionLogChannelWebhook) return;
 
     const logEmbed = new MessageEmbed()
-      .setAuthor(i.user.tag, i.user.displayAvatarURL({ dynamic: true }))
+      .setAuthor({
+        name: i.user.tag,
+        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+      })
       .setTitle("Report Resolved (Ban)")
       .setDescription(
         `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`
@@ -82,6 +69,11 @@ export = {
       )
       .addField("Reported Content", associatedReport.message.content);
 
-    await channel.send({ embeds: [logEmbed] });
+    await SendLog(
+      settings.messageReportActionLogChannelWebhook,
+      logEmbed,
+      i.guild,
+      "messageReportActionLogChannelWebhook"
+    );
   },
 };

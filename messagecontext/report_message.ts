@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
+import SendLog from "../send_log";
 import Sentry from "../sentry";
 const settingsStore = mongo.db("bot").collection("settings");
 const reportStore = mongo.db("bot").collection("reports");
@@ -49,6 +50,10 @@ export = {
           "Your report was not sent! I have been restricted from sending in the report channel.",
         ephemeral: true,
       });
+    const reportId = createHash("sha256")
+      .update(randomBytes(256))
+      .digest("base64");
+
     const embed = new MessageEmbed()
       .setAuthor({
         name: i.user.tag,
@@ -57,9 +62,13 @@ export = {
       .setTitle("Message Report")
       .setColor([255, 0, 0])
       .setDescription(`**Reported Message:** ${message.content}`)
-      .addField(
-        "Message Author",
-        `${message.author.tag} (${message.author.id})`
+      .addFields(
+        {
+          name: "Message Author",
+          value: `${message.author.tag} (${message.author.id})`,
+        },
+        { name: "Message ID", value: message.id },
+        { name: "Report ID", value: reportId }
       );
 
     const actionRow1 = new MessageActionRow({
@@ -114,13 +123,14 @@ export = {
       ],
     });
 
-    const reportMessageEmb = await channel.send({
-      embeds: [embed],
-      components: [actionRow1, ignActionRow],
-    });
-    const reportId = createHash("sha256")
-      .update(randomBytes(256))
-      .digest("base64");
+    await SendLog(
+      settings.messageReportChannelWebhook,
+      embed,
+      i.guild,
+      "messageReportChannelWebhook",
+      [actionRow1, ignActionRow]
+    );
+
     await reportStore.insertOne({
       reportId,
       message: {
@@ -128,7 +138,6 @@ export = {
         id: message.id,
         author: message.author.id,
       },
-      reportEmbedId: reportMessageEmb.id,
       reporter: {
         id: i.user.id,
         tag: i.user.tag,
