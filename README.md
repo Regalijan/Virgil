@@ -26,6 +26,7 @@
 ## Environment Variables
 
 ```
+BROKER_TOKEN?: Remote message broker auth token
 DISCORDTOKEN: The bot token
 DSN?: Your Sentry dsn
 INSTALL_FFMPEG?: Set to any value to install FFmpeg.
