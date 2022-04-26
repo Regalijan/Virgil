@@ -22,8 +22,6 @@
     "@discordjs/voice": "^0.9.0",
     "@sentry/node": "^6.19.7",
     "axios": "^0.27.1",
-    "@sentry/node": "^6.19.7",
-    "axios": "^0.27.0",
     "bufferutil": "^4.0.6",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
