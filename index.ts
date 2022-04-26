@@ -65,7 +65,7 @@ async function getGatewayData() {
     });
     broker.on("message", async function (message) {
       const { code, data, shard } = JSON.parse(message.toString());
-      if (typeof shard === "number" && [1, 2].includes(shard))
+      if (typeof shard === "number" && [1, 2].includes(code))
         try {
           execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
         } catch (e) {
