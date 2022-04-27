@@ -8,20 +8,5 @@
   "description_localizations": {
     "es-ES": "Muestra información de depuración",
     "sv-SE": "Visa felsökningsinformation"
-  },
-  "options": [
-    {
-      "type": 3,
-      "name": "options",
-      "description": "List of debug options to pass",
-      "name_localizations": {
-        "es-ES": "opciones",
-        "sv-SE": "alternativ"
-      },
-      "description_localizations": {
-        "es-ES": "Lista de opciones de depuración a pasar",
-        "sv-SE": "Lista över felsökningsalternativ"
-      }
-    }
-  ]
+  }
 }
