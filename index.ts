@@ -116,4 +116,10 @@ async function getGatewayData() {
       }
     });
   }
+  process.on("SIGTERM", () => {
+    shardMgr.shards.each((shard) => {
+      shard.kill();
+    });
+    process.exit();
+  });
 })();
