@@ -19,3 +19,4 @@ services:
     links:
       - mongo
       - redis
+    init: true
