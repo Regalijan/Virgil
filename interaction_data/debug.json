@@ -17,6 +17,10 @@
       "name_localizations": {
         "es-ES": "opciones",
         "sv-SE": "alternativ"
+      },
+      "description_localizations": {
+        "es-ES": "Lista de opciones de depuración a pasar",
+        "sv-SE": "Lista över felsökningsalternativ"
       }
     }
   ]
