@@ -1,0 +1,22 @@
+{
+  "name": "debug",
+  "description": "Show debug information",
+  "name_localizations": {
+    "es-ES": "depurar",
+    "sv-SE": "felsöka"
+  },
+  "description_localizations": {
+    "es-ES": "Muestra información de depuración",
+    "sv-SE": "Visa felsökningsinformation"
+  },
+  "options": [
+    {
+      "type": 3,
+      "name": "options",
+      "name_localizations": {
+        "es-ES": "opciones",
+        "sv-SE": "alternativ"
+      }
+    }
+  ]
+}
