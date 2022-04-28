@@ -31,3 +31,6 @@ api-*.tar
 
 # Other build stuff
 /.elixir_ls/
+
+# UNIX sockets
+*/*.sock
