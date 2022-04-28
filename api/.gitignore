@@ -29,7 +29,7 @@ api-*.tar
 .env
 *.env
 
-# Other build stuff
+# Elixir language server
 /.elixir_ls/
 
 # UNIX sockets
