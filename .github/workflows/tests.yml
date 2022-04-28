@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  TypeScript_Transpile_Check:
+  Validation:
     runs-on: ubuntu-latest
         
     env:
