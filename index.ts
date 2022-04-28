@@ -1,5 +1,5 @@
 import { config as dotenv } from "dotenv";
-import { ShardingManager } from "discord.js";
+import { ShardingManager, ShardClientUtil } from "discord.js";
 import { join } from "path";
 import WebSocket from "ws";
 import axios from "axios";
@@ -102,7 +102,21 @@ async function getGatewayData() {
         case 3:
           break; // Not implemented yet
         case 4:
-          break; // Not implemented yet
+          const { guild } = data;
+          if (!guild) {
+            broker.send(JSON.stringify({ code: 4, data: null }));
+            break;
+          }
+          await shardMgr.shards
+            .get(ShardClientUtil.shardIdForGuildId(guild, shardMgr.shards.size))
+            ?.send({
+              code: 4,
+              data: {
+                guild,
+                broker,
+              },
+            });
+          break;
         case 5:
           const upToDateGatewayData = await getGatewayData().catch(() => {});
           if (!upToDateGatewayData) break;

@@ -110,5 +110,11 @@ process.on("message", async function ({ code, data }) {
       events.clear();
       loadEvents();
       break;
+    case 4:
+      const guildSettings = await mongo
+        .collection("settings")
+        .findOne({ guild: data.guild });
+      data.broker.send({ code: 4, data: guildSettings });
+      break;
   }
-})
+});
