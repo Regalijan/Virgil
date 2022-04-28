@@ -20,7 +20,7 @@ defmodule Api.MixProject do
 
   defp deps do
     [
-      {:envar, "~> 1.0"},
+      {:dotenv, "~> 3.1.0"},
       {:jason, "~> 1.3"},
       {:mongodb, "~> 0.5.1"},
       {:plug_cowboy, "~> 2.5"}
