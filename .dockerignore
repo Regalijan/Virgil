@@ -1,2 +1,5 @@
+api/.elixir_ls/
+api/_build
 node_modules/
 mongo/
+socket/
