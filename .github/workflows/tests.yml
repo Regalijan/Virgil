@@ -28,6 +28,7 @@ jobs:
           ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
       - name: Push to tests-passed
         run: |
+          git fetch --all
           git checkout tests-passed
           git merge main --ff-only
           git push
