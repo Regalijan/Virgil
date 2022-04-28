@@ -14,21 +14,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
       - name: Install Dependencies
-        run: |
-          npm ci
-          npm run build
+        run: npm ci
+      - name: Transpile
+        run: npm run build
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
       - name: Push to tests-passed
         run: |
-          git fetch --all
           git checkout tests-passed
           git merge main
           git push
