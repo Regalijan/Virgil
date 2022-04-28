@@ -16,7 +16,8 @@ services:
     depends_on:
       - mongo
       - redis
+    init: true
     links:
       - mongo
       - redis
-    init: true
+    restart: unless-stopped
