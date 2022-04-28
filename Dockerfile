@@ -4,7 +4,6 @@ RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
 WORKDIR /home/nodeuser/virgil
 COPY . .
-RUN rm -rf mongo node_modules
 RUN npm install
 RUN node ./ffmpeg.js
 RUN chown -R nodeuser:nodeuser .
