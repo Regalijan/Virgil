@@ -11,6 +11,17 @@ services:
     build:
       context: "./redis"
 
+  api:
+    build:
+      context: "./api"
+    depends_on:
+      - mongo
+    init: true
+    links:
+      - mongo
+    volumes:
+      - "./api/socket:/socket"
+
   bot:
     build: .
     depends_on:
