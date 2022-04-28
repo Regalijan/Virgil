@@ -11,6 +11,9 @@ jobs:
       matrix:
         node-version: [16.x, 18.x]
         
+    env:
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,19 +25,11 @@ jobs:
         run: |
           npm ci
           npm run build
-            
-  push_to_tests_passed:
-    runs-on: ubuntu-latest
-    env:
-      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
-      - name: Push
+      - name: Push to tests-passed
         run: |
           git checkout tests-passed
           git merge main --ff-only
