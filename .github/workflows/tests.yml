@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  TypeScript_Transpile_Check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+        - run: |
+            npm ci
+            npm run build
+            
+  push_to_tests_passed:
+    runs-on: ubuntu-latest
+    env:
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Initialize SSH
+        run: |
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
+      - name: Push
+        run: |
+          git checkout tests-passed
+          git merge main --ff-only
+          git push
