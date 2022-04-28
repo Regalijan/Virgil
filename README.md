@@ -7,14 +7,14 @@
 1. Install [Docker Compose](https://docs.docker.com/compose/install/)
 2. Create a `.env` file with the variables in the table at the bottom
 3. Clone repo: `git clone https://github.com/Wolftallemo/Virgil`
-4. Checkout to the `rewrite` branch: `git checkout rewrite`
+4. Checkout to the `tests-passed` branch: `git checkout tests-passed`
 5. Run `docker-compose up -d` to start the bot.
 
 ## Self-hosting (development)
 
 1. Install [Node.js](https://nodejs.org/en/download/current)
 2. Install [MongoDB](https://www.mongodb.com/try/download/community)
-3. Install [Redis](https://redis.io/download) - on Windows you will be better off using WSL
+3. Install [Redis](https://redis.io/download) - use [Memurai](https://www.memurai.com/get-memurai) on Windows
 4. Install [Python](https://www.python.org) - you may want to use your package manage on linux
 5. Linux: Install `gcc` `g++` `make` | Windows: Install [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe)
 6. Create a `.env` file with the variables in the table at the bottom
