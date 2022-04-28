@@ -18,9 +18,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-        - run: |
-            npm ci
-            npm run build
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npm run build
             
   push_to_tests_passed:
     runs-on: ubuntu-latest
