@@ -17,12 +17,6 @@ export = {
           "`Error: <ContextMenuInteraction>.guild is null or member does not exist.`",
         ephemeral: true,
       });
-    if (i.targetId !== i.user.id && !i.memberPermissions?.has("MANAGE_GUILD"))
-      return await i.reply({
-        content:
-          "Oops! You do not have permission to use this command; if you want to verify yourself, please run `/verify`",
-        ephemeral: true,
-      });
     await i.reply({
       content: await Common.verify(member, i.targetId === i.user.id),
       ephemeral: true,

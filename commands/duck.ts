@@ -3,7 +3,6 @@ import axios from "axios";
 
 export = {
   name: "duck",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed({
       title: ":duck: QUACK!",

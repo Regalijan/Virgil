@@ -6,7 +6,6 @@ import {
 
 export = {
   name: "reverify",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
       .setURL("https://rover.link/my/verification")

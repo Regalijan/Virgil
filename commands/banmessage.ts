@@ -4,7 +4,6 @@ const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "banmessage",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
     const settings = await settingsStore.findOne({ guild: i.guildId });
     if (!settings)

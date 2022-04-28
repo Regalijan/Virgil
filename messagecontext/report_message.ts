@@ -13,7 +13,6 @@ const reportStore = mongo.db("bot").collection("reports");
 
 export = {
   name: "Report Message to Server Mods",
-  permissions: [],
   async exec(i: ContextMenuInteraction): Promise<void> {
     if (i.targetType === "USER")
       throw Error(
@@ -30,7 +29,7 @@ export = {
     const settings = await settingsStore.findOne({ guild: i.guildId });
     if (!settings?.messageReportChannel)
       return await i.reply({
-        content: "Message reporting is disabled in the server.",
+        content: "Message reporting is disabled in this server.",
         ephemeral: true,
       });
     const channel = await i.guild?.channels

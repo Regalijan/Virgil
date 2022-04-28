@@ -37,5 +37,7 @@
         "sv-SE": "Vart ska meddelandet skickas"
       }
     }
-  ]
+  ],
+  "default_member_permissions": "8",
+  "dm_permission": false
 }

@@ -3,7 +3,6 @@ import axios from "axios";
 
 export = {
   name: "birb",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed({ title: "Tweet Tweet..." });
     const member = await i.guild?.members

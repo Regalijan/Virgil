@@ -5,7 +5,6 @@ import mongo from "../mongo";
 
 export = {
   name: "bind",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild) throw Error("<CommandInteraction>.guild is null");
     const subc = i.options.getSubcommand(true);

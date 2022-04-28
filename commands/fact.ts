@@ -3,7 +3,6 @@ import axios from "axios";
 
 export = {
   name: "fact",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const fact = await axios("https://nekos.life/api/v2/fact").catch((e) =>
       console.error(e)

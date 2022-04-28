@@ -3,17 +3,7 @@ import mongo from "../mongo";
 
 export = {
   name: "initialize",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guildId) {
-      await i.reply({
-        content:
-          "Uh oh! Something happened during the pre-run check - but don't worry, nothing was modified!",
-        ephemeral: true,
-      });
-      return;
-    }
-
     const currentSettings = await mongo
       .db("bot")
       .collection("settings")

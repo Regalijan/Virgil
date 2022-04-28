@@ -12,7 +12,7 @@ export = {
     });
     await i.reply({
       content: bind.value ? "Bind deleted!" : "Bind does not exist!",
-      ephemeral: !Boolean(bind.value),
+      ephemeral: !bind.value,
     });
   },
 };

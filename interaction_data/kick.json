@@ -24,5 +24,7 @@
       },
       "required": true
     }
-  ]
+  ],
+  "default_member_permissions": "2",
+  "dm_permission": false
 }

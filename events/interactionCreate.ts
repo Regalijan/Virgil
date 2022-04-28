@@ -20,7 +20,6 @@ const cmds: Map<
   string,
   {
     name: string;
-    permissions?: PermissionResolvable[];
     privileged?: boolean;
     exec(i: CommandInteraction): Promise<void>;
   }
@@ -198,19 +197,6 @@ module.exports = async function (i: Interaction) {
             "Hey! You can't run commands here! They may only be run in a thread or a standard text channel.",
           ephemeral: true,
         })
-        .catch((e: any) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
-      return;
-    }
-
-    const interactionUser = await i.guild?.members.fetch(i.user.id);
-    if (
-      command?.permissions?.length &&
-      !interactionUser?.permissions.has(command.permissions)
-    ) {
-      await i
-        .reply({ content: "You cannot run this command!", ephemeral: true })
         .catch((e: any) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });

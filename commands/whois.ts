@@ -2,7 +2,6 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 export = {
   name: "whois",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const user = i.options.getUser("user") ?? i.user;
     const embed = new MessageEmbed({ title: "User Information" })

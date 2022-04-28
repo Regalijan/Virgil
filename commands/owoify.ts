@@ -2,7 +2,6 @@ import { CommandInteraction } from "discord.js";
 
 export = {
   name: "owoify",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const text = i.options
       .getString("text", true)

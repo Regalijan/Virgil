@@ -13,14 +13,8 @@ const ignoredDB = mongo.db("bot").collection("ignored");
 export = {
   name: "logs",
   description: "View, set, or remove a log channel",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed();
-    if (!i.guild?.me)
-      return await i.reply({
-        content: "Log configuration commands can only be run in a server!",
-        ephemeral: true,
-      });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     const settingsList = await settingsDB.findOne({ guild: i.guildId });
     if (!settingsList)
@@ -259,7 +253,7 @@ export = {
         return await i.reply({ content: `\`${removalChoice}\` log disabled!` });
 
       case "set":
-        const setChannel = await i.guild.channels.fetch(
+        const setChannel = await i.guild?.channels.fetch(
           i.options.getChannel("channel", true).id
         );
         if (setChannel?.type !== "GUILD_TEXT")
@@ -270,7 +264,12 @@ export = {
         const setChoice = i.options.getString("log", true);
         const $set: any = { $set: {} };
         $set.$set[choiceToSettingMap.get(setChoice) ?? ""] = setChannel?.id;
-        if (!setChannel?.permissionsFor(i.guild.me.id)?.has("MANAGE_WEBHOOKS"))
+        if (
+          !setChannel
+            ?.permissionsFor(i.guild?.me?.id ?? "0")
+            ?.has("MANAGE_WEBHOOKS")
+        )
+          // It should never be zero, Discord's permission checks should prevent this
           return await i.reply({
             content:
               "I cannot create the webhook for the log! Please grant me permission to manage webhooks!",
@@ -294,9 +293,9 @@ export = {
             guild: i.guildId,
           })
         ).toArray();
-        embed.setDescription("All ignored channels for " + i.guild.name);
+        embed.setDescription("All ignored channels for " + i.guild?.name);
         for (const ignored of allIgnored) {
-          const ignoredChannel = await i.guild.channels
+          const ignoredChannel = await i.guild?.channels
             .fetch(ignored.channel)
             .catch(() => {});
           if (!ignoredChannel) continue;

@@ -6,7 +6,6 @@ import {
 
 export = {
   name: "troubleshoot",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
       .setURL(

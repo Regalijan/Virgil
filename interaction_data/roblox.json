@@ -19,5 +19,6 @@
         "sv-SE": "Användare att söka efter"
       }
     }
-  ]
+  ],
+  "dm_permission": false
 }

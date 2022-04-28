@@ -7,7 +7,6 @@ import Common from "../common";
 
 export = {
   name: "verify",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const member = await i.guild?.members.fetch(i.user.id);
     if (!member)

@@ -8,5 +8,7 @@
   "description_localizations": {
     "es-ES": "Inicializa los ajustes del servidor",
     "sv-SE": "Initialisera serverinställningar"
-  }
+  },
+  "default_member_permissions": "32",
+  "dm_permission": false
 }

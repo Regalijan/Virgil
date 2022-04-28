@@ -3,7 +3,6 @@ import axios from "axios";
 
 export = {
   name: "8ball",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const eightballresponse = await axios(
       "https://nekos.life/api/v2/8ball"

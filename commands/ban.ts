@@ -3,7 +3,6 @@ import mongo from "../mongo";
 
 export = {
   name: "ban",
-  permissions: ["BAN_MEMBERS"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild?.me?.permissions.has("BAN_MEMBERS")) {

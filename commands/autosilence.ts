@@ -5,7 +5,6 @@ import Sentry from "../sentry";
 
 export = {
   name: "autosilence",
-  permissions: ["MUTE_MEMBERS"],
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild || !(await common.isPremium(i.guild)))
       return await i.reply({

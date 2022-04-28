@@ -5,7 +5,6 @@ const settingsDB = mongo.db("bot").collection("settings");
 
 export = {
   name: "nicknameformat",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
     await settingsDB.findOneAndUpdate(
       { server: i.guildId },

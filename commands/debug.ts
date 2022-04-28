@@ -51,7 +51,6 @@ function getGitVersion(): string {
 
 export = {
   name: "debug",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const clientApplication = await i.client.application?.fetch();
     let applicationOwner = "Unknown";
@@ -74,7 +73,7 @@ export = {
         { name: "Version", value: getGitVersion() },
         { name: "Repository", value: getGitRemote() },
         { name: "Branch", value: getGitBranch() },
-        { name: "Server ID", value: i.guild?.id ?? "Unknown" },
+        { name: "Server ID", value: i.guild?.id ?? "N/A" },
         {
           name: "Shard ID",
           value: i.client.shard

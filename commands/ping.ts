@@ -4,7 +4,6 @@ import mongo from "../mongo";
 
 export = {
   name: "ping",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const redisBefore = Date.now();
     await redis.ping();

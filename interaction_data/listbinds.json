@@ -8,5 +8,7 @@
   "description_localizations": {
     "es-ES": "Muestra todos los enlaces del servidor",
     "sv-SE": "Visa alla serverlänkar"
-  }
+  },
+  "default_member_permissions": "32",
+  "dm_permission": false
 }

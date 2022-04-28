@@ -8,5 +8,6 @@
   "description_localizations": {
     "es-ES": "Actualiza tus roles de Roblox y tu nombre",
     "sv-SE": "Uppdatera dina Roblox roller och namn"
-  }
+  },
+  "dm_permission": false
 }

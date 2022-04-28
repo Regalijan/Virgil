@@ -9,5 +9,7 @@
   "description_localizations": {
     "es-ES": "Elimina todos los ajustes del bot y deja el servidor",
     "sv-SE": "Raderar alla inställningar och lämnar servern"
-  }
+  },
+  "default_member_permissions": "8",
+  "dm_permission": false
 }

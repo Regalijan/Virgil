@@ -2,7 +2,6 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 export = {
   name: "serverinfo",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild) {
       await i.reply({

@@ -2,7 +2,6 @@ import { CommandInteraction } from "discord.js";
 
 export = {
   name: "say",
-  permissions: ["ADMINISTRATOR"],
   async exec(i: CommandInteraction): Promise<void> {
     const targetApiChannel = i.options.getChannel("channel") ?? i.channel;
     if (!targetApiChannel)

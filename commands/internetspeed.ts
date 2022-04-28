@@ -27,7 +27,6 @@ async function callback(
 
 export = {
   name: "internetspeed",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     if (!(await Common.isDeveloper(i.user))) {
       const embed = new MessageEmbed().setImage(

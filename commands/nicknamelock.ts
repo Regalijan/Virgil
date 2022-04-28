@@ -5,7 +5,6 @@ const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "nicknamelock",
-  permissions: ["MANAGE_GUIILD"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
     switch (i.options.getBoolean("should_nickname", true)) {

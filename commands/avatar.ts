@@ -2,7 +2,6 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 export = {
   name: "avatar",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const embed = new MessageEmbed({
       title: "Avatar",

@@ -2,7 +2,6 @@ import { CommandInteraction, Team } from "discord.js";
 
 export = {
   name: "bonk",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const target = i.options.getUser("user", true);
     const owner = i.client.application?.owner;

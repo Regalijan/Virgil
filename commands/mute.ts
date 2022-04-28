@@ -2,15 +2,9 @@ import { CommandInteraction } from "discord.js";
 
 export = {
   name: "mute",
-  permissions: ["MODERATE_MEMBERS"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild)
-      return i.reply({
-        content: "This command can only be used in a guild.",
-        ephemeral: true,
-      });
-    if (!i.guild.me?.permissions.has("MODERATE_MEMBERS"))
+    if (!i.guild?.me?.permissions.has("MODERATE_MEMBERS"))
       return await i.reply({
         content:
           'I cannot mute as I do not have the "Timeout members" permission.',

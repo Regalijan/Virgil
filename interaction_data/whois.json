@@ -23,5 +23,6 @@
         "sv-SE": "Användare att hämta"
       }
     }
-  ]
+  ],
+  "dm_permission": false
 }

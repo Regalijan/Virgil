@@ -2,7 +2,6 @@ import { CommandInteraction, GuildMember } from "discord.js";
 
 export = {
   name: "unmute",
-  permissions: ["MODERATE_MEMBERS"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild)

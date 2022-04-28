@@ -3,7 +3,6 @@ import axios from "axios";
 
 export = {
   name: "hug",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     try {
       const target = i.options.getUser("person", true);

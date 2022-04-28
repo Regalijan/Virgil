@@ -836,5 +836,7 @@
         }
       ]
     }
-  ]
+  ],
+  "default_member_permissions": "32",
+  "dm_permission": false
 }

@@ -5,9 +5,7 @@ const modlogStore = mongo.db("bot").collection("modlogs");
 
 export = {
   name: "warn",
-  permissions: ["MANAGE_MESSAGES"],
   privileged: true,
-
   async exec(i: CommandInteraction): Promise<void> {
     const reason = i.options.getString("reason") ?? "No reason provided.";
     const user = i.options.getUser("user", true);

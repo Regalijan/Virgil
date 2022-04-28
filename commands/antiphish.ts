@@ -4,7 +4,6 @@ const settings = mongo.db("bot").collection("settings");
 
 export = {
   name: "antiphish",
-  permissions: ["MANAGE_GUILD"],
   async exec(i: CommandInteraction): Promise<void> {
     const subcommand = i.options.getSubcommand(true);
     const phishSettings = await settings.findOne({ guild: i.guildId });

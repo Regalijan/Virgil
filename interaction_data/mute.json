@@ -50,5 +50,7 @@
         "sv-SE": "Hur många minuter att tysta"
       }
     }
-  ]
+  ],
+  "default_member_permissions": "1099511627776",
+  "dm_permission": false
 }

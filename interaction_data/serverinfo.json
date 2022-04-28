@@ -8,5 +8,6 @@
   "description_localizations": {
     "es-ES": "Muestra información del servidor",
     "sv-SE": "Visar serverinformation"
-  }
+  },
+  "dm_permission": false
 }

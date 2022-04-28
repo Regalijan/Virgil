@@ -15,5 +15,7 @@
       "description": "Decibel count to silence at",
       "required": true
     }
-  ]
+  ],
+  "default_member_permissions": "4194304",
+  "dm_permission": false
 }

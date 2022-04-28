@@ -2,7 +2,6 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 export = {
   name: "noobdetector",
-  permissions: [],
   async exec(i: CommandInteraction): Promise<void> {
     const target = i.options.getUser("person", true);
     const member = await i.guild?.members

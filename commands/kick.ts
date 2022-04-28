@@ -2,7 +2,6 @@ import { CommandInteraction } from "discord.js";
 
 export = {
   name: "kick",
-  permissions: ["KICK_MEMBERS"],
   privileged: true,
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guild?.me?.permissions.has("KICK_MEMBERS")) {

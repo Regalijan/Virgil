@@ -19,5 +19,6 @@
         "sv-SE": "Användare för att hämta avatar"
       }
     }
-  ]
+  ],
+  "dm_permission": false
 }
