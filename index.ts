@@ -7,6 +7,14 @@ import { execSync } from "child_process";
 
 dotenv();
 
+let docker_env = false;
+
+try {
+  if (execSync("grep 'docker-init' /proc/1/sched").toString() !== "") {
+    docker_env = true;
+  }
+} catch {}
+
 async function getGatewayData() {
   if (!process.env.DISCORDTOKEN)
     return console.error("No token was detected in the environment!");
