@@ -107,13 +107,19 @@ async function getGatewayData() {
             broker.send(JSON.stringify({ code: 4, data: null }));
             break;
           }
+          process.on(
+            "message",
+            function (message: { code: number; data: { [k: string]: any } }) {
+              if (message.data.guild !== guild) return;
+            }
+          );
           await shardMgr.shards
             .get(ShardClientUtil.shardIdForGuildId(guild, shardMgr.shards.size))
             ?.send({
               code: 4,
               data: {
                 guild,
-                broker,
+                send: broker.send,
               },
             });
           break;

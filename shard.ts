@@ -114,7 +114,7 @@ process.on("message", async function ({ code, data }) {
       const guildSettings = await mongo
         .collection("settings")
         .findOne({ guild: data.guild });
-      data.broker.send({ code: 4, data: guildSettings });
+      data.send(JSON.stringify({ code: 4, data: guildSettings }));
       break;
   }
 });
