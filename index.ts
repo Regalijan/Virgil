@@ -3,7 +3,7 @@ import { ShardingManager } from "discord.js";
 import { join } from "path";
 import WebSocket from "ws";
 import axios from "axios";
-import { execSync } from "child_process";
+import { execSync, spawn } from "child_process";
 
 dotenv();
 
@@ -59,6 +59,7 @@ async function getGatewayData() {
         4: Retrieve server settings
         5: Recalculate shard count
         6: Respawn specific shard
+        7: Entrypoint update (index.ts)
      */
     const broker = new WebSocket(
       process.env.BROKER_URL ?? "wss://broker.virgil.gg"
@@ -121,6 +122,21 @@ async function getGatewayData() {
         case 6:
           await shardMgr.shards.get(shard)?.respawn();
           break;
+        case 7:
+          shardMgr.respawn = false;
+          await shardMgr.broadcastEval((client) => {
+            client.destroy();
+            process.exit();
+          });
+          docker_env
+            ? process.exit()
+            : process.on("exit", function () {
+                spawn("node", ["dist"], {
+                  cwd: join(__dirname, ".."),
+                  detached: true,
+                  stdio: "inherit",
+                });
+              });
       }
     });
   }
