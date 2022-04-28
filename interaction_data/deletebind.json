@@ -1,8 +1,8 @@
 {
   "name": "deletebind",
   "name_localizations": {
-    "es-ES": "Eliminar un enlace",
-    "sv-SE": "Ta bort en binda"
+    "es-ES": "eliminar_un_enlace",
+    "sv-SE": "ta_bort_en_binda"
   },
   "description": "Deletes a bind",
   "description_localizations": {

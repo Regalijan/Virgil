@@ -1,9 +1,9 @@
 {
   "name": "factoryreset",
   "name_localizations": {
-    "en-US": "Factory Reset",
-    "es-ES": "Reiniciar",
-    "sv-SE": "Återställ"
+    "en-US": "factory_reset",
+    "es-ES": "reiniciar",
+    "sv-SE": "återställ"
   },
   "description": "Erases all settings of the bot and leaves the server",
   "description_localizations": {
