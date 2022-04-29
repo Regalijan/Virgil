@@ -2,7 +2,6 @@ FROM elixir
 WORKDIR /app
 COPY . .
 RUN mkdir /socket
-RUN touch /socket/api.sock
 RUN mix local.hex --force
 RUN mix deps.get
 RUN mix local.rebar --force
