@@ -13,6 +13,11 @@ defmodule Api.MixProject do
 
   def application do
     [
+      applications: [
+        :dotenv,
+        :mongodb_driver,
+        :plug_cowboy
+      ],
       extra_applications: [:logger],
       mod: {Api.Application, []}
     ]
@@ -22,7 +27,7 @@ defmodule Api.MixProject do
     [
       {:dotenv, "~> 3.1.0"},
       {:jason, "~> 1.3"},
-      {:mongodb, "~> 0.5.1"},
+      {:mongodb_driver, "~> 0.8.4"},
       {:plug_cowboy, "~> 2.5"}
     ]
   end
