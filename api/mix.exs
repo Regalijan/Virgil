@@ -15,6 +15,7 @@ defmodule Api.MixProject do
     [
       applications: [
         :dotenv,
+        :jason,
         :mongodb_driver,
         :plug_cowboy
       ],
