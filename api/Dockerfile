@@ -10,4 +10,5 @@ RUN chown elixir:elixir /socket/api.sock
 USER elixir
 RUN mix local.hex --force
 RUN mix deps.get
+RUN mix local.rebar --force
 CMD ["mix", "run", "--no-halt"]
