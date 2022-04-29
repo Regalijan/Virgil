@@ -1,6 +1,7 @@
 FROM elixir
 WORKDIR /app
 COPY . .
+RUN mkdir /socket
 RUN touch /socket/api.sock
 RUN chmod 600 /socket/api.sock
 RUN groupadd -g 999 elixir && useradd -m -r -u 999 -g elixir elixir
