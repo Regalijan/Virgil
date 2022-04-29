@@ -8,5 +8,6 @@ RUN groupadd -g 999 elixir && useradd -m -r -u 999 -g elixir elixir
 RUN chown -R elixir:elixir .
 RUN chown elixir:elixir /socket/api.sock
 USER elixir
+RUN mix local.hex --force
 RUN mix deps.get
 CMD ["mix", "run", "--no-halt"]
