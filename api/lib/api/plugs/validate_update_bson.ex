@@ -15,21 +15,22 @@ defmodule Plug.UpdateBSONValidator do
 
   defp validate_map(map, conn) do
     try do
-      conn = assign(
-        conn,
-        :upd_doc,
-        Map.filter(
-          map,
-          fn {key, _val} ->
-            key === "$set" || key === "$unset"
-          end
+      conn =
+        assign(
+          conn,
+          :upd_doc,
+          Map.filter(
+            map,
+            fn {key, _val} ->
+              key === "$set" || key === "$unset"
+            end
+          )
         )
-      )
 
       conn
     rescue
       e ->
-        IO.puts(inspect e)
+        IO.puts(inspect(e))
         conn
     end
   end
