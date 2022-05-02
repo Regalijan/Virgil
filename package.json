@@ -31,7 +31,7 @@
     "mongodb": "^4.5.0",
     "sodium-native": "^3.3.0",
     "utf-8-validate": "^5.0.9",
-    "ws": "^8.5.0",
+    "ws": "^8.6.0",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
