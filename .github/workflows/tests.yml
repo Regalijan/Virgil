@@ -39,7 +39,10 @@ jobs:
           mix deps.get
           mix local.rebar --force
       - name: Compile API
-        run: cd api && mix
+        run: |
+          cd api
+          touch .env
+          mix
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
