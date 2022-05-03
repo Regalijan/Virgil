@@ -15,32 +15,58 @@ defmodule APIRouter do
   plug(:match)
   plug(:dispatch)
 
-  defp respond(conn, status, body) do
+  defp respond(conn, doc) do
+    {status, body} =
+      cond do
+        is_tuple(doc) -> {500, "{\"error\":\"Failed to perform action\"}"}
+        is_nil(doc) or map_size(doc) === 0 -> {404, "{\"error\":\"Not found\"}"}
+        true -> {200, Jason.encode!(doc)}
+      end
+
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(status, Jason.encode!(body))
+    |> send_resp(status, body)
     |> halt
   end
 
   get "/guild/:id" do
-    doc = Mongo.find_one(:mongo, "settings", %{guild: id})
+    respond(
+      conn,
+      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{_id: 0})
+    )
+  end
 
-    {status, body} =
-      cond do
-        is_tuple(doc) -> {500, %{error: "Failed to fetch guild settings"}}
-        is_nil(doc) -> {404, %{error: "No settings found for guild"}}
-        true -> {200, Map.delete(doc, "_id")}
-      end
+  get "/guild/:id/binds/:bind" do
+    respond(
+      conn,
+      Mongo.find_one(:mongo, "binds", %{server: id, id: bind}, projection: %{_id: 0})
+    )
+  end
 
-    respond(conn, status, body)
+  get "/guild/:id/ignored/:channel" do
+    respond(
+      conn,
+      Mongo.find_one(:mongo, "ignored", %{guild: id, channel: channel}, [projection: %{_id: 0}])
+    )
+  end
+
+  get "/guild/:id/settings/:setting" do
+    respond(
+      conn,
+      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{"#{setting}": 1, _id: 0})
+    )
   end
 
   match _ do
-    respond(conn, 404, %{error: "Not found"})
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(404, "{\"error\":\"Not found\"}")
   end
 
   @impl Plug.ErrorHandler
   def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
-    respond(conn, 500, %{error: "Internal server error"})
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(500, "{\"error\":\"Internal server error\"}")
   end
 end
