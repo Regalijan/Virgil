@@ -20,10 +20,26 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Install Dependencies
+      - name: Install Node Modules
         run: npm ci
       - name: Transpile
         run: npm run build
+      - name: Install Elixir
+        run: |
+          wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb
+          sudo dpkg -i erlang-solutions_2.0_all.deb
+          rm erlang-solutions_2.0_all.deb
+          sudo apt-get update
+          sudo apt-get install -y esl-erlang
+          sudo apt-get install -y elixir
+      - name: Install Hex Packages
+        run: |
+          cd api
+          mix local.hex --force
+          mix deps.get
+          mix local.rebar --force
+      - name: Compile API
+        run: mix
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
