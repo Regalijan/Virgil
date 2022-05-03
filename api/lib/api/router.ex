@@ -5,7 +5,6 @@ defmodule APIRouter do
   use Plug.ErrorHandler
 
   plug(Plug.TokenAuth)
-  plug(Plug.UpdateBSONValidator)
 
   plug(Plug.Parsers,
     parsers: [:json],
