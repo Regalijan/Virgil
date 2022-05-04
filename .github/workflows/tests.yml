@@ -30,8 +30,7 @@ jobs:
           sudo dpkg -i erlang-solutions_2.0_all.deb
           rm erlang-solutions_2.0_all.deb
           sudo apt-get update
-          sudo apt-get install -y esl-erlang
-          sudo apt-get install -y elixir
+          sudo apt-get install -y esl-erlang elixir
       - name: Install Hex Packages
         run: |
           cd api
