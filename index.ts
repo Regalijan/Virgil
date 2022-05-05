@@ -100,18 +100,36 @@ async function getGatewayData() {
           });
           break;
         case 3:
-          break; // Not implemented yet
-        case 4:
-          const { guild, setting, value } = data;
-          if (!guild || !setting) return;
+          if (!data.guild || !data.settings) return;
           await shardMgr.shards
-            .get(ShardClientUtil.shardIdForGuildId(guild, shardMgr.shards.size))
+            .get(
+              ShardClientUtil.shardIdForGuildId(
+                data.guild,
+                shardMgr.shards.size
+              )
+            )
+            ?.send({
+              code,
+              data: {
+                guild: data.guild,
+                settings: data.settings,
+              },
+            });
+        case 4:
+          if (!data.guild || !data.setting) return;
+          await shardMgr.shards
+            .get(
+              ShardClientUtil.shardIdForGuildId(
+                data.guild,
+                shardMgr.shards.size
+              )
+            )
             ?.send({
               code: 4,
               data: {
-                guild,
-                setting,
-                value,
+                guild: data.guild,
+                setting: data.setting,
+                value: data.value,
               },
             });
           break;

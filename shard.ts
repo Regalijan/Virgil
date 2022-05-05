@@ -104,14 +104,21 @@ setInterval(async function (): Promise<void> {
 }, 30000);
 
 process.on("message", async function ({ code, data }) {
+  const $set: { [k: string]: any } = {};
   switch (code) {
     case 1:
       bot.removeAllListeners();
       events.clear();
       loadEvents();
       break;
+    case 3:
+      for (const [key, value] of Object.entries(data.settings)) {
+        $set[key] = value;
+      }
+      await mongo
+        .collection("settings")
+        .updateOne({ guild: data.guild }, { $set });
     case 4:
-      const $set: { [k: string]: any } = {};
       $set[data.key] = data.value;
       await mongo
         .collection("settings")
