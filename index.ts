@@ -56,7 +56,7 @@ async function getGatewayData() {
         1: Update all interactions
         2: Update core files (shard.ts, and dependencies)
         3: Update server settings
-        4: Retrieve server settings
+        4: Update single server setting
         5: Recalculate shard count
         6: Respawn specific shard
         7: Entrypoint update (index.ts)
@@ -102,24 +102,16 @@ async function getGatewayData() {
         case 3:
           break; // Not implemented yet
         case 4:
-          const { guild } = data;
-          if (!guild) {
-            broker.send(JSON.stringify({ code: 4, data: null }));
-            break;
-          }
-          process.on(
-            "message",
-            function (message: { code: number; data: { [k: string]: any } }) {
-              if (message.data.guild !== guild) return;
-            }
-          );
+          const { guild, setting, value } = data;
+          if (!guild || !setting) return;
           await shardMgr.shards
             .get(ShardClientUtil.shardIdForGuildId(guild, shardMgr.shards.size))
             ?.send({
               code: 4,
               data: {
                 guild,
-                send: broker.send,
+                setting,
+                value,
               },
             });
           break;

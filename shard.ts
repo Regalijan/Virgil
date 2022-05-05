@@ -111,10 +111,11 @@ process.on("message", async function ({ code, data }) {
       loadEvents();
       break;
     case 4:
-      const guildSettings = await mongo
+      const $set: { [k: string]: any } = {};
+      $set[data.key] = data.value;
+      await mongo
         .collection("settings")
-        .findOne({ guild: data.guild });
-      data.send(JSON.stringify({ code: 4, data: guildSettings }));
+        .updateOne({ guild: data.guild }, { $set });
       break;
   }
 });
