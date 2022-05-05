@@ -115,6 +115,7 @@ async function getGatewayData() {
                 settings: data.settings,
               },
             });
+          break;
         case 4:
           if (!data.guild || !data.setting) return;
           await shardMgr.shards
@@ -167,6 +168,7 @@ async function getGatewayData() {
                   stdio: "inherit",
                 });
               });
+          break;
       }
     });
   }

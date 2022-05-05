@@ -118,11 +118,14 @@ process.on("message", async function ({ code, data }) {
       await mongo
         .collection("settings")
         .updateOne({ guild: data.guild }, { $set });
+      break;
     case 4:
       $set[data.key] = data.value;
       await mongo
         .collection("settings")
         .updateOne({ guild: data.guild }, { $set });
+      break;
+    default:
       break;
   }
 });
