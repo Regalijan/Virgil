@@ -35,6 +35,13 @@ defmodule APIRouter do
     )
   end
 
+  get "/guild/:id/binds" do
+    respond(
+      conn,
+      Mongo.find(:mongo, "binds", %{server: id}, projection: %{_id: 0})
+    )
+  end
+
   get "/guild/:id/binds/:bind" do
     respond(
       conn,
@@ -42,10 +49,17 @@ defmodule APIRouter do
     )
   end
 
+  get "/guild/:id/ignored" do
+    respond(
+      conn,
+      Mongo.find(:mongo, "ignored", %{guild: id}, projection: %{_id: 0})
+    )
+  end
+
   get "/guild/:id/ignored/:channel" do
     respond(
       conn,
-      Mongo.find_one(:mongo, "ignored", %{guild: id, channel: channel}, [projection: %{_id: 0}])
+      Mongo.find_one(:mongo, "ignored", %{guild: id, channel: channel}, projection: %{_id: 0})
     )
   end
 
