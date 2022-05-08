@@ -28,13 +28,6 @@ defmodule APIRouter do
     |> halt
   end
 
-  get "/guild/:id" do
-    respond(
-      conn,
-      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{_id: 0})
-    )
-  end
-
   get "/guild/:id/binds" do
     respond(
       conn,
@@ -60,6 +53,13 @@ defmodule APIRouter do
     respond(
       conn,
       Mongo.find_one(:mongo, "ignored", %{guild: id, channel: channel}, projection: %{_id: 0})
+    )
+  end
+
+  get "/guild/:id/settings" do
+    respond(
+      conn,
+      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{_id: 0})
     )
   end
 
