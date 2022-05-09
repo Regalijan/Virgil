@@ -31,7 +31,7 @@ export = {
             },
             {
               name: "Autoban Message",
-              value: phishSettings?.anitphishMessage
+              value: phishSettings?.antiphishMessage
                 ? phishSettings.antiphishMessage.length > 1024
                   ? phishSettings.antiphishMessage.substr(0, 1021) + "..."
                   : phishSettings.antiphishMessage
