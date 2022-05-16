@@ -6,7 +6,6 @@ const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "msg_report_ban",
-  permissions: ["BAN_MEMBERS", "MANAGE_MESSAGES"],
   async exec(i: ButtonInteraction): Promise<void> {
     const associatedReport = await reportStore.findOne({
       reportEmbedId: i.message.id,

@@ -7,7 +7,6 @@ const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "msg_report_ignore",
-  permissions: ["MANAGE_MESSAGES"],
   async exec(i: ButtonInteraction): Promise<void> {
     if (!i.guild || !i.message.embeds[0].fields) return;
     const associatedReport = await reportStore.findOne({
