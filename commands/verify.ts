@@ -27,8 +27,16 @@ export = {
         style: "LINK",
         url: "https://rover.link/my/verification",
       });
+      const verifyButton = new MessageButton({
+        customId: "verify",
+        label: "I have verified my account",
+        style: "PRIMARY",
+      });
       replyOpts.components = [
-        new MessageActionRow({ components: [notVerifiedLinkButton] }),
+        new MessageActionRow().addComponents(
+          notVerifiedLinkButton,
+          verifyButton
+        ),
       ];
     }
     await i.followUp(replyOpts);

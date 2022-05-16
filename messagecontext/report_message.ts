@@ -70,57 +70,53 @@ export = {
         { name: "Report ID", value: reportId }
       );
 
-    const actionRow1 = new MessageActionRow({
-      components: [
-        new MessageButton({
-          customId: "msg_report_ban",
-          emoji: "🔨",
-          label: "Ban",
-          style: "DANGER",
-          type: "BUTTON",
-        }),
-        new MessageButton({
-          customId: "msg_report_delete",
-          emoji: "❌",
-          label: "Delete",
-          style: "SUCCESS",
-          type: "BUTTON",
-        }),
-        new MessageButton({
-          customId: "msg_report_kick",
-          emoji: "👢",
-          label: "Kick",
-          style: "DANGER",
-          type: "BUTTON",
-        }),
-        new MessageButton({
-          customId: "msg_report_mute",
-          emoji: "🔇",
-          label: "Mute",
-          style: "DANGER",
-          type: "BUTTON",
-        }),
-        new MessageButton({
-          customId: "msg_report_warn",
-          emoji: "⚠",
-          label: "Warn",
-          style: "PRIMARY",
-          type: "BUTTON",
-        }),
-      ],
-    });
+    const actionRow1 = new MessageActionRow().addComponents(
+      new MessageButton({
+        customId: "msg_report_ban",
+        emoji: "🔨",
+        label: "Ban",
+        style: "DANGER",
+        type: "BUTTON",
+      }),
+      new MessageButton({
+        customId: "msg_report_delete",
+        emoji: "❌",
+        label: "Delete",
+        style: "SUCCESS",
+        type: "BUTTON",
+      }),
+      new MessageButton({
+        customId: "msg_report_kick",
+        emoji: "👢",
+        label: "Kick",
+        style: "DANGER",
+        type: "BUTTON",
+      }),
+      new MessageButton({
+        customId: "msg_report_mute",
+        emoji: "🔇",
+        label: "Mute",
+        style: "DANGER",
+        type: "BUTTON",
+      }),
+      new MessageButton({
+        customId: "msg_report_warn",
+        emoji: "⚠",
+        label: "Warn",
+        style: "PRIMARY",
+        type: "BUTTON",
+      })
+    );
 
-    const ignActionRow = new MessageActionRow({
-      components: [
-        new MessageButton({
-          customId: "msg_report_ignore",
-          emoji: "❎",
-          label: "Ignore",
-          style: "SECONDARY",
-          type: "BUTTON",
-        }),
-      ],
-    });
+    const ignActionRow = new MessageActionRow().addComponents(
+      new MessageButton({
+        customId: "msg_report_ignore",
+        emoji: "❎",
+        label: "Ignore",
+        style: "SECONDARY",
+        type: "BUTTON",
+      })
+    );
 
     await SendLog(
       settings.messageReportChannelWebhook,
