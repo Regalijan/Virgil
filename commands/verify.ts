@@ -28,7 +28,7 @@ export = {
         url: "https://rover.link/my/verification",
       });
       const verifyButton = new MessageButton({
-        customId: "verify",
+        customId: "verify_recheck",
         label: "I have verified my account",
         style: "PRIMARY",
       });
