@@ -7,7 +7,7 @@ Thank you for choosing Virgil! In order to use this bot, you must agree to the f
 - We/Us: The service operator
 - You: The person reading this document
 - Discord: The chat application service provided by Discord, Inc.
-- License: The open-source license of this service which can be located at https://github.com/Wolftallemo/Virgil/blob/rewrite/LICENSE
+- License: The open-source license of this service which can be located at https://github.com/Wolftallemo/Virgil/blob/main/LICENSE
 - Service: The bot application offered by us
 
 ## II. Conditions of Use
