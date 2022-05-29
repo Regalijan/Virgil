@@ -1,4 +1,4 @@
-import {ButtonInteraction, GuildMember} from "discord.js";
+import { ButtonInteraction, GuildMember, Message } from "discord.js";
 import Common from "../common";
 
 export = {
@@ -16,6 +16,9 @@ export = {
       });
       return;
     }
-    await i.followUp({ content: response, ephemeral: true });
+    const payload = { content: response, ephemeral: true };
+    i.message instanceof Message && i.message.editable
+      ? await i.message.edit(payload)
+      : await i.followUp(payload);
   },
 };
