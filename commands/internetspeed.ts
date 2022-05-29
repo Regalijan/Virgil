@@ -1,29 +1,12 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import {
+  CommandInteraction,
+  MessageActionRow,
+  MessageEmbed,
+  ModalSubmitInteraction,
+  TextInputComponent,
+} from "discord.js";
 import { execSync } from "child_process";
-import axios from "axios";
 import Common from "../common";
-
-interface RawEvent {
-  op: number;
-  d?: any;
-  s?: number;
-  t?: string;
-}
-
-async function callback(
-  webhook: string,
-  data: string
-): Promise<{ success: boolean; details: string | undefined }> {
-  const req = await axios(webhook, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    data,
-    validateStatus: () => true,
-  });
-  return { success: req.status >= 200 && req.status < 300, details: req.data };
-}
 
 export = {
   name: "internetspeed",
@@ -39,84 +22,53 @@ export = {
       return await i.reply({ embeds: [embed] });
     }
     let result = "Test failed";
-    const modalReq = await callback(
-      `https://discord.com/api/v10/interactions/${i.id}/${i.token}/callback`,
-      JSON.stringify({
-        type: 9,
-        data: {
-          title: "Select Speedtest Server",
-          custom_id: "st_server_component",
-          components: [
-            {
-              type: 1,
-              components: [
-                {
-                  type: 4,
-                  custom_id: "st_server_modal",
-                  style: 1,
-                  label: "Select a server (leave empty for auto)",
-                  max_length: 6,
-                  required: false,
-                },
-              ],
-            },
-          ],
-        },
-      })
-    );
-    if (!modalReq.success) {
-      await i.reply({
-        content: `Failed to create modal: ${JSON.stringify(modalReq.details)}`,
-        ephemeral: true,
-      });
-      return;
-    }
     try {
-      // This is a temporary "hack" until discord.js implements proper modal support.
-      i.client.on("raw", async function (packet: RawEvent) {
-        if (packet.op !== 0 || packet.t !== "INTERACTION_CREATE") return;
-        const { d: data } = packet;
-        if (data.type !== 5 || data.data.custom_id !== "st_server_component")
-          return;
-        const serverId = data.data.components[0].components[0].value;
-        const deferReq = await callback(
-          `https://discord.com/api/v10/interactions/${data.id}/${data.token}/callback`,
-          '{"type":5}'
-        );
-        if (!deferReq.success) {
-          i.client.removeListener("raw", () => {});
-          await callback(
-            `https://discord.com/api/v10/webhooks/${i.client.user?.id}/${data.token}`,
-            `{"content":"Failed to defer modal:\n${JSON.stringify(
-              deferReq.details
-            )}"}`
-          );
-          return;
-        }
-        let success = true;
-        try {
-          result = JSON.parse(
-            execSync(
-              `speedtest --accept-license -f json${
-                serverId ? ` -s ${serverId}` : ""
-              }`
-            ).toString()
-          ).result.url;
-        } catch (e) {
-          success = false;
-          result = `Test failed. Details:\n${e}`;
-        }
-        await callback(
-          `https://discord.com/api/v10/webhooks/${i.client.user?.id}/${data.token}`,
-          `{"content":"${result}${success ? ".png" : ""}"}`
-        );
-        i.client.removeListener("raw", () => {});
+      await i.showModal({
+        components: [
+          new MessageActionRow({
+            components: [
+              new TextInputComponent({
+                customId: "st_server_modal",
+                label: "Select a server (leave empty for auto)",
+                maxLength: 6,
+                required: false,
+                style: "SHORT",
+              }),
+            ],
+          }),
+        ],
+        customId: "st_server_component",
+        title: "Select Speedtest Server",
       });
     } catch {
-      const content = "An error occurred while running the speed test.";
-      i.replied || i.deferred
-        ? await i.editReply({ content })
-        : await i.reply({ content, ephemeral: true });
+      await i.reply({ content: "Test failed", ephemeral: true });
     }
+    let submission: ModalSubmitInteraction;
+    try {
+      submission = await i.awaitModalSubmit({
+        filter: (sub) => sub.customId === "st_server_component",
+        time: 30000,
+      });
+    } catch {
+      return await i.reply({ content: "Too slow!", ephemeral: true });
+    }
+    const serverId = submission.components[0].components[0].value;
+    if (serverId && isNaN(parseInt(serverId)))
+      return await i.reply({ content: "Invalid server ID", ephemeral: true });
+    await i.deferReply();
+    let success = true;
+    try {
+      result = JSON.parse(
+        execSync(
+          `speedtest --accept-license -f json${
+            serverId ? ` -s ${serverId}` : ""
+          }`
+        ).toString()
+      ).result.url;
+    } catch (e) {
+      success = false;
+      result = `Test failed. Details:\n${e}`;
+    }
+    await i.followUp({ content: `${result}${success ? ".png" : ""}` });
   },
 };
