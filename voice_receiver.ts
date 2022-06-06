@@ -17,7 +17,6 @@ export default class VoicePacketReceiver {
     if (channel.guild.me?.voice.channel)
       throw new Error("Already in voice channel for guild!");
     this.voiceConnection = joinVoiceChannel({
-      // @ts-expect-error Apparently this is a known bug, thanks discord.js
       adapterCreator: channel.guild.voiceAdapterCreator,
       channelId: channel.id,
       guildId: channel.guild.id,
