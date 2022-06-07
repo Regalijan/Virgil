@@ -3,7 +3,6 @@ import mongo from "../mongo";
 
 export = {
   name: "factoryreset",
-  description: "Erases all settings of the bot and leaves the server",
   async exec(i: CommandInteraction): Promise<void> {
     const serversettings = await mongo
       .db("bot")
