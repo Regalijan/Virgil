@@ -1,0 +1,127 @@
+{
+  "name": "filter",
+  "name_localizations": {
+    "es-ES": "filtro"
+  },
+  "description": "Manage word filters",
+  "description_localizations": {
+    "es-ES": "Administrar filtros de palabras",
+    "sv-SE": "Hantera ordfilter"
+  },
+  "options": [
+    {
+      "type": 1,
+      "name": "add",
+      "name_localizations": {
+        "es-ES": "agregar",
+        "sv-SE": "addera"
+      },
+      "description": "Add word to filter",
+      "description_localizations": {
+        "es-ES": "Agregar palabra al filtro",
+        "sv-SE": "Lägg till ord i filtret"
+      },
+      "options": [
+        {
+          "type": 3,
+          "name": "word",
+          "name_localizations": {
+            "es-ES": "palabra",
+            "sv-SE": "ord"
+          },
+          "description": "Word to add to filter",
+          "description_localizations": {
+            "es-ES": "Palabra para agregar al filtro",
+            "sv-SE": "Ord att lägga till i filtret"
+          },
+          "required": true
+        },
+        {
+          "type": 4,
+          "name": "filter_type",
+          "name_localizations": {
+            "es-ES": "tipo_de_filtro",
+            "sv-SE": "filter_typ"
+          },
+          "description": "Type of word filter",
+          "description_localizations": {
+            "es-ES": "Tipo de filtro de palabras",
+            "sv-SE": "Typ av ordfilter"
+          },
+          "required": true,
+          "choices": [
+            {
+              "name": "exact",
+              "name_localizations": {
+                "es-ES": "exacto",
+                "sv-SE": "exakt"
+              },
+              "value": 1
+            },
+            {
+              "name": "wildcard",
+              "name_localizations": {
+                "es-ES": "comodín",
+                "sv-SE": "jokertecken"
+              },
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": 5,
+          "name": "case_sensitive",
+          "name_localizations": {
+            "es-ES": "distingue_entre_mayúsculas_y_minúsculas",
+            "sv-SE": "skiftlägeskänslig"
+          },
+          "description": "Whether this word filter should be case sensitive",
+          "description_localizations": {
+            "es-ES": "Si este filtro de palabras debe distinguir entre mayúsculas y minúsculas",
+            "sv-SE": "Om detta ordfilter ska vara skiftlägeskänsligt"
+          }
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "list",
+      "name_localizations": {
+        "es-ES": "lista",
+        "sv-SE": "lista"
+      },
+      "description": "List all filtered words",
+      "description_localizations": {
+        "es-ES": "Lista de todas las palabras filtradas",
+        "sv-SE": "Lista över alla filtrerade ord"
+      }
+    },
+    {
+      "type": 1,
+      "name": "remove",
+      "name_localizations": {
+        "es-ES": "eliminar",
+        "sv-SE": "ta bort"
+      },
+      "description": "Remove a filtered word",
+      "description_localizations": {
+        "es-ES": "Eliminar una palabra filtrada",
+        "sv-SE": "Ta bort ett filtrerat ord"
+      },
+      "options": [
+        {
+          "type": 3,
+          "name": "id",
+          "description": "ID of filter to remove",
+          "description_localizations": {
+            "es-ES": "ID del filtro que se va a eliminar",
+            "sv-SE": "ID för filter som ska tas bort"
+          },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "default_member_permissions": "32",
+  "dm_permission": false
+}
