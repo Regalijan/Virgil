@@ -35,7 +35,6 @@ Legend:
 - `/factoryreset` - Deletes **ALL** settings and leaves the server
 - `/initialize` - Initializes the server's settings in the database (this is only used if the bot is added when it is offline)
 - `/listbinds` - Lists all binds
-- `/muterole <role: RoleResolvable>` - Sets the mute role (not selecting one will remove the current one)
 - `/nicknameformat <format: string>` - Sets the nickname format (see [nickname formatting](#nickname-formatting))
 - `/nicknamelock` - Sets whether usernames should periodically be updated
 
