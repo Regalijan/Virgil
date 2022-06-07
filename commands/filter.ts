@@ -1,8 +1,22 @@
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import {
+  CommandInteraction,
+  GuildMember,
+  MessageEmbed,
+  Role,
+  User,
+} from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 
+const filterBypasses = mongo.db("bot").collection("filter_bypass");
 const wordsDB = mongo.db("bot").collection("banned_words");
+
+function getMentionableID(mentionable: any): string {
+  if (mentionable instanceof GuildMember) return mentionable.user.id;
+  if (mentionable instanceof Role || mentionable instanceof User)
+    return mentionable.id;
+  throw new Error("Failed to find suitable snowflake.");
+}
 
 export = {
   name: "filter",
@@ -34,6 +48,24 @@ export = {
           ephemeral: true,
         });
 
+      case "add_bypass":
+        const addMentionable = i.options.getMentionable("entity", true);
+        const addMentionableId = getMentionableID(addMentionable);
+        const hasBypassToAddDoc = await filterBypasses.findOne({
+          id: addMentionableId,
+          server: i.guildId,
+        });
+        if (hasBypassToAddDoc)
+          return await i.reply({
+            content: "That entity already has a bypass applied!",
+            ephemeral: true,
+          });
+        await filterBypasses.insertOne({
+          id: addMentionableId,
+          server: i.guildId,
+        });
+        return await i.reply({ content: "Bypass applied!", ephemeral: true });
+
       case "list":
         const filterList = await wordsDB.find({ server: i.guildId }).toArray();
         const embeds: MessageEmbed[] = [new MessageEmbed()];
@@ -63,6 +95,25 @@ export = {
           );
         }
         return await i.reply({ embeds });
+
+      case "list_bypasses":
+        const bypasses = await filterBypasses
+          .find({
+            server: i.guildId,
+          })
+          .toArray();
+        const bypassEmbed = new MessageEmbed().setTitle("Filter Bypasses");
+        let bypassString = "";
+        for (const bypass of bypasses) {
+          if (bypass.id.length + bypassString.length > 4096) {
+            bypassString = bypassString.substring(0, 4093) + "...";
+            break;
+          }
+          bypassString += `\n${bypass.id}`;
+        }
+
+        return await i.reply({ embeds: [bypassEmbed] });
+
       case "remove":
         const idToRemove = i.options.getString("id", true);
         await wordsDB.deleteOne({
@@ -70,6 +121,15 @@ export = {
           server: i.guildId,
         });
         return await i.reply({ content: "Filter deleted!", ephemeral: true });
+
+      case "remove_bypass":
+        const removeMentionable = i.options.getMentionable("entity", true);
+        const removeMentionableId = getMentionableID(removeMentionable);
+        await filterBypasses.deleteOne({
+          id: removeMentionableId,
+          server: i.guildId,
+        });
+        return await i.reply({ content: "Bypass deleted!", ephemeral: true });
 
       default:
         return await i.reply({
