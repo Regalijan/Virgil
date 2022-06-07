@@ -25,7 +25,7 @@ export = {
         emoji: "🔗",
         label: "Verify your account",
         style: "LINK",
-        url: "https://rover.link/my/verification",
+        url: "https://rover.link/verify",
       });
       const verifyButton = new MessageButton({
         customId: "verify_recheck",
