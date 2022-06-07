@@ -57,7 +57,7 @@ export = {
           }
           embeds[embedIndex].addField(
             filter.id,
-            `${filter.word} - (${typeMap[filter.type]}, ${
+            `${filter.filter} - (${typeMap[filter.type]}, ${
               filter.case_sensitive ? "" : "not "
             }case sensitive)`
           );
