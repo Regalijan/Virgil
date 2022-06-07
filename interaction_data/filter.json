@@ -130,7 +130,7 @@
       "name": "list_bypasses",
       "name_localizations": {
         "es-ES": "lista_de_desvíos",
-        "sv-SE": "listan förbigår"
+        "sv-SE": "listan_förbigår"
       },
       "description": "List all entities with a bypass applied",
       "description_localizations": {
