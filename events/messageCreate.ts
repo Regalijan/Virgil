@@ -1,4 +1,4 @@
-import {DMChannel, Message, Team} from "discord.js";
+import { Message, Team } from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import redis from "../redis";
@@ -22,26 +22,49 @@ module.exports = async function (message: Message) {
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-  if (message.guild.me && message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")) {
+  if (
+    message.guild.me &&
+    message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")
+  ) {
     try {
       const banned_words = await mongo
-          .collection("banned_words")
-          .find({server: message.guildId});
+        .collection("banned_words")
+        .find({ server: message.guildId });
 
-      await banned_words.forEach(word => {
-        if (word.type === 1) { // Exact matches
-          if (message.content === word.filter || !word.case_sensitive && message.content.toLowerCase() === word.filter.toLowerCase()) {
-
+      for (const word of await banned_words.toArray()) {
+        if (word.type === 1) {
+          // Exact matches
+          if (
+            (message.content === word.filter ||
+              (!word.case_sensitive &&
+                message.content.toLowerCase() === word.filter.toLowerCase())) &&
+            message.deletable
+          ) {
+            await message.delete();
+            return;
+          }
+        } else if (word.type === 2) {
+          // Wildcard matches
+          if (
+            (message.content.search(word.filter) > -1 ||
+              (!word.case_sensitive &&
+                message.content
+                  .toLowerCase()
+                  .search(word.filter.toLowerCase()))) &&
+            message.deletable
+          ) {
+            await message.delete();
+            return;
           }
         }
-      })
+      }
     } catch (e) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     }
   }
   if (!settings?.antiphish) return;
   const linkMatches = message.content.match(
-    /https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
+    /https?:\/\/(?:[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?\.)+[a-z\d[a-z\d-]{0,61}[a-z\d]/g
   );
   if (!linkMatches) return;
   for (let link of linkMatches) {
