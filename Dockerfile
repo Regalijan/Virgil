@@ -1,5 +1,5 @@
 FROM node:bullseye
-RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | dist=11 os=debian bash
+RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh
 RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
 WORKDIR /home/nodeuser/virgil
