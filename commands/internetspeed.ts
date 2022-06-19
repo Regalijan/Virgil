@@ -69,6 +69,6 @@ export = {
       success = false;
       result = `Test failed. Details:\n${e}`;
     }
-    await i.followUp({ content: `${result}${success ? ".png" : ""}` });
+    await submission.followUp({ content: `${result}${success ? ".png" : ""}` });
   },
 };
