@@ -82,10 +82,11 @@ async function getGatewayData() {
       if (typeof shard === "number" && [1, 2, 7].includes(code))
         try {
           if (
-            execSync("git rev-parse --abbrev-ref HEAD").toString().trim() ===
+            execSync("git rev-parse --abbrev-ref HEAD").toString().trim() !==
             data.branch
           )
-            execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
+            return;
+          execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
         } catch (e) {
           console.error(e);
         }
