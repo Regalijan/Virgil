@@ -55,7 +55,6 @@ export = {
     const serverId = submission.components[0].components[0].value;
     if (serverId && isNaN(parseInt(serverId)))
       return await i.reply({ content: "Invalid server ID", ephemeral: true });
-    await i.deferReply();
     let success = true;
     try {
       result = JSON.parse(
