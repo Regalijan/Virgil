@@ -71,6 +71,7 @@ Legend:
 - `/httpcat` - Displays an HTTP cat image
 - `/hug <user: UserResolvable>` - Hugs a user
 - `/internetspeed` - Displays your current internet speed (not really)
+- `/legal` - Sends a link to the Privacy Policy and Terms of Service
 - `/noobdetector <user: UserResolvable>` - Detects noobiness of user
 - `/owoify <text: string>` - Owoifies your message
 - `/say <text: string>` - Says something (Admin only)
