@@ -39,8 +39,8 @@ jobs:
           mix local.rebar --force
       - name: Compile API
         run: |
-          cd api
           touch .env
+          cd api
           mix
       - name: Initialize SSH
         run: |
