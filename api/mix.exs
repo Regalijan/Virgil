@@ -14,6 +14,7 @@ defmodule Api.MixProject do
   def application do
     [
       applications: [
+        :amqp,
         :dotenv,
         :jason,
         :mongodb_driver,
@@ -26,7 +27,7 @@ defmodule Api.MixProject do
 
   defp deps do
     [
-      {:amqp_client, "~> 3.10"},
+      {:amqp, "~> 3.1"},
       {:dotenv, "~> 3.1.0"},
       {:jason, "~> 1.3"},
       {:mongodb_driver, "~> 0.8.4"},
