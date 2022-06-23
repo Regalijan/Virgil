@@ -26,6 +26,7 @@ defmodule Api.MixProject do
 
   defp deps do
     [
+      {:amqp_client, "~> 3.10"},
       {:dotenv, "~> 3.1.0"},
       {:jason, "~> 1.3"},
       {:mongodb_driver, "~> 0.8.4"},
