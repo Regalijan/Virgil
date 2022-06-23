@@ -1,7 +1,7 @@
 defmodule Api.Application do
   use Application
 
-  Dotenv.load(".env")
+  Dotenv.load(Path.join(File.cwd!(), "../.env"))
 
   @spec get_child_opts :: [{:ip, {:local, <<_::128>>}} | {:port, integer}, ...]
   def get_child_opts() do
