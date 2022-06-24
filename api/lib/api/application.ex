@@ -33,7 +33,9 @@ defmodule Api.Application do
       },
       {
         Plug.Cowboy,
-        scheme: :http, plug: APIRouter, options: get_child_opts()
+        scheme: :http,
+        plug: APIRouter,
+        options: get_child_opts()
       }
     ]
 
