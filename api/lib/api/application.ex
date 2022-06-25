@@ -43,8 +43,6 @@ defmodule Api.Application do
 
     opts = [strategy: :one_for_one, name: Api.Supervisor]
 
-    Application.ensure_all_started(:inets)
-    Application.ensure_all_started(:ssl)
     Supervisor.start_link(children, opts)
   end
 end
