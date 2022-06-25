@@ -12,6 +12,15 @@ defmodule APIRouter.IgnoredRouter do
     )
   end
 
+  delete "/:channel" do
+    respond(
+      conn,
+      Mongo.find_one_and_delete(:mongo, "ignored", %{guild: conn.params["id"], channel: channel},
+        projection: %{_id: 0}
+      )
+    )
+  end
+
   get "/:channel" do
     respond(
       conn,
