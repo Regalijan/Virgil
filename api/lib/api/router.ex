@@ -1,5 +1,3 @@
-# This is for another service, such as a dashboard, to modify and retrieve settings. It is not made to be a public api.
-
 defmodule APIRouter do
   use Plug.Router
   use Plug.ErrorHandler
@@ -14,7 +12,7 @@ defmodule APIRouter do
   plug(:match)
   plug(:dispatch)
 
-  defp respond(conn, doc) do
+  def respond(conn, doc) do
     {status, body} =
       cond do
         is_tuple(doc) -> {500, "{\"error\":\"Failed to perform action\"}"}
@@ -28,47 +26,9 @@ defmodule APIRouter do
     |> halt
   end
 
-  get "/guild/:id/binds" do
-    respond(
-      conn,
-      Mongo.find(:mongo, "binds", %{server: id}, projection: %{_id: 0})
-    )
-  end
-
-  get "/guild/:id/binds/:bind" do
-    respond(
-      conn,
-      Mongo.find_one(:mongo, "binds", %{server: id, id: bind}, projection: %{_id: 0})
-    )
-  end
-
-  get "/guild/:id/ignored" do
-    respond(
-      conn,
-      Mongo.find(:mongo, "ignored", %{guild: id}, projection: %{_id: 0})
-    )
-  end
-
-  get "/guild/:id/ignored/:channel" do
-    respond(
-      conn,
-      Mongo.find_one(:mongo, "ignored", %{guild: id, channel: channel}, projection: %{_id: 0})
-    )
-  end
-
-  get "/guild/:id/settings" do
-    respond(
-      conn,
-      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{_id: 0})
-    )
-  end
-
-  get "/guild/:id/settings/:setting" do
-    respond(
-      conn,
-      Mongo.find_one(:mongo, "settings", %{guild: id}, projection: %{"#{setting}": 1, _id: 0})
-    )
-  end
+  forward("/guild/:id/binds", to: APIRouter.BindRouter)
+  forward("/guild/:id/ignored", to: APIRouter.IgnoredRouter)
+  forward("/guild/:id/settings", to: APIRouter.SettingsRouter)
 
   match _ do
     conn
