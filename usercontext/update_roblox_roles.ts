@@ -9,6 +9,11 @@ export = {
         content: "User context expected but given message.",
         ephemeral: true,
       });
+    if (!i.member)
+      return await i.reply({
+        content: "This user is not in the server!",
+        ephemeral: true,
+      });
     const member = await i.guild?.members.fetch(i.targetId);
     if (!member)
       return await i.reply({
