@@ -30,8 +30,8 @@ defmodule Api.MixProject do
     [
       {:amqp, "~> 3.1"},
       {:dotenv, "~> 3.1.0"},
+      {:finch, "~> 0.12.0"},
       {:jason, "~> 1.3"},
-      {:hackney, "~> 1.18"},
       {:mongodb_driver, "~> 0.8.4"},
       {:plug_cowboy, "~> 2.5"}
     ]
