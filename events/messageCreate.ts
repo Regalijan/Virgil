@@ -1,4 +1,10 @@
-import { Message, Team, TextChannel } from "discord.js";
+import {
+  ChannelType,
+  Message,
+  PermissionsBitField,
+  Team,
+  TextChannel,
+} from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import redis from "../redis";
@@ -13,7 +19,7 @@ module.exports = async function (message: Message) {
     !message.content ||
     !message.author ||
     !message.guild ||
-    message.channel.type === "DM"
+    message.channel.type === ChannelType.DM
   )
     return;
   const settings = await mongo
@@ -39,9 +45,11 @@ module.exports = async function (message: Message) {
   )
     return;
   if (
-    !message.member?.permissions.has("ADMINISTRATOR") &&
-    message.guild.me &&
-    message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")
+    !message.member?.permissions.has(PermissionsBitField.Flags.Administrator) &&
+    message.guild.members.me &&
+    message.channel
+      .permissionsFor(message.guild.members.me)
+      ?.has(PermissionsBitField.Flags.ManageMessages)
   ) {
     try {
       const banned_words = await mongo
@@ -169,7 +177,7 @@ module.exports = async function (message: Message) {
         }`,
       });
       await member
-        .ban({ reason: "User posted a phishing link", days: 1 })
+        .ban({ reason: "User posted a phishing link", deleteMessageDays: 1 })
         .catch((e) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });

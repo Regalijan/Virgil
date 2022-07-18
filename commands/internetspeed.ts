@@ -1,41 +1,41 @@
 import {
-  CommandInteraction,
-  MessageActionRow,
-  MessageEmbed,
+  ActionRowBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
   ModalSubmitInteraction,
-  TextInputComponent,
+  TextInputBuilder,
+  TextInputStyle,
 } from "discord.js";
 import { execSync } from "child_process";
 import Common from "../common";
 
 export = {
   name: "internetspeed",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!(await Common.isDeveloper(i.user))) {
-      const embed = new MessageEmbed().setImage(
+      const embed = new EmbedBuilder().setImage(
         "https://thumbsnap.com/sc/3N5uU9CP.png"
       );
       const member = await i.guild?.members
         .fetch(i.user.id)
         .catch((e) => console.error(e));
       if (member) embed.setColor(member.displayColor);
-      return await i.reply({ embeds: [embed] });
+      await i.reply({ embeds: [embed] });
+      return;
     }
     let result = "Test failed";
     try {
       await i.showModal({
         components: [
-          new MessageActionRow({
-            components: [
-              new TextInputComponent({
-                customId: "st_server_modal",
-                label: "Select a server (leave empty for auto)",
-                maxLength: 6,
-                required: false,
-                style: "SHORT",
-              }),
-            ],
-          }),
+          new ActionRowBuilder<TextInputBuilder>().addComponents(
+            new TextInputBuilder({
+              customId: "st_server_modal",
+              label: "Select a server (leave empty for auto)",
+              maxLength: 6,
+              required: false,
+              style: TextInputStyle.Short,
+            })
+          ),
         ],
         customId: "st_server_component",
         title: "Select Speedtest Server",
@@ -50,11 +50,16 @@ export = {
         time: 30000,
       });
     } catch {
-      return await i.reply({ content: "Too slow!", ephemeral: true });
+      await i.reply({ content: "Too slow!", ephemeral: true });
+      return;
     }
+    // @ts-expect-error Someone broke the typings here
     const serverId = submission.components[0].components[0].value;
-    if (serverId && isNaN(parseInt(serverId)))
-      return await i.reply({ content: "Invalid server ID", ephemeral: true });
+    if (serverId && isNaN(parseInt(serverId))) {
+      await i.reply({ content: "Invalid server ID", ephemeral: true });
+      return;
+    }
+
     let success = true;
     await submission.deferReply();
     try {

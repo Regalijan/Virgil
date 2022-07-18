@@ -1,4 +1,5 @@
 import {
+  ChannelType,
   Collection,
   DiscordAPIError,
   Message,
@@ -18,7 +19,7 @@ module.exports = async function (
   const firstMessage = messages.first();
   if (
     !firstMessage ||
-    firstMessage.channel.type === "DM" ||
+    firstMessage.channel.type === ChannelType.DM ||
     !firstMessage.guild
   )
     return;
@@ -81,7 +82,7 @@ module.exports = async function (
     .catch((err: DiscordAPIError) => err);
   if (!webhook) return;
   if (webhook instanceof DiscordAPIError) {
-    if (webhook.httpStatus === 404) {
+    if (webhook.status === 404) {
       await mongo
         .collection("settings")
         .updateOne(

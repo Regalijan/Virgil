@@ -1,8 +1,8 @@
-import { CommandInteraction, Team } from "discord.js";
+import { ChatInputCommandInteraction, Team } from "discord.js";
 
 export = {
   name: "bonk",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const target = i.options.getUser("user", true);
     const owner = i.client.application?.owner;
     let msg:

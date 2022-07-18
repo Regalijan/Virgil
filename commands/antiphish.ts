@@ -1,23 +1,25 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import mongo from "../mongo";
 const settings = mongo.db("bot").collection("settings");
 
 export = {
   name: "antiphish",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const subcommand = i.options.getSubcommand(true);
     const phishSettings = await settings.findOne({ guild: i.guildId });
-    if (!phishSettings)
-      return await i.reply({
+    if (!phishSettings) {
+      await i.reply({
         content: "Server settings have not been initialized!",
         ephemeral: true,
       });
+      return;
+    }
     switch (subcommand) {
       case "status":
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setAuthor({
             name: i.user.tag,
-            iconURL: i.user.displayAvatarURL({ dynamic: true }),
+            iconURL: i.user.displayAvatarURL(),
           })
           .setDescription("Anti-phishing settings status")
           .addFields(
@@ -33,7 +35,7 @@ export = {
               name: "Autoban Message",
               value: phishSettings?.antiphishMessage
                 ? phishSettings.antiphishMessage.length > 1024
-                  ? phishSettings.antiphishMessage.substr(0, 1021) + "..."
+                  ? phishSettings.antiphishMessage.substring(0, 1021) + "..."
                   : phishSettings.antiphishMessage
                 : "None set",
             }
@@ -66,17 +68,20 @@ export = {
 
       case "set-message":
         const message = i.options.getString("message", false);
-        if (!phishSettings.antiphishMessage && !message)
-          return await i.reply({
+        if (!phishSettings.antiphishMessage && !message) {
+          await i.reply({
             content:
               "There is nothing to do here because there is no message set.",
           });
+          return;
+        }
         if (message) {
           await settings.updateOne(
             { guild: i.guildId },
             { $set: { antiphishMessage: message } }
           );
-          return await i.reply({ content: "Message set!" });
+          await i.reply({ content: "Message set!" });
+          return;
         }
         await settings.updateOne(
           { guild: i.guildId },

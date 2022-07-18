@@ -1,4 +1,4 @@
-import { GuildBan, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildBan } from "discord.js";
 import Sentry from "../sentry";
 import db from "../mongo";
 import SendLog from "../send_log";
@@ -13,14 +13,14 @@ module.exports = async function (ban: GuildBan) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.banLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle("Member Banned")
     .setAuthor({
       name: ban.user.tag,
-      iconURL: ban.user.displayAvatarURL({ dynamic: true }),
+      iconURL: ban.user.displayAvatarURL(),
     })
     .setDescription(`<@${ban.user.id}> ${ban.user.tag}`)
-    .addField("Reason", ban.reason ?? "No reason provided");
+    .addFields({ name: "Reason", value: ban.reason ?? "No reason provided" });
 
   await SendLog(
     settings.banLogChannelWebhook,

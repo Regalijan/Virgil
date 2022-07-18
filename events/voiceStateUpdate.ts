@@ -1,4 +1,4 @@
-import { MessageEmbed, VoiceState } from "discord.js";
+import { EmbedBuilder, VoiceState } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
@@ -18,11 +18,11 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor(newState.member?.displayColor ?? 0)
     .setAuthor({
       name: newState.member.user.tag,
-      iconURL: newState.member.user.displayAvatarURL({ dynamic: true }),
+      iconURL: newState.member.user.displayAvatarURL(),
     })
     .setFooter({ text: `ID: ${newState.member.id}` });
 

@@ -1,11 +1,16 @@
 import {
+  ApplicationCommandType,
+  BaseInteraction,
   ButtonInteraction,
-  CommandInteraction,
-  ContextMenuInteraction,
+  ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
   GuildMember,
-  Interaction,
-  MessageEmbed,
+  GuildMFALevel,
+  InteractionType,
+  MessageContextMenuCommandInteraction,
   PermissionResolvable,
+  UserContextMenuCommandInteraction,
 } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
@@ -21,7 +26,7 @@ const cmds: Map<
   {
     name: string;
     privileged?: boolean;
-    exec(i: CommandInteraction): Promise<void>;
+    exec(i: ChatInputCommandInteraction): Promise<void>;
   }
 > = new Map();
 
@@ -30,7 +35,7 @@ const userContextCommands: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    exec(i: ContextMenuInteraction): Promise<void>;
+    exec(i: UserContextMenuCommandInteraction): Promise<void>;
   }
 > = new Map();
 
@@ -39,7 +44,7 @@ const messageContextCommands: Map<
   {
     name: string;
     permissions?: PermissionResolvable[];
-    exec(i: ContextMenuInteraction): Promise<void>;
+    exec(i: MessageContextMenuCommandInteraction): Promise<void>;
   }
 > = new Map();
 
@@ -80,79 +85,77 @@ for (const file of readdirSync(join(__dirname, "../button")).filter((f) =>
   buttonCommands.set(bFile.name, bFile);
 }
 
-module.exports = async function (i: Interaction) {
-  if (i.isContextMenu()) {
-    if (i.targetType === "USER") {
-      if (!userContextCommands.has(i.commandName)) return;
-      const contextCommand = userContextCommands.get(i.commandName);
-      const contextMember = await i.guild?.members
-        .fetch(i.user.id)
+module.exports = async function (i: BaseInteraction) {
+  if (i.isUserContextMenuCommand()) {
+    if (!userContextCommands.has(i.commandName)) return;
+    const contextCommand = userContextCommands.get(i.commandName);
+    const contextMember = await i.guild?.members.fetch(i.user.id).catch((e) => {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    });
+
+    if (
+      contextCommand?.permissions?.length &&
+      !contextMember?.permissions.has(contextCommand.permissions)
+    ) {
+      return await i
+        .reply({ content: "You cannot run this command!", ephemeral: true })
         .catch((e) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });
-      if (
-        contextCommand?.permissions?.length &&
-        !contextMember?.permissions.has(contextCommand.permissions)
-      ) {
-        return await i
-          .reply({ content: "You cannot run this command!", ephemeral: true })
-          .catch((e) => {
-            process.env.DSN ? Sentry.captureException(e) : console.error(e);
-          });
-      }
-      try {
-        await contextCommand?.exec(i);
-      } catch (e) {
-        if (!process.env.DSN) console.error(e);
-        await i
-          .reply({
-            content: `Oops! An error occurred when running this command! If you contact the developer, give then this information: \`Error: ${
-              process.env.DSN ? Sentry.captureException(e) : e
-            }\``,
-            ephemeral: true,
-          })
-          .catch((e) => {
-            process.env.DSN ? Sentry.captureException(e) : console.error(e);
-          });
-      }
-    } else if (i.targetType === "MESSAGE") {
-      const msgCommand = messageContextCommands.get(i.commandName);
-      if (!msgCommand)
-        return await i.reply({
-          content:
-            "Uh oh! The command could not be found! This might mean that a command was removed from the bot but the context app still exists.",
+    }
+
+    try {
+      await contextCommand?.exec(i);
+    } catch (e) {
+      if (!process.env.DSN) console.error(e);
+      await i
+        .reply({
+          content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
+            process.env.DSN ? Sentry.captureException(e) : e
+          }`,
           ephemeral: true,
-        });
-      const msgContextMember = await i.guild?.members
-        .fetch(i.user.id)
+        })
         .catch((e) => {
           process.env.DSN ? Sentry.captureException(e) : console.error(e);
         });
-      if (
-        msgCommand?.permissions?.length &&
-        !msgContextMember?.permissions.has(msgCommand.permissions)
-      ) {
-        return await i
-          .reply({ content: "You cannot run this command!", ephemeral: true })
-          .catch((e) => {
-            process.env.DSN ? Sentry.captureException(e) : console.error(e);
-          });
-      }
-      try {
-        await msgCommand?.exec(i);
-      } catch (e) {
-        if (!process.env.DSN) console.error(e);
-        await i
-          .reply({
-            content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
-              process.env.DSN ? Sentry.captureException(e) : e
-            }\``,
-            ephemeral: true,
-          })
-          .catch((e) => {
-            process.env.DSN ? Sentry.captureException(e) : console.error(e);
-          });
-      }
+    }
+    return;
+  }
+
+  if (i.isMessageContextMenuCommand()) {
+    const msgCommand = messageContextCommands.get(i.commandName);
+    if (!msgCommand) {
+      await i.reply({
+        content:
+          "Uh oh! The command could not be found! This might mean that a command was removed from the bot but the context app still exists.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (!i.member) {
+      await i.reply({
+        content:
+          "No guild member was found! Was this command run in a dm? If so that shouldn't have happened.",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    try {
+      await msgCommand.exec(i);
+    } catch (e) {
+      if (!process.env.DSN) console.error(e);
+      await i
+        .reply({
+          content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
+            process.env.DSN ? Sentry.captureException(e) : e
+          },`,
+          ephemeral: true,
+        })
+        .catch((e) => {
+          process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        });
     }
     return;
   }
@@ -160,21 +163,14 @@ module.exports = async function (i: Interaction) {
   if (i.isButton()) {
     const buttonCommand = buttonCommands.get(i.customId);
     if (!buttonCommand) {
-      return await i.reply({
+      await i.reply({
         content:
           "Uh oh! Looks like this button is no longer active! This means that the command associated with this button was removed.",
         ephemeral: true,
       });
+      return;
     }
-    if (
-      buttonCommand?.permissions?.length &&
-      !i.memberPermissions?.has(buttonCommand.permissions)
-    ) {
-      return await i.reply({
-        content: "You cannot run this command!",
-        ephemeral: true,
-      });
-    }
+
     try {
       await buttonCommand.exec(i);
     } catch (e) {
@@ -182,19 +178,22 @@ module.exports = async function (i: Interaction) {
     }
   }
 
-  if (!i.isCommand() || !cmds.has(i.commandName)) return;
+  if (!i.isChatInputCommand() || !cmds.has(i.commandName)) return;
   try {
     const command = cmds.get(i.commandName);
     if (
       !i.channel ||
-      !["GUILD_PRIVATE_THREAD", "GUILD_PUBLIC_THREAD", "GUILD_TEXT"].includes(
-        i.channel.type
-      )
+      ![
+        ChannelType.GuildPrivateThread,
+        ChannelType.GuildPublicThread,
+        ChannelType.GuildText,
+        ChannelType.GuildVoice,
+      ].includes(i.channel.type)
     ) {
       await i
         .reply({
           content:
-            "Hey! You can't run commands here! They may only be run in a thread or a standard text channel.",
+            "Hey! You can't run commands here! They may only be run in a thread or a standard text/voice text channel.",
           ephemeral: true,
         })
         .catch((e: any) => {
@@ -204,7 +203,7 @@ module.exports = async function (i: Interaction) {
     }
 
     if (
-      i.guild?.mfaLevel === "ELEVATED" &&
+      i.guild?.mfaLevel === GuildMFALevel.Elevated &&
       command?.privileged &&
       process.env.MFA_API_TOKEN &&
       process.env.MFA_CLIENT_ID &&
@@ -224,10 +223,10 @@ module.exports = async function (i: Interaction) {
       .collection("settings")
       .findOne({ guild: i.guild?.id });
     if (!settings?.commandLogChannelWebhook) return;
-    const embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
       author: {
         name: i.user.tag,
-        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        iconURL: i.user.displayAvatarURL(),
       },
       description: `Ran the \`${command.name}\` command.`,
     });

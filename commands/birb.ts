@@ -1,10 +1,10 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import axios from "axios";
 
 export = {
   name: "birb",
-  async exec(i: CommandInteraction): Promise<void> {
-    const embed = new MessageEmbed({ title: "Tweet Tweet..." });
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    const embed = new EmbedBuilder({ title: "Tweet Tweet..." });
     const member = await i.guild?.members
       .fetch(i.user.id)
       .catch((e) => console.error(e));

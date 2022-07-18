@@ -1,9 +1,9 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import { execSync } from "child_process";
 
 export = {
   name: "help",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const remote = execSync("git config --get remote.origin.url")
       .toString()
       .trim()

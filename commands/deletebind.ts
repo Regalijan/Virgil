@@ -1,11 +1,11 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import mongo from "../mongo";
 
 const bindDb = mongo.db("bot").collection("binds");
 
 export = {
   name: "deletebind",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const bind = await bindDb.findOneAndDelete({
       id: i.options.getString("id", true),
       server: i.guildId,

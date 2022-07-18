@@ -1,4 +1,9 @@
-import { CommandInteraction, MessageEmbed, Team, User } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  Team,
+  User,
+} from "discord.js";
 import { execSync } from "child_process";
 
 function getUptime(): string {
@@ -51,7 +56,7 @@ function getGitVersion(): string {
 
 export = {
   name: "debug",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const clientApplication = await i.client.application?.fetch();
     let applicationOwner = "Unknown";
     if (clientApplication?.owner instanceof Team) {
@@ -60,7 +65,7 @@ export = {
       applicationOwner = clientApplication.owner.tag;
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
         name: i.client.user?.tag ?? "Unknown Bot",
         iconURL: i.client.user?.displayAvatarURL(),

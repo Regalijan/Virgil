@@ -1,5 +1,5 @@
 import Sentry from "../sentry";
-import { MessageEmbed, ThreadChannel } from "discord.js";
+import { EmbedBuilder, ThreadChannel } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 
@@ -26,7 +26,7 @@ module.exports = async function (
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.threadUpdateLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle("Thread Updated")
     .setColor([0, 0, 255])
     .setFooter({ text: `Thread ${newThread.id}` });

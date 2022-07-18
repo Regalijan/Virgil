@@ -1,9 +1,14 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  PermissionsBitField,
+} from "discord.js";
 import mongo from "../mongo";
 
 export = {
   name: "factoryreset",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const serversettings = await mongo
       .db("bot")
       .collection("settings")
@@ -16,16 +21,18 @@ export = {
     const logChannel = await i.guild?.channels
       .fetch(serversettings.value?.commandLogChannel)
       .catch((e) => console.error(e));
-    const me = await i.guild?.me?.fetch();
+    const me = await i.guild?.members.me?.fetch();
     if (
       logChannel &&
-      !me?.permissionsIn(logChannel).has("SEND_MESSAGES") &&
-      logChannel.type === "GUILD_TEXT"
+      !me
+        ?.permissionsIn(logChannel)
+        .has(PermissionsBitField.Flags.SendMessages) &&
+      logChannel.type === ChannelType.GuildText
     ) {
-      const logEmbed = new MessageEmbed()
+      const logEmbed = new EmbedBuilder()
         .setAuthor({
           name: i.user.tag,
-          iconURL: i.user.displayAvatarURL({ dynamic: true }),
+          iconURL: i.user.displayAvatarURL(),
         })
         .setColor(serversettings.value?.commandLogChannel ?? 3756250)
         .setDescription("Requested factory reset.");

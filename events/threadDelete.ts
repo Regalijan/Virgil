@@ -1,4 +1,4 @@
-import { MessageEmbed, ThreadChannel } from "discord.js";
+import { EmbedBuilder, ThreadChannel } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
@@ -23,7 +23,7 @@ module.exports = async function (thread: ThreadChannel) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.threadDeleteLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setDescription(`Thread ${thread.name} deleted.`)
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([255, 0, 0]);

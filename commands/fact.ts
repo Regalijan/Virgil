@@ -1,9 +1,9 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import axios from "axios";
 
 export = {
   name: "fact",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const fact = await axios("https://nekos.life/api/v2/fact").catch((e) =>
       console.error(e)
     );

@@ -1,4 +1,4 @@
-import { MessageEmbed, ThreadChannel } from "discord.js";
+import { EmbedBuilder, ThreadChannel } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
@@ -23,7 +23,7 @@ module.exports = async function (thread: ThreadChannel) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.threadCreateLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setDescription(`Thread <#${thread.id}> created by <@${thread.ownerId}>`)
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([0, 255, 0]);

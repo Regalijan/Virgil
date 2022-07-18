@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 import mongo from "../mongo";
 import Sentry from "../sentry";
 import SendLog from "../send_log";
@@ -12,23 +12,23 @@ module.exports = async function (member: GuildMember) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.memberJoinLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: "Member Joined",
-      iconURL: member.user.displayAvatarURL({ dynamic: true }),
+      iconURL: member.user.displayAvatarURL(),
     })
     .setColor(3756250)
-    .setThumbnail(member.displayAvatarURL({ dynamic: true }))
+    .setThumbnail(member.displayAvatarURL())
     .setDescription(`<@${member.id}> ${member.user.tag}`)
-    .addField(
-      "Registration Date",
-      new Intl.DateTimeFormat(member.guild.preferredLocale, {
+    .addFields({
+      name: "Registration Date",
+      value: new Intl.DateTimeFormat(member.guild.preferredLocale, {
         dateStyle: "medium",
         timeStyle: "medium",
       })
         .format(member.user.createdTimestamp)
-        .toString()
-    )
+        .toString(),
+    })
     .setFooter({ text: `ID: ${member.id}` });
   await SendLog(
     settings.memberJoinLogChannelWebhook,

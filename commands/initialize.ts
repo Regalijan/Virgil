@@ -1,9 +1,9 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import mongo from "../mongo";
 
 export = {
   name: "initialize",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const currentSettings = await mongo
       .db("bot")
       .collection("settings")

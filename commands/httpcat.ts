@@ -1,9 +1,9 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
 export = {
   name: "httpcat",
-  async exec(i: CommandInteraction): Promise<void> {
-    const embed = new MessageEmbed()
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    const embed = new EmbedBuilder()
       .setTitle(":cat: Meow!")
       .setImage(`https://http.cat/${i.options.getInteger("status")}`);
 

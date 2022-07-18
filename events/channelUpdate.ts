@@ -1,6 +1,6 @@
 import {
   DMChannel,
-  MessageEmbed,
+  EmbedBuilder,
   NonThreadGuildBasedChannel,
 } from "discord.js";
 import db from "../mongo";
@@ -13,7 +13,7 @@ module.exports = async function (
   oldChannel: DMChannel | NonThreadGuildBasedChannel,
   newChannel: DMChannel | NonThreadGuildBasedChannel
 ) {
-  if (newChannel.type === "DM") return;
+  if (newChannel instanceof DMChannel) return;
   const ignoreData = await mongo
     .collection("ignored")
     .findOne({
@@ -29,7 +29,7 @@ module.exports = async function (
     .findOne({ guild: newChannel.guild.id })
     .catch((e) => console.error(e));
   if (!settings?.channelUpdateLogChannelWebhook) return;
-  const embed = new MessageEmbed().setDescription(
+  const embed = new EmbedBuilder().setDescription(
     `${newChannel} has been updated. See audit logs for details.`
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);

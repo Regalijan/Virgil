@@ -1,12 +1,16 @@
-import { CommandInteraction } from "discord.js";
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  PermissionsBitField,
+} from "discord.js";
 
 export = {
   name: "say",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const targetApiChannel = i.options.getChannel("channel") ?? i.channel;
     if (!targetApiChannel)
       throw Error("Selected channel and current channel are both null");
-    if (targetApiChannel.type === "DM") {
+    if (targetApiChannel.type === ChannelType.DM) {
       await i.reply({
         content: "Sorry but DM channels cannot be used with this command.",
         ephemeral: true,
@@ -19,13 +23,13 @@ export = {
         "Unable to fetch GuildChannel from APIInteractionResolvedDataChannel"
       );
     if (!i.client.user) throw Error("ClientUser is null");
-    if (target.type !== "GUILD_TEXT") {
+    if (target.type !== ChannelType.GuildText) {
       await i.reply({
         content: "Messages can only be sent to normal text channels.",
       });
       return;
     }
-    if (!target.permissionsFor(i.client.user.id)?.has("SEND_MESSAGES")) {
+    if (!i.appPermissions?.has(PermissionsBitField.Flags.SendMessages)) {
       await i.reply({
         content:
           "Oops! I do not have permission to send messages to this channel!",

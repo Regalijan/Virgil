@@ -1,12 +1,12 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import axios from "axios";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 
 export = {
   name: "bind",
-  async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild) throw Error("<CommandInteraction>.guild is null");
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.guild) throw Error("<ChatInputCommandInteraction>.guild is null");
     const subc = i.options.getSubcommand(true);
     const bindDb = mongo.db("bot").collection("binds");
     const bindId = createHash("sha256")
@@ -17,31 +17,43 @@ export = {
       .replaceAll("+", "-");
     switch (subc) {
       case "group":
-        if (i.options.getInteger("group_id", true) < 1)
-          return await i.reply({
+        if (i.options.getInteger("group_id", true) < 1) {
+          await i.reply({
             content: "Group IDs cannot be negative!",
             ephemeral: true,
           });
-        if (i.options.getInteger("group_id", true) === 0)
-          return await i.reply({
+          return;
+        }
+
+        if (i.options.getInteger("group_id", true) === 0) {
+          await i.reply({
             content:
               "You cannot use group 0, please bind another verified role.",
             ephemeral: true,
           });
+          return;
+        }
+
         const groupRequest = await axios(
           "https://groups.roblox.com/v2/groups?groupIds=" +
             i.options.getInteger("group_id", true)
         ).catch((e) => console.error(e));
-        if (!groupRequest)
-          return await i.reply({
+        if (!groupRequest) {
+          await i.reply({
             content: "The group could not be validated!",
             ephemeral: true,
           });
-        if (!groupRequest.data.data?.length)
-          return await i.reply({
+          return;
+        }
+
+        if (!groupRequest.data.data?.length) {
+          await i.reply({
             content: "This group does not exist!",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,
@@ -53,21 +65,27 @@ export = {
         break;
 
       case "badge":
-        if (i.options.getInteger("badge_id", true) < 0)
-          return await i.reply({
+        if (i.options.getInteger("badge_id", true) < 0) {
+          await i.reply({
             content: "Badge IDs cannot be negative!",
             ephemeral: true,
           });
+          return;
+        }
+
         const badgeVerify = await axios(
           `https://badges.roblox.com/v1/badges/${i.options.getInteger(
             "badge_id"
           )}`
         ).catch(() => {});
-        if (!badgeVerify)
-          return await i.reply({
+        if (!badgeVerify) {
+          await i.reply({
             content: "Badge could not be validated! Does it exist?",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,
@@ -78,10 +96,12 @@ export = {
         break;
 
       case "bundle":
-        if (i.options.getInteger("bundle_id", true) < 1)
-          return await i.reply({
+        if (i.options.getInteger("bundle_id", true) < 1) {
+          await i.reply({
             content: "Bundle IDs cannot be less than 1!",
           });
+        }
+
         const bundleVerify = await axios(
           `https://catalog.roblox.com/v1/bundles/${i.options.getInteger(
             "bundle_id",
@@ -93,17 +113,23 @@ export = {
             },
           }
         ).catch(() => {});
-        if (!bundleVerify)
-          return await i.reply({
+        if (!bundleVerify) {
+          await i.reply({
             content:
               "An error occured when looking up the bundle! Please try again later.",
             ephemeral: true,
           });
-        if (bundleVerify.status === 400)
-          return await i.reply({
+          return;
+        }
+
+        if (bundleVerify.status === 400) {
+          await i.reply({
             content: "The bundle you specified does not exist.",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,
@@ -114,11 +140,14 @@ export = {
         break;
 
       case "gamepass":
-        if (i.options.getInteger("gamepass_id", true) < 1)
-          return await i.reply({
+        if (i.options.getInteger("gamepass_id", true) < 1) {
+          await i.reply({
             content: "GamePass IDs cannot be less than 1!",
             ephemeral: true,
           });
+          return;
+        }
+
         const gamePassVerify = await axios(
           `https://api.roblox.com/marketplace/game-pass-product-info?gamePassId=${i.options.getInteger(
             "gamepass_id",
@@ -130,16 +159,23 @@ export = {
             },
           }
         ).catch((e) => console.error(e));
-        if (!gamePassVerify)
-          return await i.reply({
+
+        if (!gamePassVerify) {
+          await i.reply({
             content:
               "An error occurred when looking up that GamePass! Please try again later.",
           });
-        if (gamePassVerify.status === 400)
-          return await i.reply({
+          return;
+        }
+
+        if (gamePassVerify.status === 400) {
+          await i.reply({
             content: "GamePass does not exist! Try again.",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,
@@ -150,11 +186,14 @@ export = {
         break;
 
       case "asset":
-        if (i.options.getInteger("asset_id", true) < 1)
-          return await i.reply({
+        if (i.options.getInteger("asset_id", true) < 1) {
+          await i.reply({
             content: "Asset IDs cannot be less than 1!",
             ephemeral: true,
           });
+          return;
+        }
+
         const assetVerify = await axios(
           `https://api.roblox.com/marketplace/productinfo?assetId=${i.options.getInteger(
             "asset_id",
@@ -166,17 +205,24 @@ export = {
             },
           }
         ).catch(() => {});
-        if (!assetVerify)
-          return await i.reply({
+
+        if (!assetVerify) {
+          await i.reply({
             content:
               "An error occurred when looking up that asset! Please try again later.",
             ephemeral: true,
           });
-        if (assetVerify.status === 400)
-          return await i.reply({
+          return;
+        }
+
+        if (assetVerify.status === 400) {
+          await i.reply({
             content: "This asset does not exist! Try again.",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,
@@ -218,18 +264,25 @@ export = {
             }),
           }
         ).catch(() => {});
-        if (!userVerifyReq)
-          return await i.reply({
+
+        if (!userVerifyReq) {
+          await i.reply({
             content:
               "An error occurred when looking up that user! Please try again later.",
             ephemeral: true,
           });
-        if (!userVerifyReq.data.data?.length)
-          return await i.reply({
+          return;
+        }
+
+        if (!userVerifyReq.data.data?.length) {
+          await i.reply({
             content:
               "This user does not exist! Please make sure that you spelled it correctly.",
             ephemeral: true,
           });
+          return;
+        }
+
         await bindDb.insertOne({
           id: bindId,
           server: i.guildId,

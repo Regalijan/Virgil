@@ -1,8 +1,8 @@
 import {
+  ActionRowBuilder,
   DiscordAPIError,
+  EmbedBuilder,
   Guild,
-  MessageActionRow,
-  MessageEmbed,
 } from "discord.js";
 import mongo from "./mongo";
 
@@ -10,10 +10,10 @@ const settings = mongo.db("bot").collection("settings");
 
 export default async function (
   url: string,
-  embed: MessageEmbed,
+  embed: EmbedBuilder,
   guild: Guild,
   settingName: string,
-  actionRows?: MessageActionRow[]
+  actionRows?: ActionRowBuilder[]
 ): Promise<void> {
   const webhookIdArr = url.match(/\d{17,19}/);
   if (!webhookIdArr) return;
@@ -25,9 +25,9 @@ export default async function (
         ""
       )
     )
-    .catch((e) => e);
+    .catch((e: DiscordAPIError) => e);
   if (webhookData instanceof DiscordAPIError) {
-    if (webhookData.httpStatus === 404) {
+    if (webhookData.status === 404) {
       const $unset: any = {};
       $unset[settingName] = "";
       $unset[settingName.replace("Webhook", "")] = "";
@@ -37,8 +37,8 @@ export default async function (
   }
   const sendOpts: {
     avatarURL?: string;
-    components?: MessageActionRow[];
-    embeds: MessageEmbed[];
+    components?: ActionRowBuilder[];
+    embeds: EmbedBuilder[];
   } = {
     avatarURL: guild.client.user?.displayAvatarURL(),
     embeds: [embed],
@@ -46,5 +46,5 @@ export default async function (
 
   if (actionRows) sendOpts.components = actionRows;
 
-  await webhookData.send(sendOpts).catch(console.error);
+  await webhookData.send(sendOpts as { [k: string]: any }).catch(console.error);
 }

@@ -1,10 +1,10 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import redis from "../redis";
 import mongo from "../mongo";
 
 export = {
   name: "ping",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const redisBefore = Date.now();
     await redis.ping();
     const redisAfter = Date.now();
@@ -12,7 +12,7 @@ export = {
     const mongoBefore = Date.now();
     await db.findOne({ server: i.guildId });
     const mongoAfter = Date.now();
-    const embed = new MessageEmbed().setDescription("Latency").addFields(
+    const embed = new EmbedBuilder().setDescription("Latency").addFields(
       { name: "Database (MongoDB)", value: `${mongoAfter - mongoBefore}ms` },
       { name: "Cache (Redis)", value: `${redisAfter - redisBefore}ms` },
       { name: "Gateway", value: `${i.client.ws.ping}ms` },
