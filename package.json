@@ -30,7 +30,7 @@
     "erlpack": "^0.1.4",
     "ioredis": "^5.2.2",
     "mongodb": "^4.8.1",
-    "sodium-native": "^3.4.0",
+    "sodium-native": "^3.4.1",
     "utf-8-validate": "^5.0.9",
     "ws": "^8.8.1",
     "zlib-sync": "^0.1.7"
