@@ -12,6 +12,7 @@ defmodule APIRouter do
   plug(:match)
   plug(:dispatch)
 
+  forward("/guild/:id/api-keys", to: APIRouter.APIKeysRouter)
   forward("/guild/:id/binds", to: APIRouter.BindRouter)
   forward("/guild/:id/ignored", to: APIRouter.IgnoredRouter)
   forward("/guild/:id/settings", to: APIRouter.SettingsRouter)
