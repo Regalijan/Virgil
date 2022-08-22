@@ -101,12 +101,17 @@ export = {
     }
     const thumbnailData = await axios(
       `https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`
-    ).catch((e) => console.error(e));
+    ).catch(console.error);
     if (thumbnailData) {
       embed.setThumbnail(thumbnailData.data.data[0].imageUrl);
+    }
+    const headshotData = await axios(
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`
+    ).catch(console.error);
+    if (headshotData) {
       embed.setAuthor({
         name: robloxData.name,
-        iconURL: thumbnailData.data.data[0].imageUrl,
+        iconURL: headshotData.data.data[0].imageUrl,
         url: `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`,
       });
     }
