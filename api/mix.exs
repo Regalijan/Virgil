@@ -19,7 +19,8 @@ defmodule Api.MixProject do
         :finch,
         :jason,
         :mongodb_driver,
-        :plug_cowboy
+        :plug_cowboy,
+        :redix
       ],
       extra_applications: [:logger],
       mod: {Api.Application, []}
@@ -33,7 +34,8 @@ defmodule Api.MixProject do
       {:finch, "~> 0.13.0"},
       {:jason, "~> 1.3"},
       {:mongodb_driver, "~> 0.9.1"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:redix, "~> 1.1"}
     ]
   end
 end
