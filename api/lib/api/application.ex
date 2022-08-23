@@ -45,7 +45,8 @@ defmodule Api.Application do
       },
       {
         Redix,
-        System.get_env("REDIS", "redis://redis:6379")
+        start:
+          {Redix, :start_link, [[System.get_env("REDIS", "redis://redis:6379"), name: :redis]]}
       }
     ]
 
