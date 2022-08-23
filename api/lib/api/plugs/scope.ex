@@ -12,7 +12,7 @@ defmodule Plug.Scope do
 
     case List.first(path_segments) == "guild" && conn.assigns[:token_data].type != "user" do
       true -> validate_scopes(conn, path)
-      false -> conn
+      false -> validate_user(conn, path)
     end
   end
 
@@ -34,6 +34,11 @@ defmodule Plug.Scope do
       false -> invalid_scope(conn)
       true -> conn
     end
+  end
+
+  @spec validate_user(Plug.Conn.t(), String) :: Plug.Conn.t()
+  defp validate_user(conn, path) do
+    conn
   end
 
   @spec call(Plug.Conn.t(), any) :: Plug.Conn.t()
