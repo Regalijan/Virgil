@@ -15,7 +15,10 @@ defmodule APIRouter.BindRouter do
   delete "/:bind" do
     respond(
       conn,
-      Mongo.find_one_and_delete(:mongo, "binds", %{server: conn.params["id"]},
+      Mongo.find_one_and_delete(
+        :mongo,
+        "binds",
+        %{server: conn.params["id"], id: conn.params["bind"]},
         projection: %{_id: 0}
       )
     )
@@ -24,7 +27,9 @@ defmodule APIRouter.BindRouter do
   get "/:bind" do
     respond(
       conn,
-      Mongo.find_one(:mongo, "binds", %{server: conn.params["id"]}, projection: %{_id: 0})
+      Mongo.find_one(:mongo, "binds", %{server: conn.params["id"], id: conn.params["bind"]},
+        projection: %{_id: 0}
+      )
     )
   end
 end
