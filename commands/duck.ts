@@ -13,7 +13,7 @@ export = {
     if (member) embed.setColor(member.displayColor);
     const ducky = await axios("https://random-d.uk/api/v2/random");
     embed.setImage(ducky.data.url);
-    embed.setFooter(ducky.data.message);
+    embed.setFooter({ text: ducky.data.message });
     await i.reply({ embeds: [embed] });
   },
 };

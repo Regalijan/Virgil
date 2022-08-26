@@ -18,8 +18,6 @@ export = {
       return;
     }
     const payload = { content: response, ephemeral: true };
-    canEdit
-      ? await i.message.edit(payload)
-      : await i.followUp(payload);
+    canEdit ? await i.message.edit(payload) : await i.followUp(payload);
   },
 };
