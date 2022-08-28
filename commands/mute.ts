@@ -35,6 +35,16 @@ export = {
     const minutes = i.options.getNumber("minutes", true);
     const hours = i.options.getNumber("hours", true);
     const timeoutLength = minutes * 60 * 1000 + hours * 60 * 60 * 1000;
+
+    // 28 days, see https://discord.com/developers/docs/resources/guild#modify-guild-member-json-params
+    if (timeoutLength > 2419200000) {
+      await i.reply({
+        content: "Mute length cannot be longer than 28 days.",
+        ephemeral: true,
+      });
+      return;
+    }
+
     const reason = i.options.getString("reason", false);
     await targetGuildMember.timeout(
       timeoutLength,
