@@ -70,7 +70,7 @@ export = {
       const lastN = bio.lastIndexOf("\n");
       bio = bio.slice(0, lastN) + bio.slice(lastN + 1);
     }
-    embed.setDescription(bio);
+    embed.setDescription(bio || "\u200B");
     const pastNamesData = await axios(
       `https://users.roblox.com/v1/users/${verifyRegistryData.data.robloxId}/username-history?limit=25&sortOrder=Desc`
     ).catch((e) => console.error(e));
