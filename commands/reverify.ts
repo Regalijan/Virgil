@@ -9,7 +9,7 @@ export = {
   name: "reverify",
   async exec(i: CommandInteraction): Promise<void> {
     const button = new ButtonBuilder()
-      .setURL("https://rover.link/verify")
+      .setURL("https://registry.virgil.gg/me")
       .setEmoji("✏")
       .setLabel("Change Account")
       .setStyle(ButtonStyle.Link);

@@ -33,7 +33,7 @@ export = {
         emoji: "🔗",
         label: "Verify your account",
         style: ButtonStyle.Link,
-        url: "https://rover.link/verify",
+        url: "https://registry.virgil.gg/me",
       });
       const verifyButton = new ButtonBuilder({
         customId: "verify_recheck",
