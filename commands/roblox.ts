@@ -16,7 +16,7 @@ export = {
     const user = i.options.getUser("user") ?? i.user;
     const embed = new EmbedBuilder({
       footer: {
-        text: "Information provided by Roblox Corporation and RoVer Registry",
+        text: "Information provided by Roblox Corporation and Virgil Registry",
       },
     });
     const verifyRegistryData = await axios(
