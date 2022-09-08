@@ -19,7 +19,9 @@ export = {
         icon_url: i.user.displayAvatarURL(),
       },
       description: eightballresponse.data.response,
-      image: eightballresponse.data.url,
+      image: {
+        url: eightballresponse.data.url,
+      },
     });
     const member = await i.guild?.members.fetch(i.user.id);
     if (member?.displayColor) embed.setColor(member.displayColor);
