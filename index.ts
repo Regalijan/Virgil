@@ -33,22 +33,15 @@ async function getGatewayData() {
     token: process.env.DISCORDTOKEN,
     totalShards: shardCount,
   });
+
   shardMgr.on("shardCreate", function (shard) {
     console.log(`Launching shard ${shard.id + 1} of ${shardMgr.totalShards}.`);
   });
+
   const maxConcurrency = gatewayData.session_start_limit.max_concurrency;
-  let spawnBucketStart = Date.now();
-  for (let i = 0; i < shardCount; i++) {
-    if (
-      i !== 0 &&
-      i % maxConcurrency === 0 &&
-      Date.now() - 5000 < spawnBucketStart
-    ) {
-      await new Promise((r) => setTimeout(r, Date.now() - spawnBucketStart));
-      spawnBucketStart = Date.now();
-    }
-    await shardMgr.spawn({ amount: 1, delay: 0 });
-  }
+
+  await shardMgr.spawn({ delay: Math.ceil(5000 / maxConcurrency) });
+
   if (process.env.BROKER_TOKEN) {
     /*
       WS Event Codes:
