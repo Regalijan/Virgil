@@ -1,19 +1,9 @@
 import { config as dotenv } from "dotenv";
-import { ShardingManager, ShardClientUtil } from "discord.js";
+import { ShardingManager } from "discord.js";
 import { join } from "path";
-import WebSocket from "ws";
 import axios from "axios";
-import { execSync, spawn } from "child_process";
 
 dotenv();
-
-let docker_env = false;
-
-try {
-  if (execSync("grep 'docker-init' /proc/1/sched").toString() !== "") {
-    docker_env = true;
-  }
-} catch {}
 
 async function getGatewayData() {
   if (!process.env.DISCORDTOKEN)
@@ -42,134 +32,6 @@ async function getGatewayData() {
 
   await shardMgr.spawn({ delay: Math.ceil(5000 / maxConcurrency) });
 
-  if (process.env.BROKER_TOKEN) {
-    /*
-      WS Event Codes:
-        0: Authentication (send-only)
-        1: Update all interactions
-        2: Update core files (shard.ts, and dependencies)
-        3: Update server settings
-        4: Update single server setting
-        5: Recalculate shard count
-        6: Respawn specific shard
-        7: Entrypoint update (index.ts)
-     */
-    const broker = new WebSocket(
-      process.env.BROKER_URL ?? "wss://broker.virgil.gg"
-    );
-    broker.on("open", function () {
-      broker.send(
-        JSON.stringify({
-          code: 0,
-          data: {
-            token: process.env.BROKER_TOKEN,
-          },
-        })
-      );
-    });
-    broker.on("error", function (err) {
-      console.error(err);
-    });
-    broker.on("message", async function (message) {
-      const { code, data, shard } = JSON.parse(message.toString());
-      if (typeof shard === "number" && [1, 2, 7].includes(code))
-        try {
-          if (
-            execSync("git rev-parse --abbrev-ref HEAD").toString().trim() !==
-            data.branch
-          )
-            return;
-          execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
-        } catch (e) {
-          console.error(e);
-        }
-      switch (code) {
-        case 1:
-          typeof shard === "number"
-            ? await shardMgr.shards.get(shard)?.send({ code, data })
-            : await shardMgr.broadcast({ code, data });
-          break;
-        case 2:
-          const respawnMaxConcurrency = (await getGatewayData())
-            .session_start_limit.max_concurrency;
-          shardMgr.shards.each(async (shard) => {
-            const delay = Math.ceil(5000 / respawnMaxConcurrency);
-            await shard.respawn({ delay }); // Sure we could kill all of them at once, but spawning all of them again after can result in some servers facing extended downtime depending on the number of shards.
-          });
-          break;
-        case 3:
-          if (!data.guild || !data.settings) return;
-          await shardMgr.shards
-            .get(
-              ShardClientUtil.shardIdForGuildId(
-                data.guild,
-                shardMgr.shards.size
-              )
-            )
-            ?.send({
-              code,
-              data: {
-                guild: data.guild,
-                settings: data.settings,
-              },
-            });
-          break;
-        case 4:
-          if (!data.guild || !data.setting) return;
-          await shardMgr.shards
-            .get(
-              ShardClientUtil.shardIdForGuildId(
-                data.guild,
-                shardMgr.shards.size
-              )
-            )
-            ?.send({
-              code: 4,
-              data: {
-                guild: data.guild,
-                setting: data.setting,
-                value: data.value,
-              },
-            });
-          break;
-        case 5:
-          const upToDateGatewayData = await getGatewayData().catch(() => {});
-          if (!upToDateGatewayData) break;
-          const {
-            session_start_limit: { max_concurrency: currentMaxConcurrency },
-            shards: currentShardCount,
-          } = upToDateGatewayData;
-          if (currentShardCount > shardMgr.shards.size)
-            await shardMgr.spawn({
-              amount: currentShardCount - shardMgr.shards.size,
-              delay: Math.ceil(5000 / currentMaxConcurrency),
-            });
-          else if (currentShardCount < shardMgr.shards.size)
-            while (shardMgr.shards.size > currentShardCount)
-              await shardMgr.shards.last()?.kill();
-          break;
-        case 6:
-          await shardMgr.shards.get(shard)?.respawn();
-          break;
-        case 7:
-          shardMgr.respawn = false;
-          await shardMgr.broadcastEval((client) => {
-            client.destroy();
-            process.exit();
-          });
-          docker_env
-            ? process.exit()
-            : process.on("exit", function () {
-                spawn("node", ["dist"], {
-                  cwd: join(__dirname, ".."),
-                  detached: true,
-                  stdio: "inherit",
-                });
-              });
-          break;
-      }
-    });
-  }
   process.on("SIGTERM", () => {
     shardMgr.shards.each((shard) => {
       shard.kill();
