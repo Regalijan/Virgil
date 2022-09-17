@@ -47,11 +47,23 @@ function loadEvents() {
   });
 }
 
+async function logDebug(message: any) {
+  console.log(`SHARD ${bot.shard?.ids[0]}:\n${message}`);
+}
+
 loadEvents();
 
 bot.login().catch((e) => {
   process.env.DSN ? Sentry.captureException(e) : console.error(e);
   process.exit();
+});
+
+process.on("enableDebug", async function () {
+  bot.addListener("debug", logDebug);
+});
+
+process.on("disableDebug", async function () {
+  bot.removeListener("debug", logDebug);
 });
 
 const mongo = db.db("bot");
