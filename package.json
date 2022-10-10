@@ -21,7 +21,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.13.0",
-    "@sentry/node": "^7.14.2",
+    "@sentry/node": "^7.15.0",
     "amqplib": "^0.10.3",
     "axios": "^1.1.2",
     "bufferutil": "^4.0.6",
