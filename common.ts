@@ -356,7 +356,7 @@ export = {
       `https://registry.virgil.gg/api/discord/${member.id}`,
       {
         headers: {
-          authorization: process.env.REGISTRY_API_KEY || "",
+          authorization: `Bearer ${process.env.REGISTRY_API_KEY}`,
         },
       }
     ).catch(() => {});

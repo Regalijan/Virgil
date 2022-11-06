@@ -23,7 +23,7 @@ export = {
       "https://registry.virgil.gg/api/discord/" + user.id,
       {
         headers: {
-          authorization: process.env.REGISTRY_API_KEY || "",
+          authorization: `Bearer ${process.env.REGISTRY_API_KEY}`,
         },
         validateStatus: (s) => {
           return [200, 404].includes(s);
