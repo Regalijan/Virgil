@@ -20,15 +20,15 @@ export = {
     }
 
     await i.deferReply();
-    const resultString = await Common.verify(member);
+    const results = await Common.verify(member);
     const replyOpts: {
       content: string;
       components: ActionRowBuilder<ButtonBuilder>[];
     } = {
-      content: await Common.verify(member),
+      content: results.content,
       components: [],
     };
-    if (resultString === "You must be new, click the button to get started.") {
+    if (!results.verified) {
       const notVerifiedLinkButton = new ButtonBuilder({
         emoji: "🔗",
         label: "Verify your account",

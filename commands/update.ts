@@ -17,7 +17,7 @@ export = {
 
     await i.deferReply();
     await i.followUp({
-      content: await Common.verify(member, member.id === i.user.id),
+      content: (await Common.verify(member, member.id === i.user.id)).content,
     });
   },
 };
