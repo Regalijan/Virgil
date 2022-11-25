@@ -4,12 +4,15 @@ import mongo from "./mongo";
 import Logger from "./logger";
 import Sentry from "./sentry";
 import {
+  ButtonInteraction,
+  CommandInteraction,
   Guild,
   GuildMember,
   PermissionsBitField,
   RoleResolvable,
   Team,
   User,
+  UserContextMenuCommandInteraction,
 } from "discord.js";
 
 export = {
@@ -344,7 +347,11 @@ export = {
 
   async verify(
     member: GuildMember,
-    self: boolean = true
+    self: boolean = true,
+    interaction:
+      | ButtonInteraction
+      | CommandInteraction
+      | UserContextMenuCommandInteraction
   ): Promise<{ content: string; errored: boolean; verified: boolean }> {
     if (
       !member.guild.members.me?.permissions.has(
@@ -424,6 +431,8 @@ export = {
         verified: false,
       };
     }
+    await interaction.deferReply({ ephemeral: !self });
+
     const robloxUserId: number = verifyApiData.data.id;
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)

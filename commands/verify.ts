@@ -19,8 +19,7 @@ export = {
       return;
     }
 
-    await i.deferReply();
-    const results = await Common.verify(member);
+    const results = await Common.verify(member, true, i);
     const replyOpts: {
       content: string;
       components: ActionRowBuilder<ButtonBuilder>[];
@@ -47,6 +46,6 @@ export = {
         ),
       ];
     }
-    await i.followUp(replyOpts);
+    results.verified ? await i.followUp(replyOpts) : await i.reply(replyOpts);
   },
 };
