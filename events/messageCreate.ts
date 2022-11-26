@@ -134,29 +134,18 @@ module.exports = async function (message: Message) {
       malicious = JSON.parse(cache);
     }
     if (malicious) {
-      if (
-        process.env.ROVER_REGISTRY_KEY &&
-        process.env.ROVER_REGISTRY_UNLINK_URL
-      ) {
-        await axios(
-          process.env.ROVER_REGISTRY_UNLINK_URL + `/${message.author.id}`,
-          {
-            method: "DELETE",
-            headers: {
-              authorization: `Bearer ${process.env.ROVER_REGISTRY_KEY}`,
-            },
-            validateStatus: () => true,
-          }
-        );
-      }
       if (message.deletable) {
         await message.delete().catch(console.error);
       }
+
       if (!settings?.autobanPhishers) return;
+
       const member =
         message.member ||
         (await message.guild?.members.fetch(message.author.id).catch(Logger));
+
       if (!member?.bannable) return;
+
       await member
         .send({
           content: `You were banned from ${
@@ -166,9 +155,11 @@ module.exports = async function (message: Message) {
           }`,
         })
         .catch(() => {});
+
       await member
         .ban({ reason: "User posted a phishing link", deleteMessageDays: 1 })
         .catch(Logger);
+
       break;
     }
   }
