@@ -1,7 +1,7 @@
 import { EmbedBuilder, VoiceState } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -14,9 +14,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newState.guild.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings) return;
   const embed = new EmbedBuilder()
     .setColor(newState.member?.displayColor ?? 0)

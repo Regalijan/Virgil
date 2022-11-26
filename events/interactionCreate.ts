@@ -13,6 +13,7 @@ import {
   UserContextMenuCommandInteraction,
 } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
 import { readdirSync } from "fs";
@@ -89,9 +90,9 @@ module.exports = async function (i: BaseInteraction) {
   if (i.isUserContextMenuCommand()) {
     if (!userContextCommands.has(i.commandName)) return;
     const contextCommand = userContextCommands.get(i.commandName);
-    const contextMember = await i.guild?.members.fetch(i.user.id).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    const contextMember = await i.guild?.members
+      .fetch(i.user.id)
+      .catch(console.error);
 
     if (
       contextCommand?.permissions?.length &&
@@ -99,9 +100,7 @@ module.exports = async function (i: BaseInteraction) {
     ) {
       return await i
         .reply({ content: "You cannot run this command!", ephemeral: true })
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
     }
 
     try {
@@ -115,9 +114,7 @@ module.exports = async function (i: BaseInteraction) {
           }`,
           ephemeral: true,
         })
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
     }
     return;
   }
@@ -153,9 +150,7 @@ module.exports = async function (i: BaseInteraction) {
           },`,
           ephemeral: true,
         })
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
     }
     return;
   }
@@ -171,11 +166,7 @@ module.exports = async function (i: BaseInteraction) {
       return;
     }
 
-    try {
-      await buttonCommand.exec(i);
-    } catch (e) {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    }
+    await buttonCommand.exec(i).catch(Logger);
   }
 
   if (!i.isChatInputCommand() || !cmds.has(i.commandName)) return;
@@ -196,9 +187,7 @@ module.exports = async function (i: BaseInteraction) {
             "Hey! You can't run commands here! They may only be run in a thread or a standard text/voice text channel.",
           ephemeral: true,
         })
-        .catch((e: any) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
       return;
     }
 
@@ -221,7 +210,8 @@ module.exports = async function (i: BaseInteraction) {
     if (!command?.privileged || !i.guild) return;
     const settings = await mongo
       .collection("settings")
-      .findOne({ guild: i.guild?.id });
+      .findOne({ guild: i.guild?.id })
+      .catch(Logger);
     if (!settings?.commandLogChannelWebhook) return;
     const embed = new EmbedBuilder({
       author: {

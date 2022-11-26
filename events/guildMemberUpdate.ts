@@ -1,7 +1,7 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -12,7 +12,7 @@ module.exports = async function (
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newMember.guild.id })
-    .catch((e) => console.error(e));
+    .catch(Logger);
   if (!settings) return;
   const embed = new EmbedBuilder();
   embed.setAuthor({
@@ -54,9 +54,7 @@ module.exports = async function (
         newMember.nickname ?? "None"
       }\``
     );
-    await newMember.fetch().catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    await newMember.fetch().catch(console.error);
     embed.setColor(newMember.displayColor);
     await SendLog(
       settings.nicknameLogChannelWebhook,

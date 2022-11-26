@@ -4,8 +4,8 @@ import {
   NonThreadGuildBasedChannel,
 } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -20,14 +20,12 @@ module.exports = async function (
       channel: { $in: [newChannel.id, newChannel.parent?.id] },
       log: { $in: ["channel_update", null] },
     })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newChannel.guild.id })
-    .catch((e) => console.error(e));
+    .catch(console.error);
   if (!settings?.channelUpdateLogChannelWebhook) return;
   const embed = new EmbedBuilder().setDescription(
     `${newChannel} has been updated. See audit logs for details.`

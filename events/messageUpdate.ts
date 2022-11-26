@@ -1,7 +1,7 @@
 import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -25,16 +25,12 @@ module.exports = async function (
       channel: { $in: [newMessage.channel.id, newMessage.channel.parent?.id] },
       log: { $in: ["edit", null] },
     })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newMessage.guild.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.editLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setAuthor({

@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember } from "discord.js";
 import mongo from "../mongo";
-import Sentry from "../sentry";
+import Logger from "../logger";
 import SendLog from "../send_log";
 
 const settingsDB = mongo.db("bot").collection("settings");
@@ -8,9 +8,7 @@ const settingsDB = mongo.db("bot").collection("settings");
 module.exports = async function (member: GuildMember) {
   const settings = await settingsDB
     .findOne({ guild: member.guild.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.memberJoinLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setAuthor({
