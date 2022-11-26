@@ -402,11 +402,13 @@ export = {
             rolesToRemove.push(roleToRemove);
           }
         }
-        if (rolesToRemove.length)
-          await member.roles.remove(rolesToRemove).catch((e) => {
-            process.env.DSN ? Sentry.captureException(e) : console.error(e);
-          });
       }
+
+      if (rolesToRemove.length)
+        await member.roles.remove(rolesToRemove).catch((e) => {
+          Logger(e);
+        });
+
       for (const unverifiedBind of unvBinds) {
         const unvRole = await member.guild.roles
           .fetch(unverifiedBind.role)
