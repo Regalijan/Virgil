@@ -195,10 +195,10 @@ export = {
         }
 
         const assetVerify = await axios(
-          `https://api.roblox.com/marketplace/productinfo?assetId=${i.options.getInteger(
+          `https://economy.roblox.com/v2/assets/${i.options.getInteger(
             "asset_id",
             true
-          )}`,
+          )}/details`,
           {
             validateStatus: (s) => {
               return [200, 400].includes(s);
