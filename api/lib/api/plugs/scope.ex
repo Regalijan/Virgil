@@ -38,14 +38,7 @@ defmodule Plug.Scope do
 
   @spec validate_user(Plug.Conn.t(), String) :: Plug.Conn.t()
   defp validate_user(conn, path) do
-    data = Redix.command(:redix, ["GET", "user_#{conn.assigns[:token_data].user}"])
 
-    data = case is_nil(data) do
-      false -> Jason.decode!(data)
-      true -> fn ->
-
-      end
-    end
   end
 
   @spec call(Plug.Conn.t(), any) :: Plug.Conn.t()
