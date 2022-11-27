@@ -84,6 +84,9 @@ export = {
           guild: i.guildId,
           log: i.options.getString("log", false),
         });
+
+        await i.reply({ content: "Channel ignored!" });
+
         break;
 
       case "list":
