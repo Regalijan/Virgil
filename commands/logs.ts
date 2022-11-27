@@ -325,7 +325,7 @@ export = {
           if (!ignoredChannel) continue;
           embed.addFields({
             name: `#${ignoredChannel.name}`,
-            value: "Log: " + ignored.log ?? "All",
+            value: "Log: " + (ignored.log ?? "All"),
           });
         }
         await i.reply({ embeds: [embed] });
