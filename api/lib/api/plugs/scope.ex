@@ -10,9 +10,9 @@ defmodule Plug.Scope do
   defp check_resource(conn, path) do
     path_segments = String.split(path, "/", trim: true)
 
-    case List.first(path_segments) == "guild" && conn.assigns[:token_data].type != "user" do
-      true -> validate_scopes(conn, path)
-      false -> validate_user(conn, path)
+    case List.first(path_segments) == "guild" && conn.assigns[:token_data]["type"] != "user" do
+      true -> validate_scopes(conn, path_segments)
+      false -> validate_user(conn, path_segments)
     end
   end
 
@@ -24,21 +24,31 @@ defmodule Plug.Scope do
   end
 
   @spec validate_scopes(Plug.Conn.t(), String) :: Plug.Conn.t()
-  defp validate_scopes(conn, path) do
-    path_segments = String.split(path, "/", trim: true)
-    scopes = conn.assigns[:token_data].scopes
+  defp validate_scopes(conn, path_segments) do
+    scopes = conn.assigns[:token_data]["scopes"]
     resource = Enum.at(path_segments, 2)
     guild = Enum.at(path_segments, 1)
 
-    case Enum.member?(scopes, resource) && conn.assigns[:token_data].guild == guild do
+    case Enum.member?(scopes, resource) && conn.assigns[:token_data]["guild"] == guild do
       false -> invalid_scope(conn)
       true -> conn
     end
   end
 
   @spec validate_user(Plug.Conn.t(), String) :: Plug.Conn.t()
-  defp validate_user(conn, path) do
+  defp validate_user(conn, path_segments) do
+    guild_id = Enum.at(path_segments, 1)
 
+    case Enum.find(conn.assigns[:token_data]["guilds"], fn guild ->
+           Map.get(guild, "id") == guild_id &&
+             Bitwise.band(
+               String.to_integer(Map.get(guild, "permissions")),
+               32
+             ) == 32
+         end) do
+      true -> conn
+      false -> invalid_scope(conn)
+    end
   end
 
   @spec call(Plug.Conn.t(), any) :: Plug.Conn.t()
