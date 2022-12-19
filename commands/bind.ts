@@ -149,10 +149,10 @@ export = {
         }
 
         const gamePassVerify = await axios(
-          `https://api.roblox.com/marketplace/game-pass-product-info?gamePassId=${i.options.getInteger(
+          `https://economy.roblox.com/v1/game-pass/${i.options.getInteger(
             "gamepass_id",
             true
-          )}`,
+          )}/game-pass-product-info`,
           {
             validateStatus: (s) => {
               return [200, 400].includes(s);
