@@ -29,7 +29,7 @@
     "dotenv": "^16.0.3",
     "erlpack": "^0.1.4",
     "ioredis": "^5.2.4",
-    "mongodb": "^4.12.1",
+    "mongodb": "^4.13.0",
     "sodium-native": "^3.4.1",
     "utf-8-validate": "^5.0.10",
     "zlib-sync": "^0.1.7"
