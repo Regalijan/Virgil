@@ -5,7 +5,8 @@ export = {
   name: "verify_recheck",
   async exec(i: ButtonInteraction): Promise<void> {
     if (!i.guild || !(i.member instanceof GuildMember)) return;
-    const canEdit = i.message.editable;
+    const canEdit =
+      i.message.editable && i.user.id === i.message.interaction?.id;
     if (!canEdit) await i.deferReply();
     await i.member.fetch();
     let response = await Common.verify(i.member);
