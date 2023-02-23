@@ -56,6 +56,7 @@ export = {
     if (serverId && isNaN(parseInt(serverId)))
       return await i.reply({ content: "Invalid server ID", ephemeral: true });
     let success = true;
+    await submission.deferReply();
     try {
       result = JSON.parse(
         execSync(
