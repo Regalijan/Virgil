@@ -33,6 +33,12 @@ Legend:
 - `/bind friend_status <role: RoleResolvable>` - Bind a role to being a friend with a user
 - `/deletebind <id: string>` - Deletes a bind
 - `/factoryreset` - Deletes **ALL** settings and leaves the server
+- `/filter add <word: string> <filter_type: exact | wildcard> <case_sensitive?: boolean>` - Adds a word filter
+- `/filter add_bypass <entity: Mentionable>` - Adds a bypass to the word filter
+- `/filter list` - List all word filters
+- `/filter list_bypasses` - List all entities that bypass the word filter
+- `/filter remove <id: string>` - Remove a word filter
+- `/filter remove_bypass` - Remove a bypass from the word filter-
 - `/initialize` - Initializes the server's settings in the database (this is only used if the bot is added when it is offline)
 - `/listbinds` - Lists all binds
 - `/nicknameformat <format: string>` - Sets the nickname format (see [nickname formatting](#nickname-formatting))
