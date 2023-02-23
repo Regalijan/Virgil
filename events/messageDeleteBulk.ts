@@ -8,8 +8,6 @@ import {
 } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
-import { join } from "path";
-import { unlink, writeFile } from "fs/promises";
 
 const mongo = db.db("bot");
 
@@ -38,7 +36,7 @@ module.exports = async function (
     .findOne({ guild: messages.first()?.guild?.id })
     .catch(Logger);
   if (!settings?.deleteLogChannelWebhook) return;
-  let fileBody = `${new Intl.DateTimeFormat(
+  let uploadBody = `${new Intl.DateTimeFormat(
     messages.first()?.guild?.preferredLocale ?? "en-US",
     {
       minute: "2-digit",
@@ -49,20 +47,14 @@ module.exports = async function (
       year: "numeric",
     }
   ).format(Date.now())}`;
+
   messages.each(function (msg) {
-    fileBody += `\n\n${msg.author?.tag ?? "Unknown#0000"} (${
+    uploadBody += `\n\n${msg.author?.tag ?? "Unknown#0000"} (${
       msg.author?.id ?? "Unknown"
     }): ${msg.content}`;
   });
-  const filePath = join(
-    __dirname,
-    Date.now().toString() +
-      Math.round(Math.random() * 1000000).toString() +
-      ".txt"
-  );
 
-  await writeFile(filePath, fileBody).catch(Logger);
-
+  const uploadName = `${Date.now()}${Math.round(Math.random() * 1000000)}.txt`;
   const webhook = await messages
     .first()
     ?.client.fetchWebhook(
@@ -73,7 +65,9 @@ module.exports = async function (
       )
     )
     .catch((err: DiscordAPIError) => err);
+
   if (!webhook) return;
+
   if (webhook instanceof DiscordAPIError) {
     if (webhook.status === 404) {
       await mongo
@@ -86,6 +80,10 @@ module.exports = async function (
     }
     return;
   }
-  await webhook.send({ files: [filePath] }).catch(console.error);
-  await unlink(filePath).catch(Logger);
+
+  await webhook
+    .send({
+      files: [{ attachment: Buffer.from(uploadBody), name: uploadName }],
+    })
+    .catch(console.error);
 };
