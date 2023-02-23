@@ -4,4 +4,11 @@ defmodule APIRouter.APIKeysRouter do
 
   plug(:match)
   plug(:dispatch)
+
+  get "/" do
+    respond(
+      conn,
+      %{success: true}
+    )
+  end
 end
