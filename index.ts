@@ -79,9 +79,13 @@ async function getGatewayData() {
     });
     broker.on("message", async function (message) {
       const { code, data, shard } = JSON.parse(message.toString());
-      if (typeof shard === "number" && [1, 2].includes(code))
+      if (typeof shard === "number" && [1, 2, 7].includes(code))
         try {
-          execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
+          if (
+            execSync("git rev-parse --abbrev-ref HEAD").toString().trim() ===
+            data.branch
+          )
+            execSync("git pull && npx tsc", { cwd: join(__dirname, "..") });
         } catch (e) {
           console.error(e);
         }
