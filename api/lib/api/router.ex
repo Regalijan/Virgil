@@ -12,20 +12,6 @@ defmodule APIRouter do
   plug(:match)
   plug(:dispatch)
 
-  def respond(conn, doc) do
-    {status, body} =
-      cond do
-        is_tuple(doc) -> {500, "{\"error\":\"Failed to perform action\"}"}
-        is_nil(doc) or map_size(doc) === 0 -> {404, "{\"error\":\"Not found\"}"}
-        true -> {200, Jason.encode!(doc)}
-      end
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(status, body)
-    |> halt
-  end
-
   forward("/guild/:id/binds", to: APIRouter.BindRouter)
   forward("/guild/:id/ignored", to: APIRouter.IgnoredRouter)
   forward("/guild/:id/settings", to: APIRouter.SettingsRouter)
