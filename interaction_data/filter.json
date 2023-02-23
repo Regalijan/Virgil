@@ -72,7 +72,7 @@
           "type": 5,
           "name": "case_sensitive",
           "name_localizations": {
-            "es-ES": "distingue_entre_mayúsculas_y_minúsculas",
+            "es-ES": "distingue_entre_mayú_y_minú",
             "sv-SE": "skiftlägeskänslig"
           },
           "description": "Whether this word filter should be case sensitive",
@@ -101,7 +101,7 @@
       "name": "remove",
       "name_localizations": {
         "es-ES": "eliminar",
-        "sv-SE": "ta bort"
+        "sv-SE": "ta_bort"
       },
       "description": "Remove a filtered word",
       "description_localizations": {
