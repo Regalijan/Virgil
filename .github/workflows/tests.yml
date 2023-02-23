@@ -64,5 +64,5 @@ jobs:
 
       - name: Push to tests-passed
         run: |
-          git merge main
+          git merge origin/main
           git push
