@@ -10,7 +10,7 @@ export = {
     if (!canEdit) await i.deferReply();
     await i.member.fetch();
     let response = await Common.verify(i.member);
-    if (response === "You must be new, click the button to get started.") {
+    if (!response.verified) {
       await i.followUp({
         content:
           "You are not verified, please run the `/verify` command again to get started.",
@@ -18,7 +18,7 @@ export = {
       });
       return;
     }
-    const payload = { content: response, ephemeral: true };
+    const payload = { content: response.content, ephemeral: true };
     canEdit ? await i.message.edit(payload) : await i.followUp(payload);
   },
 };

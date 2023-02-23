@@ -1,6 +1,7 @@
 import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
+import Logger from "./logger";
 import Sentry from "./sentry";
 import {
   Guild,
@@ -144,8 +145,7 @@ export = {
         .catch((e) => console.error(e));
       return apiResponse.data.data;
     } catch (e) {
-      console.error(e);
-      Sentry.captureException(e);
+      Logger(e);
       return [];
     }
   },
@@ -174,8 +174,7 @@ export = {
         .catch((e) => console.error(e));
       return friendIds;
     } catch (e) {
-      console.error(e);
-      Sentry.captureException(e);
+      Logger(e);
       return [];
     }
   },
@@ -200,8 +199,7 @@ export = {
         .catch((e) => console.error(e));
       return ownsItem;
     } catch (e) {
-      console.error(e);
-      Sentry.captureException(e);
+      Logger(e);
       return false;
     }
   },
@@ -248,7 +246,7 @@ export = {
       );
       return badgeIds;
     } catch (e) {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      Logger(e);
       return [];
     }
   },
@@ -285,7 +283,7 @@ export = {
         .catch((e) => console.error(e));
       return apiResponse.data;
     } catch (e) {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      Logger(e);
       return;
     }
   },
@@ -313,7 +311,7 @@ export = {
         .catch((e) => console.error(e));
       return groups;
     } catch (e) {
-      console.error(e);
+      Logger(e);
       return [];
     }
   },
@@ -344,13 +342,20 @@ export = {
     return name.length > 32 ? name.substring(0, 32) : name;
   },
 
-  async verify(member: GuildMember, self: boolean = true): Promise<string> {
+  async verify(
+    member: GuildMember,
+    self: boolean = true
+  ): Promise<{ content: string; errored: boolean; verified: boolean }> {
     if (
       !member.guild.members.me?.permissions.has(
         PermissionsBitField.Flags.ManageRoles
       )
     )
-      return "I do not have permission to manage roles!";
+      return {
+        content: "I do not have permission to manage roles!",
+        errored: true,
+        verified: false,
+      };
     const db = mongo.db("bot").collection("binds");
     const verifyApiData = await axios(
       `https://registry.virgil.gg/api/discord/${member.id}`,
@@ -409,29 +414,41 @@ export = {
         unvRoles.push(unvRole);
       }
       await member.roles.add(unvRoles).catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
+        Logger(e);
       });
-      return self
-        ? "You must be new, click the button to get started."
-        : `${member.user.username} appears to not be verified.`;
+      return {
+        content: self
+          ? "You must be new, click the button to get started."
+          : `${member.user.username} appears to not be verified.`,
+        errored: false,
+        verified: false,
+      };
     }
     const robloxUserId: number = verifyApiData.data.id;
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)
-      return `An error occured when verifying ${
-        self ? "you" : member.user.username
-      }, please try again later.`;
+      return {
+        content: `An error occured when verifying ${
+          self ? "you" : member.user.username
+        }, please try again later.`,
+        errored: true,
+        verified: false,
+      };
     const serversettings = await mongo
       .db("bot")
       .collection("settings")
       .findOne({ guild: member.guild.id })
       .catch((e) => console.error(e));
     if (!serversettings)
-      return `The server settings are not ready, ${
-        member.permissions.has(PermissionsBitField.Flags.ManageGuild)
-          ? ""
-          : "ask your server admin to"
-      } run the \`/initialize\` command.`;
+      return {
+        content: `The server settings are not ready, ${
+          member.permissions.has(PermissionsBitField.Flags.ManageGuild)
+            ? ""
+            : "ask your server admin to"
+        } run the \`/initialize\` command.`,
+        errored: true,
+        verified: false,
+      };
     if (
       member.manageable &&
       member.guild.members.me.permissions.has(
@@ -542,9 +559,13 @@ export = {
     }
     await member.roles.add(rolesToAdd);
     await member.roles.remove(rolesToRemove);
-    return self
-      ? `Welcome ${verifyApiData.data.username}!`
-      : `${verifyApiData.data.username} has been updated.`;
+    return {
+      content: self
+        ? `Welcome ${verifyApiData.data.username}!`
+        : `${verifyApiData.data.username} has been updated.`,
+      errored: false,
+      verified: true,
+    };
   },
 
   async isPremium(guild: Guild): Promise<boolean> {
