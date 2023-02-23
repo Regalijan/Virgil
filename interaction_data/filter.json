@@ -85,6 +85,35 @@
     },
     {
       "type": 1,
+      "name": "add_bypass",
+      "name_localizations": {
+        "es-ES": "añadir_bypass",
+        "sv-SE": "lägga_till_bypass"
+      },
+      "description": "Add channel, role, or user to the filter bypass",
+      "description_localizations": {
+        "es-ES": "Añade un canal, un rol o un usuario a la derivación del filtro",
+        "sv-SE": "Lägg till kanal, roll eller användare i filteromgången"
+      },
+      "options": [
+        {
+          "type": 9,
+          "name": "entity",
+          "name_localizations": {
+            "es-ES": "entidad",
+            "sv-SE": "enhet"
+          },
+          "description": "Entity to apply the bypass to",
+          "description_localization": {
+            "es-ES": "Entidad a la que aplicar la derivación",
+            "sv-SE": "Enhet som ska tillämpa förbigången på"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": 1,
       "name": "list",
       "name_localizations": {
         "es-ES": "lista",
@@ -94,6 +123,19 @@
       "description_localizations": {
         "es-ES": "Lista de todas las palabras filtradas",
         "sv-SE": "Lista över alla filtrerade ord"
+      }
+    },
+    {
+      "type": 1,
+      "name": "list_bypasses",
+      "name_localizations": {
+        "es-ES": "lista_de_desvíos",
+        "sv-SE": "listan förbigår"
+      },
+      "description": "List all entities with a bypass applied",
+      "description_localizations": {
+        "es-ES": "Lista de todas las entidades con un bypass aplicado",
+        "sv-SE": "Förteckning över alla enheter som har en förbikoppling"
       }
     },
     {
@@ -116,6 +158,35 @@
           "description_localizations": {
             "es-ES": "ID del filtro que se va a eliminar",
             "sv-SE": "ID för filter som ska tas bort"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "remove_bypass",
+      "name_localizations": {
+        "es-ES": "eliminar_bypass",
+        "sv-SE": "ta_bort_bypass"
+      },
+      "description": "Remove a bypass from an entity",
+      "description_localizations": {
+        "es-ES": "Eliminar una derivación de una entidad",
+        "sv-SE": "Ta bort en bypass från en enhet"
+      },
+      "options": [
+        {
+          "type": 9,
+          "name": "entity",
+          "name_localizations": {
+            "es-ES": "entidad",
+            "sv-SE": "enhet"
+          },
+          "description": "Entity to remove the bypass from",
+          "description_localizations": {
+            "es-ES": "Entidad para eliminar la derivación de",
+            "sv-SE": "Enhet som ska avlägsna förbifarten från"
           },
           "required": true
         }

@@ -1,4 +1,4 @@
-import { Message, Team } from "discord.js";
+import { Message, Team, TextChannel } from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import redis from "../redis";
@@ -22,7 +22,24 @@ module.exports = async function (message: Message) {
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
+  const bypasses = await mongo
+    .collection("filter_bypass")
+    .find({ server: message.guildId })
+    .toArray();
   if (
+    bypasses.find(
+      (b) =>
+        b.id === message.channel.id ||
+        b.id === message.author.id ||
+        b.id === message.channel ||
+        (message.channel instanceof TextChannel &&
+          b.id === message.channel.parentId) ||
+        message.member?.roles.cache.has(b.id)
+    )
+  )
+    return;
+  if (
+    !message.member?.permissions.has("ADMINISTRATOR") &&
     message.guild.me &&
     message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")
   ) {
