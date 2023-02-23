@@ -16,9 +16,9 @@ export = {
           "`Error: <ContextMenuInteraction>.guild is null or member does not exist.`",
         ephemeral: true,
       });
-    await i.reply({
+    await i.deferReply({ ephemeral: true });
+    await i.followUp({
       content: await Common.verify(member, i.targetId === i.user.id),
-      ephemeral: true,
     });
   },
 };
