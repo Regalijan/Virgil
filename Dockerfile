@@ -1,10 +1,6 @@
 FROM node:bullseye
-RUN bash -c 'curl https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-$(uname -i).tgz >> speedtest.tgz'
-RUN tar xzf speedtest.tgz
-RUN rm speedtest.tgz
-RUN rm speedtest.5
-RUN mv ./speedtest /usr/bin/
-RUN chmod +x /usr/bin/speedtest
+RUN curl -s https://install.speedtest.net/app/cli/install.deb.sh | dist=11 os=debian bash
+RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
 WORKDIR /home/nodeuser/virgil
 COPY . .
