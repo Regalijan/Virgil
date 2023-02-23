@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/Wolftallemo/Virgil#readme",
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.10.0",
     "@sentry/node": "^7.5.0",
     "amqplib": "^0.10.0",
