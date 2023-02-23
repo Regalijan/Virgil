@@ -56,6 +56,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      PUSH_KEY: ${{ secrets.PUSH_KEY_PRIVATE }}
       SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
     steps:
@@ -67,7 +68,7 @@ jobs:
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
+          ssh-add - <<< $PUSH_KEY
 
       - name: Push to tests-passed
         run: |
