@@ -16,7 +16,7 @@ defmodule Api.MixProject do
       applications: [
         :amqp,
         :dotenv,
-        :hackney,
+        :finch,
         :jason,
         :mongodb_driver,
         :plug_cowboy
