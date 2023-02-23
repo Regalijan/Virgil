@@ -31,11 +31,13 @@ defmodule Api.Application do
           {Mongo, :start_link,
            [[name: :mongo, url: System.get_env("MONGOURL", "mongodb://mongo:27017/bot")]]}
       },
+      %{
+        id: AMQP.Connection,
+        start: {AMQP.Connection, :open, [[System.get_env("AMQP_URL", "amqp://rabbit")]]}
+      },
       {
         Plug.Cowboy,
-        scheme: :http,
-        plug: APIRouter,
-        options: get_child_opts()
+        scheme: :http, plug: APIRouter, options: get_child_opts()
       }
     ]
 
