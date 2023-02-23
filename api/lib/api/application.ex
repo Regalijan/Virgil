@@ -42,6 +42,10 @@ defmodule Api.Application do
       {
         Finch,
         name: HTTP
+      },
+      {
+        Redix,
+        System.get_env("REDIS", "redis://redis:6379")
       }
     ]
 
