@@ -55,10 +55,6 @@ jobs:
     needs: [Bot, API]
     runs-on: ubuntu-latest
 
-    env:
-      PUSH_KEY: ${{ secrets.PUSH_KEY_PRIVATE }}
-      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -66,9 +62,9 @@ jobs:
           fetch-depth: 0
 
       - name: Initialize SSH
-        run: |
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< $PUSH_KEY
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.PUSH_KEY_PRIVATE }}
 
       - name: Push to tests-passed
         run: |
