@@ -37,7 +37,7 @@ export = {
       });
       return;
     }
-    await target.send({ content: i.options.getString("message") });
+    await target.send({ content: i.options.getString("message", true) });
     await i.reply({ content: "Message sent!", ephemeral: true });
   },
 };

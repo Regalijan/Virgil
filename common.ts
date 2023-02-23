@@ -357,7 +357,7 @@ export = {
       {
         headers: {
           authorization: process.env.REGISTRY_API_KEY || "",
-        }
+        },
       }
     ).catch(() => {});
     const bindCursorDoc = db.find({ server: member.guild.id });
