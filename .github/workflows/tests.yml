@@ -5,25 +5,31 @@ on:
     branches: [ main ]
 
 jobs:
-  Validation:
+  Bot_Validation:
     runs-on: ubuntu-latest
-        
-    env:
-      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+
       - name: Install Node Modules
-        run: npm ci
-      - name: Transpile
+        run: npm install
+
+      - name: TypeScript Validation
         run: npm run build
+
+  API_Validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Install Elixir
         run: |
           wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb
@@ -31,21 +37,38 @@ jobs:
           rm erlang-solutions_2.0_all.deb
           sudo apt-get update
           sudo apt-get install -y esl-erlang elixir
+        
       - name: Install Hex Packages
         run: |
           cd api
           mix local.hex --force
           mix deps.get
           mix local.rebar --force
+
       - name: Compile API
         run: |
           touch .env
           cd api
           mix
+
+  Push:
+    needs: [Bot_Validation, API_Validation]
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Initialize SSH
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.PUSH_KEY_PRIVATE }}"
+
       - name: Push to tests-passed
         run: |
           git checkout tests-passed
