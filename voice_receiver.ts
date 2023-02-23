@@ -14,7 +14,7 @@ export default class VoicePacketReceiver {
   private subscriptions: Map<string, AudioReceiveStream>;
   voiceEvents: EventEmitter;
   constructor(channel: VoiceChannel) {
-    if (channel.guild.me?.voice.channel)
+    if (channel.guild.members.me?.voice.channel)
       throw new Error("Already in voice channel for guild!");
     this.voiceConnection = joinVoiceChannel({
       adapterCreator: channel.guild.voiceAdapterCreator,

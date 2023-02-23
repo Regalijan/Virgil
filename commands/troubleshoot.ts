@@ -1,13 +1,14 @@
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   CommandInteraction,
-  MessageActionRow,
-  MessageButton,
 } from "discord.js";
 
 export = {
   name: "troubleshoot",
   async exec(i: CommandInteraction): Promise<void> {
-    const button = new MessageButton()
+    const button = new ButtonBuilder()
       .setURL(
         `https://rover.link/validate/${Buffer.from(
           encodeURIComponent(`${i.user.id};${i.user.tag}`)
@@ -15,12 +16,12 @@ export = {
       )
       .setEmoji("ℹ")
       .setLabel("Open Troubleshooting Page")
-      .setStyle("LINK");
+      .setStyle(ButtonStyle.Link);
 
     await i.reply({
       content: "Click the button to continue.",
       ephemeral: true,
-      components: [new MessageActionRow({ components: [button] })],
+      components: [new ActionRowBuilder<ButtonBuilder>().addComponents(button)],
     });
   },
 };

@@ -1,6 +1,6 @@
 import {
   DMChannel,
-  MessageEmbed,
+  EmbedBuilder,
   NonThreadGuildBasedChannel,
 } from "discord.js";
 import db from "../mongo";
@@ -12,7 +12,7 @@ const mongo = db.db("bot");
 module.exports = async function (
   channel: DMChannel | NonThreadGuildBasedChannel
 ) {
-  if (channel.type === "DM") return;
+  if (channel instanceof DMChannel) return;
   const ignoreData = await mongo
     .collection("ignored")
     .findOne({
@@ -28,7 +28,7 @@ module.exports = async function (
     .findOne({ guild: channel.guild.id })
     .catch((e) => console.error(e));
   if (!settings?.channelDeleteLogChannelWebhook) return;
-  const embed = new MessageEmbed().setDescription(
+  const embed = new EmbedBuilder().setDescription(
     `${channel} has been deleted.`
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);

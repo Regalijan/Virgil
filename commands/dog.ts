@@ -1,12 +1,12 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import axios from "axios";
 
 export = {
   name: "dog",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     try {
       const dog = await axios("https://dog.ceo/api/breeds/image/random");
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setTitle(":dog: Woof!")
         .setImage(dog.data.message);
 

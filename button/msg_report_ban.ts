@@ -1,4 +1,8 @@
-import { ButtonInteraction, MessageEmbed } from "discord.js";
+import {
+  ButtonInteraction,
+  EmbedBuilder,
+  PermissionsBitField,
+} from "discord.js";
 import mongo from "../mongo";
 import SendLog from "../send_log";
 const reportStore = mongo.db("bot").collection("reports");
@@ -11,27 +15,32 @@ export = {
       reportEmbedId: i.message.id,
     });
     if (!associatedReport) {
-      return await i.reply({
+      await i.reply({
         content: "The report could not be found! Was it already acted upon?",
         ephemeral: true,
       });
+      return;
     }
-    if (!i.guild?.me?.permissions.has("BAN_MEMBERS")) {
-      return await i.reply({
+    const { Flags } = PermissionsBitField;
+    if (!i.guild?.members.me?.permissions.has(Flags.BanMembers)) {
+      await i.reply({
         content:
           "I do not have permission to ban! Please check my permissions.",
         ephemeral: true,
       });
+      return;
     }
     await reportStore.deleteOne({
       reportEmbedId: i.message.id,
     });
     const reportMessage = await i.channel?.messages.fetch(i.message.id);
-    if (!reportMessage)
-      return await i.reply({
+    if (!reportMessage) {
+      await i.reply({
         content: "Failed to locate message! Was it deleted?",
         ephemeral: true,
       });
+      return;
+    }
     const settings = await settingsStore.findOne({ guild: i.guildId });
     await reportMessage.author
       .send({
@@ -43,7 +52,7 @@ export = {
     await reportMessage.member?.ban();
     if (
       reportMessage &&
-      i.guild.me.permissionsIn(i.channelId).has("MANAGE_MESSAGES")
+      i.guild.members.me?.permissionsIn(i.channelId).has(Flags.ManageMessages)
     ) {
       await reportMessage.delete();
     }
@@ -53,20 +62,25 @@ export = {
     });
     if (!settings?.messageReportActionLogChannelWebhook) return;
 
-    const logEmbed = new MessageEmbed()
+    const logEmbed = new EmbedBuilder()
       .setAuthor({
         name: i.user.tag,
-        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        iconURL: i.user.displayAvatarURL(),
       })
       .setTitle("Report Resolved (Ban)")
       .setDescription(
         `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`
       )
-      .addField(
-        "Reporter",
-        `<@${associatedReport.reporter.id}> (${associatedReport.reporter.id})`
-      )
-      .addField("Reported Content", associatedReport.message.content);
+      .addFields(
+        {
+          name: "Reporter",
+          value: `<@${associatedReport.reporter.id}> (${associatedReport.reporter.id})`,
+        },
+        {
+          name: "Reported Content",
+          value: associatedReport.message.content,
+        }
+      );
 
     await SendLog(
       settings.messageReportActionLogChannelWebhook,

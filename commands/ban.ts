@@ -1,11 +1,11 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
 import mongo from "../mongo";
 
 export = {
   name: "ban",
   privileged: true,
-  async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild?.me?.permissions.has("BAN_MEMBERS")) {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.appPermissions?.has(PermissionsBitField.Flags.BanMembers)) {
       await i.reply({
         content:
           "I was unable to ban this user because I do not have the Ban Members permission.",
@@ -14,9 +14,11 @@ export = {
       return;
     }
 
-    const target = await i.guild.members.fetch(i.options.getUser("user", true));
+    const target = await i.guild?.members.fetch(
+      i.options.getUser("user", true)
+    );
     if (
-      !target.bannable ||
+      !target?.bannable ||
       target.id === i.user.id ||
       target.roles.highest.comparePositionTo(target.roles.highest) <= 0
     ) {
@@ -34,7 +36,7 @@ export = {
     await target
       .send({
         content: `You have been banned from ${
-          i.guild.name
+          i.guild?.name
         } for the following reason:\n\n${i.options.getString("reason")}`,
       })
       .catch((e) => console.error(e));

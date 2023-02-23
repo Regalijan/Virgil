@@ -1,10 +1,10 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
 
 export = {
   name: "kick",
   privileged: true,
-  async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild?.me?.permissions.has("KICK_MEMBERS")) {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.appPermissions?.has(PermissionsBitField.Flags.KickMembers)) {
       await i.reply({
         content:
           'I cannot kick that user because I do not have the "Kick Members" permission.',
@@ -16,7 +16,7 @@ export = {
     const user = i.options.getUser("user", true);
     const reason =
       i.options.getString("reason", false) ?? "No reason provided.";
-    const member = await i.guild.members
+    const member = await i.guild?.members
       .fetch(user.id)
       .catch((e) => console.error(e));
     if (!member) {
@@ -44,7 +44,7 @@ export = {
       return;
     }
 
-    const currentMember = await i.guild.members
+    const currentMember = await i.guild?.members
       .fetch(i.user.id)
       .catch((e) => console.error(e));
 
@@ -69,7 +69,7 @@ export = {
 
     await user
       .send({
-        content: `You have been kicked from ${i.guild.name} for the following reason:\n\n${reason}`,
+        content: `You have been kicked from ${i.guild?.name} for the following reason:\n\n${reason}`,
       })
       .catch(() => {});
     try {

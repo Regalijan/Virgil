@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 import mongo from "../mongo";
 import Sentry from "../sentry";
 import SendLog from "../send_log";
@@ -12,13 +12,13 @@ module.exports = async function (member: GuildMember) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.memberLeaveLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: "Member Left",
-      iconURL: member.user.displayAvatarURL({ dynamic: true }),
+      iconURL: member.user.displayAvatarURL(),
     })
     .setColor(16711680)
-    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setThumbnail(member.user.displayAvatarURL())
     .setDescription(`<@${member.id}> ${member.user.tag}`)
     .setFooter({ text: `ID: ${member.id}` });
   await SendLog(

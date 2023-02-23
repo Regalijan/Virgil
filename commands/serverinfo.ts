@@ -1,8 +1,13 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  GuildMFALevel,
+} from "discord.js";
 
 export = {
   name: "serverinfo",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guild) {
       await i.reply({
         content: "Oops! Looks like I don't have any information available!",
@@ -18,31 +23,31 @@ export = {
     let threads = 0;
     let categories = 0;
     i.guild?.channels.cache.forEach((channel) => {
-      if (channel.type === "GUILD_CATEGORY") categories++;
-      if (channel.type === "GUILD_VOICE") voiceChannels++;
+      if (channel.type === ChannelType.GuildCategory) categories++;
+      if (channel.type === ChannelType.GuildVoice) voiceChannels++;
       if (
         [
-          "GUILD_NEWS_THREAD",
-          "GUILD_PRIVATE_THREAD",
-          "GUILD_PUBLIC_THREAD",
+          ChannelType.GuildNewsThread,
+          ChannelType.GuildPrivateThread,
+          ChannelType.GuildPublicThread,
         ].includes(channel.type)
       )
         threads++;
-      if (channel.type === "GUILD_STAGE_VOICE") stageChannels++;
-      if (channel.type === "GUILD_NEWS") newsChannels++;
-      if (channel.type === "GUILD_TEXT") textChannels++;
+      if (channel.type === ChannelType.GuildStageVoice) stageChannels++;
+      if (channel.type === ChannelType.GuildNews) newsChannels++;
+      if (channel.type === ChannelType.GuildText) textChannels++;
     });
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
         name: i.user.tag,
-        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        iconURL: i.user.displayAvatarURL(),
       })
       .addFields(
         { name: "Owner", value: `<@${i.guild.ownerId}>`, inline: true },
         {
           name: "2FA Required",
-          value: i.guild.mfaLevel === "ELEVATED" ? "Yes" : "No",
+          value: i.guild.mfaLevel === GuildMFALevel.Elevated ? "Yes" : "No",
           inline: true,
         },
         {
@@ -83,7 +88,7 @@ export = {
         { name: "Voice Channels", value: `${voiceChannels}`, inline: true }
       );
     const splashUrl = i.guild.splashURL({ size: 4096 });
-    const iconUrl = i.guild.iconURL({ dynamic: true });
+    const iconUrl = i.guild.iconURL();
     if (splashUrl) embed.setImage(splashUrl);
     if (iconUrl) embed.setThumbnail(iconUrl);
     const member = await i.guild.members

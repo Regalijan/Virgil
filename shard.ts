@@ -1,7 +1,12 @@
 import { config as dotenv } from "dotenv";
 import { readdirSync } from "fs";
 import { join } from "path";
-import { Client, ShardClientUtil } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  PermissionsBitField,
+  ShardClientUtil,
+} from "discord.js";
 import Sentry from "./sentry";
 import db from "./mongo";
 
@@ -11,23 +16,16 @@ dotenv();
 const events: Map<string, any> = new Map();
 
 const bot = new Client({
-  http: {
-    version: 10,
-  },
   intents: [
-    "GUILDS",
-    "GUILD_BANS",
-    "GUILD_INTEGRATIONS",
-    "GUILD_MEMBERS",
-    "GUILD_MESSAGES",
-    "GUILD_VOICE_STATES",
-    "GUILD_WEBHOOKS",
-    1 << 15, // Message content
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildIntegrations,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.MessageContent,
   ],
-  ws: {
-    // @ts-expect-error
-    version: 10,
-  },
 });
 
 function loadEvents() {
@@ -72,7 +70,12 @@ setInterval(async function (): Promise<void> {
       await bot.shard?.broadcastEval(
         async (c) => {
           const server = await c.guilds.fetch(ban.server).catch(() => {});
-          if (!server?.me?.permissions.has("BAN_MEMBERS")) return;
+          if (
+            !server?.members?.me?.permissions?.has(
+              PermissionsBitField.Flags.BanMembers
+            )
+          )
+            return;
           const member = await server.bans.fetch(ban.user).catch(() => {});
           if (!member) return;
           try {

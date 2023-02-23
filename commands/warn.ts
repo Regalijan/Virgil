@@ -1,4 +1,9 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  PermissionsBitField,
+} from "discord.js";
 import mongo from "../mongo";
 import { createHash, randomBytes } from "crypto";
 const modlogStore = mongo.db("bot").collection("modlogs");
@@ -6,7 +11,7 @@ const modlogStore = mongo.db("bot").collection("modlogs");
 export = {
   name: "warn",
   privileged: true,
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const reason = i.options.getString("reason") ?? "No reason provided.";
     const user = i.options.getUser("user", true);
     const logId = createHash("sha256")
@@ -32,23 +37,23 @@ export = {
     const channel = await i.guild?.channels.fetch(settings.warnLogChannel);
     if (
       !channel ||
-      channel.type !== "GUILD_TEXT" ||
-      !i.guild?.me?.permissionsIn(channel).has("SEND_MESSAGES")
+      channel.type !== ChannelType.GuildText ||
+      !i.appPermissions?.has(PermissionsBitField.Flags.SendMessages)
     )
       return;
-    const member = await i.guild.members.fetch(i.user.id);
-    const embed = new MessageEmbed()
+    const member = await i.guild?.members.fetch(i.user.id);
+    const embed = new EmbedBuilder()
       .setTitle("Member Warned")
       .setAuthor({
         name: user.tag,
-        iconURL: user.displayAvatarURL({ dynamic: true }),
+        iconURL: user.displayAvatarURL(),
       })
       .addFields(
         { name: "Member", value: `<@${user.id}> (${user.id})` },
         { name: "Moderator", value: `<@${i.user.id}> (${i.user.id})` },
         { name: "Reason", value: reason }
       );
-    embed.setColor(member.displayColor);
+    embed.setColor(member?.displayColor ?? 0);
     await modlogStore.insertOne(logObj);
     await channel.send({ embeds: [embed] });
   },

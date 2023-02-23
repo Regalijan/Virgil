@@ -1,13 +1,13 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import axios from "axios";
 
 export = {
   name: "hug",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     try {
       const target = i.options.getUser("person", true);
       const hug = await axios("https://nekos.life/api/v2/img/hug");
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setImage(hug.data.url)
         .setDescription(`<@${i.user.id}> gives >@${target.id}> a big hug!`);
 

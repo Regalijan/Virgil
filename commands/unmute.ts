@@ -1,21 +1,31 @@
-import { CommandInteraction, GuildMember } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  GuildMember,
+  PermissionsBitField,
+} from "discord.js";
 
 export = {
   name: "unmute",
   privileged: true,
-  async exec(i: CommandInteraction): Promise<void> {
-    if (!i.guild)
-      return await i.reply({
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.guild) {
+      await i.reply({
         content: "This command can only be used in a guild.",
         ephemeral: true,
       });
-    if (!i.guild.me?.permissions.has("MODERATE_MEMBERS"))
-      return await i.reply({
+      return;
+    }
+
+    if (!i.appPermissions?.has(PermissionsBitField.Flags.ModerateMembers)) {
+      await i.reply({
         content:
           'I cannot unmute the user because I do not have the "Timeout members" permission.',
         ephemeral: true,
       });
-    let targetMember = i.options.getMember("user", true);
+      return;
+    }
+
+    let targetMember = i.options.getMember("user");
 
     if (!(targetMember instanceof GuildMember))
       targetMember = await i.guild.members.fetch(

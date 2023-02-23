@@ -1,7 +1,9 @@
 import {
-  CommandInteraction,
+  ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
   GuildMember,
-  MessageEmbed,
+  PermissionsBitField,
   ThreadChannel,
 } from "discord.js";
 import mongo from "../mongo";
@@ -13,20 +15,23 @@ const ignoredDB = mongo.db("bot").collection("ignored");
 export = {
   name: "logs",
   description: "View, set, or remove a log channel",
-  async exec(i: CommandInteraction): Promise<void> {
-    const embed = new MessageEmbed();
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    const embed = new EmbedBuilder();
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     const settingsList = await settingsDB.findOne({ guild: i.guildId });
-    if (!settingsList)
-      return await i.reply({
+    if (!settingsList) {
+      await i.reply({
         content: `The server settings are not ready, ${
           i.member instanceof GuildMember
-            ? i.member.permissions.has("MANAGE_GUILD")
+            ? i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
               ? ""
               : "ask your server admin to"
             : "ask your server admin to"
         } run the \`/initialize\` command.`,
       });
+      return;
+    }
+
     const choiceToSettingMap: Map<string, string> = new Map()
       .set("ban", "banLogChannel")
       .set("delete", "deleteLogChannel")
@@ -52,22 +57,28 @@ export = {
     switch (i.options.getSubcommand(true)) {
       case "ignore":
         const ignoringChannel = i.options.getChannel("channel", true);
-        if (ignoringChannel instanceof ThreadChannel)
-          return await i.reply({
+        if (ignoringChannel instanceof ThreadChannel) {
+          await i.reply({
             content:
               "Threads cannot be ignored (they inherit the settings of their parent channel)",
             ephemeral: true,
           });
+          return;
+        }
+
         const doesIgnoreExist = await ignoredDB.findOne({
           channel: ignoringChannel.id,
           log: i.options.getString("log", false),
         });
-        if (doesIgnoreExist)
-          return await i.reply({
+        if (doesIgnoreExist) {
+          await i.reply({
             content:
               "An ignore of that type or a global ignore was already set for the channel!",
             ephemeral: true,
           });
+          return;
+        }
+
         await ignoredDB.insertOne({
           channel: ignoringChannel.id,
           guild: i.guildId,
@@ -227,7 +238,8 @@ export = {
             inline: true,
           }
         );
-        return await i.reply({ embeds: [embed] });
+        await i.reply({ embeds: [embed] });
+        break;
 
       case "remove":
         const removalChoice = i.options.getString("log", true);
@@ -250,42 +262,51 @@ export = {
           (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
         ] = "";
         await settingsDB.updateOne({ guild: i.guildId }, $yeet);
-        return await i.reply({ content: `\`${removalChoice}\` log disabled!` });
+        await i.reply({ content: `\`${removalChoice}\` log disabled!` });
+        break;
 
       case "set":
         const setChannel = await i.guild?.channels.fetch(
           i.options.getChannel("channel", true).id
         );
-        if (setChannel?.type !== "GUILD_TEXT")
-          return await i.reply({
+        if (setChannel?.type !== ChannelType.GuildText) {
+          await i.reply({
             content: "The log channel must be a normal text channel!",
             ephemeral: true,
           });
+          return;
+        }
+
         const setChoice = i.options.getString("log", true);
         const $set: any = { $set: {} };
         $set.$set[choiceToSettingMap.get(setChoice) ?? ""] = setChannel?.id;
+        // It should never be zero, Discord's permission checks should prevent this
         if (
           !setChannel
-            ?.permissionsFor(i.guild?.me?.id ?? "0")
-            ?.has("MANAGE_WEBHOOKS")
-        )
-          // It should never be zero, Discord's permission checks should prevent this
-          return await i.reply({
+            ?.permissionsFor(i.guild?.members.me?.id ?? "0")
+            ?.has(PermissionsBitField.Flags.ManageWebhooks)
+        ) {
+          await i.reply({
             content:
               "I cannot create the webhook for the log! Please grant me permission to manage webhooks!",
             ephemeral: true,
           });
-        const newWebhook = await setChannel.createWebhook(
-          `${i.client.user?.username} Logs`
-        );
+          return;
+        }
+
+        const newWebhook = await setChannel.createWebhook({
+          avatar: i.client.user?.avatarURL(),
+          name: `${i.client.user?.username} Logs`,
+        });
         $set.$set[(choiceToSettingMap.get(setChoice) ?? "") + "Webhook"] =
           newWebhook.url;
         await settingsDB.updateOne({ guild: i.guildId }, $set);
-        return await i.reply({
+        await i.reply({
           content: `\`${setChoice}\` log set to <#${
             i.options.getChannel("channel", true).id
           }>!`,
         });
+        break;
 
       case "show_ignored":
         const allIgnored = await (
@@ -299,12 +320,13 @@ export = {
             .fetch(ignored.channel)
             .catch(() => {});
           if (!ignoredChannel) continue;
-          embed.addField(
-            `#${ignoredChannel.name}`,
-            "Log: " + ignored.log ?? "All"
-          );
+          embed.addFields({
+            name: `#${ignoredChannel.name}`,
+            value: "Log: " + ignored.log ?? "All",
+          });
         }
-        return await i.reply({ embeds: [embed] });
+        await i.reply({ embeds: [embed] });
+        break;
 
       case "unignore":
         const unignoringChannel = i.options.getChannel("channel", true);

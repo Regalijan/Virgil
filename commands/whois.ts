@@ -1,12 +1,12 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
 export = {
   name: "whois",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const user = i.options.getUser("user") ?? i.user;
-    const embed = new MessageEmbed({ title: "User Information" })
+    const embed = new EmbedBuilder({ title: "User Information" })
       .setDescription("Profile of " + user.tag)
-      .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+      .setThumbnail(user.displayAvatarURL())
       .addFields(
         { name: "User ID", value: user.id },
         { name: "Joined Discord at", value: user.createdAt.toString() }

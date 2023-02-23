@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import { CommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
 import mongo from "../mongo";
 
 const binds = mongo.db("bot").collection("binds");
@@ -12,7 +12,7 @@ export = {
         "<CommandInteraction>.guildId was null despite command being run in a guild."
       );
     const bindsList = await binds.find({ server: i.guildId }).toArray();
-    const embed = new MessageEmbed().setDescription(
+    const embed = new EmbedBuilder().setDescription(
       bindsList.length
         ? "List of binds for this server"
         : "No binds are set for this server"
@@ -25,7 +25,10 @@ export = {
           bind.rank ? `Rank ${bind.rank}` : "All ranks"
         }`;
       if (bind.asset) bindString += ` ${bind.asset}`;
-      embed.addField(bindString, `<@&${bind.role}>\nBind ID: ${bind.id}`);
+      embed.addFields({
+        name: bindString,
+        value: `<@&${bind.role}>\nBind ID: ${bind.id}`,
+      });
     }
     await i.reply({ embeds: [embed] });
   },

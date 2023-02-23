@@ -2,7 +2,14 @@ import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
 import Sentry from "./sentry";
-import { Guild, GuildMember, RoleResolvable, Team, User } from "discord.js";
+import {
+  Guild,
+  GuildMember,
+  PermissionsBitField,
+  RoleResolvable,
+  Team,
+  User,
+} from "discord.js";
 
 export = {
   async isDeveloper(user: User): Promise<boolean> {
@@ -338,7 +345,11 @@ export = {
   },
 
   async verify(member: GuildMember, self: boolean = true): Promise<string> {
-    if (!member.guild.me?.permissions.has("MANAGE_ROLES"))
+    if (
+      !member.guild.members.me?.permissions.has(
+        PermissionsBitField.Flags.ManageRoles
+      )
+    )
       return "I do not have permission to manage roles!";
     const db = mongo.db("bot").collection("binds");
     const verifyApiData = await axios(
@@ -369,7 +380,8 @@ export = {
           const roleToRemove = member.guild.roles.cache.get(b.role);
           if (
             roleToRemove &&
-            roleToRemove.position < member.guild.me?.roles.highest?.position
+            roleToRemove.position <
+              member.guild.members.me?.roles.highest?.position
           ) {
             rolesToRemove.push(roleToRemove);
           }
@@ -385,7 +397,8 @@ export = {
           .catch((e) => console.error(e));
         if (
           !unvRole ||
-          unvRole.comparePositionTo(member.guild.me.roles.highest) <= 0 ||
+          unvRole.comparePositionTo(member.guild.members.me?.roles.highest) <=
+            0 ||
           member.roles.cache.has(unvRole.id)
         )
           continue;
@@ -411,11 +424,15 @@ export = {
       .catch((e) => console.error(e));
     if (!serversettings)
       return `The server settings are not ready, ${
-        member.permissions.has("MANAGE_GUILD") ? "" : "ask your server admin to"
+        member.permissions.has(PermissionsBitField.Flags.ManageGuild)
+          ? ""
+          : "ask your server admin to"
       } run the \`/initialize\` command.`;
     if (
       member.manageable &&
-      member.guild.me.permissions.has("MANAGE_NICKNAMES") &&
+      member.guild.members.me.permissions.has(
+        PermissionsBitField.Flags.ManageNicknames
+      ) &&
       serversettings.lockNicknames
     )
       await member
@@ -443,7 +460,8 @@ export = {
         .catch(console.error);
       if (
         !bindRole ||
-        bindRole.comparePositionTo(member.guild.me.roles.highest) >= 0 ||
+        bindRole.comparePositionTo(member.guild.members.me.roles.highest) >=
+          0 ||
         member.roles.cache.has(bindRole.id)
       )
         continue;

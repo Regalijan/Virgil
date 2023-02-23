@@ -1,8 +1,11 @@
 import {
-  ContextMenuInteraction,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  EmbedBuilder,
+  MessageContextMenuCommandInteraction,
+  PermissionsBitField,
 } from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
@@ -13,50 +16,62 @@ const reportStore = mongo.db("bot").collection("reports");
 
 export = {
   name: "Report Message to Server Mods",
-  async exec(i: ContextMenuInteraction): Promise<void> {
-    if (i.targetType === "USER")
-      throw Error(
-        "<ContextMenuInteraction>.targetType equal to USER but command is in a message context."
-      );
+  async exec(i: MessageContextMenuCommandInteraction): Promise<void> {
     const message = await i.channel?.messages.fetch(i.targetId).catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
-    if (!message)
-      return await i.reply({
+    if (!message) {
+      await i.reply({
         content: "An error occurred locating the message! Was it deleted?",
         ephemeral: true,
       });
+      return;
+    }
+
     const settings = await settingsStore.findOne({ guild: i.guildId });
-    if (!settings?.messageReportChannel)
-      return await i.reply({
+    if (!settings?.messageReportChannel) {
+      await i.reply({
         content: "Message reporting is disabled in this server.",
         ephemeral: true,
       });
+      return;
+    }
+
     const channel = await i.guild?.channels
       .fetch(settings.messageReportChannel)
       .catch((e) => {
         process.env.DSN ? Sentry.captureException(e) : console.error(e);
       });
-    if (!channel || channel.type !== "GUILD_TEXT")
-      return await i.reply({
+    if (!channel || channel.type !== ChannelType.GuildText) {
+      await i.reply({
         content:
           "Your report was not sent! The channel set by server moderation could not be found.",
         ephemeral: true,
       });
-    if (!i.guild?.me?.permissionsIn(channel).has("SEND_MESSAGES"))
-      return await i.reply({
+      return;
+    }
+
+    if (
+      !i.guild?.members.me
+        ?.permissionsIn(channel)
+        .has(PermissionsBitField.Flags.SendMessages)
+    ) {
+      await i.reply({
         content:
           "Your report was not sent! I have been restricted from sending in the report channel.",
         ephemeral: true,
       });
+      return;
+    }
+
     const reportId = createHash("sha256")
       .update(randomBytes(256))
       .digest("base64");
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
         name: i.user.tag,
-        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        iconURL: i.user.displayAvatarURL(),
       })
       .setTitle("Message Report")
       .setColor([255, 0, 0])
@@ -70,51 +85,45 @@ export = {
         { name: "Report ID", value: reportId }
       );
 
-    const actionRow1 = new MessageActionRow().addComponents(
-      new MessageButton({
+    const actionRow1 = new ActionRowBuilder().addComponents(
+      new ButtonBuilder({
         customId: "msg_report_ban",
         emoji: "🔨",
         label: "Ban",
-        style: "DANGER",
-        type: "BUTTON",
+        style: ButtonStyle.Danger,
       }),
-      new MessageButton({
+      new ButtonBuilder({
         customId: "msg_report_delete",
         emoji: "❌",
         label: "Delete",
-        style: "SUCCESS",
-        type: "BUTTON",
+        style: ButtonStyle.Danger,
       }),
-      new MessageButton({
+      new ButtonBuilder({
         customId: "msg_report_kick",
         emoji: "👢",
         label: "Kick",
-        style: "DANGER",
-        type: "BUTTON",
+        style: ButtonStyle.Danger,
       }),
-      new MessageButton({
+      new ButtonBuilder({
         customId: "msg_report_mute",
         emoji: "🔇",
         label: "Mute",
-        style: "DANGER",
-        type: "BUTTON",
+        style: ButtonStyle.Danger,
       }),
-      new MessageButton({
+      new ButtonBuilder({
         customId: "msg_report_warn",
         emoji: "⚠",
         label: "Warn",
-        style: "PRIMARY",
-        type: "BUTTON",
+        style: ButtonStyle.Primary,
       })
     );
 
-    const ignActionRow = new MessageActionRow().addComponents(
-      new MessageButton({
+    const ignActionRow = new ActionRowBuilder().addComponents(
+      new ButtonBuilder({
         customId: "msg_report_ignore",
         emoji: "❎",
         label: "Ignore",
-        style: "SECONDARY",
-        type: "BUTTON",
+        style: ButtonStyle.Secondary,
       })
     );
 

@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import mongo from "../mongo";
 
 const settingsStore = mongo.db("bot").collection("settings");
@@ -6,25 +6,27 @@ const settingsStore = mongo.db("bot").collection("settings");
 export = {
   name: "nicknamelock",
   privileged: true,
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     switch (i.options.getBoolean("should_nickname", true)) {
       case true:
         await settingsStore.updateOne(
           { guild: i.guildId },
           { $set: { lockNicknames: true } }
         );
-        return await i.reply({
+        await i.reply({
           content: "Nicknames will now be enforced on this server.",
         });
+        return;
 
       case false:
         await settingsStore.updateOne(
           { guild: i.guildId },
           { $unset: { lockNicknames: null } }
         );
-        return await i.reply({
+        await i.reply({
           content: "Nicknames will no longer be enforced on this server.",
         });
+        return;
     }
   },
 };

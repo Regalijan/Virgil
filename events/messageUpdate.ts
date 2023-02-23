@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, PartialMessage } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
@@ -15,7 +15,7 @@ module.exports = async function (
     !oldMessage.author ||
     oldMessage.content === newMessage.content ||
     !newMessage.guild ||
-    newMessage.channel.type === "DM" ||
+    newMessage.channel.type === ChannelType.DM ||
     oldMessage.author.bot
   )
     return;
@@ -36,10 +36,10 @@ module.exports = async function (
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.editLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: `${oldMessage.author.tag} (${oldMessage.author.id})`,
-      iconURL: oldMessage.author.displayAvatarURL({ dynamic: true }),
+      iconURL: oldMessage.author.displayAvatarURL(),
     })
     .setDescription(
       `Message edited in <#${newMessage.channel.id}> [Go to message](${newMessage.url})`

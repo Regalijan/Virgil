@@ -1,4 +1,4 @@
-import { MessageEmbed, NonThreadGuildBasedChannel } from "discord.js";
+import { EmbedBuilder, NonThreadGuildBasedChannel } from "discord.js";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
 import db from "../mongo";
@@ -23,7 +23,7 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.channelCreateLogChannelWebhook) return;
-  const embed = new MessageEmbed().setDescription(
+  const embed = new EmbedBuilder().setDescription(
     `${channel} has been created.`
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);

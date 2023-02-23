@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageEmbed } from "discord.js";
+import { ButtonInteraction, EmbedBuilder } from "discord.js";
 import mongo from "../mongo";
 import DeleteMessage from "../webhook_delete";
 import SendLog from "../send_log";
@@ -13,10 +13,11 @@ export = {
       "message.id": i.message.embeds[0].fields[1].value,
     });
     if (!associatedReport) {
-      return await i.reply({
+      await i.reply({
         content: "The report could not be found! Was it already acted upon?",
         ephemeral: true,
       });
+      return;
     }
     await reportStore.deleteOne({
       "message.id": i.message.embeds[0].fields[1].value,
@@ -37,20 +38,25 @@ export = {
 
     if (!settings?.messageReportActionLogChannelWebhook) return;
 
-    const logEmbed = new MessageEmbed()
+    const logEmbed = new EmbedBuilder()
       .setAuthor({
         name: i.user.tag,
-        iconURL: i.user.displayAvatarURL({ dynamic: true }),
+        iconURL: i.user.displayAvatarURL(),
       })
       .setTitle("Report Ignored")
       .setDescription(
         `Report ${associatedReport.reportId} was ignored by <@${i.user.id}>`
       )
-      .addField(
-        "Reporter",
-        `<@${associatedReport.reporter.id}> (${associatedReport.reporter.id})`
-      )
-      .addField("Reported Content", associatedReport.message.content);
+      .addFields(
+        {
+          name: "Reporter",
+          value: `<@${associatedReport.reporter.id}> (${associatedReport.reporter.id})`,
+        },
+        {
+          name: "Reported Content",
+          value: associatedReport.message.content,
+        }
+      );
 
     await SendLog(
       settings.messageReportActionLogChannelWebhook,

@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, PartialGuildMember } from "discord.js";
+import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
@@ -14,10 +14,10 @@ module.exports = async function (
     .findOne({ guild: newMember.guild.id })
     .catch((e) => console.error(e));
   if (!settings) return;
-  const embed = new MessageEmbed();
+  const embed = new EmbedBuilder();
   embed.setAuthor({
     name: newMember.user.tag,
-    iconURL: newMember.user.displayAvatarURL({ dynamic: true }),
+    iconURL: newMember.user.displayAvatarURL(),
   });
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
     if (!settings.roleLogChannelWebhook) return;
@@ -26,19 +26,19 @@ module.exports = async function (
     oldMember.roles.cache.forEach((r) => {
       oldrolesstring += ` <@&${r.id}>`;
     });
-    embed.addField("Old Roles", oldrolesstring);
+    embed.addFields({ name: "Old Roles", value: oldrolesstring });
     if (oldMember.roles.cache.size > newMember.roles.cache.size) {
       let rolesremoved = "";
       oldMember.roles.cache.each((r) => {
         if (!newMember.roles.cache.has(r.id)) rolesremoved += ` <@&${r.id}>`;
       });
-      embed.addField("Roles Removed", rolesremoved);
+      embed.addFields({ name: "Roles Removed", value: rolesremoved });
     } else {
       let rolesadded = "";
       newMember.roles.cache.each((r) => {
         if (!oldMember.roles.cache.has(r.id)) rolesadded += ` <@&${r.id}>`;
       });
-      embed.addField("Roles Added", rolesadded);
+      embed.addFields({ name: "Roles Added", value: rolesadded });
     }
     await SendLog(
       settings.roleLogChannelWebhook,

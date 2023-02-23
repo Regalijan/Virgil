@@ -1,13 +1,13 @@
-import { Message, MessageEmbed, PartialMessage } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
 import SendLog from "../send_log";
 import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
-module.exports = async function (message: Message<boolean> | PartialMessage) {
+module.exports = async function (message: Message | PartialMessage) {
   if (
-    message.channel.type === "DM" ||
+    message.channel.type === ChannelType.DM ||
     !message.guild ||
     !message.author ||
     message.author.bot
@@ -30,10 +30,10 @@ module.exports = async function (message: Message<boolean> | PartialMessage) {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
   if (!settings?.deleteLogChannelWebhook) return;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: `${message.author.tag} (${message.author.id})`,
-      iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      iconURL: message.author.displayAvatarURL(),
     })
     .setDescription(
       `Message ${message.id} deleted from <#${message.channel.id}>${
@@ -42,7 +42,7 @@ module.exports = async function (message: Message<boolean> | PartialMessage) {
     );
   if (message.member) embed.setColor(message.member.displayColor);
   message.attachments.forEach((att) => {
-    embed.addField("Attachment", att.url);
+    embed.addFields({ name: "Attachment", value: att.url });
   });
   await SendLog(
     settings.deleteLogChannelWebhook,
