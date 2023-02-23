@@ -25,6 +25,7 @@ services:
     init: true
     links:
       - mongo
+      - rabbit
     volumes:
       - "./api/socket:/socket"
 
