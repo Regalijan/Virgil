@@ -1,5 +1,5 @@
 FROM node:bullseye
-RUN curl https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-$(uname -i).tgz > speedtest.tgz
+RUN curl https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-$(uname -i).tgz >> speedtest.tgz
 RUN tar xzf speedtest.tgz
 RUN rm speedtest.tgz
 RUN rm speedtest.5
