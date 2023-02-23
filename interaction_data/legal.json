@@ -1,0 +1,12 @@
+{
+  "name": "legal",
+  "name_localizations": {
+    "es-ES": "reglamentario",
+    "sv-SE": "juridisk"
+  },
+  "description": "Sends a link to the Terms of Service and Privacy Policy",
+  "description_localizations": {
+    "es-ES": "Envía un enlace a las condiciones de servicio y a la política de privacidad",
+    "sv-SE": "Skicka en länk till användarvillkoren och sekretesspolicyn."
+  }
+}
