@@ -8,7 +8,7 @@ export = {
   name: "reverify",
   async exec(i: CommandInteraction): Promise<void> {
     const button = new MessageButton()
-      .setURL("https://rover.link/my/verification")
+      .setURL("https://rover.link/verify")
       .setEmoji("✏️")
       .setLabel("Change Account")
       .setStyle("LINK");
