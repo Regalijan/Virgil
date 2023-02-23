@@ -11,7 +11,7 @@ services:
     build:
       context: "./redis"
 
-  rabbit_mq:
+  rabbit:
     image: "rabbitmq"
     expose:
       - 5672
@@ -21,7 +21,7 @@ services:
       context: "./api"
     depends_on:
       - mongo
-      - rabbit_mq
+      - rabbit
     init: true
     links:
       - mongo
@@ -32,10 +32,11 @@ services:
     build: .
     depends_on:
       - mongo
+      - rabbit
       - redis
     init: true
     links:
       - mongo
-      - rabbit_mq
+      - rabbit
       - redis
     restart: unless-stopped
