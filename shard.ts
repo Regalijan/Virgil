@@ -105,30 +105,3 @@ setInterval(async function (): Promise<void> {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
   }
 }, 30000);
-
-process.on("message", async function ({ code, data }) {
-  const $set: { [k: string]: any } = {};
-  switch (code) {
-    case 1:
-      bot.removeAllListeners();
-      events.clear();
-      loadEvents();
-      break;
-    case 3:
-      for (const [key, value] of Object.entries(data.settings)) {
-        $set[key] = value;
-      }
-      await mongo
-        .collection("settings")
-        .updateOne({ guild: data.guild }, { $set });
-      break;
-    case 4:
-      $set[data.key] = data.value;
-      await mongo
-        .collection("settings")
-        .updateOne({ guild: data.guild }, { $set });
-      break;
-    default:
-      break;
-  }
-});
