@@ -31,7 +31,7 @@
     "ioredis": "^5.2.5",
     "mongodb": "^4.13.0",
     "sodium-native": "^4.0.0",
-    "utf-8-validate": "^6.0.0",
+    "utf-8-validate": "^6.0.1",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
