@@ -420,9 +420,11 @@ export = {
           continue;
         unvRoles.push(unvRole);
       }
-      await member.roles.add(unvRoles).catch((e) => {
-        Logger(e);
-      });
+
+      if (unvRoles.length)
+        await member.roles.add(unvRoles).catch((e) => {
+          Logger(e);
+        });
       return {
         content: self
           ? "You must be new, click the button to get started."
