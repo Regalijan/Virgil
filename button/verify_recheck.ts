@@ -7,7 +7,6 @@ export = {
     if (!i.guild || !(i.member instanceof GuildMember)) return;
     const canEdit =
       i.message.editable && i.user.id === i.message.interaction?.id;
-    if (!canEdit) await i.deferReply();
     await i.member.fetch();
     let response = await Common.verify(i.member, true, i);
     if (!response.verified) {
