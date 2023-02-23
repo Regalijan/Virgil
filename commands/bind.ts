@@ -149,10 +149,10 @@ export = {
         }
 
         const gamePassVerify = await axios(
-          `https://economy.roblox.com/v1/game-pass/${i.options.getInteger(
+          `https://apis.roblox.com/game-passes/v1/game-passes/${i.options.getInteger(
             "gamepass_id",
             true
-          )}/game-pass-product-info`,
+          )}/product-info`,
           {
             validateStatus: (s) => {
               return [200, 400].includes(s);
@@ -195,10 +195,10 @@ export = {
         }
 
         const assetVerify = await axios(
-          `https://economy.roblox.com/v2/assets/${i.options.getInteger(
+          `https://economy.roblox.com/v2/developer-products/${i.options.getInteger(
             "asset_id",
             true
-          )}/details`,
+          )}/info`,
           {
             validateStatus: (s) => {
               return [200, 400].includes(s);
