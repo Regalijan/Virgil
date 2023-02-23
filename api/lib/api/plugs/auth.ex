@@ -20,14 +20,7 @@ defmodule Plug.TokenAuth do
 
     case is_nil(token_entry) do
       true -> send_401(conn)
-      false -> conn
-    end
-  end
-
-  defp check_if_token_nil({conn, token}) do
-    case token == nil do
-      false -> send_401(conn)
-      true -> conn
+      false -> assign(conn, :token_data, token_entry)
     end
   end
 
