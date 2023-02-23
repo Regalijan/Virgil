@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  Bot_Validation:
+  Bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: TypeScript Validation
         run: npm run build
 
-  API_Validation:
+  API:
     runs-on: ubuntu-latest
 
     steps:
@@ -52,7 +52,7 @@ jobs:
           mix
 
   Push:
-    needs: [Bot_Validation, API_Validation]
+    needs: [Bot, API]
     runs-on: ubuntu-latest
 
     env:
