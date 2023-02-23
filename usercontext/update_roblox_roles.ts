@@ -22,9 +22,14 @@ export = {
       return;
     }
 
-    await i.deferReply({ ephemeral: true });
-    await i.followUp({
-      content: (await Common.verify(member, i.targetId === i.user.id)).content,
-    });
+    const { content, verified } = await Common.verify(
+      member,
+      i.targetId === i.user.id,
+      i
+    );
+
+    verified
+      ? await i.followUp({ content })
+      : await i.reply({ content, ephemeral: true });
   },
 };
