@@ -33,7 +33,7 @@ defmodule Api.Application do
       },
       %{
         id: AMQP.Connection,
-        start: {AMQP.Connection, :open, [[System.get_env("AMQP_URL", "amqp://rabbit")]]}
+        start: {AMQP.Connection, :open, [[System.get_env("AMQP_URL", "amqp://rabbit:5672")]]}
       },
       {
         Plug.Cowboy,
