@@ -20,8 +20,11 @@ export = {
       },
     });
     const verifyRegistryData = await axios(
-      "https://registry.rover.link/discord-to-roblox/" + user.id,
+      "https://registry.virgil.gg/api/discord/" + user.id,
       {
+        headers: {
+          authorization: process.env.REGISTRY_API_KEY || "",
+        },
         validateStatus: (s) => {
           return [200, 404].includes(s);
         },
@@ -48,11 +51,11 @@ export = {
     }
 
     embed.setURL(
-      `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`
+      `https://www.roblox.com/users/${verifyRegistryData.data.id}/profile`
     );
     embed.setTitle("View Profile");
     const robloxData = await common.getRobloxUserProfile(
-      verifyRegistryData.data.robloxId
+      verifyRegistryData.data.id
     );
     if (!robloxData) {
       await i.reply({
@@ -72,7 +75,7 @@ export = {
     }
     embed.setDescription(bio || "\u200B");
     const pastNamesData = await axios(
-      `https://users.roblox.com/v1/users/${verifyRegistryData.data.robloxId}/username-history?limit=25&sortOrder=Desc`
+      `https://users.roblox.com/v1/users/${verifyRegistryData.data.id}/username-history?limit=25&sortOrder=Desc`
     ).catch((e) => console.error(e));
     embed.addFields({
       name: "Join Date",
@@ -100,19 +103,19 @@ export = {
       });
     }
     const thumbnailData = await axios(
-      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
     if (thumbnailData) {
       embed.setThumbnail(thumbnailData.data.data[0].imageUrl);
     }
     const headshotData = await axios(
-      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${verifyRegistryData.data.robloxId}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${verifyRegistryData.data.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
     if (headshotData) {
       embed.setAuthor({
         name: robloxData.name,
         iconURL: headshotData.data.data[0].imageUrl,
-        url: `https://www.roblox.com/users/${verifyRegistryData.data.robloxId}/profile`,
+        url: `https://www.roblox.com/users/${verifyRegistryData.data.id}/profile`,
       });
     }
     if (robloxData.isBanned)

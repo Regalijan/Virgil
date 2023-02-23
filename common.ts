@@ -353,8 +353,12 @@ export = {
       return "I do not have permission to manage roles!";
     const db = mongo.db("bot").collection("binds");
     const verifyApiData = await axios(
-      `https://registry.rover.link/discord-to-roblox/${member.id}`,
-      {}
+      `https://registry.virgil.gg/api/discord/${member.id}`,
+      {
+        headers: {
+          authorization: process.env.REGISTRY_API_KEY || "",
+        }
+      }
     ).catch(() => {});
     const bindCursorDoc = db.find({ server: member.guild.id });
     const binds: {
@@ -411,7 +415,7 @@ export = {
         ? "You must be new, click the button to get started."
         : `${member.user.username} appears to not be verified.`;
     }
-    const robloxUserId: number = verifyApiData.data.robloxId;
+    const robloxUserId: number = verifyApiData.data.id;
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)
       return `An error occured when verifying ${
@@ -442,8 +446,8 @@ export = {
             member.user.username,
             member.id,
             member.guild.name,
-            userProfileData.name ?? verifyApiData.data.robloxUsername,
-            verifyApiData.data.robloxId,
+            userProfileData.name ?? verifyApiData.data.username,
+            verifyApiData.data.id,
             userProfileData.displayName ?? verifyApiData.data.robloxUsername
           )
         )
@@ -539,8 +543,8 @@ export = {
     await member.roles.add(rolesToAdd);
     await member.roles.remove(rolesToRemove);
     return self
-      ? `Welcome ${verifyApiData.data.robloxUsername}!`
-      : `${verifyApiData.data.robloxUsername} has been updated.`;
+      ? `Welcome ${verifyApiData.data.username}!`
+      : `${verifyApiData.data.username} has been updated.`;
   },
 
   async isPremium(guild: Guild): Promise<boolean> {

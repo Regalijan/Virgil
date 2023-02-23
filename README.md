@@ -38,6 +38,7 @@ MFA_CLIENT_SECRET?: Discord client secret of MFA service OAuth2 app.
 MFA_VERIFY_SITE?: User-facing URL of MFA verification site.
 MONGOURL?: Mongo connection string, only needed if using external mongo instance or development copy outside of docker.
 REDIS?: Redis connection string, only needed if using external redis instance or development copy outside of docker.
+REGISTRY_API_KEY?: Virgil Registry API key, can be obtained at https://registry.virgil.gg/developers
 SKIPDEPLOY?: Set this to anything to skip deploying slash commands when starting container.
 ```
 
