@@ -9,17 +9,15 @@ import {
 } from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 const settingsStore = mongo.db("bot").collection("settings");
 const reportStore = mongo.db("bot").collection("reports");
 
 export = {
   name: "Report Message to Server Mods",
   async exec(i: MessageContextMenuCommandInteraction): Promise<void> {
-    const message = await i.channel?.messages.fetch(i.targetId).catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    const message = await i.channel?.messages.fetch(i.targetId).catch(Logger);
     if (!message) {
       await i.reply({
         content: "An error occurred locating the message! Was it deleted?",
@@ -39,9 +37,7 @@ export = {
 
     const channel = await i.guild?.channels
       .fetch(settings.messageReportChannel)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+      .catch(Logger);
     if (!channel || channel.type !== ChannelType.GuildText) {
       await i.reply({
         content:

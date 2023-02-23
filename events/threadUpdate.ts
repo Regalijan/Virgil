@@ -1,6 +1,6 @@
-import Sentry from "../sentry";
 import { EmbedBuilder, ThreadChannel } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
 
 const mongo = db.db("bot");
@@ -15,16 +15,12 @@ module.exports = async function (
       channel: { $in: [newThread.parent?.id, newThread.parent?.parent?.id] },
       log: { $in: ["thread_update", null] },
     })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: newThread.guildId })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.threadUpdateLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setTitle("Thread Updated")

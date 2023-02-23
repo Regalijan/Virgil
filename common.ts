@@ -2,7 +2,6 @@ import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
 import Logger from "./logger";
-import Sentry from "./sentry";
 import {
   ButtonInteraction,
   CommandInteraction,
@@ -46,7 +45,8 @@ export = {
       let access_data = await mongo
         .db("bot")
         .collection("mfa_access_credentials")
-        .findOne({ user: user.id });
+        .findOne({ user: user.id })
+        .catch(Logger);
       if (!access_data) {
         const bridgeDataReq = await axios(
           (process.env.MFA_API ?? "https://mfa.virgil.gg/bridge/") + user.id,
@@ -64,7 +64,8 @@ export = {
         await mongo
           .db("bot")
           .collection("mfa_access_credentials")
-          .insertOne({ ...access_data });
+          .insertOne({ ...access_data })
+          .catch(Logger);
       }
       if (access_data?.expires_at < Date.now()) {
         const refreshReq = await axios(
@@ -85,7 +86,8 @@ export = {
           await mongo
             .db("bot")
             .collection("mfa_access_credentials")
-            .deleteOne({ user: user.id });
+            .deleteOne({ user: user.id })
+            .catch(Logger);
           return false;
         }
         const expires_at = Date.now() + refreshReq.data.expires_in * 1000;
@@ -98,7 +100,8 @@ export = {
         await mongo
           .db("bot")
           .collection("mfa_access_credentials")
-          .insertOne({ ...access_data });
+          .insertOne({ ...access_data })
+          .catch(Logger);
       }
       const mfaCheckReq = await axios("https://discord.com/api/v10/users/@me", {
         headers: {
@@ -110,7 +113,8 @@ export = {
         await mongo
           .db("bot")
           .collection("mfa_access_credentials")
-          .deleteOne({ user: user.id });
+          .deleteOne({ user: user.id })
+          .catch(Logger);
         return false;
       }
       const isEnabled = Boolean(mfaCheckReq.data.mfa_enabled);
@@ -132,7 +136,7 @@ export = {
   > {
     const cachedData = await redis
       .get(`robloxgroups_${user}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
@@ -145,7 +149,7 @@ export = {
           "EX",
           900
         )
-        .catch((e) => console.error(e));
+        .catch(console.error);
       return apiResponse.data.data;
     } catch (e) {
       Logger(e);
@@ -164,7 +168,7 @@ export = {
   async getRobloxUserFriends(user: number): Promise<number[]> {
     const cachedData = await redis
       .get(`robloxfriends_${user}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
@@ -174,7 +178,7 @@ export = {
       for (const friend of apiResponse.data.data) friendIds.push(friend.id);
       await redis
         .set(`robloxfriends_${user}`, JSON.stringify(friendIds), "EX", 1800)
-        .catch((e) => console.error(e));
+        .catch(console.error);
       return friendIds;
     } catch (e) {
       Logger(e);
@@ -190,7 +194,7 @@ export = {
     // Accepted values are "Asset", "Badge", "Bundle", and "GamePass"
     const cachedData = await redis
       .get(`${itemType}_${item}_${user}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
@@ -199,7 +203,7 @@ export = {
       const ownsItem = apiResponse.data;
       await redis
         .set(`${itemType}_${item}_${user}`, JSON.stringify(ownsItem), "EX", 900)
-        .catch((e) => console.error(e));
+        .catch(console.error);
       return ownsItem;
     } catch (e) {
       Logger(e);
@@ -233,7 +237,7 @@ export = {
     */
     const cachedData = await redis
       .get(`robloxplatformbadges_${user}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
@@ -265,7 +269,7 @@ export = {
   } | void> {
     const cachedData = await redis
       .get(`robloxprofile_${user}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) {
       const parsedCache = JSON.parse(cachedData);
       parsedCache.created = new Date(parsedCache.created);
@@ -283,7 +287,7 @@ export = {
           "EX",
           900
         )
-        .catch((e) => console.error(e));
+        .catch(console.error);
       return apiResponse.data;
     } catch (e) {
       Logger(e);
@@ -301,7 +305,7 @@ export = {
       );
     const cachedData = await redis
       .get(`${relationship}_${group}`)
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
@@ -311,7 +315,7 @@ export = {
       for (const group of apiResponse.data.relatedGroups) groups.push(group.id);
       await redis
         .set(`${relationship}_${group}`, JSON.stringify(groups), "EX", 3600)
-        .catch((e) => console.error(e));
+        .catch(console.error);
       return groups;
     } catch (e) {
       Logger(e);
@@ -405,14 +409,12 @@ export = {
       }
 
       if (rolesToRemove.length)
-        await member.roles.remove(rolesToRemove).catch((e) => {
-          Logger(e);
-        });
+        await member.roles.remove(rolesToRemove).catch(Logger);
 
       for (const unverifiedBind of unvBinds) {
         const unvRole = await member.guild.roles
           .fetch(unverifiedBind.role)
-          .catch((e) => console.error(e));
+          .catch(console.error);
         if (
           !unvRole ||
           unvRole.comparePositionTo(member.guild.members.me?.roles.highest) <=
@@ -424,9 +426,7 @@ export = {
       }
 
       if (unvRoles.length)
-        await member.roles.add(unvRoles).catch((e) => {
-          Logger(e);
-        });
+        await member.roles.add(unvRoles).catch(console.error);
       return {
         content: self
           ? "You must be new, click the button to get started."
@@ -451,7 +451,7 @@ export = {
       .db("bot")
       .collection("settings")
       .findOne({ guild: member.guild.id })
-      .catch((e) => console.error(e));
+      .catch(console.error);
     if (!serversettings)
       return {
         content: `The server settings are not ready, ${
@@ -481,7 +481,7 @@ export = {
             userProfileData.displayName ?? verifyApiData.data.robloxUsername
           )
         )
-        .catch((e) => console.error(e));
+        .catch(console.error);
 
     const groupData = await this.getRobloxMemberGroups(robloxUserId);
     const groupObjs: { [k: number]: number } = {};
@@ -612,9 +612,7 @@ export = {
     const premiumStore = mongo.db("bot").collection("premium");
     const premiumDoc = await premiumStore
       .findOne({ guild: guild.id })
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+      .catch(Logger);
 
     return Boolean(premiumDoc);
   },

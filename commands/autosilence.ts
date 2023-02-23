@@ -5,8 +5,8 @@ import {
   VoiceChannel,
 } from "discord.js";
 import common from "../common";
+import Logger from "../logger";
 import VoicePacketReceiver from "../voice_receiver";
-import Sentry from "../sentry";
 
 export = {
   name: "autosilence",
@@ -40,7 +40,7 @@ export = {
     try {
       await packetProcessor.waitForJoin();
     } catch (e) {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      Logger(e);
       await i.followUp({
         content: "Failed to join voice channel!",
         ephemeral: true,

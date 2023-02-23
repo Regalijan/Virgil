@@ -7,7 +7,7 @@ import {
   PermissionsBitField,
   ShardClientUtil,
 } from "discord.js";
-import Sentry from "./sentry";
+import Logger from "./logger";
 import db from "./mongo";
 
 db.connect().then(() => {});
@@ -54,7 +54,7 @@ async function logDebug(message: any) {
 loadEvents();
 
 bot.login().catch((e) => {
-  process.env.DSN ? Sentry.captureException(e) : console.error(e);
+  Logger(e);
   process.exit();
 });
 
@@ -103,7 +103,7 @@ setInterval(async function (): Promise<void> {
       );
     }
   } catch (e) {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    Logger(e);
     return;
   }
   try {
@@ -114,6 +114,6 @@ setInterval(async function (): Promise<void> {
         { $set: { "message.content": "[ Content Deleted ]" } }
       );
   } catch (e) {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    Logger(e);
   }
 }, 30000);

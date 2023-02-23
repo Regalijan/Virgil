@@ -7,7 +7,7 @@ import {
   Snowflake,
 } from "discord.js";
 import db from "../mongo";
-import Sentry from "../sentry";
+import Logger from "../logger";
 import { join } from "path";
 import { unlink, writeFile } from "fs/promises";
 
@@ -31,16 +31,12 @@ module.exports = async function (
       },
       log: { $in: ["delete", null] },
     })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: messages.first()?.guild?.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.deleteLogChannelWebhook) return;
   let fileBody = `${new Intl.DateTimeFormat(
     messages.first()?.guild?.preferredLocale ?? "en-US",
@@ -64,12 +60,9 @@ module.exports = async function (
       Math.round(Math.random() * 1000000).toString() +
       ".txt"
   );
-  try {
-    await writeFile(filePath, fileBody);
-  } catch (e) {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    return;
-  }
+
+  await writeFile(filePath, fileBody).catch(Logger);
+
   const webhook = await messages
     .first()
     ?.client.fetchWebhook(
@@ -89,14 +82,10 @@ module.exports = async function (
           { guild: messages.first()?.guild?.id },
           { $unset: { deleteLogChannel: "", deleteLogChannelWebhook: "" } }
         )
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
     }
     return;
   }
   await webhook.send({ files: [filePath] }).catch(console.error);
-  await unlink(filePath).catch((e) => {
-    process.env.DSN ? Sentry.captureException(e) : console.error(e);
-  });
+  await unlink(filePath).catch(Logger);
 };

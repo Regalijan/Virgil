@@ -6,7 +6,7 @@ import {
   TextChannel,
 } from "discord.js";
 import db from "../mongo";
-import Sentry from "../sentry";
+import Logger from "../logger";
 import redis from "../redis";
 import axios from "axios";
 import { randomBytes } from "crypto";
@@ -25,9 +25,7 @@ module.exports = async function (message: Message) {
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: message.guildId })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   const bypasses = await mongo
     .collection("filter_bypass")
     .find({ server: message.guildId })
@@ -84,7 +82,7 @@ module.exports = async function (message: Message) {
         }
       }
     } catch (e) {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+      Logger(e);
     }
   }
   if (!settings?.antiphish) return;
@@ -96,9 +94,7 @@ module.exports = async function (message: Message) {
     let malicious = false;
     const cache = await redis
       .get(`linkcheck_${link.replace(/^https?:\/\//, "")}`)
-      .catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+      .catch(Logger);
     if (!cache) {
       const redirReq = await axios(link, {
         headers: {
@@ -106,9 +102,8 @@ module.exports = async function (message: Message) {
         },
         httpsAgent: new Agent({ rejectUnauthorized: false }), // Prevent self-signed certs from breaking validation
         validateStatus: () => true,
-      }).catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      }); // Axios will follow up to 5 redirects by default
+      }).catch(Logger);
+      // Axios will follow up to 5 redirects by default
       if (!redirReq) continue;
       link = redirReq.request.host;
       const phishCheckReq = await axios(
@@ -123,9 +118,8 @@ module.exports = async function (message: Message) {
           },
           validateStatus: () => true,
         }
-      ).catch((e) => {
-        process.env.DSN ? Sentry.captureException(e) : console.error(e);
-      });
+      ).catch(Logger);
+
       if (phishCheckReq?.status !== 200) continue;
       if (phishCheckReq.data) malicious = true;
       await redis
@@ -135,9 +129,7 @@ module.exports = async function (message: Message) {
           "EX",
           1800
         )
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(console.error);
     } else {
       malicious = JSON.parse(cache);
     }
@@ -158,29 +150,25 @@ module.exports = async function (message: Message) {
         );
       }
       if (message.deletable) {
-        await message.delete().catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        await message.delete().catch(console.error);
       }
       if (!settings?.autobanPhishers) return;
       const member =
         message.member ||
-        (await message.guild?.members.fetch(message.author.id).catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        }));
+        (await message.guild?.members.fetch(message.author.id).catch(Logger));
       if (!member?.bannable) return;
-      await member.send({
-        content: `You were banned from ${
-          message.guild?.name
-        } for sending a phishing link.${
-          settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
-        }`,
-      });
+      await member
+        .send({
+          content: `You were banned from ${
+            message.guild?.name
+          } for sending a phishing link.${
+            settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
+          }`,
+        })
+        .catch(() => {});
       await member
         .ban({ reason: "User posted a phishing link", deleteMessageDays: 1 })
-        .catch((e) => {
-          process.env.DSN ? Sentry.captureException(e) : console.error(e);
-        });
+        .catch(Logger);
       break;
     }
   }

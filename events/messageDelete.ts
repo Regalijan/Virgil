@@ -1,7 +1,7 @@
 import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
-import Sentry from "../sentry";
 
 const mongo = db.db("bot");
 
@@ -19,16 +19,12 @@ module.exports = async function (message: Message | PartialMessage) {
       channel: { $in: [message.channel.id, message.channel.parent?.id] },
       log: { $in: ["delete", null] },
     })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (ignoreData) return;
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: message.guild.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.deleteLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setAuthor({

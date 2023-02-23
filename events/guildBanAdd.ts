@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildBan } from "discord.js";
-import Sentry from "../sentry";
 import db from "../mongo";
+import Logger from "../logger";
 import SendLog from "../send_log";
 
 const mongo = db.db("bot");
@@ -9,9 +9,7 @@ module.exports = async function (ban: GuildBan) {
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: ban.guild.id })
-    .catch((e) => {
-      process.env.DSN ? Sentry.captureException(e) : console.error(e);
-    });
+    .catch(Logger);
   if (!settings?.banLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setTitle("Member Banned")
