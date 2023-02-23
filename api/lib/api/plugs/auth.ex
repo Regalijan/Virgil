@@ -7,6 +7,15 @@ defmodule Plug.TokenAuth do
   end
 
   defp authenticate({conn, token}) do
+    token_entry = Mongo.find_one(
+      :mongo,
+      "tokens",
+      %{
+        token_hash:
+          :crypto.hash("sha256", token)
+          |> :base64.encode_to_string
+      }
+    )
     case token === System.get_env("API_TOKEN", "") do
       false -> send_401(conn)
       true -> conn
