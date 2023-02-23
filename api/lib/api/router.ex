@@ -3,6 +3,7 @@ defmodule APIRouter do
   use Plug.ErrorHandler
 
   plug(Plug.TokenAuth)
+  plug(Plug.Scope)
 
   plug(Plug.Parsers,
     parsers: [:json],
