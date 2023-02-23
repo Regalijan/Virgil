@@ -1,4 +1,4 @@
-import { Message, Team } from "discord.js";
+import {DMChannel, Message, Team} from "discord.js";
 import db from "../mongo";
 import Sentry from "../sentry";
 import redis from "../redis";
@@ -12,7 +12,8 @@ module.exports = async function (message: Message) {
   if (
     !message.content ||
     !message.author ||
-    message.channel.type !== "GUILD_TEXT"
+    !message.guild ||
+    message.channel.type === "DM"
   )
     return;
   const settings = await mongo
@@ -21,6 +22,23 @@ module.exports = async function (message: Message) {
     .catch((e) => {
       process.env.DSN ? Sentry.captureException(e) : console.error(e);
     });
+  if (message.guild.me && message.channel.permissionsFor(message.guild.me).has("MANAGE_MESSAGES")) {
+    try {
+      const banned_words = await mongo
+          .collection("banned_words")
+          .find({server: message.guildId});
+
+      await banned_words.forEach(word => {
+        if (word.type === 1) { // Exact matches
+          if (message.content === word.filter || !word.case_sensitive && message.content.toLowerCase() === word.filter.toLowerCase()) {
+
+          }
+        }
+      })
+    } catch (e) {
+      process.env.DSN ? Sentry.captureException(e) : console.error(e);
+    }
+  }
   if (!settings?.antiphish) return;
   const linkMatches = message.content.match(
     /https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/g
@@ -53,7 +71,7 @@ module.exports = async function (message: Message) {
               message.client.application?.owner instanceof Team
                 ? message.client.application.owner.members.first()?.id
                 : message.client.application?.owner?.id
-            }`,
+            })`,
           },
           validateStatus: () => true,
         }
