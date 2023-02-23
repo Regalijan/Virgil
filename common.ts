@@ -192,9 +192,9 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await axios(
-        `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}`
+        `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}/is-owned`
       );
-      const ownsItem = !!apiResponse.data.data.length;
+      const ownsItem = apiResponse.data;
       await redis
         .set(`${itemType}_${item}_${user}`, JSON.stringify(ownsItem), "EX", 900)
         .catch((e) => console.error(e));
