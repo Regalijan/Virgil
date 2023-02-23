@@ -95,11 +95,12 @@ setInterval(async function (): Promise<void> {
     return;
   }
   try {
-    await mongo.collection("reports").updateMany(
-      { created: { $lte: Date.now() - 2592000000 } },
-      // @ts-expect-error The types are borked for now
-      { $set: { "message.content": "[ Content Deleted ]" } }
-    );
+    await mongo
+      .collection("reports")
+      .updateMany(
+        { created: { $lte: Date.now() - 2592000000 } },
+        { $set: { "message.content": "[ Content Deleted ]" } }
+      );
   } catch (e) {
     process.env.DSN ? Sentry.captureException(e) : console.error(e);
   }
