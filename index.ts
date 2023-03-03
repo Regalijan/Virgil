@@ -1,19 +1,24 @@
 import { config as dotenv } from "dotenv";
 import { ShardingManager } from "discord.js";
 import { join } from "path";
-import axios from "axios";
+
+if (typeof fetch === "undefined")
+  console.error(
+    "`fetch` is not defined. Use Node v17.5.0 or later (versions below 18 require passing the --experimental-global-fetch flag)"
+  );
 
 dotenv();
 
 async function getGatewayData() {
   if (!process.env.DISCORDTOKEN)
     return console.error("No token was detected in the environment!");
-  const request = await axios("https://discord.com/api/v10/gateway/bot", {
+  const request = await fetch("https://discord.com/api/v10/gateway/bot", {
     headers: {
       authorization: `Bot ${process.env.DISCORDTOKEN}`,
     },
   });
-  return request.data;
+
+  return await request.json();
 }
 
 (async function () {
