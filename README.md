@@ -11,10 +11,12 @@
 5. Run `docker-compose up -d` to start the bot.
 
 ## Self-hosting (development)
+Use WSL on Windows<br>
+Node 17.5.0 or later is required
 
 1. Install [Node.js](https://nodejs.org/en/download/current)
 2. Install [MongoDB](https://www.mongodb.com/try/download/community)
-3. Install [Redis](https://redis.io/download) - use [Memurai](https://www.memurai.com/get-memurai) on Windows
+3. Install [Redis](https://redis.io/download)
 4. Install [Python](https://www.python.org) - you may want to use your package manage on linux
 5. Linux: Install `gcc` `g++` `make` | Windows: Install [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe)
 6. Create a `.env` file with the variables in the table at the bottom
@@ -26,8 +28,6 @@
 ## Environment Variables
 
 ```
-BROKER_TOKEN?: Remote message broker auth token
-BROKER_URL?: Remote message broker URL
 DISCORDTOKEN: The bot token
 DSN?: Your Sentry dsn
 INSTALL_FFMPEG?: Set to any value to install FFmpeg.
