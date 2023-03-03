@@ -1,4 +1,3 @@
-import axios from "axios";
 import Logger from "../logger";
 import mongo from "../mongo";
 
@@ -28,20 +27,19 @@ export default async function (
     }
 
     const refreshConf = {
-      data: `client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&grant_type=refresh_token&refresh_token=${credentials.refresh_token}`,
+      body: `client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&grant_type=refresh_token&refresh_token=${credentials.refresh_token}`,
       headers: {
         "content-type": "application/x-www-form-urlencoded",
       },
       method: "POST",
-      validateStatus: () => true,
     };
 
-    const refreshReq = await axios(
+    const refreshReq = await fetch(
       "https://oauth2.googleapis.com/token",
       refreshConf
     );
 
-    if (refreshReq.status !== 200)
+    if (!refreshReq.ok)
       return [
         false,
         {
@@ -50,26 +48,27 @@ export default async function (
         },
       ];
 
+    const refreshData = await refreshReq.json();
+
     await credDB
       .replaceOne(
         { guild, service: "google" },
         {
           guild,
           service: "google",
-          ...refreshReq.data,
-          expires_at:
-            Math.floor(Date.now() / 1000) + refreshReq.data.expires_in,
+          ...refreshData,
+          expires_at: Math.floor(Date.now() / 1000) + refreshData.expires_in,
         }
       )
       .catch(Logger);
 
-    credentials = refreshReq.data;
+    credentials = refreshData;
   }
 
-  const uploadReq = await axios(
+  const uploadReq = await fetch(
     "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
     {
-      data: `--le_boundary
+      body: `--le_boundary
     content-type: application/json; charset=UTF-8
 
     {"name":"${name}"}
@@ -86,7 +85,7 @@ export default async function (
     }
   );
 
-  if (uploadReq.status !== 200) return [false, uploadReq.data];
+  if (uploadReq.status !== 200) return [false, await uploadReq.json()];
 
   return true;
 }

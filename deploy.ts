@@ -1,4 +1,3 @@
-import axios from "axios";
 import { config as dotenv } from "dotenv";
 import { readdirSync } from "fs";
 import { join } from "path";
@@ -23,29 +22,33 @@ for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
   commands.push(data);
 }
 
-axios("https://discord.com/api/v10/users/@me", {
-  headers: {
-    authorization: `Bot ${process.env.DISCORDTOKEN}`,
-  },
-}).then((me) => {
-  axios(`https://discord.com/api/v10/applications/${me.data.id}/commands`, {
+(async function () {
+  const currentUserReq = await fetch("https://discord.com/api/v10/users/@me", {
     headers: {
       authorization: `Bot ${process.env.DISCORDTOKEN}`,
-      "content-type": "application/json",
     },
-    method: "PUT",
-    data: JSON.stringify(commands),
-    validateStatus: () => {
-      return true;
-    },
-  }).then((regResponse) => {
-    console.log(
-      regResponse.status === 200
-        ? "Deployment Succeeded"
-        : `${JSON.stringify(
-            regResponse.data
-          )}\nAn error occurred while deploying! Read the logs above.`
-    );
-    process.exit(); // ioredis starts for some unknown reason and the process continues to run because of it
   });
-});
+
+  if (!currentUserReq.ok)
+    throw new Error(
+      `Failed to retrieve current application information: ${await currentUserReq.json()}`
+    );
+
+  const { id } = await currentUserReq.json();
+  const registerReq = await fetch(
+    `https://discord.com/api/v10/applications/${id}/commands`,
+    {
+      body: JSON.stringify(commands),
+      headers: {
+        authorization: `Bot ${process.env.DISCORDTOKEN}`,
+        "content-type": "application/json",
+      },
+      method: "PUT",
+    }
+  );
+
+  if (!registerReq.ok)
+    throw new Error(`Failed to register commands: ${await registerReq.json()}`);
+
+  console.log("Deployment succeeded");
+})();

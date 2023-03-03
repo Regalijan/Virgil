@@ -7,7 +7,6 @@ import {
   ThreadChannel,
 } from "discord.js";
 import mongo from "../mongo";
-import axios from "axios";
 
 const settingsDB = mongo.db("bot").collection("settings");
 const ignoredDB = mongo.db("bot").collection("ignored");
@@ -251,13 +250,14 @@ export = {
             (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
           ]
         ) {
-          await axios
-            .delete(
-              settingsList[
-                (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
-              ]
-            )
-            .catch(console.error);
+          await fetch(
+            settingsList[
+              choiceToSettingMap.get(removalChoice ?? "") + "Webhook"
+            ],
+            {
+              method: "DELETE",
+            }
+          ).catch(console.error);
         }
         const $yeet: any = { $unset: {} };
         $yeet.$unset[choiceToSettingMap.get(removalChoice) ?? ""] = "";

@@ -1,4 +1,3 @@
-import axios from "axios";
 import redis from "./redis";
 import mongo from "./mongo";
 import Logger from "./logger";
@@ -48,7 +47,7 @@ export = {
         .findOne({ user: user.id })
         .catch(Logger);
       if (!access_data) {
-        const bridgeDataReq = await axios(
+        const bridgeDataReq = await fetch(
           (process.env.MFA_API ?? "https://mfa.virgil.gg/bridge/") + user.id,
           {
             headers: {
@@ -58,7 +57,7 @@ export = {
         ).catch(console.error);
         if (bridgeDataReq?.status !== 200) return false;
         access_data = {
-          ...bridgeDataReq.data,
+          ...(await bridgeDataReq.json()),
           user: user.id,
         };
         await mongo
@@ -68,9 +67,10 @@ export = {
           .catch(Logger);
       }
       if (access_data?.expires_at < Date.now()) {
-        const refreshReq = await axios(
+        const refreshReq = await fetch(
           "https://discord.com/api/v10/oauth2/token",
           {
+            body: `grant_type=refresh_token&refresh_token=${access_data?.refresh_token}`,
             headers: {
               authorization: `Basic ${Buffer.from(
                 process.env.MFA_CLIENT_ID + ":" + process.env.MFA_CLIENT_SECRET
@@ -78,7 +78,6 @@ export = {
               "content-type": "application/x-www-form-urlencoded",
             },
             method: "POST",
-            data: `grant_type=refresh_token&refresh_token=${access_data?.refresh_token}`,
           }
         ).catch(console.error);
         if (!refreshReq) return false;
@@ -90,10 +89,12 @@ export = {
             .catch(Logger);
           return false;
         }
-        const expires_at = Date.now() + refreshReq.data.expires_in * 1000;
-        delete refreshReq.data.expires_in;
+
+        const refreshData = await refreshReq.json();
+        const expires_at = Date.now() + refreshData.expires_in * 1000;
+        delete refreshData.expires_in;
         access_data = {
-          ...refreshReq.data,
+          ...refreshData,
           expires_at,
           user: user.id,
         };
@@ -103,7 +104,7 @@ export = {
           .insertOne({ ...access_data })
           .catch(Logger);
       }
-      const mfaCheckReq = await axios("https://discord.com/api/v10/users/@me", {
+      const mfaCheckReq = await fetch("https://discord.com/api/v10/users/@me", {
         headers: {
           authorization: `${access_data?.token_type} ${access_data?.access_token}`,
         },
@@ -117,7 +118,9 @@ export = {
           .catch(Logger);
         return false;
       }
-      const isEnabled = Boolean(mfaCheckReq.data.mfa_enabled);
+
+      const mfaCheckData = await mfaCheckReq.json();
+      const isEnabled = Boolean(mfaCheckData.mfa_enabled);
       await redis.set(
         `mfaEnabled_${user.id}`,
         JSON.stringify(isEnabled),
@@ -139,18 +142,14 @@ export = {
       .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://groups.roblox.com/v2/users/${user}/groups/roles`
       );
+      const apiData = await apiResponse.json();
       await redis
-        .set(
-          `robloxgroups_${user}`,
-          JSON.stringify(apiResponse.data.data),
-          "EX",
-          900
-        )
+        .set(`robloxgroups_${user}`, JSON.stringify(apiData.data), "EX", 900)
         .catch(console.error);
-      return apiResponse.data.data;
+      return apiData.data;
     } catch (e) {
       Logger(e);
       return [];
@@ -171,11 +170,12 @@ export = {
       .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://friends.roblox.com/v1/users/${user}/friends`
       );
+      const apiData = await apiResponse.json();
       const friendIds: number[] = [];
-      for (const friend of apiResponse.data.data) friendIds.push(friend.id);
+      for (const friend of apiData.data) friendIds.push(friend.id);
       await redis
         .set(`robloxfriends_${user}`, JSON.stringify(friendIds), "EX", 1800)
         .catch(console.error);
@@ -191,16 +191,15 @@ export = {
     item: number,
     itemType: "Asset" | "Badge" | "Bundle" | "GamePass" = "Badge"
   ): Promise<boolean> {
-    // Accepted values are "Asset", "Badge", "Bundle", and "GamePass"
     const cachedData = await redis
       .get(`${itemType}_${item}_${user}`)
       .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}/is-owned`
       );
-      const ownsItem = apiResponse.data;
+      const ownsItem = await apiResponse.json();
       await redis
         .set(`${itemType}_${item}_${user}`, JSON.stringify(ownsItem), "EX", 900)
         .catch(console.error);
@@ -240,11 +239,11 @@ export = {
       .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://accountinformation.roblox.com/v1/users/${user}/roblox-badges`
       );
       const badgeIds: number[] = [];
-      for (const badge of apiResponse.data) badgeIds.push(badge.id);
+      for (const badge of await apiResponse.json()) badgeIds.push(badge.id);
       await redis.set(
         `robloxplatformbadges_${user}`,
         JSON.stringify(badgeIds),
@@ -276,19 +275,15 @@ export = {
       return parsedCache;
     }
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://users.roblox.com/v1/users/${user}`
       );
-      apiResponse.data.created = new Date(apiResponse.data.created);
+      const apiData = await apiResponse.json();
+      apiData.created = new Date(apiData.created);
       await redis
-        .set(
-          `robloxprofile_${user}`,
-          JSON.stringify(apiResponse.data),
-          "EX",
-          900
-        )
+        .set(`robloxprofile_${user}`, JSON.stringify(apiData), "EX", 900)
         .catch(console.error);
-      return apiResponse.data;
+      return apiData;
     } catch (e) {
       Logger(e);
       return;
@@ -308,11 +303,12 @@ export = {
       .catch(console.error);
     if (cachedData) return JSON.parse(cachedData);
     try {
-      const apiResponse = await axios(
+      const apiResponse = await fetch(
         `https://groups.roblox.com/v1/groups/${group}/relationships/${relationship}?model.startRowIndex=0&model.maxRows=100`
       );
       const groups: number[] = [];
-      for (const group of apiResponse.data.relatedGroups) groups.push(group.id);
+      for (const group of (await apiResponse.json()).relatedGroups)
+        groups.push(group.id);
       await redis
         .set(`${relationship}_${group}`, JSON.stringify(groups), "EX", 3600)
         .catch(console.error);
@@ -368,7 +364,7 @@ export = {
         verified: false,
       };
     const db = mongo.db("bot").collection("binds");
-    const verifyApiData = await axios(
+    const verifyApiData = await fetch(
       `https://registry.virgil.gg/api/discord/${member.id}`,
       {
         headers: {
@@ -437,7 +433,10 @@ export = {
     }
     await interaction.deferReply({ ephemeral: !self });
 
-    const robloxUserId: number = verifyApiData.data.id;
+    const {
+      id: robloxUserId,
+      username: robloxUsername,
+    }: { id: number; username: string } = (await verifyApiData.json()).id;
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)
       return {
@@ -476,9 +475,9 @@ export = {
             member.user.username,
             member.id,
             member.guild.name,
-            userProfileData.name ?? verifyApiData.data.username,
-            verifyApiData.data.id,
-            userProfileData.displayName ?? verifyApiData.data.robloxUsername
+            userProfileData.name ?? robloxUsername,
+            robloxUserId,
+            userProfileData.displayName ?? robloxUsername
           )
         )
         .catch(console.error);
@@ -574,8 +573,8 @@ export = {
     await member.roles.remove(rolesToRemove);
     return {
       content: self
-        ? `Welcome ${verifyApiData.data.username}!`
-        : `${verifyApiData.data.username} has been updated.`,
+        ? `Welcome ${robloxUsername}!`
+        : `${robloxUsername} has been updated.`,
       errored: false,
       verified: true,
     };

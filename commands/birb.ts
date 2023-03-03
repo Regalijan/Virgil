@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import axios from "axios";
 
 export = {
   name: "birb",
@@ -9,8 +8,9 @@ export = {
       .fetch(i.user.id)
       .catch((e) => console.error(e));
     if (member?.displayColor) embed.setColor(member.displayColor);
-    const birbRequest = await axios("https://random.birb.pw/tweet.json");
-    embed.setImage(`https://random.birb.pw/img/${birbRequest.data.file}`);
+    const birbRequest = await fetch("https://random.birb.pw/tweet.json");
+    const birbData = await birbRequest.json();
+    embed.setImage(`https://random.birb.pw/img/${birbData.file}`);
     await i.reply({ embeds: [embed] });
   },
 };

@@ -8,9 +8,7 @@ import {
 import db from "../mongo";
 import Logger from "../logger";
 import redis from "../redis";
-import axios from "axios";
 import { randomBytes } from "crypto";
-import { Agent } from "https";
 
 const mongo = db.db("bot");
 
@@ -96,17 +94,15 @@ module.exports = async function (message: Message) {
       .get(`linkcheck_${link.replace(/^https?:\/\//, "")}`)
       .catch(Logger);
     if (!cache) {
-      const redirReq = await axios(link, {
+      const redirReq = await fetch(link, {
         headers: {
-          "user-agent": Buffer.from(randomBytes(16)).toString("base64"), // Prevent UA blocking
+          "user-agent": Buffer.from(randomBytes(16)).toString("base64url"), // Prevent UA blocking
         },
-        httpsAgent: new Agent({ rejectUnauthorized: false }), // Prevent self-signed certs from breaking validation
-        validateStatus: () => true,
       }).catch(Logger);
-      // Axios will follow up to 5 redirects by default
+      // Fetch will follow redirects by default
       if (!redirReq) continue;
-      link = redirReq.request.host;
-      const phishCheckReq = await axios(
+      link = new URL(redirReq.url).hostname;
+      const phishCheckReq = await fetch(
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
           headers: {
@@ -116,19 +112,15 @@ module.exports = async function (message: Message) {
                 : message.client.application?.owner?.id
             })`,
           },
-          validateStatus: () => true,
         }
       ).catch(Logger);
 
       if (phishCheckReq?.status !== 200) continue;
-      if (phishCheckReq.data) malicious = true;
+
+      const phishCheckData = await phishCheckReq.json();
+      if (phishCheckData) malicious = true;
       await redis
-        .set(
-          `linkcheck_${link}`,
-          JSON.stringify(phishCheckReq.data),
-          "EX",
-          1800
-        )
+        .set(`linkcheck_${link}`, JSON.stringify(phishCheckData), "EX", 1800)
         .catch(console.error);
     } else {
       malicious = JSON.parse(cache);

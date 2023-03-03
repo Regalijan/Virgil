@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import axios from "axios";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 
@@ -34,7 +33,7 @@ export = {
           return;
         }
 
-        const groupRequest = await axios(
+        const groupRequest = await fetch(
           "https://groups.roblox.com/v2/groups?groupIds=" +
             i.options.getInteger("group_id", true)
         ).catch((e) => console.error(e));
@@ -46,7 +45,9 @@ export = {
           return;
         }
 
-        if (!groupRequest.data.data?.length) {
+        const groupData = await groupRequest.json();
+
+        if (!groupData.data?.length) {
           await i.reply({
             content: "This group does not exist!",
             ephemeral: true,
@@ -73,12 +74,12 @@ export = {
           return;
         }
 
-        const badgeVerify = await axios(
+        const badgeVerify = await fetch(
           `https://badges.roblox.com/v1/badges/${i.options.getInteger(
             "badge_id"
           )}`
         ).catch(() => {});
-        if (!badgeVerify) {
+        if (!badgeVerify?.ok) {
           await i.reply({
             content: "Badge could not be validated! Does it exist?",
             ephemeral: true,
@@ -102,16 +103,11 @@ export = {
           });
         }
 
-        const bundleVerify = await axios(
+        const bundleVerify = await fetch(
           `https://catalog.roblox.com/v1/bundles/${i.options.getInteger(
             "bundle_id",
             true
-          )}/details`,
-          {
-            validateStatus: (s) => {
-              return [200, 400].includes(s);
-            },
-          }
+          )}/details`
         ).catch(() => {});
         if (!bundleVerify) {
           await i.reply({
@@ -122,7 +118,7 @@ export = {
           return;
         }
 
-        if (bundleVerify.status === 400) {
+        if (!bundleVerify.ok) {
           await i.reply({
             content: "The bundle you specified does not exist.",
             ephemeral: true,
@@ -148,17 +144,12 @@ export = {
           return;
         }
 
-        const gamePassVerify = await axios(
+        const gamePassVerify = await fetch(
           `https://apis.roblox.com/game-passes/v1/game-passes/${i.options.getInteger(
             "gamepass_id",
             true
-          )}/product-info`,
-          {
-            validateStatus: (s) => {
-              return [200, 400].includes(s);
-            },
-          }
-        ).catch((e) => console.error(e));
+          )}/product-info`
+        ).catch(() => {});
 
         if (!gamePassVerify) {
           await i.reply({
@@ -168,7 +159,7 @@ export = {
           return;
         }
 
-        if (gamePassVerify.status === 400) {
+        if (!gamePassVerify.ok) {
           await i.reply({
             content: "GamePass does not exist! Try again.",
             ephemeral: true,
@@ -194,16 +185,11 @@ export = {
           return;
         }
 
-        const assetVerify = await axios(
-          `https://economy.roblox.com/v2/developer-products/${i.options.getInteger(
+        const assetVerify = await fetch(
+          `https://economy.roblox.com/v2/assets/${i.options.getInteger(
             "asset_id",
             true
-          )}/info`,
-          {
-            validateStatus: (s) => {
-              return [200, 400].includes(s);
-            },
-          }
+          )}/details`
         ).catch(() => {});
 
         if (!assetVerify) {
@@ -215,7 +201,7 @@ export = {
           return;
         }
 
-        if (assetVerify.status === 400) {
+        if (!assetVerify.ok) {
           await i.reply({
             content: "This asset does not exist! Try again.",
             ephemeral: true,
@@ -251,17 +237,17 @@ export = {
         break;
 
       case "friend_status":
-        const userVerifyReq = await axios(
+        const userVerifyReq = await fetch(
           "https://users.roblox.com/v1/usernames/users",
           {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-            },
-            data: JSON.stringify({
+            body: JSON.stringify({
               usernames: [i.options.getString("username", true)],
               excludeBannedUsers: false,
             }),
+            headers: {
+              "content-type": "application/json",
+            },
+            method: "POST",
           }
         ).catch(() => {});
 
@@ -274,7 +260,9 @@ export = {
           return;
         }
 
-        if (!userVerifyReq.data.data?.length) {
+        const userVerifyData = await userVerifyReq.json();
+
+        if (!userVerifyData.data?.length) {
           await i.reply({
             content:
               "This user does not exist! Please make sure that you spelled it correctly.",
@@ -288,7 +276,7 @@ export = {
           server: i.guildId,
           type: "friend",
           role: i.options.getRole("role", true).id,
-          friend: userVerifyReq.data.data[0].id,
+          friend: userVerifyData.data[0].id,
         });
         break;
     }

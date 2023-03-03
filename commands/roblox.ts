@@ -6,7 +6,6 @@ import {
   User,
 } from "discord.js";
 import common from "../common";
-import axios from "axios";
 import Sentry from "../sentry";
 
 export = {
@@ -19,21 +18,18 @@ export = {
         text: "Information provided by Roblox Corporation and Virgil Registry",
       },
     });
-    const verifyRegistryData = await axios(
+    const verifyRegistryReq = await fetch(
       "https://registry.virgil.gg/api/discord/" + user.id,
       {
         headers: {
           authorization: `Bearer ${process.env.REGISTRY_API_KEY}`,
-        },
-        validateStatus: (s) => {
-          return [200, 404].includes(s);
         },
       }
     ).catch((e) => {
       console.error(e);
       Sentry.captureException(e);
     });
-    if (!verifyRegistryData) {
+    if (!verifyRegistryReq?.ok && verifyRegistryReq?.status !== 404) {
       await i.reply({
         content:
           "An error occurred when looking up this user! Please try again later.",
@@ -42,7 +38,7 @@ export = {
       return;
     }
 
-    if (verifyRegistryData.status === 404) {
+    if (verifyRegistryReq.status === 404) {
       await i.reply({
         content: "This user is not verified!",
         ephemeral: true,
@@ -50,13 +46,11 @@ export = {
       return;
     }
 
-    embed.setURL(
-      `https://www.roblox.com/users/${verifyRegistryData.data.id}/profile`
-    );
+    const registryData = await verifyRegistryReq.json();
+
+    embed.setURL(`https://www.roblox.com/users/${registryData.id}/profile`);
     embed.setTitle("View Profile");
-    const robloxData = await common.getRobloxUserProfile(
-      verifyRegistryData.data.id
-    );
+    const robloxData = await common.getRobloxUserProfile(registryData.id);
     if (!robloxData) {
       await i.reply({
         content:
@@ -69,13 +63,15 @@ export = {
     embed.setAuthor({ name: robloxData.name });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     let bio = robloxData.description;
+
+    // Stop newline spam
     while ((bio.match(/\n/gm) || []).length > 15 || bio.match(/\n\n\n/gm)) {
       const lastN = bio.lastIndexOf("\n");
       bio = bio.slice(0, lastN) + bio.slice(lastN + 1);
     }
     embed.setDescription(bio || "\u200B");
-    const pastNamesData = await axios(
-      `https://users.roblox.com/v1/users/${verifyRegistryData.data.id}/username-history?limit=25&sortOrder=Desc`
+    const pastNamesReq = await fetch(
+      `https://users.roblox.com/v1/users/${registryData.id}/username-history?limit=25&sortOrder=Desc`
     ).catch((e) => console.error(e));
     embed.addFields({
       name: "Join Date",
@@ -90,32 +86,38 @@ export = {
       }).format(robloxData.created.getTime()),
       inline: true,
     });
-    if (pastNamesData?.data.data?.length) {
-      let pastNamesString = "";
-      for (let i = 0; i < pastNamesData.data.data.length; i++) {
-        pastNamesString += pastNamesData.data.data[i].name;
-        if (i < pastNamesData.data.data.length - 1) pastNamesString += ", ";
+
+    if (pastNamesReq?.ok) {
+      const pastNamesData = await pastNamesReq.json();
+
+      if (pastNamesData.data?.length) {
+        const pastNames: string[] = [];
+        for (const { name } of pastNamesData.data) pastNames.push(name);
+
+        embed.addFields({
+          name: "Past Usernames",
+          value: pastNames.join(", "),
+          inline: true,
+        });
       }
-      embed.addFields({
-        name: "Past Usernames",
-        value: pastNamesString,
-        inline: true,
-      });
     }
-    const thumbnailData = await axios(
-      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${verifyRegistryData.data.id}&size=720x720&format=Png&isCircular=false`
+    const thumbnailReq = await fetch(
+      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${registryData.data.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
-    if (thumbnailData) {
-      embed.setThumbnail(thumbnailData.data.data[0].imageUrl);
+    if (thumbnailReq?.ok) {
+      const thumbnailData = await thumbnailReq.json();
+      embed.setThumbnail(thumbnailData.data[0].imageUrl);
     }
-    const headshotData = await axios(
-      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${verifyRegistryData.data.id}&size=720x720&format=Png&isCircular=false`
+    const headshotReq = await fetch(
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${registryData.data.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
-    if (headshotData) {
+    if (headshotReq?.ok) {
+      const headshotData = await headshotReq.json();
+
       embed.setAuthor({
         name: robloxData.name,
-        iconURL: headshotData.data.data[0].imageUrl,
-        url: `https://www.roblox.com/users/${verifyRegistryData.data.id}/profile`,
+        iconURL: headshotData.data[0].imageUrl,
+        url: `https://www.roblox.com/users/${registryData.id}/profile`,
       });
     }
     if (robloxData.isBanned)

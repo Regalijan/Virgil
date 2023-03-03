@@ -1,13 +1,12 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import axios from "axios";
 
 export = {
   name: "cat",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const cat = await axios("https://nekos.life/api/v2/img/meow").catch((e) =>
-      console.error(e)
+    const catReq = await fetch("https://nekos.life/api/v2/img/meow").catch(
+      (e) => console.error(e)
     );
-    if (!cat) {
+    if (!catReq?.ok) {
       await i.reply({
         content:
           "The server decided no cat pic for you - please try again later.",
@@ -15,9 +14,11 @@ export = {
       return;
     }
 
+    const catData = await catReq.json();
+
     const embed = new EmbedBuilder()
       .setTitle("Meow :cat:")
-      .setImage(cat.data.url)
+      .setImage(catData.url)
       .setAuthor({
         name: i.user.tag,
         iconURL: i.user.displayAvatarURL(),

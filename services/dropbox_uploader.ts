@@ -1,4 +1,3 @@
-import axios from "axios";
 import Logger from "../logger";
 import mongo from "../mongo";
 
@@ -28,7 +27,7 @@ export default async function (
     }
 
     const refreshConf = {
-      data: `grant_type=refresh_token&refresh_token=${credentials}`,
+      body: `grant_type=refresh_token&refresh_token=${credentials}`,
       headers: {
         authorization: `Basic ${Buffer.from(
           process.env.DROPBOX_KEY + ":" + process.env.DROPBOX_SECRET
@@ -36,20 +35,22 @@ export default async function (
         "content-type": "application/x-www-form-urlencoded",
       },
       method: "POST",
-      validateStatus: () => true,
     };
 
-    let refreshReq = await axios(
+    let refreshReq = await fetch(
       "https://api.dropboxapi.com/oauth2/token",
       refreshConf
     );
 
     if (refreshReq.status === 429) {
       await new Promise((r) =>
-        setTimeout(r, 5 + parseInt(refreshReq.headers["Retry-After"] ?? "0"))
+        setTimeout(
+          r,
+          5 + parseInt(refreshReq.headers.get("Retry-After") ?? "0")
+        )
       );
 
-      refreshReq = await axios(
+      refreshReq = await fetch(
         "https://api.dropboxapi.com/oauth2/token",
         refreshConf
       );
@@ -57,20 +58,21 @@ export default async function (
       if (refreshReq.status !== 200) return true;
     }
 
+    const refreshData = await refreshReq.json();
+
     await credDB
       .replaceOne(
         { guild, service: "dropbox" },
         {
           guild,
           service: "dropbox",
-          ...refreshReq.data,
-          expires_at:
-            Math.floor(Date.now() / 1000) + refreshReq.data.expires_in,
+          ...refreshData,
+          expires_at: Math.floor(Date.now() / 1000) + refreshData.expires_in,
         }
       )
       .catch(Logger);
 
-    credentials = refreshReq.data;
+    credentials = refreshData;
   }
 
   const uploadConf = {
@@ -81,20 +83,19 @@ export default async function (
       "dropbox-api-arg": `{"autorename":true,"mute":true,"path":"/${name}"}`,
     },
     method: "POST",
-    validateStatus: () => true,
   };
 
-  let uploadReq = await axios(
+  let uploadReq = await fetch(
     "https://content.dropboxapi.com/2/files/upload",
     uploadConf
   );
 
   if (uploadReq.status === 429) {
     await new Promise((p) =>
-      setTimeout(p, 5 + parseInt(uploadReq.headers["Retry-After"] ?? "0"))
+      setTimeout(p, 5 + parseInt(uploadReq.headers.get("Retry-After") ?? "0"))
     );
 
-    uploadReq = await axios(
+    uploadReq = await fetch(
       "https://content.dropboxapi.com/2/files/upload",
       uploadConf
     );
