@@ -149,7 +149,7 @@ export = {
       await redis
         .set(`robloxgroups_${user}`, JSON.stringify(apiData.data), "EX", 900)
         .catch(console.error);
-      return apiData.data;
+      return apiData;
     } catch (e) {
       Logger(e);
       return [];
