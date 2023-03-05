@@ -438,9 +438,9 @@ export = {
       username: robloxUsername,
     }: { id: number; username: string } = await verifyApiData.json();
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
-    if (!userProfileData)
+    if (!userProfileData?.id)
       return {
-        content: `An error occured when verifying ${
+        content: `An error occurred when verifying ${
           self ? "you" : member.user.username
         }, please try again later.`,
         errored: true,
@@ -483,6 +483,16 @@ export = {
         .catch(console.error);
 
     const groupData = await this.getRobloxMemberGroups(robloxUserId);
+
+    if (!groupData)
+      return {
+        content: `An error occurred when verifying ${
+          self ? "you" : member.user.username
+        }, please try again later.`,
+        errored: true,
+        verified: false,
+      };
+
     const groupObjs: { [k: number]: number } = {};
     for (const group of groupData) groupObjs[group.group.id] = group.role.rank;
     const rolesToAdd: RoleResolvable[] = [];
