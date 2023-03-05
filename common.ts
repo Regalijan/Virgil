@@ -149,7 +149,7 @@ export = {
       await redis
         .set(`robloxgroups_${user}`, JSON.stringify(apiData.data), "EX", 900)
         .catch(console.error);
-      return apiData;
+      return apiData.data;
     } catch (e) {
       Logger(e);
       return [];
@@ -386,7 +386,7 @@ export = {
       const anyDoc: any = doc;
       binds.push(anyDoc);
     }
-    if (!verifyApiData) {
+    if (!verifyApiData?.ok) {
       const unvBinds: any = [];
       const unvRoles: RoleResolvable[] = [];
       const rolesToRemove: RoleResolvable[] = [];
@@ -436,7 +436,7 @@ export = {
     const {
       id: robloxUserId,
       username: robloxUsername,
-    }: { id: number; username: string } = (await verifyApiData.json()).id;
+    }: { id: number; username: string } = await verifyApiData.json();
     const userProfileData = await this.getRobloxUserProfile(robloxUserId);
     if (!userProfileData)
       return {
