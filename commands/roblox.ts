@@ -102,14 +102,14 @@ export = {
       }
     }
     const thumbnailReq = await fetch(
-      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${registryData.data.id}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
     if (thumbnailReq?.ok) {
       const thumbnailData = await thumbnailReq.json();
       embed.setThumbnail(thumbnailData.data[0].imageUrl);
     }
     const headshotReq = await fetch(
-      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${registryData.data.id}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`
     ).catch(console.error);
     if (headshotReq?.ok) {
       const headshotData = await headshotReq.json();
