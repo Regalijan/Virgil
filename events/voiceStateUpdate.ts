@@ -19,8 +19,8 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   const embed = new EmbedBuilder()
     .setColor(newState.member?.displayColor ?? 0)
     .setAuthor({
-      name: newState.member.user.tag,
-      iconURL: newState.member.user.displayAvatarURL(),
+      name: newState.member.user?.tag ?? "Unknown#0000",
+      iconURL: newState.member.user?.displayAvatarURL(),
     })
     .setFooter({ text: `ID: ${newState.member.id}` });
 
