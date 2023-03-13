@@ -189,7 +189,7 @@ export = {
   async getRobloxAssetOwnership(
     user: number,
     item: number,
-    itemType: "Asset" | "Badge" | "Bundle" | "GamePass" = "Badge"
+    itemType?: string
   ): Promise<boolean> {
     const cachedData = await redis
       .get(`${itemType}_${item}_${user}`)
@@ -525,49 +525,19 @@ export = {
           }
           break;
 
-        case "badge":
-          if (!bind.asset) continue;
-          const ownsBadge = await this.getRobloxAssetOwnership(
-            robloxUserId,
-            bind.asset
-          );
-          giveRole = ownsBadge;
-          break;
-
-        case "gamepass":
-          if (!bind.asset) continue;
-          const ownsGamePass = await this.getRobloxAssetOwnership(
-            robloxUserId,
-            bind.asset,
-            "GamePass"
-          );
-          giveRole = ownsGamePass;
-          break;
-
-        case "bundle":
-          if (!bind.asset) continue;
-          const ownsBundle = await this.getRobloxAssetOwnership(
-            robloxUserId,
-            bind.asset,
-            "Bundle"
-          );
-          giveRole = ownsBundle;
-          break;
-
-        case "asset":
-          if (!bind.asset) continue;
-          const ownsAsset = await this.getRobloxAssetOwnership(
-            robloxUserId,
-            bind.asset,
-            "Asset"
-          );
-          giveRole = ownsAsset;
-          break;
-
         case "friend":
           if (!bind.friend) continue;
           const friends = await this.getRobloxUserFriends(robloxUserId);
           giveRole = friends.includes(bind.friend);
+          break;
+
+        default:
+          if (!bind.asset) continue;
+          giveRole = await this.getRobloxAssetOwnership(
+            robloxUserId,
+            bind.asset,
+            bind.type
+          );
           break;
       }
       if (giveRole && !member.roles.cache.has(bindRole.id))
