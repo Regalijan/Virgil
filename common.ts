@@ -503,9 +503,7 @@ export = {
         .catch(console.error);
       if (
         !bindRole ||
-        bindRole.comparePositionTo(member.guild.members.me.roles.highest) >=
-          0 ||
-        member.roles.cache.has(bindRole.id)
+        bindRole.comparePositionTo(member.guild.members.me.roles.highest) >= 0
       )
         continue;
       let giveRole = false;
