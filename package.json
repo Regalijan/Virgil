@@ -24,7 +24,7 @@
     "@sentry/node": "^7.50.0",
     "amqplib": "^0.10.3",
     "bufferutil": "^4.0.7",
-    "discord.js": "^14.9.0",
+    "discord.js": "^14.10.2",
     "dotenv": "^16.0.3",
     "erlpack": "^0.1.4",
     "ioredis": "^5.3.2",
