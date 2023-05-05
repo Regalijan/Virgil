@@ -215,10 +215,11 @@ module.exports = async function (i: BaseInteraction) {
     if (!settings?.commandLogChannelWebhook) return;
     const embed = new EmbedBuilder({
       author: {
-        name: i.user.tag,
+        name: i.user.username,
         iconURL: i.user.displayAvatarURL(),
       },
       description: `Ran the \`${command.name}\` command.`,
+      footer: { text: `ID: ${i.id}` },
     });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     await SendLog(

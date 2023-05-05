@@ -16,7 +16,7 @@ module.exports = async function (
   if (!settings) return;
   const embed = new EmbedBuilder();
   embed.setAuthor({
-    name: newMember.user.tag,
+    name: newMember.user.username,
     iconURL: newMember.user.displayAvatarURL(),
   });
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {

@@ -34,7 +34,7 @@ module.exports = async function (
   if (!settings?.editLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: `${oldMessage.author.tag} (${oldMessage.author.id})`,
+      name: `${oldMessage.author.username} (${oldMessage.author.id})`,
       iconURL: oldMessage.author.displayAvatarURL(),
     })
     .setDescription(

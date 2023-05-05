@@ -49,7 +49,7 @@ module.exports = async function (
   ).format(Date.now())}`;
 
   messages.each(function (msg) {
-    uploadBody += `\n\n${msg.author?.tag ?? "Unknown#0000"} (${
+    uploadBody += `\n\n${msg.author?.username ?? "[Unknown]"} (${
       msg.author?.id ?? "Unknown"
     }): ${msg.content}`;
   });

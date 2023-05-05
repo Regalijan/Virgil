@@ -17,7 +17,7 @@ module.exports = async function (member: GuildMember) {
     })
     .setColor(16711680)
     .setThumbnail(member.user.displayAvatarURL())
-    .setDescription(`<@${member.id}> ${member.user.tag}`)
+    .setDescription(`<@${member.id}> ${member.user.username}`)
     .setFooter({ text: `ID: ${member.id}` });
   await SendLog(
     settings.memberLeaveLogChannelWebhook,

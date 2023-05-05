@@ -17,7 +17,7 @@ module.exports = async function (member: GuildMember) {
     })
     .setColor(3756250)
     .setThumbnail(member.displayAvatarURL())
-    .setDescription(`<@${member.id}> ${member.user.tag}`)
+    .setDescription(`<@${member.id}> ${member.user.username}`)
     .addFields({
       name: "Registration Date",
       value: new Intl.DateTimeFormat(member.guild.preferredLocale, {

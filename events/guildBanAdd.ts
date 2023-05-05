@@ -17,7 +17,7 @@ module.exports = async function (ban: GuildBan) {
       name: ban.user.tag,
       iconURL: ban.user.displayAvatarURL(),
     })
-    .setDescription(`<@${ban.user.id}> ${ban.user.tag}`)
+    .setDescription(`<@${ban.user.id}> ${ban.user.username}`)
     .addFields({ name: "Reason", value: ban.reason ?? "No reason provided" });
 
   await SendLog(

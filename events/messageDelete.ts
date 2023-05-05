@@ -28,7 +28,7 @@ module.exports = async function (message: Message | PartialMessage) {
   if (!settings?.deleteLogChannelWebhook) return;
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: `${message.author.tag} (${message.author.id})`,
+      name: `${message.author.username} (${message.author.id})`,
       iconURL: message.author.displayAvatarURL(),
     })
     .setDescription(
