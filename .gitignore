@@ -110,3 +110,6 @@ mongo/
 # IDE data
 .idea/
 .vscode/
+
+# Secret files
+secrets/*
