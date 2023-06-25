@@ -1,3 +1,5 @@
+mkdir secrets
+
 FOR %%A IN (DISCORDTOKEN MFA_API_TOKEN MFA_CLIENT_SECRET MONGOURL REDIS REGISTRY_API_KEY) do (
-  copy NUL %%A
+  copy NUL secrets\%%A
 )
