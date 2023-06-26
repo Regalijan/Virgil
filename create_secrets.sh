@@ -1,6 +1,0 @@
-mkdir secrets
-
-for f in DISCORDTOKEN MFA_API_TOKEN MFA_CLIENT_SECRET MONGOURL REDIS REGISTRY_API_KEY
-do
-  touch secrets/$F
-done
