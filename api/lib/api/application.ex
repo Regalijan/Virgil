@@ -1,15 +1,9 @@
 defmodule Api.Application do
   use Application
 
-  Dotenv.load(Path.join(File.cwd!(), "../.env"))
-
-  @spec get_child_opts :: [{:ip, {:local, <<_::128>>}} | {:port, integer}, ...]
-  def get_child_opts() do
-    if elem(:os.type(), 1) === :linux &&
-         elem(
-           System.cmd("grep", ["docker-init", "/proc/1/sched"]),
-           0
-         ) !== "" do
+  @spec get_child_opts(boolean) :: [{:ip, {:local, <<_::128>>}} | {:port, integer}, ...]
+  def get_child_opts(is_docker) do
+    if is_docker do
       File.rm("/socket/api.sock")
       [port: 0, ip: {:local, "/socket/api.sock"}]
     else
@@ -20,6 +14,14 @@ defmodule Api.Application do
   @impl true
   @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
+    is_docker =
+      elem(:os.type(), 1) === :linux &&
+        elem(System.cmd("grep", ["docker-init", "/proc/1/sched"]), 0) !== ""
+
+    if !is_docker do
+      Dotenv.load(Path.join(File.cwd!(), "../.env"))
+    end
+
     if System.get_env("DISABLE_SERVER") !== nil do
       System.stop(0)
     end
@@ -37,7 +39,7 @@ defmodule Api.Application do
       },
       {
         Plug.Cowboy,
-        scheme: :http, plug: APIRouter, options: get_child_opts()
+        scheme: :http, plug: APIRouter, options: get_child_opts(is_docker)
       },
       {
         Finch,
