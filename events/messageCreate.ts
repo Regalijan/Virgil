@@ -106,7 +106,7 @@ module.exports = async function (message: Message) {
         `https://api.phisherman.gg/v1/domains/${link}`,
         {
           headers: {
-            "user-agent": `Virgil Bot (+https://github.com/Wolftallemo/Virgil / ${
+            "user-agent": `Virgil Bot (+https://github.com/Regalijan/Virgil / ${
               message.client.application?.owner instanceof Team
                 ? message.client.application.owner.members.first()?.id
                 : message.client.application?.owner?.id

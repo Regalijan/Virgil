@@ -6,7 +6,7 @@
 
 1. Install [Docker Compose](https://docs.docker.com/compose/install/)
 2. Create a `.env` file with the variables in the table at the bottom
-3. Clone repo: `git clone https://github.com/Wolftallemo/Virgil`
+3. Clone repo: `git clone https://github.com/Regalijan/Virgil`
 4. Checkout to the `tests-passed` branch: `git checkout tests-passed`
 5. Run `docker-compose up -d` to start the bot.
 

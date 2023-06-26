@@ -7,7 +7,7 @@ Thank you for choosing Virgil! In order to use this bot, you must agree to the f
 - We/Us: The service operator
 - You: The person reading this document
 - Discord: The chat application service provided by Discord, Inc.
-- License: The open-source license of this service which can be located at https://github.com/Wolftallemo/Virgil/blob/main/LICENSE
+- License: The open-source license of this service which can be located at https://github.com/Regalijan/Virgil/blob/main/LICENSE
 - Service: The bot application offered by us
 
 ## II. Conditions of Use
@@ -53,7 +53,7 @@ Neither we nor our suppliers will be liable to you for breach-of-contract damage
 
 ## IX. Feedback
 
-We welcome your suggestions and feedback. To leave feedback, please open an [issue](https://github.com/Wolftallemo/Virgil/issues). You agree that we will be free to act on feedback and suggestions you provide, and that we won’t have to notify you that your feedback was used, get your permission to use it, or pay you. You agree not to submit feedback or suggestions that you believe might be confidential or proprietary, to you or others.
+We welcome your suggestions and feedback. To leave feedback, please open an [issue](https://github.com/Regalijan/Virgil/issues). You agree that we will be free to act on feedback and suggestions you provide, and that we won’t have to notify you that your feedback was used, get your permission to use it, or pay you. You agree not to submit feedback or suggestions that you believe might be confidential or proprietary, to you or others.
 
 ## X. Disputes
 

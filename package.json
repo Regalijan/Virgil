@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Wolftallemo/Virgil.git"
+    "url": "git+https://github.com/Regalijan/Virgil.git"
   },
-  "author": "Wolftallemo",
+  "author": "Regalijan",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/Wolftallemo/Virgil/issues"
+    "url": "https://github.com/Regalijan/Virgil/issues"
   },
-  "homepage": "https://github.com/Wolftallemo/Virgil#readme",
+  "homepage": "https://github.com/Regalijan/Virgil#readme",
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.16.0",
