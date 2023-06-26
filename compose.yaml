@@ -26,8 +26,6 @@ services:
     links:
       - mongo
       - rabbit
-    secrets:
-      - MONGOURL
     volumes:
       - "./api/socket:/socket"
 
@@ -43,29 +41,3 @@ services:
       - rabbit
       - redis
     restart: unless-stopped
-    secrets:
-      - DISCORDTOKEN
-      - MFA_API_TOKEN
-      - MFA_CLIENT_SECRET
-      - MONGOURL
-      - REDIS
-      - REGISTRY_API_KEY
-
-secrets:
-  DISCORDTOKEN:
-    file: secrets/DISCORDTOKEN
-
-  MFA_API_TOKEN:
-    file: secrets/MFA_API_TOKEN
-
-  MFA_CLIENT_SECRET:
-    file: secrets/MFA_CLIENT_SECRET
-
-  MONGOURL:
-    file: secrets/MONGOURL
-
-  REDIS:
-    file: secrets/REDIS
-
-  REGISTRY_API_KEY:
-    file: secrets/REGISTRY_API_KEY
