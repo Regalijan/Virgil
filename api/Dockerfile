@@ -1,5 +1,4 @@
 FROM elixir
-COPY ../.env .
 WORKDIR /app
 COPY . .
 RUN mkdir /socket
