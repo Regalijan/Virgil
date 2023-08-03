@@ -53,7 +53,7 @@ export = {
       await i.reply({ content: "Too slow!", ephemeral: true });
       return;
     }
-    // @ts-expect-error Someone broke the typings here
+
     const serverId = submission.components[0].components[0].value;
     if (serverId && isNaN(parseInt(serverId))) {
       await i.reply({ content: "Invalid server ID", ephemeral: true });
