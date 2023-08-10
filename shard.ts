@@ -2,6 +2,7 @@ import { config as dotenv } from "dotenv";
 import { readdirSync } from "fs";
 import { join } from "path";
 import {
+  ActivityType,
   Client,
   GatewayIntentBits,
   PermissionsBitField,
@@ -9,6 +10,7 @@ import {
 } from "discord.js";
 import Logger from "./logger";
 import db from "./mongo";
+import custom_statuses from "./custom_statuses.json";
 
 db.connect().then(() => {});
 dotenv();
@@ -34,11 +36,12 @@ function loadEvents() {
       console.log(m);
     });
   for (const file of readdirSync(join(__dirname, "events")).filter((f) =>
-    f.endsWith(".js")
+    f.endsWith(".js"),
   )) {
     const requiredEvent = require(`./events/${file}`);
     events.set(file.replace(".js", ""), requiredEvent);
   }
+
   events.forEach((_value, key) => {
     const event = events.get(key);
     bot.on(key, async (...args: any[]) => {
@@ -69,6 +72,17 @@ process.on("disableDebug", async function () {
 const mongo = db.db("bot");
 
 setInterval(async function (): Promise<void> {
+  const selectedStatus =
+    custom_statuses[Math.round(Math.random() * (custom_statuses.length - 1))];
+
+  bot.user?.setActivity(selectedStatus, {
+    shardId: bot.shard?.ids[0],
+    // @ts-expect-error For now discord.js does not support this as custom statuses for bots were added very recently
+    type: ActivityType.Custom,
+  });
+}, 120000);
+
+setInterval(async function (): Promise<void> {
   try {
     const bans = await mongo
       .collection("bans")
@@ -77,14 +91,14 @@ setInterval(async function (): Promise<void> {
     for (const ban of bans) {
       const shard = ShardClientUtil.shardIdForGuildId(
         ban.server,
-        bot.shard?.count ?? 1
+        bot.shard?.count ?? 1,
       );
       await bot.shard?.broadcastEval(
         async (c) => {
           const server = await c.guilds.fetch(ban.server).catch(() => {});
           if (
             !server?.members?.me?.permissions?.has(
-              PermissionsBitField.Flags.BanMembers
+              PermissionsBitField.Flags.BanMembers,
             )
           )
             return;
@@ -99,7 +113,7 @@ setInterval(async function (): Promise<void> {
             console.error(e);
           }
         },
-        { shard: shard }
+        { shard: shard },
       );
     }
   } catch (e) {
@@ -111,7 +125,7 @@ setInterval(async function (): Promise<void> {
       .collection("reports")
       .updateMany(
         { created: { $lte: Date.now() - 2592000000 } },
-        { $set: { "message.content": "[ Content Deleted ]" } }
+        { $set: { "message.content": "[ Content Deleted ]" } },
       );
   } catch (e) {
     Logger(e);
