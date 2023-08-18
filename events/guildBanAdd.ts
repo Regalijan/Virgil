@@ -14,7 +14,7 @@ module.exports = async function (ban: GuildBan) {
   const embed = new EmbedBuilder()
     .setTitle("Member Banned")
     .setAuthor({
-      name: ban.user.tag,
+      name: ban.user.username,
       iconURL: ban.user.displayAvatarURL(),
     })
     .setDescription(`<@${ban.user.id}> ${ban.user.username}`)
