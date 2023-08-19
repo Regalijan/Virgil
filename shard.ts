@@ -77,7 +77,7 @@ setInterval(async function (): Promise<void> {
 
   bot.user?.setActivity(selectedStatus, {
     shardId: bot.shard?.ids[0],
-    // @ts-expect-error For now discord.js does not support this as custom statuses for bots were added very recently
+    state: selectedStatus,
     type: ActivityType.Custom,
   });
 }, 120000);
