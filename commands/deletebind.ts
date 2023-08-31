@@ -11,8 +11,8 @@ export = {
       server: i.guildId,
     });
     await i.reply({
-      content: bind.value ? "Bind deleted!" : "Bind does not exist!",
-      ephemeral: !bind.value,
+      content: bind?.value ? "Bind deleted!" : "Bind does not exist!",
+      ephemeral: !bind?.value,
     });
   },
 };

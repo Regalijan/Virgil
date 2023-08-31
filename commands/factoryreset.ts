@@ -19,8 +19,8 @@ export = {
       ephemeral: true,
     });
     const logChannel = await i.guild?.channels
-      .fetch(serversettings.value?.commandLogChannel)
-      .catch((e) => console.error(e));
+      .fetch(serversettings?.value?.commandLogChannel)
+      .catch(() => {});
     const me = await i.guild?.members.me?.fetch();
     if (
       logChannel &&
@@ -34,7 +34,7 @@ export = {
           name: i.user.tag,
           iconURL: i.user.displayAvatarURL(),
         })
-        .setColor(serversettings.value?.commandLogChannel ?? 3756250)
+        .setColor(serversettings?.value?.commandLogChannel ?? 3756250)
         .setDescription("Requested factory reset.");
 
       await logChannel.send({ embeds: [logEmbed] });
