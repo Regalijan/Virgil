@@ -29,11 +29,11 @@ defmodule Api.MixProject do
 
   defp deps do
     [
-      {:amqp, "~> 3.2"},
+      {:amqp, "~> 3.3"},
       {:dotenv, "~> 3.1.0"},
-      {:finch, "~> 0.13.0"},
+      {:finch, "~> 0.16.0"},
       {:jason, "~> 1.4"},
-      {:mongodb_driver, "~> 1.0"},
+      {:mongodb_driver, "~> 1.2"},
       {:plug_cowboy, "~> 2.6"},
       {:redix, "~> 1.2"}
     ]
