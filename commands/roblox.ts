@@ -24,7 +24,7 @@ export = {
         headers: {
           authorization: `Bearer ${process.env.REGISTRY_API_KEY}`,
         },
-      }
+      },
     ).catch((e) => {
       console.error(e);
       Sentry.captureException(e);
@@ -69,9 +69,12 @@ export = {
       const lastN = bio.lastIndexOf("\n");
       bio = bio.slice(0, lastN) + bio.slice(lastN + 1);
     }
+
     embed.setDescription(bio || "\u200B");
+    await i.deferReply();
+
     const pastNamesReq = await fetch(
-      `https://users.roblox.com/v1/users/${registryData.id}/username-history?limit=25&sortOrder=Desc`
+      `https://users.roblox.com/v1/users/${registryData.id}/username-history?limit=25&sortOrder=Desc`,
     ).catch((e) => console.error(e));
     embed.addFields({
       name: "Join Date",
@@ -102,14 +105,14 @@ export = {
       }
     }
     const thumbnailReq = await fetch(
-      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`,
     ).catch(console.error);
     if (thumbnailReq?.ok) {
       const thumbnailData = await thumbnailReq.json();
       embed.setThumbnail(thumbnailData.data[0].imageUrl);
     }
     const headshotReq = await fetch(
-      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${registryData.id}&size=720x720&format=Png&isCircular=false`,
     ).catch(console.error);
     if (headshotReq?.ok) {
       const headshotData = await headshotReq.json();
@@ -137,6 +140,6 @@ export = {
       i.client.application.owner.id === i.user.id
     )
       embed.addFields({ name: "User Tags", value: "Bot Owner" });
-    await i.reply({ embeds: [embed] });
+    await i.followUp({ embeds: [embed] });
   },
 };
