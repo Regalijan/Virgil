@@ -34,7 +34,7 @@
     "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.2",
+    "@types/amqplib": "^0.10.3",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
