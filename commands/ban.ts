@@ -20,7 +20,7 @@ export = {
     if (
       !target?.bannable ||
       target.id === i.user.id ||
-      !i.guild.members.me ||
+      !i.guild?.members.me ||
       target.roles.highest.comparePositionTo(i.guild.members.me.roles.highest) <= 0
     ) {
       await i.reply("This user cannot be banned.");
