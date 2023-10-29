@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "prettier -c .",
     "format": "prettier -w ."
   },
   "repository": {
