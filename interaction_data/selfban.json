@@ -1,0 +1,5 @@
+{
+  "name": "selfban",
+  "description": "Has a 1 in 10000 chance to ban yourself. Use at your own risk.",
+  "dm_permission": false
+}
