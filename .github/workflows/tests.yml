@@ -52,6 +52,7 @@ jobs:
           mix compile
 
   Push:
+    if: github.event == 'push'
     needs: [Bot, API]
     runs-on: ubuntu-latest
 
