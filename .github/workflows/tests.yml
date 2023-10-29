@@ -52,6 +52,7 @@ jobs:
           mix compile
 
   Push:
+    if: needs.pr-check.outputs.number != 'null'
     needs: [Bot, API]
     runs-on: ubuntu-latest
 
