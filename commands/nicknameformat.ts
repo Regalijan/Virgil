@@ -8,7 +8,7 @@ export = {
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     await settingsDB.findOneAndUpdate(
       { server: i.guildId },
-      { $set: { nicknameformat: i.options.getString("format", true) } }
+      { $set: { nicknameformat: i.options.getString("format", true) } },
     );
     await i.reply({ content: "Nickname format updated!", ephemeral: true });
   },

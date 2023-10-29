@@ -20,13 +20,13 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
     .catch(Logger);
   if (!settings?.channelCreateLogChannelWebhook) return;
   const embed = new EmbedBuilder().setDescription(
-    `${channel} has been created.`
+    `${channel} has been created.`,
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);
   await SendLog(
     settings.channelCreateLogChannelWebhook,
     embed,
     channel.guild,
-    "channelCreateLogChannelWebhook"
+    "channelCreateLogChannelWebhook",
   );
 };

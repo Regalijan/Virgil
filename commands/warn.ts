@@ -51,7 +51,7 @@ export = {
       .addFields(
         { name: "Member", value: `<@${user.id}> (${user.id})` },
         { name: "Moderator", value: `<@${i.user.id}> (${i.user.id})` },
-        { name: "Reason", value: reason }
+        { name: "Reason", value: reason },
       );
     embed.setColor(member?.displayColor ?? 0);
     await modlogStore.insertOne(logObj);

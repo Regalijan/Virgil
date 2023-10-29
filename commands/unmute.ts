@@ -29,11 +29,11 @@ export = {
 
     if (!(targetMember instanceof GuildMember))
       targetMember = await i.guild.members.fetch(
-        i.options.getUser("user", true).id
+        i.options.getUser("user", true).id,
       );
     await targetMember.timeout(
       null,
-      `Timeout removed by ${i.user.tag} (${i.user.id})`
+      `Timeout removed by ${i.user.tag} (${i.user.id})`,
     );
   },
 };

@@ -11,8 +11,8 @@ export = {
     const button = new ButtonBuilder()
       .setURL(
         `https://rover.link/validate/${Buffer.from(
-          encodeURIComponent(`${i.user.id};${i.user.tag}`)
-        ).toString("base64")}`
+          encodeURIComponent(`${i.user.id};${i.user.tag}`),
+        ).toString("base64")}`,
       )
       .setEmoji("ℹ")
       .setLabel("Open Troubleshooting Page")

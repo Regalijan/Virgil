@@ -23,6 +23,6 @@ module.exports = async function (member: GuildMember) {
     settings.memberLeaveLogChannelWebhook,
     embed,
     member.guild,
-    "memberLeaveLogChannelWebhook"
+    "memberLeaveLogChannelWebhook",
   );
 };

@@ -11,7 +11,7 @@ export = {
       case true:
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $set: { lockNicknames: true } }
+          { $set: { lockNicknames: true } },
         );
         await i.reply({
           content: "Nicknames will now be enforced on this server.",
@@ -21,7 +21,7 @@ export = {
       case false:
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $unset: { lockNicknames: null } }
+          { $unset: { lockNicknames: null } },
         );
         await i.reply({
           content: "Nicknames will no longer be enforced on this server.",

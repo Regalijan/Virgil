@@ -18,7 +18,7 @@ export = {
     const { content, verified } = await Common.verify(
       member,
       member.id === i.user.id,
-      i
+      i,
     );
 
     verified ? await i.followUp({ content }) : await i.reply({ content });

@@ -14,7 +14,7 @@ export = {
     }
 
     const targetGuildMember = await i.guild?.members.fetch(
-      i.options.getUser("user", true).id
+      i.options.getUser("user", true).id,
     );
     if (targetGuildMember?.communicationDisabledUntil) {
       await i.reply({
@@ -48,7 +48,7 @@ export = {
     const reason = i.options.getString("reason", false);
     await targetGuildMember.timeout(
       timeoutLength,
-      reason || "No reason given."
+      reason || "No reason given.",
     );
     await i.reply({
       content: targetGuildMember.user.username + " has been muted.",

@@ -84,7 +84,7 @@ export = {
           value: i.client.shard
             ? `${i.client.shard.ids[0]} (${i.client.options.shardCount} total)`
             : "N/A",
-        }
+        },
       );
 
     await i.reply({ embeds: [embed] });

@@ -18,7 +18,7 @@ export = {
       case "set":
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $set: { banMessage: i.options.getString("message", true) } }
+          { $set: { banMessage: i.options.getString("message", true) } },
         );
         await i.reply({ content: "Ban message set!", ephemeral: true });
         break;
@@ -26,7 +26,7 @@ export = {
       case "clear":
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $unset: { banMessage: "" } }
+          { $unset: { banMessage: "" } },
         );
         await i.reply({
           content: "Ban message cleared!",

@@ -4,7 +4,7 @@ export = {
   name: "dog",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const dogReq = await fetch("https://dog.ceo/api/breeds/image/random").catch(
-      () => {}
+      () => {},
     );
 
     if (!dogReq?.ok) {

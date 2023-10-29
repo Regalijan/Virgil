@@ -4,7 +4,7 @@ export = {
   name: "cat",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const catReq = await fetch("https://nekos.life/api/v2/img/meow").catch(
-      (e) => console.error(e)
+      (e) => console.error(e),
     );
     if (!catReq?.ok) {
       await i.reply({

@@ -7,7 +7,7 @@ const mongo = db.db("bot");
 
 module.exports = async function (
   oldThread: ThreadChannel,
-  newThread: ThreadChannel
+  newThread: ThreadChannel,
 ) {
   const ignoreData = await mongo
     .collection("ignored")
@@ -55,6 +55,6 @@ module.exports = async function (
     settings.threadUpdateLogChannelWebhook,
     embed,
     newThread.guild,
-    "threadUpdateLogChannelWebhook"
+    "threadUpdateLogChannelWebhook",
   );
 };

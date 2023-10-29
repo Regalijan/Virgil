@@ -78,7 +78,7 @@ export = {
           value: `${message.author.tag} (${message.author.id})`,
         },
         { name: "Message ID", value: message.id },
-        { name: "Report ID", value: reportId }
+        { name: "Report ID", value: reportId },
       );
 
     const actionRow1 = new ActionRowBuilder().addComponents(
@@ -111,7 +111,7 @@ export = {
         emoji: "⚠",
         label: "Warn",
         style: ButtonStyle.Primary,
-      })
+      }),
     );
 
     const ignActionRow = new ActionRowBuilder().addComponents(
@@ -120,7 +120,7 @@ export = {
         emoji: "❎",
         label: "Ignore",
         style: ButtonStyle.Secondary,
-      })
+      }),
     );
 
     await SendLog(
@@ -128,7 +128,7 @@ export = {
       embed,
       i.guild,
       "messageReportChannelWebhook",
-      [actionRow1, ignActionRow]
+      [actionRow1, ignActionRow],
     );
 
     await reportStore.insertOne({

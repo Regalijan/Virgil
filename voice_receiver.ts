@@ -43,7 +43,7 @@ export default class VoicePacketReceiver {
         try {
           returnedBuf = execSync(
             "ffmpeg -f opus -i - -filter:a volumedetect -f null /dev/null",
-            { input: data }
+            { input: data },
           );
           console.log("LENGTH:", returnedBuf?.length ?? 0);
           if (!returnedBuf) {

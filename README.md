@@ -11,6 +11,7 @@
 5. Run `docker-compose up -d` to start the bot.
 
 ## Self-hosting (development)
+
 Use WSL on Windows<br>
 Node 17.5.0 or later is required
 

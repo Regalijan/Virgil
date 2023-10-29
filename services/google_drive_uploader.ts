@@ -6,7 +6,7 @@ const credDB = mongo.db("bot").collection("credentials");
 export default async function (
   guild: string,
   content: Buffer,
-  name: string
+  name: string,
 ): Promise<boolean | [boolean, { [k: string]: any }]> {
   let credentials = await credDB
     .findOne({ guild, service: "google" })
@@ -36,7 +36,7 @@ export default async function (
 
     const refreshReq = await fetch(
       "https://oauth2.googleapis.com/token",
-      refreshConf
+      refreshConf,
     );
 
     if (!refreshReq.ok)
@@ -58,7 +58,7 @@ export default async function (
           service: "google",
           ...refreshData,
           expires_at: Math.floor(Date.now() / 1000) + refreshData.expires_in,
-        }
+        },
       )
       .catch(Logger);
 
@@ -82,7 +82,7 @@ export default async function (
         "content-type": `multipart/related; boundary=le_boundary`,
       },
       method: "POST",
-    }
+    },
   );
 
   if (uploadReq.status !== 200) return [false, await uploadReq.json()];

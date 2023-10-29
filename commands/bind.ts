@@ -35,7 +35,7 @@ export = {
 
         const groupRequest = await fetch(
           "https://groups.roblox.com/v2/groups?groupIds=" +
-            i.options.getInteger("group_id", true)
+            i.options.getInteger("group_id", true),
         ).catch((e) => console.error(e));
         if (!groupRequest) {
           await i.reply({
@@ -76,8 +76,8 @@ export = {
 
         const badgeVerify = await fetch(
           `https://badges.roblox.com/v1/badges/${i.options.getInteger(
-            "badge_id"
-          )}`
+            "badge_id",
+          )}`,
         ).catch(() => {});
         if (!badgeVerify?.ok) {
           await i.reply({
@@ -106,8 +106,8 @@ export = {
         const bundleVerify = await fetch(
           `https://catalog.roblox.com/v1/bundles/${i.options.getInteger(
             "bundle_id",
-            true
-          )}/details`
+            true,
+          )}/details`,
         ).catch(() => {});
         if (!bundleVerify) {
           await i.reply({
@@ -147,8 +147,8 @@ export = {
         const gamePassVerify = await fetch(
           `https://apis.roblox.com/game-passes/v1/game-passes/${i.options.getInteger(
             "gamepass_id",
-            true
-          )}/product-info`
+            true,
+          )}/product-info`,
         ).catch(() => {});
 
         if (!gamePassVerify) {
@@ -188,8 +188,8 @@ export = {
         const assetVerify = await fetch(
           `https://economy.roblox.com/v2/assets/${i.options.getInteger(
             "asset_id",
-            true
-          )}/details`
+            true,
+          )}/details`,
         ).catch(() => {});
 
         if (!assetVerify) {
@@ -248,7 +248,7 @@ export = {
               "content-type": "application/json",
             },
             method: "POST",
-          }
+          },
         ).catch(() => {});
 
         if (!userVerifyReq) {

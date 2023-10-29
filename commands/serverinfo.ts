@@ -85,7 +85,7 @@ export = {
         { name: "Threads", value: `${threads}`, inline: true },
         { name: "News Channels", value: `${newsChannels}`, inline: true },
         { name: "Stage Channels", value: `${stageChannels}`, inline: true },
-        { name: "Voice Channels", value: `${voiceChannels}`, inline: true }
+        { name: "Voice Channels", value: `${voiceChannels}`, inline: true },
       );
     const splashUrl = i.guild.splashURL({ size: 4096 });
     const iconUrl = i.guild.iconURL();

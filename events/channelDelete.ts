@@ -10,7 +10,7 @@ import SendLog from "../send_log";
 const mongo = db.db("bot");
 
 module.exports = async function (
-  channel: DMChannel | NonThreadGuildBasedChannel
+  channel: DMChannel | NonThreadGuildBasedChannel,
 ) {
   if (channel instanceof DMChannel) return;
   const ignoreData = await mongo
@@ -27,13 +27,13 @@ module.exports = async function (
     .catch(Logger);
   if (!settings?.channelDeleteLogChannelWebhook) return;
   const embed = new EmbedBuilder().setDescription(
-    `${channel} has been deleted.`
+    `${channel} has been deleted.`,
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);
   await SendLog(
     settings.channelDeleteLogChannelWebhook,
     embed,
     channel.guild,
-    "channelDeleteLogChannelWebhook"
+    "channelDeleteLogChannelWebhook",
   );
 };

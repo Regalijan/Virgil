@@ -14,7 +14,7 @@ export = {
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!(await Common.isDeveloper(i.user))) {
       const embed = new EmbedBuilder().setImage(
-        "https://thumbsnap.com/sc/3N5uU9CP.png"
+        "https://thumbsnap.com/sc/3N5uU9CP.png",
       );
       const member = await i.guild?.members
         .fetch(i.user.id)
@@ -34,7 +34,7 @@ export = {
               maxLength: 6,
               required: false,
               style: TextInputStyle.Short,
-            })
+            }),
           ),
         ],
         customId: "st_server_component",
@@ -67,8 +67,8 @@ export = {
         execSync(
           `speedtest --accept-license -f json${
             serverId ? ` -s ${serverId}` : ""
-          }`
-        ).toString()
+          }`,
+        ).toString(),
       ).result.url;
     } catch (e) {
       success = false;

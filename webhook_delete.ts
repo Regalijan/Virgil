@@ -3,7 +3,7 @@ import { Guild } from "discord.js";
 export default async function (
   webhookUrl: string,
   messageId: string,
-  guild: Guild
+  guild: Guild,
 ): Promise<void> {
   const webhookParts = webhookUrl
     .replace(/https:\/\/discord.com\/api\/?v?\d{0,2}?\/webhooks\//, "")

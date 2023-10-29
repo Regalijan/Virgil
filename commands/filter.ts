@@ -86,7 +86,7 @@ export = {
         embeds[0].setDescription(
           filterList.length
             ? "List of word filters for this server"
-            : "No word filters set for this server"
+            : "No word filters set for this server",
         );
         if (i.member instanceof GuildMember)
           embeds[0].setColor(i.member.displayColor);

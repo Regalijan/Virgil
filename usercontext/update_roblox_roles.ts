@@ -25,7 +25,7 @@ export = {
     const { content, verified } = await Common.verify(
       member,
       i.targetId === i.user.id,
-      i
+      i,
     );
 
     verified

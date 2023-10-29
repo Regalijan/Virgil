@@ -4,7 +4,7 @@ export = {
   name: "8ball",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const eightballResponse = await fetch(
-      "https://nekos.life/api/v2/8ball"
+      "https://nekos.life/api/v2/8ball",
     ).catch((e) => console.error(e));
     if (!eightballResponse || !eightballResponse.ok) {
       await i.reply({

@@ -13,7 +13,7 @@ export default async function (
   embed: EmbedBuilder,
   guild: Guild,
   settingName: string,
-  actionRows?: ActionRowBuilder[]
+  actionRows?: ActionRowBuilder[],
 ): Promise<void> {
   const webhookIdArr = url.match(/\d{17,19}/);
   if (!webhookIdArr) return;
@@ -22,8 +22,8 @@ export default async function (
       webhookIdArr[0],
       url.replace(
         /https:\/\/discord\.com\/api\/?v?\d{0,2}?\/webhooks\/\d{16,19}\//,
-        ""
-      )
+        "",
+      ),
     )
     .catch((e: DiscordAPIError) => e);
   if (webhookData instanceof DiscordAPIError) {

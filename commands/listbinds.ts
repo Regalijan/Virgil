@@ -9,13 +9,13 @@ export = {
   async exec(i: CommandInteraction): Promise<void> {
     if (!i.guildId)
       throw Error(
-        "<CommandInteraction>.guildId was null despite command being run in a guild."
+        "<CommandInteraction>.guildId was null despite command being run in a guild.",
       );
     const bindsList = await binds.find({ server: i.guildId }).toArray();
     const embed = new EmbedBuilder().setDescription(
       bindsList.length
         ? "List of binds for this server"
-        : "No binds are set for this server"
+        : "No binds are set for this server",
     );
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     for (const bind of bindsList) {

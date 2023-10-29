@@ -4,7 +4,7 @@ export = {
   name: "fact",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const factReq = await fetch("https://nekos.life/api/v2/fact").catch((e) =>
-      console.error(e)
+      console.error(e),
     );
     if (!factReq?.ok) {
       await i.reply({

@@ -11,7 +11,7 @@ const mongo = db.db("bot");
 
 module.exports = async function (
   oldChannel: DMChannel | NonThreadGuildBasedChannel,
-  newChannel: DMChannel | NonThreadGuildBasedChannel
+  newChannel: DMChannel | NonThreadGuildBasedChannel,
 ) {
   if (newChannel instanceof DMChannel) return;
   const ignoreData = await mongo
@@ -28,13 +28,13 @@ module.exports = async function (
     .catch(console.error);
   if (!settings?.channelUpdateLogChannelWebhook) return;
   const embed = new EmbedBuilder().setDescription(
-    `${newChannel} has been updated. See audit logs for details.`
+    `${newChannel} has been updated. See audit logs for details.`,
   );
   if (settings.embedColor) embed.setColor(settings.embedColor);
   await SendLog(
     settings.channelUpdateLogChannelWebhook,
     embed,
     newChannel.guild,
-    "channelUpdateLogChannelWebhook"
+    "channelUpdateLogChannelWebhook",
   );
 };

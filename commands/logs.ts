@@ -238,7 +238,7 @@ export = {
               ? `<#${settingsList.warnLogChannel}>`
               : "Not set",
             inline: true,
-          }
+          },
         );
         await i.reply({ embeds: [embed] });
         break;
@@ -256,7 +256,7 @@ export = {
             ],
             {
               method: "DELETE",
-            }
+            },
           ).catch(console.error);
         }
         const $yeet: any = { $unset: {} };
@@ -270,7 +270,7 @@ export = {
 
       case "set":
         const setChannel = await i.guild?.channels.fetch(
-          i.options.getChannel("channel", true).id
+          i.options.getChannel("channel", true).id,
         );
         if (setChannel?.type !== ChannelType.GuildText) {
           await i.reply({

@@ -24,6 +24,6 @@ module.exports = async function (ban: GuildBan) {
     settings.banLogChannelWebhook,
     embed,
     ban.guild,
-    "banLogChannelWebhook"
+    "banLogChannelWebhook",
   );
 };

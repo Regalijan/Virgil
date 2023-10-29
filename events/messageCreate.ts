@@ -36,7 +36,7 @@ module.exports = async function (message: Message) {
         b.id === message.channel ||
         (message.channel instanceof TextChannel &&
           b.id === message.channel.parentId) ||
-        message.member?.roles.cache.has(b.id)
+        message.member?.roles.cache.has(b.id),
     )
   )
     return;
@@ -85,7 +85,7 @@ module.exports = async function (message: Message) {
   }
   if (!settings?.antiphish) return;
   const linkMatches = message.content.match(
-    /https?:\/\/(?:[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?\.)+[a-z\d[a-z\d-]{0,61}[a-z\d]/g
+    /https?:\/\/(?:[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?\.)+[a-z\d[a-z\d-]{0,61}[a-z\d]/g,
   );
   if (!linkMatches) return;
   for (let link of linkMatches) {
@@ -112,7 +112,7 @@ module.exports = async function (message: Message) {
                 : message.client.application?.owner?.id
             })`,
           },
-        }
+        },
       ).catch(Logger);
 
       if (phishCheckReq?.status !== 200) continue;
@@ -140,9 +140,8 @@ module.exports = async function (message: Message) {
 
       await member
         .send({
-          content: `You were banned from ${
-            message.guild?.name
-          } for sending a phishing link.${
+          content: `You were banned from ${message.guild
+            ?.name} for sending a phishing link.${
             settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
           }`,
         })

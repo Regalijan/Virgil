@@ -12,7 +12,7 @@ import Logger from "../logger";
 const mongo = db.db("bot");
 
 module.exports = async function (
-  messages: Collection<Snowflake, Message | PartialMessage>
+  messages: Collection<Snowflake, Message | PartialMessage>,
 ) {
   const firstMessage = messages.first();
   if (
@@ -45,7 +45,7 @@ module.exports = async function (
       day: "2-digit",
       month: "short",
       year: "numeric",
-    }
+    },
   ).format(Date.now())}`;
 
   messages.each(function (msg) {
@@ -61,8 +61,8 @@ module.exports = async function (
       settings.deleteLogChannelWebhook.match(/\d{16,}/)[0],
       settings.deleteLogChannelWebhook.replace(
         /https:\/\/discorda?p?p?\.com\/api\/?v?\d*?\/webhooks\/\d{16,}\//,
-        ""
-      )
+        "",
+      ),
     )
     .catch((err: DiscordAPIError) => err);
 
@@ -74,7 +74,7 @@ module.exports = async function (
         .collection("settings")
         .updateOne(
           { guild: messages.first()?.guild?.id },
-          { $unset: { deleteLogChannel: "", deleteLogChannelWebhook: "" } }
+          { $unset: { deleteLogChannel: "", deleteLogChannelWebhook: "" } },
         )
         .catch(Logger);
     }

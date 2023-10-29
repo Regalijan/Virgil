@@ -11,7 +11,7 @@ export = {
       .catch((e) => console.error(e));
     if (member) embed.setColor(member.displayColor);
     const duckReq = await fetch("https://random-d.uk/api/v2/random").catch(
-      () => {}
+      () => {},
     );
 
     if (!duckReq?.ok) {

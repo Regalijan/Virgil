@@ -53,7 +53,7 @@ export = {
             headers: {
               authorization: process.env.MFA_API_TOKEN,
             },
-          }
+          },
         ).catch(console.error);
         if (bridgeDataReq?.status !== 200) return false;
         access_data = {
@@ -73,12 +73,12 @@ export = {
             body: `grant_type=refresh_token&refresh_token=${access_data?.refresh_token}`,
             headers: {
               authorization: `Basic ${Buffer.from(
-                process.env.MFA_CLIENT_ID + ":" + process.env.MFA_CLIENT_SECRET
+                process.env.MFA_CLIENT_ID + ":" + process.env.MFA_CLIENT_SECRET,
               ).toString("base64")}`,
               "content-type": "application/x-www-form-urlencoded",
             },
             method: "POST",
-          }
+          },
         ).catch(console.error);
         if (!refreshReq) return false;
         if ([400, 401].includes(refreshReq.status)) {
@@ -125,7 +125,7 @@ export = {
         `mfaEnabled_${user.id}`,
         JSON.stringify(isEnabled),
         "EX",
-        1800
+        1800,
       );
       return isEnabled;
     } else return JSON.parse(enabled);
@@ -143,7 +143,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await fetch(
-        `https://groups.roblox.com/v2/users/${user}/groups/roles`
+        `https://groups.roblox.com/v2/users/${user}/groups/roles`,
       );
       const apiData = await apiResponse.json();
       await redis
@@ -171,7 +171,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await fetch(
-        `https://friends.roblox.com/v1/users/${user}/friends`
+        `https://friends.roblox.com/v1/users/${user}/friends`,
       );
       const apiData = await apiResponse.json();
       const friendIds: number[] = [];
@@ -189,7 +189,7 @@ export = {
   async getRobloxAssetOwnership(
     user: number,
     item: number,
-    itemType?: string
+    itemType?: string,
   ): Promise<boolean> {
     const cachedData = await redis
       .get(`${itemType}_${item}_${user}`)
@@ -197,7 +197,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await fetch(
-        `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}/is-owned`
+        `https://inventory.roblox.com/v1/users/${user}/items/${itemType}/${item}/is-owned`,
       );
       const ownsItem = await apiResponse.json();
       await redis
@@ -240,7 +240,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await fetch(
-        `https://accountinformation.roblox.com/v1/users/${user}/roblox-badges`
+        `https://accountinformation.roblox.com/v1/users/${user}/roblox-badges`,
       );
       const badgeIds: number[] = [];
       for (const badge of await apiResponse.json()) badgeIds.push(badge.id);
@@ -248,7 +248,7 @@ export = {
         `robloxplatformbadges_${user}`,
         JSON.stringify(badgeIds),
         "EX",
-        900
+        900,
       );
       return badgeIds;
     } catch (e) {
@@ -276,7 +276,7 @@ export = {
     }
     try {
       const apiResponse = await fetch(
-        `https://users.roblox.com/v1/users/${user}`
+        `https://users.roblox.com/v1/users/${user}`,
       );
       const apiData = await apiResponse.json();
       apiData.created = new Date(apiData.created);
@@ -292,11 +292,11 @@ export = {
 
   async getRobloxGroupAffiliates(
     group: number,
-    relationship: "allies" | "enemies" = "allies"
+    relationship: "allies" | "enemies" = "allies",
   ): Promise<number[]> {
     if (!["allies", "enemies"].includes(relationship.toLowerCase()))
       throw new TypeError(
-        'relationship must be a value of "allies" or "enemies"'
+        'relationship must be a value of "allies" or "enemies"',
       );
     const cachedData = await redis
       .get(`${relationship}_${group}`)
@@ -304,7 +304,7 @@ export = {
     if (cachedData) return JSON.parse(cachedData);
     try {
       const apiResponse = await fetch(
-        `https://groups.roblox.com/v1/groups/${group}/relationships/${relationship}?model.startRowIndex=0&model.maxRows=100`
+        `https://groups.roblox.com/v1/groups/${group}/relationships/${relationship}?model.startRowIndex=0&model.maxRows=100`,
       );
       const groups: number[] = [];
       for (const group of (await apiResponse.json()).relatedGroups)
@@ -326,7 +326,7 @@ export = {
     serverName: string,
     robloxUsername: string,
     robloxId: number,
-    displayName: string
+    displayName: string,
   ): string {
     const name = template
       .replaceAll("{{USERNAME}}", robloxUsername)
@@ -339,7 +339,7 @@ export = {
         "{{SMARTNAME}}",
         robloxUsername === displayName
           ? robloxUsername
-          : `${displayName} (${robloxUsername})`
+          : `${displayName} (${robloxUsername})`,
       );
 
     return name.length > 32 ? name.substring(0, 32) : name;
@@ -351,11 +351,11 @@ export = {
     interaction:
       | ButtonInteraction
       | CommandInteraction
-      | UserContextMenuCommandInteraction
+      | UserContextMenuCommandInteraction,
   ): Promise<{ content: string; errored: boolean; verified: boolean }> {
     if (
       !member.guild.members.me?.permissions.has(
-        PermissionsBitField.Flags.ManageRoles
+        PermissionsBitField.Flags.ManageRoles,
       )
     )
       return {
@@ -370,7 +370,7 @@ export = {
         headers: {
           authorization: `Bearer ${process.env.REGISTRY_API_KEY}`,
         },
-      }
+      },
     ).catch(() => {});
     const bindCursorDoc = db.find({ server: member.guild.id });
     const binds: {
@@ -464,7 +464,7 @@ export = {
     if (
       member.manageable &&
       member.guild.members.me.permissions.has(
-        PermissionsBitField.Flags.ManageNicknames
+        PermissionsBitField.Flags.ManageNicknames,
       ) &&
       serversettings.lockNicknames
     )
@@ -477,8 +477,8 @@ export = {
             member.guild.name,
             userProfileData.name ?? robloxUsername,
             robloxUserId,
-            userProfileData.displayName ?? robloxUsername
-          )
+            userProfileData.displayName ?? robloxUsername,
+          ),
         )
         .catch(console.error);
 
@@ -534,7 +534,7 @@ export = {
           giveRole = await this.getRobloxAssetOwnership(
             robloxUserId,
             bind.asset,
-            bind.type
+            bind.type,
           );
           break;
       }

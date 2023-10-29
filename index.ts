@@ -4,7 +4,7 @@ import { join } from "path";
 
 if (typeof fetch === "undefined")
   console.error(
-    "`fetch` is not defined. Use Node v17.5.0 or later (versions below 18 require passing the --experimental-global-fetch flag)"
+    "`fetch` is not defined. Use Node v17.5.0 or later (versions below 18 require passing the --experimental-global-fetch flag)",
   );
 
 dotenv();

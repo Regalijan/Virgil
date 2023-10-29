@@ -7,7 +7,7 @@ const mongo = db.db("bot");
 
 module.exports = async function (
   oldMessage: Message<boolean> | PartialMessage,
-  newMessage: Message<boolean> | PartialMessage
+  newMessage: Message<boolean> | PartialMessage,
 ) {
   if (
     !oldMessage ||
@@ -38,7 +38,7 @@ module.exports = async function (
       iconURL: oldMessage.author.displayAvatarURL(),
     })
     .setDescription(
-      `Message edited in <#${newMessage.channel.id}> [Go to message](${newMessage.url})`
+      `Message edited in <#${newMessage.channel.id}> [Go to message](${newMessage.url})`,
     )
     .addFields(
       {
@@ -56,13 +56,13 @@ module.exports = async function (
             ? newMessage.content.substring(0, 1021) + "..."
             : newMessage.content
           : "Unknown content",
-      }
+      },
     );
   if (newMessage.member) embed.setColor(newMessage.member.displayColor);
   await SendLog(
     settings.editLogChannelWebhook,
     embed,
     newMessage.guild,
-    "editLogChannelWebhook"
+    "editLogChannelWebhook",
   );
 };

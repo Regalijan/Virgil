@@ -69,7 +69,7 @@ export = {
       })
       .setTitle("Report Resolved (Ban)")
       .setDescription(
-        `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`
+        `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`,
       )
       .addFields(
         {
@@ -79,14 +79,14 @@ export = {
         {
           name: "Reported Content",
           value: associatedReport.message.content,
-        }
+        },
       );
 
     await SendLog(
       settings.messageReportActionLogChannelWebhook,
       logEmbed,
       i.guild,
-      "messageReportActionLogChannelWebhook"
+      "messageReportActionLogChannelWebhook",
     );
   },
 };

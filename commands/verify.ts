@@ -42,7 +42,7 @@ export = {
       replyOpts.components = [
         new ActionRowBuilder<ButtonBuilder>().addComponents(
           notVerifiedLinkButton,
-          verifyButton
+          verifyButton,
         ),
       ];
     }

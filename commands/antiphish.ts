@@ -38,7 +38,7 @@ export = {
                   ? phishSettings.antiphishMessage.substring(0, 1021) + "..."
                   : phishSettings.antiphishMessage
                 : "None set",
-            }
+            },
           );
 
         await i.reply({ embeds: [embed] });
@@ -78,14 +78,14 @@ export = {
         if (message) {
           await settings.updateOne(
             { guild: i.guildId },
-            { $set: { antiphishMessage: message } }
+            { $set: { antiphishMessage: message } },
           );
           await i.reply({ content: "Message set!" });
           return;
         }
         await settings.updateOne(
           { guild: i.guildId },
-          { $unset: { antiphishMessage: "" } }
+          { $unset: { antiphishMessage: "" } },
         );
         await i.reply({ content: "Message removed!" });
     }

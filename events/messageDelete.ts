@@ -34,7 +34,7 @@ module.exports = async function (message: Message | PartialMessage) {
     .setDescription(
       `Message ${message.id} deleted from <#${message.channel.id}>${
         message.thread ? ` - Thread ${message.thread.name}` : ""
-      }${message.content ? `\n**Content:** ${message.content}` : ""}`
+      }${message.content ? `\n**Content:** ${message.content}` : ""}`,
     );
   if (message.member) embed.setColor(message.member.displayColor);
   message.attachments.forEach((att) => {
@@ -44,6 +44,6 @@ module.exports = async function (message: Message | PartialMessage) {
     settings.deleteLogChannelWebhook,
     embed,
     message.guild,
-    "deleteLogChannelWebhook"
+    "deleteLogChannelWebhook",
   );
 };

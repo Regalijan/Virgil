@@ -20,7 +20,7 @@ export = {
     const target = await i.guild?.channels.fetch(targetApiChannel.id);
     if (!target)
       throw Error(
-        "Unable to fetch GuildChannel from APIInteractionResolvedDataChannel"
+        "Unable to fetch GuildChannel from APIInteractionResolvedDataChannel",
       );
     if (!i.client.user) throw Error("ClientUser is null");
     if (target.type !== ChannelType.GuildText) {

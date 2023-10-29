@@ -28,7 +28,7 @@ export = {
       await DeleteMessage(
         settings.messageReportChannelWebhook,
         reportMessage.id,
-        i.guild
+        i.guild,
       );
     }
     await i.reply({
@@ -45,7 +45,7 @@ export = {
       })
       .setTitle("Report Ignored")
       .setDescription(
-        `Report ${associatedReport.reportId} was ignored by <@${i.user.id}>`
+        `Report ${associatedReport.reportId} was ignored by <@${i.user.id}>`,
       )
       .addFields(
         {
@@ -55,14 +55,14 @@ export = {
         {
           name: "Reported Content",
           value: associatedReport.message.content,
-        }
+        },
       );
 
     await SendLog(
       settings.messageReportActionLogChannelWebhook,
       logEmbed,
       i.guild,
-      "messageReportActionLogChannelWebhook"
+      "messageReportActionLogChannelWebhook",
     );
   },
 };

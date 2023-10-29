@@ -16,7 +16,7 @@ const commands: ApplicationCommandData[] = [];
 
 for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
   // Interaction definitions are copied during container build, this must be done manually without Docker
-  (f) => f.endsWith(".json")
+  (f) => f.endsWith(".json"),
 )) {
   const data = require(join(__dirname, "interaction_data", file));
   commands.push(data);
@@ -31,7 +31,7 @@ for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
 
   if (!currentUserReq.ok)
     throw new Error(
-      `Failed to retrieve current application information: ${await currentUserReq.json()}`
+      `Failed to retrieve current application information: ${await currentUserReq.json()}`,
     );
 
   const { id } = await currentUserReq.json();
@@ -44,7 +44,7 @@ for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
         "content-type": "application/json",
       },
       method: "PUT",
-    }
+    },
   );
 
   if (!registerReq.ok)

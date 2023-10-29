@@ -5,7 +5,7 @@ export = {
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const target = i.options.getUser("person", true);
     const hugReq = await fetch("https://nekos.life/api/v2/img/hug").catch(
-      console.error
+      console.error,
     );
 
     if (!hugReq?.ok) {

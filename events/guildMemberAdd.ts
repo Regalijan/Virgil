@@ -32,6 +32,6 @@ module.exports = async function (member: GuildMember) {
     settings.memberJoinLogChannelWebhook,
     embed,
     member.guild,
-    "memberJoinLogChannelWebhook"
+    "memberJoinLogChannelWebhook",
   );
 };

@@ -19,7 +19,7 @@ export = {
       {
         name: "Command Processing",
         value: `${Date.now() - redisBefore}ms`,
-      }
+      },
     );
     const member = await i.guild?.members
       .fetch(i.user.id)

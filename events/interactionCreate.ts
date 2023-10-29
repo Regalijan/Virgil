@@ -59,28 +59,28 @@ const buttonCommands: Map<
 > = new Map();
 
 for (const file of readdirSync(join(__dirname, "../commands")).filter((f) =>
-  f.endsWith(".js")
+  f.endsWith(".js"),
 )) {
   const commandFile = require(`../commands/${file}`);
   cmds.set(commandFile.name, commandFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../usercontext")).filter((f) =>
-  f.endsWith(".js")
+  f.endsWith(".js"),
 )) {
   const ucFile = require(`../usercontext/${file}`);
   userContextCommands.set(ucFile.name, ucFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../messagecontext")).filter(
-  (f) => f.endsWith(".js")
+  (f) => f.endsWith(".js"),
 )) {
   const mcFile = require(`../messagecontext/${file}`);
   messageContextCommands.set(mcFile.name, mcFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../button")).filter((f) =>
-  f.endsWith(".js")
+  f.endsWith(".js"),
 )) {
   const bFile = require(`../button/${file}`);
   buttonCommands.set(bFile.name, bFile);
@@ -226,7 +226,7 @@ module.exports = async function (i: BaseInteraction) {
       settings.commandLogChannelWebhook,
       embed,
       i.guild,
-      "commandLogChannelWebhook"
+      "commandLogChannelWebhook",
     );
   } catch (e) {
     if (!process.env.DSN) console.error(e);

@@ -7,7 +7,7 @@ const mongo = db.db("bot");
 
 module.exports = async function (
   oldMember: GuildMember | PartialGuildMember,
-  newMember: GuildMember | PartialGuildMember
+  newMember: GuildMember | PartialGuildMember,
 ) {
   const settings = await mongo
     .collection("settings")
@@ -44,7 +44,7 @@ module.exports = async function (
       settings.roleLogChannelWebhook,
       embed,
       newMember.guild,
-      "roleLogChannelWebhook"
+      "roleLogChannelWebhook",
     );
   } else if (oldMember.nickname !== newMember.nickname) {
     if (!settings.nicknameLogChannelWebhook) return;
@@ -52,7 +52,7 @@ module.exports = async function (
     embed.setDescription(
       `\`${oldMember.nickname ?? "None"}\` -> \`${
         newMember.nickname ?? "None"
-      }\``
+      }\``,
     );
     await newMember.fetch().catch(console.error);
     embed.setColor(newMember.displayColor);
@@ -60,7 +60,7 @@ module.exports = async function (
       settings.nicknameLogChannelWebhook,
       embed,
       newMember.guild,
-      "nicknameLogChannelWebhook"
+      "nicknameLogChannelWebhook",
     );
   }
 };

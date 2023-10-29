@@ -27,6 +27,6 @@ module.exports = async function (thread: ThreadChannel) {
     settings.threadCreateLogChannelWebhook,
     embed,
     thread.guild,
-    "threadCreateLogChannelWebhook"
+    "threadCreateLogChannelWebhook",
   );
 };

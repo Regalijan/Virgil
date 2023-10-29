@@ -15,13 +15,15 @@ export = {
     }
 
     const target = await i.guild?.members.fetch(
-      i.options.getUser("user", true)
+      i.options.getUser("user", true),
     );
     if (
       !target?.bannable ||
       target.id === i.user.id ||
       !i.guild?.members.me ||
-      target.roles.highest.comparePositionTo(i.guild.members.me.roles.highest) <= 0
+      target.roles.highest.comparePositionTo(
+        i.guild.members.me.roles.highest,
+      ) <= 0
     ) {
       await i.reply("This user cannot be banned.");
       return;
@@ -36,9 +38,10 @@ export = {
     if (days) aheadToUnban += days * 1440 * 60000;
     await target
       .send({
-        content: `You have been banned from ${
-          i.guild?.name
-        } for the following reason:\n\n${i.options.getString("reason")}`,
+        content: `You have been banned from ${i.guild
+          ?.name} for the following reason:\n\n${i.options.getString(
+          "reason",
+        )}`,
       })
       .catch((e) => console.error(e));
     await target.ban({
