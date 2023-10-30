@@ -31,7 +31,7 @@
     "mongodb": "^6.2.0",
     "sodium-native": "^4.0.4",
     "utf-8-validate": "^6.0.3",
-    "zlib-sync": "^0.1.8"
+    "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.3",
