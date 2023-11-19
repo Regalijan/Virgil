@@ -21,7 +21,7 @@ export = {
     canEdit
       ? await i.message.edit(payload)
       : response.verified
-      ? await i.followUp(payload)
-      : await i.reply(payload);
+        ? await i.followUp(payload)
+        : await i.reply(payload);
   },
 };
