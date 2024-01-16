@@ -140,8 +140,9 @@ module.exports = async function (message: Message) {
 
       await member
         .send({
-          content: `You were banned from ${message.guild
-            ?.name} for sending a phishing link.${
+          content: `You were banned from ${
+            message.guild?.name
+          } for sending a phishing link.${
             settings.antiphishMessage ? "\n\n" + settings.antiphishMessage : ""
           }`,
         })

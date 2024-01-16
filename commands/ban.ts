@@ -38,10 +38,9 @@ export = {
     if (days) aheadToUnban += days * 1440 * 60000;
     await target
       .send({
-        content: `You have been banned from ${i.guild
-          ?.name} for the following reason:\n\n${i.options.getString(
-          "reason",
-        )}`,
+        content: `You have been banned from ${
+          i.guild?.name
+        } for the following reason:\n\n${i.options.getString("reason")}`,
       })
       .catch((e) => console.error(e));
     await target.ban({
