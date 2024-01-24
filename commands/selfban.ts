@@ -13,7 +13,7 @@ export = {
       return;
     }
 
-    const chance = Math.random() <= 1 / 10000;
+    const chance = Math.random() <= 1 / 1000;
     if (chance) {
       const target = await i.guild?.members.fetch(i.user);
       if (
