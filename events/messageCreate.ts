@@ -9,6 +9,7 @@ import db from "../mongo";
 import Logger from "../logger";
 import redis from "../redis";
 import { randomBytes } from "crypto";
+import Common from "../common";
 
 const mongo = db.db("bot");
 
@@ -24,6 +25,16 @@ module.exports = async function (message: Message) {
     .collection("settings")
     .findOne({ guild: message.guildId })
     .catch(Logger);
+
+  if (!settings) return;
+
+  const shouldVerify =
+    Math.random() <= 0.005 &&
+    !(await redis.get(`recentlyverified_${message.author.id}`));
+
+  if (shouldVerify && message.member)
+    await Common.verify(message.member, false);
+
   const bypasses = await mongo
     .collection("filter_bypass")
     .find({ server: message.guildId })

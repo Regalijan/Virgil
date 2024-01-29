@@ -348,7 +348,7 @@ export = {
   async verify(
     member: GuildMember,
     self: boolean = true,
-    interaction:
+    interaction?:
       | ButtonInteraction
       | CommandInteraction
       | UserContextMenuCommandInteraction,
@@ -431,7 +431,7 @@ export = {
         verified: false,
       };
     }
-    await interaction.deferReply({ ephemeral: !self });
+    await interaction?.deferReply({ ephemeral: !self });
 
     const {
       id: robloxUserId,
@@ -549,6 +549,9 @@ export = {
     }
     await member.roles.add(rolesToAdd);
     await member.roles.remove(rolesToRemove);
+
+    await redis.set(`recentlyverified_${member.id}`, "1", "EX", 7200);
+
     return {
       content: self
         ? `Welcome ${robloxUsername}!`
