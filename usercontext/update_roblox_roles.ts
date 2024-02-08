@@ -28,7 +28,7 @@ export = {
       i,
     );
 
-    verified
+    i.deferred
       ? await i.followUp({ content })
       : await i.reply({ content, ephemeral: true });
   },

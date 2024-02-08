@@ -20,7 +20,7 @@ export = {
     const payload = { content: response.content, ephemeral: true };
     canEdit
       ? await i.message.edit(payload)
-      : response.verified
+      : i.deferred
         ? await i.followUp(payload)
         : await i.reply(payload);
   },

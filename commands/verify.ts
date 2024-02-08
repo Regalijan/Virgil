@@ -46,6 +46,6 @@ export = {
         ),
       ];
     }
-    results.verified ? await i.followUp(replyOpts) : await i.reply(replyOpts);
+    i.deferred ? await i.followUp(replyOpts) : await i.reply(replyOpts);
   },
 };

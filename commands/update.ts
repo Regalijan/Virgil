@@ -21,6 +21,6 @@ export = {
       i,
     );
 
-    verified ? await i.followUp({ content }) : await i.reply({ content });
+    i.deferred ? await i.followUp({ content }) : await i.reply({ content });
   },
 };
