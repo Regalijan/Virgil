@@ -1,0 +1,73 @@
+{
+  "name": "bypasses",
+  "description": "Manage users and roles that are exempt from automatic Roblox verification",
+  "description_localizations": {
+    "es-ES": "Gestionar usuarios y roles exentos de la verificación automática de Roblox",
+    "sv-SE": "Hantera användare och roller som är undantagna från automatisk Roblox-verifiering"
+  },
+  "options": [
+    {
+      "type": 1,
+      "name": "add",
+      "name_localizations": {
+        "es-ES": "añada",
+        "sv-SE": "lägga_till"
+      },
+      "description": "Add a user or role",
+      "description_localizations": {
+        "es-ES": "Añadir un usuario o rol",
+        "sv-SE": "Lägg till en användare eller roll"
+      },
+      "options": [
+        {
+          "type": 9,
+          "name": "target",
+          "name_localizations": {
+            "es-ES": "blanco",
+            "sv-SE": "mål"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "list",
+      "name_localizations": {
+        "es-ES": "listar",
+        "sv-SE": "lista"
+      },
+      "description": "List all users and roles",
+      "description_localizations": {
+        "es-ES": "Listar todos los usuarios y roles",
+        "sv-SE": "Lista alla användare och roller"
+      }
+    },
+    {
+      "type": 1,
+      "name": "remove",
+      "name_localizations": {
+        "es-ES": "eliminar",
+        "sv-SE": "ta_bort"
+      },
+      "description": "Remove a user or role",
+      "description_localizations": {
+        "es-ES": "Eliminar un usuario o rol",
+        "sv-SE": "Ta bort en användare eller roll"
+      },
+      "options": [
+        {
+          "type": 9,
+          "name": "id",
+          "name_localizations": {
+            "es-ES": "blanco",
+            "sv-SE": "mål"
+          },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "default_member_permissions": "32",
+  "dm_permission": false
+}
