@@ -363,6 +363,30 @@ export = {
         errored: true,
         verified: false,
       };
+
+    const bypassesDB = mongo.db("bot").collection("bind_bypasses");
+
+    if (
+      !self &&
+      (await bypassesDB.findOne({
+        guild: member.guild.id,
+        id: {
+          $or: [
+            member.id,
+            {
+              $in: member.roles.cache.map((r) => r.id),
+            },
+          ],
+        },
+      }))
+    ) {
+      return {
+        content: "User matches a bypass condition",
+        errored: false,
+        verified: false,
+      };
+    }
+
     const db = mongo.db("bot").collection("binds");
     const verifyApiData = await fetch(
       `https://registry.virgil.gg/api/discord/${member.id}`,
