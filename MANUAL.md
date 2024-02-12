@@ -13,7 +13,6 @@ Legend:
 - `/update` - Updates a user's Roblox roles (has a user context equivalent)
 - `/reverify` - Sends instructions to change linked Roblox account
 - `/roblox` - Displays Roblox profile information
-- `/troubleshoot` - Generates a troubleshooting link to fix Roblox account connection issues
 
 ### Server Management
 
@@ -31,6 +30,9 @@ Legend:
 - `/bind unverified_status <role: RoleResolvable>` - Bind a role to not being verified (should not be used as a replacement for appropriate channel permissions)
 - `/bind verified_status <role: RoleResolvable>` - Bind a role to being verified
 - `/bind friend_status <role: RoleResolvable>` - Bind a role to being a friend with a user
+- `/bypasses add <target: GuildMember | Role>` - Adds a user or role to the autoverification bypass list
+- `/bypasses list` - Lists active autoverification bypasses
+- `/bypasses remove <target: GuildMember | Role>` - Removes a user or role from the autoverification bypass list
 - `/deletebind <id: string>` - Deletes a bind
 - `/factoryreset` - Deletes **ALL** settings and leaves the server
 - `/filter add <word: string> <filter_type: exact | wildcard> <case_sensitive?: boolean>` - Adds a word filter
