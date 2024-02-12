@@ -9,7 +9,6 @@ RUN node ./ffmpeg.js
 RUN chown -R nodeuser:nodeuser .
 USER nodeuser
 RUN npx tsc
-RUN cp -r ./interaction_data ./dist/
 ENV NODE_ENV=production
 RUN npm prune
 RUN node dist/deploy.js

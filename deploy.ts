@@ -14,11 +14,13 @@ if (process.env.SKIPDEPLOY) {
 
 const commands: ApplicationCommandData[] = [];
 
-for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
+for (const file of readdirSync(
+  join(__dirname, "..", "interaction_data"),
+).filter(
   // Interaction definitions are copied during container build, this must be done manually without Docker
   (f) => f.endsWith(".json"),
 )) {
-  const data = require(join(__dirname, "interaction_data", file));
+  const data = require(join(__dirname, "..", "interaction_data", file));
   commands.push(data);
 }
 
@@ -31,7 +33,7 @@ for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
 
   if (!currentUserReq.ok)
     throw new Error(
-      `Failed to retrieve current application information: ${await currentUserReq.json()}`,
+      `Failed to retrieve current application information: ${await currentUserReq.text()}`,
     );
 
   const { id } = await currentUserReq.json();
@@ -48,7 +50,7 @@ for (const file of readdirSync(join(__dirname, "interaction_data")).filter(
   );
 
   if (!registerReq.ok)
-    throw new Error(`Failed to register commands: ${await registerReq.json()}`);
+    throw new Error(`Failed to register commands: ${await registerReq.text()}`);
 
   console.log("Deployment succeeded");
 })();
