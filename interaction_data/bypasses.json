@@ -26,6 +26,11 @@
             "es-ES": "blanco",
             "sv-SE": "mål"
           },
+          "description": "The target to add",
+          "description_localizations": {
+            "es-ES": "El blanco a agregar",
+            "sv-SE": "Målet som ska läggas till"
+          },
           "required": true
         }
       ]
@@ -58,10 +63,15 @@
       "options": [
         {
           "type": 9,
-          "name": "id",
+          "name": "target",
           "name_localizations": {
             "es-ES": "blanco",
             "sv-SE": "mål"
+          },
+          "description": "The target to remove",
+          "description_localizations": {
+            "es-ES": "El blanco a eliminar",
+            "sv-SE": "Målet att ta bort"
           },
           "required": true
         }
