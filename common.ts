@@ -370,14 +370,14 @@ export = {
       !self &&
       (await bypassesDB.findOne({
         guild: member.guild.id,
-        id: {
-          $or: [
-            member.id,
-            {
-              $in: member.roles.cache.map((r) => r.id),
-            },
-          ],
-        },
+        $or: [
+          {
+            id: member.id,
+          },
+          {
+            id: { $in: member.roles.cache.map((r) => r.id) },
+          },
+        ],
       }))
     ) {
       return {
