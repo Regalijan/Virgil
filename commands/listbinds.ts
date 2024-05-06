@@ -1,4 +1,8 @@
-import { CommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  GuildMember
+} from "discord.js";
 import mongo from "../mongo";
 
 const binds = mongo.db("bot").collection("binds");
@@ -6,7 +10,7 @@ const binds = mongo.db("bot").collection("binds");
 export = {
   name: "listbinds",
   description: "Shows all server binds",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guildId)
       throw Error(
         "<CommandInteraction>.guildId was null despite command being run in a guild.",

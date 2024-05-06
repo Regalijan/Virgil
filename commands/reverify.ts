@@ -2,12 +2,12 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  CommandInteraction,
+  ChatInputCommandInteraction,
 } from "discord.js";
 
 export = {
   name: "reverify",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const button = new ButtonBuilder()
       .setURL("https://registry.virgil.gg/me")
       .setEmoji("✏")

@@ -2,13 +2,13 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  CommandInteraction,
+  ChatCommandCommandInteraction,
 } from "discord.js";
 import Common from "../common";
 
 export = {
   name: "verify",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatCommandCommandInteraction): Promise<void> {
     const member = await i.guild?.members.fetch(i.user.id);
     if (!member) {
       await i.reply({
