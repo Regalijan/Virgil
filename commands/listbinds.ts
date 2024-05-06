@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  GuildMember,
+} from "discord.js";
 import mongo from "../mongo";
 
 const binds = mongo.db("bot").collection("binds");
