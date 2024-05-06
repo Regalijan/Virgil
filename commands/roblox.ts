@@ -1,5 +1,5 @@
 import {
-  CommandInteraction,
+  ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMember,
   Team,
@@ -11,7 +11,7 @@ import Sentry from "../sentry";
 export = {
   name: "roblox",
   description: "Whois command but for Roblox",
-  async exec(i: CommandInteraction): Promise<void> {
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
     const user = i.options.getUser("user") ?? i.user;
     const embed = new EmbedBuilder({
       footer: {
