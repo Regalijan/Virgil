@@ -62,11 +62,11 @@ bot.login().catch((e) => {
 });
 
 process.on("enableDebug", async function () {
-  bot.addListener("debug", logDebug);
+  bot.on("debug", logDebug);
 });
 
 process.on("disableDebug", async function () {
-  bot.removeListener("debug", logDebug);
+  bot.off("debug", logDebug);
 });
 
 const mongo = db.db("bot");
