@@ -52,7 +52,7 @@ export = {
       ephemeral: true,
     });
     try {
-      packetProcessor.voiceEvents.on("max", async (uid: string) => {
+      packetProcessor.voiceEvents.addListener("max", async (uid: string) => {
         const voiceMember = await i.guild?.members
           .fetch(uid)
           .catch(console.error);
