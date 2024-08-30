@@ -26,37 +26,8 @@ jobs:
       - name: TypeScript Validation
         run: npm run build
 
-  API:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Elixir
-        run: |
-          wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb
-          sudo dpkg -i erlang-solutions_2.0_all.deb
-          rm erlang-solutions_2.0_all.deb
-          sudo apt-get update
-          sudo apt-get install -y esl-erlang elixir
-
-      - name: Install Hex Packages
-        run: |
-          cd api
-          mix local.hex --force
-          mix deps.get
-          mix local.rebar --force
-
-      - name: Compile API
-        run: |
-          touch .env
-          cd api
-          mix compile
-
   Push:
-    if: needs.pr-check.outputs.number != 'null'
-    needs: [Bot, API]
+    needs: Bot
     runs-on: ubuntu-latest
 
     steps:
