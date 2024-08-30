@@ -48,7 +48,6 @@ Legend:
 
 ### Moderation
 
-- `/autosilence <channel: VoiceChannel> <decibels: integer>` - Mutes users in a voice channel at a given decibel level (NOT WORKING YET)
 - `/ban <user: UserResolvable> <reason?: string> <days?: integer> <hours?: integer> <minutes?: integer>` - Bans a user (for time specified - otherwise permanent)
 - `/kick <user: UserResolvable> <reason?: string>` - Kicks a user
 - `/mute <user: UserResolvable> <reason?: string> <hours?: integer> <minutes?: integer>` - Mutes a user
