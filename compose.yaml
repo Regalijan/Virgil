@@ -11,19 +11,6 @@ services:
     build:
       context: "./redis"
 
-  api:
-    build:
-      context: "./api"
-    depends_on:
-      - mongo
-      - rabbit
-    init: true
-    links:
-      - mongo
-      - rabbit
-    volumes:
-      - "./api/socket:/socket"
-
   bot:
     build: .
     depends_on:
