@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
+import { EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
@@ -7,7 +7,7 @@ const mongo = db.db("bot");
 
 module.exports = async function (message: Message | PartialMessage) {
   if (
-    message.channel.type === ChannelType.DM ||
+    message.channel.isDMBased() ||
     !message.guild ||
     !message.author ||
     message.author.bot

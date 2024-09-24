@@ -1,5 +1,4 @@
 import {
-  ChannelType,
   Message,
   PermissionsBitField,
   Team,
@@ -18,7 +17,7 @@ module.exports = async function (message: Message) {
     !message.content ||
     !message.author ||
     !message.guild ||
-    message.channel.type === ChannelType.DM
+    message.channel.isDMBased()
   )
     return;
   const settings = await mongo

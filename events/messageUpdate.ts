@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, Message, PartialMessage } from "discord.js";
+import { EmbedBuilder, Message, PartialMessage } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
@@ -15,7 +15,7 @@ module.exports = async function (
     !oldMessage.author ||
     oldMessage.content === newMessage.content ||
     !newMessage.guild ||
-    newMessage.channel.type === ChannelType.DM ||
+    newMessage.channel.type.isDMBased() ||
     oldMessage.author.bot
   )
     return;

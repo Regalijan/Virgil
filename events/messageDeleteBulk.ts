@@ -1,5 +1,4 @@
 import {
-  ChannelType,
   Collection,
   DiscordAPIError,
   Message,
@@ -17,7 +16,7 @@ module.exports = async function (
   const firstMessage = messages.first();
   if (
     !firstMessage ||
-    firstMessage.channel.type === ChannelType.DM ||
+    firstMessage.channel.isDMBased() ||
     !firstMessage.guild
   )
     return;
