@@ -15,7 +15,7 @@ module.exports = async function (
     !oldMessage.author ||
     oldMessage.content === newMessage.content ||
     !newMessage.guild ||
-    newMessage.channel.type.isDMBased() ||
+    newMessage.channel.isDMBased() ||
     oldMessage.author.bot
   )
     return;
