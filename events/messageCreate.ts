@@ -1,9 +1,4 @@
-import {
-  Message,
-  PermissionsBitField,
-  Team,
-  TextChannel,
-} from "discord.js";
+import { Message, PermissionsBitField, Team, TextChannel } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import redis from "../redis";

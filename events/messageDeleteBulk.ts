@@ -14,11 +14,7 @@ module.exports = async function (
   messages: Collection<Snowflake, Message | PartialMessage>,
 ) {
   const firstMessage = messages.first();
-  if (
-    !firstMessage ||
-    firstMessage.channel.isDMBased() ||
-    !firstMessage.guild
-  )
+  if (!firstMessage || firstMessage.channel.isDMBased() || !firstMessage.guild)
     return;
   const ignoreData = await mongo
     .collection("ignored")
