@@ -1,4 +1,4 @@
-FROM node:20-bullseye
+FROM node:22-bookworm
 RUN curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
 RUN apt-get install -y speedtest
 RUN groupadd -g 999 nodeuser && useradd -m -r -u 999 -g nodeuser nodeuser
