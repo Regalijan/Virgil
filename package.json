@@ -20,7 +20,7 @@
   "homepage": "https://github.com/Regalijan/Virgil#readme",
   "dependencies": {
     "@sentry/node": "^8.47.0",
-    "bufferutil": "^4.0.8",
+    "bufferutil": "^4.0.9",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.7",
     "ioredis": "^5.4.2",
