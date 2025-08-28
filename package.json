@@ -24,7 +24,7 @@
     "discord.js": "^14.22.1",
     "dotenv": "^17.2.1",
     "ioredis": "^5.7.0",
-    "mongodb": "^6.18.0",
+    "mongodb": "^6.19.0",
     "sodium-native": "^5.0.8"
   },
   "devDependencies": {
