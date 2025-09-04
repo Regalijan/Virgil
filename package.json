@@ -22,7 +22,7 @@
     "@sentry/node": "^10.7.0",
     "bufferutil": "^4.0.9",
     "discord.js": "^14.22.1",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.2",
     "ioredis": "^5.7.0",
     "mongodb": "^6.19.0",
     "sodium-native": "^5.0.8"
