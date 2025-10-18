@@ -2,13 +2,14 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMember,
+  MessageFlagsBitField,
   Role,
 } from "discord.js";
 import mongo from "../mongo";
 
 export = {
   name: "bypasses",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
+  exec: async function (i: ChatInputCommandInteraction): Promise<void> {
     const bypassesDb = mongo.db("bot").collection("bind_bypasses");
     const subcommand = i.options.getSubcommand(true);
 
@@ -30,22 +31,31 @@ export = {
 
     const target = i.options.getMentionable("target", true);
 
+    if (subcommand == "remove" && Object.hasOwn(target, "id")) {
+      // @ts-expect-error
+      await bypassesDb.deleteOne({ guild: i.guildId, id: target.id });
+      await i.reply({
+        content: "Target removed from bypass list",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
+    }
+
     if (!(target instanceof GuildMember) && !(target instanceof Role)) {
       await i.reply({
         content: "Failed to perform that action",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
     const targetType = target instanceof GuildMember ? "user" : "role";
 
-    switch (i.options.getSubcommand(true)) {
+    switch (subcommand) {
       case "add":
         if (await bypassesDb.findOne({ guild: i.guildId, id: target.id })) {
           await i.reply({
             content: "There is already a bypass for this target",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -58,7 +68,7 @@ export = {
 
         await i.reply({
           content: "Target added to bypass list",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
 
@@ -66,14 +76,14 @@ export = {
         await bypassesDb.deleteOne({ guild: i.guildId, id: target.id });
         await i.reply({
           content: "Target removed from bypass list",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
 
       default:
         await i.reply({
           content: "An impossible action was chosen, what did you do?",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
     }
