@@ -55,7 +55,8 @@ export = {
       return;
     }
 
-    const serverId = (submission.components[0] as ActionRowModalData).components[0].value;
+    const serverId = (submission.components[0] as ActionRowModalData)
+      .components[0].value;
     if (serverId && isNaN(parseInt(serverId))) {
       await i.reply({ content: "Invalid server ID", ephemeral: true });
       return;
