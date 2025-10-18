@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  MessageFlagsBitField,
+} from "discord.js";
 
 export = {
   name: "noobdetector",
@@ -10,7 +14,7 @@ export = {
     if (!member) {
       await i.reply({
         content: "Oops! I could not find that member in the server.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

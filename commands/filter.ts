@@ -2,6 +2,7 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMember,
+  MessageFlagsBitField,
   Role,
   User,
 } from "discord.js";
@@ -32,13 +33,13 @@ export = {
         if (word.length > 250) {
           await i.reply({
             content: "Filtered words must be 250 characters or less.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
 
         const filterID = createHash("sha256")
-          .update(randomBytes(512))
+          .update(new Uint8Array(randomBytes(512).buffer))
           .digest("base64url");
 
         await wordsDB.insertOne({
@@ -51,7 +52,7 @@ export = {
 
         await i.reply({
           content: `Filter created! ID: ${filterID}`,
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
 
         return;
@@ -67,7 +68,7 @@ export = {
         if (hasBypassToAddDoc) {
           await i.reply({
             content: "That entity already has a bypass applied!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -156,7 +157,7 @@ export = {
       default:
         await i.reply({
           content: "Unrecognized command!",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
     }

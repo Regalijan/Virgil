@@ -1,6 +1,7 @@
 import {
   ChatInputCommandInteraction,
   GuildMember,
+  MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
 
@@ -11,7 +12,7 @@ export = {
     if (!i.guild) {
       await i.reply({
         content: "This command can only be used in a guild.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -20,7 +21,7 @@ export = {
       await i.reply({
         content:
           'I cannot unmute the user because I do not have the "Timeout members" permission.',
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

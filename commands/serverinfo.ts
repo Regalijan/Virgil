@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMFALevel,
+  MessageFlagsBitField,
 } from "discord.js";
 
 export = {
@@ -11,7 +12,7 @@ export = {
     if (!i.guild) {
       await i.reply({
         content: "Oops! Looks like I don't have any information available!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

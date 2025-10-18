@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ChatInputCommandInteraction,
+  MessageFlagsBitField,
 } from "discord.js";
 import Common from "../common";
 
@@ -14,7 +15,7 @@ export = {
       await i.reply({
         content:
           "An error occurred when attempting to verify you - please try again later.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

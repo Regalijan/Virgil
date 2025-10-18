@@ -175,10 +175,10 @@ module.exports = async function (i: BaseInteraction) {
     if (
       !i.channel ||
       ![
-        ChannelType.GuildPrivateThread,
-        ChannelType.GuildPublicThread,
         ChannelType.GuildText,
         ChannelType.GuildVoice,
+        ChannelType.PrivateThread,
+        ChannelType.PublicThread,
       ].includes(i.channel.type)
     ) {
       await i

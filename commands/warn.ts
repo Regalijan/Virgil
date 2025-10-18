@@ -15,11 +15,9 @@ export = {
     const reason = i.options.getString("reason") ?? "No reason provided.";
     const user = i.options.getUser("user", true);
     const logId = createHash("sha256")
-      .update(randomBytes(256))
-      .digest("base64")
-      .replaceAll("=", "")
-      .replaceAll("/", "_")
-      .replaceAll("+", "-");
+      .update(new Uint8Array(randomBytes(256).buffer))
+      .digest("base64url");
+
     const logObj = {
       id: logId,
       moderator: `${i.user.tag} (${i.user.id})`,

@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  MessageFlagsBitField,
+} from "discord.js";
 
 export = {
   name: "hug",
@@ -12,7 +16,7 @@ export = {
       await i.reply({
         content:
           "The server is out of hugs, please try again later. (HTTP error)",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

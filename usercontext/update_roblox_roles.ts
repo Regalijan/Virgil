@@ -1,4 +1,7 @@
-import { UserContextMenuCommandInteraction } from "discord.js";
+import {
+  MessageFlagsBitField,
+  UserContextMenuCommandInteraction,
+} from "discord.js";
 import Common from "../common";
 
 export = {
@@ -7,7 +10,7 @@ export = {
     if (!i.member) {
       await i.reply({
         content: "This user is not in the server!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -17,12 +20,12 @@ export = {
       await i.reply({
         content:
           "`Error: <ContextMenuInteraction>.guild is null or member does not exist.`",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
-    const { content, verified } = await Common.verify(
+    const { content } = await Common.verify(
       member,
       i.targetId === i.user.id,
       i,
@@ -30,6 +33,9 @@ export = {
 
     i.deferred
       ? await i.followUp({ content })
-      : await i.reply({ content, ephemeral: true });
+      : await i.reply({
+          content,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
   },
 };

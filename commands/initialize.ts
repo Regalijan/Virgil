@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import mongo from "../mongo";
 
 export = {
@@ -14,7 +14,7 @@ export = {
       await i.reply({
         content:
           "Uh oh! Something happened during the pre-run check - but don't worry, nothing was modified!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -24,7 +24,7 @@ export = {
         content: `Existing settings were found for this server! If you wish to start from scratch,${
           i.guild?.ownerId === i.user.id ? "" : " ask the server owner to "
         } run the \`/factoryreset\` command`,
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -38,7 +38,7 @@ export = {
       await i.reply({
         content:
           "Uh oh! Something happened when trying to initialize! Please try again in a few minutes.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

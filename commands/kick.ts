@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlagsBitField,
+  PermissionsBitField,
+} from "discord.js";
 
 export = {
   name: "kick",
@@ -22,7 +26,7 @@ export = {
     if (!member) {
       await i.reply({
         content: "I was unable to locate that user!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -30,7 +34,7 @@ export = {
     if (user.id === i.user.id) {
       await i.reply({
         content: "You are **not** kicking yourself.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -39,7 +43,7 @@ export = {
       await i.reply({
         content:
           "I am not able to kick this user because they are higher on the role list than me.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -52,7 +56,7 @@ export = {
       await i.reply({
         content:
           "An error occured when checking permissions - please try again later.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -62,7 +66,7 @@ export = {
     ) {
       await i.reply({
         content: "You do not have permission to kick this user!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -78,7 +82,7 @@ export = {
       console.error(e);
       await i.reply({
         content: `I was unable to kick the user for the following reason:\n\n${e}`,
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
     }
   },

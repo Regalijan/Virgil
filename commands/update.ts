@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import Common from "../common";
 
 export = {
@@ -10,16 +10,12 @@ export = {
     if (!member) {
       await i.reply({
         content: "This user is not in the server!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
-    const { content, verified } = await Common.verify(
-      member,
-      member.id === i.user.id,
-      i,
-    );
+    const { content } = await Common.verify(member, member.id === i.user.id, i);
 
     i.deferred ? await i.followUp({ content }) : await i.reply({ content });
   },

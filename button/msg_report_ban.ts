@@ -1,6 +1,7 @@
 import {
   ButtonInteraction,
   EmbedBuilder,
+  MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
 import mongo from "../mongo";
@@ -17,7 +18,7 @@ export = {
     if (!associatedReport) {
       await i.reply({
         content: "The report could not be found! Was it already acted upon?",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -26,7 +27,7 @@ export = {
       await i.reply({
         content:
           "I do not have permission to ban! Please check my permissions.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -37,7 +38,7 @@ export = {
     if (!reportMessage) {
       await i.reply({
         content: "Failed to locate message! Was it deleted?",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -58,7 +59,7 @@ export = {
     }
     await i.reply({
       content: `${reportMessage.author.tag} banned!`,
-      ephemeral: true,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
     if (!settings?.messageReportActionLogChannelWebhook) return;
 

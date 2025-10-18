@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlagsBitField,
+  PermissionsBitField,
+} from "discord.js";
 import mongo from "../mongo";
 
 export = {
@@ -9,7 +13,7 @@ export = {
       await i.reply({
         content:
           "I was unable to ban this user because I do not have the Ban Members permission.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

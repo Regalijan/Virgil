@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  MessageFlagsBitField,
+} from "discord.js";
 
 export = {
   name: "duck",
@@ -17,7 +21,7 @@ export = {
     if (!duckReq?.ok) {
       await i.reply({
         content: "The duck pond is currently under maintenance.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import { execSync } from "child_process";
 
 export = {
@@ -13,7 +13,7 @@ export = {
       .trim();
     return await i.reply({
       content: `View the Terms of Service at ${remote}/blob/${branch}/Terms.md\nView the Privacy Policy at ${remote}/blob/${branch}/Privacy.md`,
-      ephemeral: true,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
   },
 };

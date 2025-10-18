@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import mongo from "../mongo";
 const settingsStore = mongo.db("bot").collection("settings");
 
@@ -10,7 +10,7 @@ export = {
       await i.reply({
         content:
           "Server settings are not initialized! Please run the initialize command.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

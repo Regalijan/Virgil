@@ -5,6 +5,7 @@ import {
   ChannelType,
   EmbedBuilder,
   MessageContextMenuCommandInteraction,
+  MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
 import { createHash, randomBytes } from "crypto";
@@ -21,7 +22,7 @@ export = {
     if (!message) {
       await i.reply({
         content: "An error occurred locating the message! Was it deleted?",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -30,7 +31,7 @@ export = {
     if (!settings?.messageReportChannel) {
       await i.reply({
         content: "Message reporting is disabled in this server.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -42,7 +43,7 @@ export = {
       await i.reply({
         content:
           "Your report was not sent! The channel set by server moderation could not be found.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -55,14 +56,14 @@ export = {
       await i.reply({
         content:
           "Your report was not sent! I have been restricted from sending in the report channel.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
     const reportId = createHash("sha256")
-      .update(randomBytes(256))
-      .digest("base64");
+      .update(new Uint8Array(randomBytes(256).buffer))
+      .digest("base64url");
 
     const embed = new EmbedBuilder()
       .setAuthor({
@@ -146,7 +147,7 @@ export = {
     });
     await i.reply({
       content: `Report sent! For reference, your report ID is \`${reportId}\``,
-      ephemeral: true,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
   },
 };

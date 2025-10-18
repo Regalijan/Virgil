@@ -1,4 +1,8 @@
-import { ButtonInteraction, EmbedBuilder } from "discord.js";
+import {
+  ButtonInteraction,
+  EmbedBuilder,
+  MessageFlagsBitField,
+} from "discord.js";
 import mongo from "../mongo";
 import DeleteMessage from "../webhook_delete";
 import SendLog from "../send_log";
@@ -15,7 +19,7 @@ export = {
     if (!associatedReport) {
       await i.reply({
         content: "The report could not be found! Was it already acted upon?",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -33,7 +37,7 @@ export = {
     }
     await i.reply({
       content: "Report ignored!",
-      ephemeral: true,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
 
     if (!settings?.messageReportActionLogChannelWebhook) return;

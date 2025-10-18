@@ -1,4 +1,8 @@
-import { ButtonInteraction, GuildMember } from "discord.js";
+import {
+  ButtonInteraction,
+  GuildMember,
+  MessageFlagsBitField,
+} from "discord.js";
 import Common from "../common";
 
 export = {
@@ -13,15 +17,23 @@ export = {
       await i.reply({
         content:
           "You are not verified, please run the `/verify` command again to get started.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
-    const payload = { content: response.content, ephemeral: true };
+    const payload = { content: response.content };
     canEdit
       ? await i.message.edit(payload)
       : i.deferred
-        ? await i.followUp(payload)
-        : await i.reply(payload);
+        ? await i.followUp(
+            Object.defineProperty(payload, "flags", [
+              MessageFlagsBitField.Flags.Ephemeral,
+            ]),
+          )
+        : await i.reply(
+            Object.defineProperty(payload, "flags", [
+              MessageFlagsBitField.Flags.Ephemeral,
+            ]),
+          );
   },
 };

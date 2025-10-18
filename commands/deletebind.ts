@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import mongo from "../mongo";
 
 const bindDb = mongo.db("bot").collection("binds");
@@ -12,7 +12,7 @@ export = {
     });
     await i.reply({
       content: bind?.value ? "Bind deleted!" : "Bind does not exist!",
-      ephemeral: !bind?.value,
+      flags: !bind?.value ? [MessageFlagsBitField.Flags.Ephemeral] : undefined,
     });
   },
 };

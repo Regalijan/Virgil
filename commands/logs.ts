@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMember,
+  MessageFlagsBitField,
   PermissionsBitField,
   ThreadChannel,
 } from "discord.js";
@@ -60,7 +61,7 @@ export = {
           await i.reply({
             content:
               "Threads cannot be ignored (they inherit the settings of their parent channel)",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -73,7 +74,7 @@ export = {
           await i.reply({
             content:
               "An ignore of that type or a global ignore was already set for the channel!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -275,7 +276,7 @@ export = {
         if (setChannel?.type !== ChannelType.GuildText) {
           await i.reply({
             content: "The log channel must be a normal text channel!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -292,7 +293,7 @@ export = {
           await i.reply({
             content:
               "I cannot create the webhook for the log! Please grant me permission to manage webhooks!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -312,11 +313,11 @@ export = {
         break;
 
       case "show_ignored":
-        const allIgnored = await (
-          await ignoredDB.find({
+        const allIgnored = await ignoredDB
+          .find({
             guild: i.guildId,
           })
-        ).toArray();
+          .toArray();
         embed.setDescription("All ignored channels for " + i.guild?.name);
         for (const ignored of allIgnored) {
           const ignoredChannel = await i.guild?.channels

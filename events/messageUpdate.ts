@@ -6,8 +6,8 @@ import SendLog from "../send_log";
 const mongo = db.db("bot");
 
 module.exports = async function (
-  oldMessage: Message<boolean> | PartialMessage,
-  newMessage: Message<boolean> | PartialMessage,
+  oldMessage: Message | PartialMessage,
+  newMessage: Message | PartialMessage,
 ) {
   if (
     !oldMessage ||

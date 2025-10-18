@@ -1,6 +1,7 @@
 import {
   ChannelType,
   ChatInputCommandInteraction,
+  MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
 
@@ -13,7 +14,7 @@ export = {
     if (targetApiChannel.type === ChannelType.DM) {
       await i.reply({
         content: "Sorry but DM channels cannot be used with this command.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -33,11 +34,14 @@ export = {
       await i.reply({
         content:
           "Oops! I do not have permission to send messages to this channel!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
     await target.send({ content: i.options.getString("message", true) });
-    await i.reply({ content: "Message sent!", ephemeral: true });
+    await i.reply({
+      content: "Message sent!",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
   },
 };

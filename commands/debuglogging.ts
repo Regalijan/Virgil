@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 
 // This command intentionally does not have an included definition
 // It should not ever be registered globally
@@ -11,12 +11,18 @@ export = {
     if (toggleChoice) {
       // @ts-expect-error
       process.emit("enableDebug");
-      await i.reply({ content: "Debug logging enabled!", ephemeral: true });
+      await i.reply({
+        content: "Debug logging enabled!",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
       return;
     }
 
     // @ts-expect-error
     process.emit("disableDebug");
-    await i.reply({ content: "Debug logging disabled!", ephemeral: true });
+    await i.reply({
+      content: "Debug logging disabled!",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
   },
 };

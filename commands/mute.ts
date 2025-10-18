@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlagsBitField,
+  PermissionsBitField,
+} from "discord.js";
 
 export = {
   name: "mute",
@@ -8,7 +12,7 @@ export = {
       await i.reply({
         content:
           'I cannot mute as I do not have the "Timeout members" permission.',
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -19,7 +23,7 @@ export = {
     if (targetGuildMember?.communicationDisabledUntil) {
       await i.reply({
         content: "The user is already muted!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -27,7 +31,7 @@ export = {
     if (!targetGuildMember) {
       await i.reply({
         content: "That user could not be found!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -40,7 +44,7 @@ export = {
     if (timeoutLength > 2419200000) {
       await i.reply({
         content: "Mute length cannot be longer than 28 days.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }

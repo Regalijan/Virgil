@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 
@@ -9,7 +9,7 @@ export = {
     const subc = i.options.getSubcommand(true);
     const bindDb = mongo.db("bot").collection("binds");
     const bindId = createHash("sha256")
-      .update(randomBytes(512))
+      .update(new Uint8Array(randomBytes(512).buffer))
       .digest("base64")
       .replaceAll("=", "")
       .replaceAll("/", "_")
@@ -19,7 +19,7 @@ export = {
         if (i.options.getInteger("group_id", true) < 1) {
           await i.reply({
             content: "Group IDs cannot be negative!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -28,7 +28,7 @@ export = {
           await i.reply({
             content:
               "You cannot use group 0, please bind another verified role.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -40,7 +40,7 @@ export = {
         if (!groupRequest) {
           await i.reply({
             content: "The group could not be validated!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -50,7 +50,7 @@ export = {
         if (!groupData.data?.length) {
           await i.reply({
             content: "This group does not exist!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -69,7 +69,7 @@ export = {
         if (i.options.getInteger("badge_id", true) < 0) {
           await i.reply({
             content: "Badge IDs cannot be negative!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -82,7 +82,7 @@ export = {
         if (!badgeVerify?.ok) {
           await i.reply({
             content: "Badge could not be validated! Does it exist?",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -112,8 +112,8 @@ export = {
         if (!bundleVerify) {
           await i.reply({
             content:
-              "An error occured when looking up the bundle! Please try again later.",
-            ephemeral: true,
+              "An error occurred when looking up the bundle! Please try again later.",
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -121,7 +121,7 @@ export = {
         if (!bundleVerify.ok) {
           await i.reply({
             content: "The bundle you specified does not exist.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -139,7 +139,7 @@ export = {
         if (i.options.getInteger("gamepass_id", true) < 1) {
           await i.reply({
             content: "GamePass IDs cannot be less than 1!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -162,7 +162,7 @@ export = {
         if (!gamePassVerify.ok) {
           await i.reply({
             content: "GamePass does not exist! Try again.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -180,7 +180,7 @@ export = {
         if (i.options.getInteger("asset_id", true) < 1) {
           await i.reply({
             content: "Asset IDs cannot be less than 1!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -196,7 +196,7 @@ export = {
           await i.reply({
             content:
               "An error occurred when looking up that asset! Please try again later.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -204,7 +204,7 @@ export = {
         if (!assetVerify.ok) {
           await i.reply({
             content: "This asset does not exist! Try again.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -255,7 +255,7 @@ export = {
           await i.reply({
             content:
               "An error occurred when looking up that user! Please try again later.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
@@ -266,7 +266,7 @@ export = {
           await i.reply({
             content:
               "This user does not exist! Please make sure that you spelled it correctly.",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }

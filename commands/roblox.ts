@@ -2,6 +2,7 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildMember,
+  MessageFlagsBitField,
   Team,
   User,
 } from "discord.js";
@@ -33,7 +34,7 @@ export = {
       await i.reply({
         content:
           "An error occurred when looking up this user! Please try again later.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -41,7 +42,7 @@ export = {
     if (verifyRegistryReq.status === 404) {
       await i.reply({
         content: "This user is not verified!",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -55,7 +56,7 @@ export = {
       await i.reply({
         content:
           "An error occurred when retrieving information from Roblox! Please try again later.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
