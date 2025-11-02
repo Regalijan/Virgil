@@ -21,7 +21,7 @@
   "dependencies": {
     "@sentry/node": "^10.22.0",
     "bufferutil": "^4.0.9",
-    "discord.js": "^14.24.1",
+    "discord.js": "^14.24.2",
     "dotenv": "^17.2.3",
     "ioredis": "^5.8.2",
     "mongodb": "^6.20.0",
