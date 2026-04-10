@@ -28,7 +28,7 @@
     "sodium-native": "^5.1.0"
   },
   "devDependencies": {
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "typescript": "^6.0.2"
   },
   "prettier": {
