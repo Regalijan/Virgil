@@ -20,7 +20,6 @@ export = {
     let textChannels = 0;
     let voiceChannels = 0;
     let newsChannels = 0;
-    let stageChannels = 0;
     let threads = 0;
     let categories = 0;
     i.guild?.channels.cache.forEach((channel) => {
@@ -34,7 +33,6 @@ export = {
         ].includes(channel.type)
       )
         threads++;
-      if (channel.type === ChannelType.GuildStageVoice) stageChannels++;
       if (channel.type === ChannelType.GuildNews) newsChannels++;
       if (channel.type === ChannelType.GuildText) textChannels++;
     });
@@ -85,7 +83,6 @@ export = {
         { name: "Text Channels", value: `${textChannels}`, inline: true },
         { name: "Threads", value: `${threads}`, inline: true },
         { name: "News Channels", value: `${newsChannels}`, inline: true },
-        { name: "Stage Channels", value: `${stageChannels}`, inline: true },
         { name: "Voice Channels", value: `${voiceChannels}`, inline: true },
       );
     const splashUrl = i.guild.splashURL({ size: 4096 });
