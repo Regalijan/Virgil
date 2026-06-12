@@ -30,7 +30,6 @@ We have no intentions of giving your information to Mark Zuckerberg (not that he
 - Discord: This should be obvious
 - Oracle: Service hosting
 - Mailgun: Outbound email solutions
-- Sentry: Error reporting and monitoring
 
 ## Limitations
 
@@ -38,13 +37,13 @@ This Privacy Policy only applies to the hosted service provided by the service o
 
 ## Children
 
-The service is meant for users who meet the minimum age requirement to use Discord in their jurisdiction. If you believe your child has given their personal information to us, please contact us at w [at] wolftallemo dot com
+The service is meant for users who meet the minimum age requirement to use Discord in their jurisdiction. If you believe your child has given their personal information to us, please contact us at r [at] regalijan dot com
 
 ## Data Retention
 
 We only retain data as long as necessary to conduct operations and allow use of the service as intended (this section does not include any data not written to disk)
 
-- Error Reports: Error Reports: Error report data is deleted after 90 days as stated in [Sentry's Data Security, Privacy, and Compliance page](https://sentry.io/security/#data-retention).
+- Error Reports: We store error reports in a self-hosted Sentry instance for 30 days.
 - Message Information: We store information related to message reports until the report is reviewed by the server's staff (message content is deleted after 30 days if the report is not reviewed before then)
 - Server Settings: We store settings as long as the service is actively used to ensure the service works as intended, these may be deleted by running the `/factoryreset` command
 - Moderation Information: We store moderation logs until a server moderator deletes the associated log
@@ -71,6 +70,6 @@ The above rights are subject to limitations based on applicable law.
 
 ## Contact
 
-You may contact the service operator with questions at w [at] wolftallemo dot com
+You may contact the service operator with questions at r [at] regalijan dot com
 
 -- Self-hosts: You must change the contact version found in the "Contact" and "Children" sections (it doesn't have to be an email address) and add other information based on your changes to your copy --
