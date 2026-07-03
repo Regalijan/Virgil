@@ -15,6 +15,7 @@ Legend:
 - `/roblox` - Displays Roblox profile information
 
 ### Server Management
+
 - `/banmessage set <message: string>` - Sets the message to send when a user is banned (displayed before reason)
 - `/banmessage clear` - Clears the ban message
 - `/bind group <group_id: integer> <role: RoleResolvable> <rank?: integer>` - Bind a role to a group and rank
