@@ -27,13 +27,13 @@ export = {
       if (channel.type === ChannelType.GuildVoice) voiceChannels++;
       if (
         [
-          ChannelType.GuildNewsThread,
-          ChannelType.GuildPrivateThread,
-          ChannelType.GuildPublicThread,
+          ChannelType.AnnouncementThread,
+          ChannelType.PrivateThread,
+          ChannelType.PublicThread,
         ].includes(channel.type)
       )
         threads++;
-      if (channel.type === ChannelType.GuildNews) newsChannels++;
+      if (channel.type === ChannelType.GuildAnnouncement) newsChannels++;
       if (channel.type === ChannelType.GuildText) textChannels++;
     });
 
