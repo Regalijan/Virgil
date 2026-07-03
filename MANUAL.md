@@ -15,11 +15,6 @@ Legend:
 - `/roblox` - Displays Roblox profile information
 
 ### Server Management
-
-- `/antiphish status` - Display current antiphish settings
-- `/antiphish toggle-antiphish` - Toggles antiphish on/off
-- `/antiphish toggle-autoban` - Toggles autoban on/off
-- `/antiphish set-message <message: string>` - Sets the antiphish ban message
 - `/banmessage set <message: string>` - Sets the message to send when a user is banned (displayed before reason)
 - `/banmessage clear` - Clears the ban message
 - `/bind group <group_id: integer> <role: RoleResolvable> <rank?: integer>` - Bind a role to a group and rank
@@ -63,7 +58,6 @@ Legend:
 ### Fun
 
 - `/8ball <question: string>` - Answers a question
-- `/birb` - Displays a random bird image
 - `/bonk <user: UserResolvable>` - Bonks a user
 - `/cat` - Displays a random cat image
 - `/dog` - Displays a random dog image
