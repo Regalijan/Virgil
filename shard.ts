@@ -1,4 +1,7 @@
 import { config as dotenv } from "dotenv";
+
+dotenv();
+
 import { readdirSync } from "fs";
 import { join } from "path";
 import { ActivityType, Client, GatewayIntentBits } from "discord.js";
@@ -8,7 +11,6 @@ import agenda from "./agenda";
 import custom_statuses from "./custom_statuses.json";
 
 db.connect().then(() => {});
-dotenv();
 
 const events: Map<string, any> = new Map();
 
