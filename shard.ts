@@ -1,15 +1,10 @@
 import { config as dotenv } from "dotenv";
 import { readdirSync } from "fs";
 import { join } from "path";
-import {
-  ActivityType,
-  Client,
-  GatewayIntentBits,
-  PermissionsBitField,
-  ShardClientUtil,
-} from "discord.js";
+import { ActivityType, Client, GatewayIntentBits } from "discord.js";
 import Logger from "./logger";
 import db from "./mongo";
+import agenda from "./agenda";
 import custom_statuses from "./custom_statuses.json";
 
 db.connect().then(() => {});
@@ -50,11 +45,25 @@ function loadEvents() {
   });
 }
 
+function loadJobs() {
+  for (const file of readdirSync(join(__dirname, "jobs")).filter((f) =>
+    f.endsWith(".js"),
+  )) {
+    const requiredJob = require(`./jobs/${file}`);
+    agenda.define(
+      file,
+      (job) => requiredJob.job(job, bot),
+      requiredJob.options ?? undefined,
+    );
+  }
+}
+
 async function logDebug(message: any) {
   console.log(`SHARD ${bot.shard?.ids[0]}:\n${message}`);
 }
 
 loadEvents();
+loadJobs();
 
 bot.login().catch((e) => {
   Logger(e);
@@ -68,6 +77,8 @@ process.on("enableDebug", async function () {
 process.on("disableDebug", async function () {
   bot.off("debug", logDebug);
 });
+
+agenda.start();
 
 const mongo = db.db("bot");
 
@@ -83,43 +94,6 @@ setInterval(async function (): Promise<void> {
 }, 120000);
 
 setInterval(async function (): Promise<void> {
-  try {
-    const bans = await mongo
-      .collection("bans")
-      .find({ unban: { $lte: Date.now() } })
-      .toArray();
-    for (const ban of bans) {
-      const shard = ShardClientUtil.shardIdForGuildId(
-        ban.server,
-        bot.shard?.count ?? 1,
-      );
-      await bot.shard?.broadcastEval(
-        async (c) => {
-          const server = await c.guilds.fetch(ban.server).catch(() => {});
-          if (
-            !server?.members?.me?.permissions?.has(
-              PermissionsBitField.Flags.BanMembers,
-            )
-          )
-            return;
-          const member = await server.bans.fetch(ban.user).catch(() => {});
-          if (!member) return;
-          try {
-            await server.bans.remove(member.user.id, "Temporary ban expired.");
-            await mongo
-              .collection("bans")
-              .findOneAndDelete({ user: member.user.id });
-          } catch (e) {
-            console.error(e);
-          }
-        },
-        { shard: shard },
-      );
-    }
-  } catch (e) {
-    Logger(e);
-    return;
-  }
   try {
     await mongo
       .collection("reports")
