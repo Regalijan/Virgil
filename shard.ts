@@ -78,7 +78,7 @@ process.on("disableDebug", async function () {
   bot.off("debug", logDebug);
 });
 
-agenda.start();
+agenda.start().then(() => {});
 
 const mongo = db.db("bot");
 
