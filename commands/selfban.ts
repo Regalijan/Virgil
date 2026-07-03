@@ -3,7 +3,7 @@ import {
   MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
-import mongo from "../mongo";
+import agenda from "../agenda";
 
 export = {
   name: "selfban",
@@ -44,10 +44,10 @@ export = {
         reason: "Natural Selection",
       });
       aheadToUnban += Date.now();
-      await mongo
-        .db("bot")
-        .collection("bans")
-        .insertOne({ server: i.guildId, unban: aheadToUnban, user: target.id });
+      await agenda.schedule(new Date(aheadToUnban), "clear-temporary-ban", {
+        server: i.guildId,
+        user: target.id,
+      });
     } else {
       await i.reply({
         content: "Try again.",
