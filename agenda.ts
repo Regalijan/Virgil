@@ -1,10 +1,9 @@
 import { Agenda } from "agenda";
 import { MongoBackend } from "@agendajs/mongo-backend";
 import { RedisBackend } from "@agendajs/redis-backend";
+import redis from "./redis";
 
-const redisBackend = new RedisBackend({
-  connectionString: process.env.REDIS ?? "redis://redis:6379",
-});
+const redisBackend = new RedisBackend({ redis });
 const agenda = new Agenda({
   backend: new MongoBackend({
     address: `${process.env.MONGOURL ?? "mongodb://mongo:27017"}/agenda`,
