@@ -21,7 +21,7 @@
   "dependencies": {
     "@agendajs/mongo-backend": "^4.0.2",
     "@agendajs/redis-backend": "^3.0.6",
-    "@sentry/node": "^10.63.0",
+    "@sentry/node": "^10.64.0",
     "agenda": "^6.2.5",
     "bufferutil": "^4.1.0",
     "discord.js": "^14.26.4",
