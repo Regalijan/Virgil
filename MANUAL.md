@@ -41,6 +41,9 @@ Legend:
 - `/listbinds` - Lists all binds
 - `/nicknameformat <format: string>` - Sets the nickname format (see [nickname formatting](#nickname-formatting))
 - `/nicknamelock` - Sets whether usernames should periodically be updated
+- `/stickyroles add <role: Role>` - Adds a sticky role (role that is reapplied when a user leaves and rejoins)
+- `/stickyroles list` - Lists all active sticky roles
+- `/stickyroles remove <role: Role>` - Removes a sticky role
 
 ### Moderation
 
