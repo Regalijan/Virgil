@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "prettier": "^3.9.4",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "prettier": {
     "endOfLine": "auto"
