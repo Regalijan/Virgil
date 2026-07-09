@@ -8,5 +8,6 @@
   "description_localizations": {
     "es-ES": "Envía un enlace a las condiciones de servicio y a la política de privacidad",
     "sv-SE": "Skicka en länk till användarvillkoren och sekretesspolicyn."
-  }
+  },
+  "contexts": [0, 1, 2]
 }

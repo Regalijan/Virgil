@@ -8,5 +8,6 @@
   "description_localizations": {
     "es-ES": "Graznido",
     "sv-SE": "Snatter"
-  }
+  },
+  "contexts": [0, 1, 2]
 }

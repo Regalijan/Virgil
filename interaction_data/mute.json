@@ -52,5 +52,5 @@
     }
   ],
   "default_member_permissions": "1099511627776",
-  "dm_permission": false
+  "contexts": [0]
 }

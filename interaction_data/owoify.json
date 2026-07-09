@@ -20,5 +20,6 @@
       },
       "required": true
     }
-  ]
+  ],
+  "contexts": [0, 1, 2]
 }

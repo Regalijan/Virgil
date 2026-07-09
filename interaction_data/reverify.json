@@ -9,5 +9,5 @@
     "es-ES": "Cambia tu cuenta de Roblox",
     "sv-SE": "Ändra ditt Roblox-konto"
   },
-  "dm_permission": false
+  "contexts": [0]
 }

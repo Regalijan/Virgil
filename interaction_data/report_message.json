@@ -1,5 +1,5 @@
 {
   "name": "Report Message to Server Mods",
   "type": 3,
-  "dm_permission": false
+  "contexts": [0]
 }

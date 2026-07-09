@@ -8,5 +8,6 @@
   "description_localizations": {
     "es-ES": "Muestra tu velocidad de internet",
     "sv-SE": "Visa din internet hastighet"
-  }
+  },
+  "contexts": [0, 1, 2]
 }

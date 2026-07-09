@@ -11,5 +11,5 @@
     "sv-SE": "Raderar alla inställningar och lämnar servern"
   },
   "default_member_permissions": "8",
-  "dm_permission": false
+  "contexts": [0]
 }

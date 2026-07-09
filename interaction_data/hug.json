@@ -25,5 +25,5 @@
       "required": true
     }
   ],
-  "dm_permission": false
+  "contexts": [0]
 }

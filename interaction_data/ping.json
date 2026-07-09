@@ -1,4 +1,5 @@
 {
   "name": "ping",
-  "description": "Pong!"
+  "description": "Pong!",
+  "contexts": [0, 1, 2]
 }
