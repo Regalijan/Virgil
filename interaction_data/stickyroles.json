@@ -1,0 +1,39 @@
+{
+  "name": "stickyroles",
+  "description": "Manage sticky roles",
+  "options": [
+    {
+      "type": 1,
+      "name": "create",
+      "description": "Create a sticky role",
+      "options": [
+        {
+          "type": 8,
+          "name": "role",
+          "description": "Role to use as a sticky role",
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "list",
+      "description": "List all sticky roles for this server"
+    },
+    {
+      "type": 1,
+      "name": "remove",
+      "description": "Remove a sticky role",
+      "options": [
+        {
+          "type": 8,
+          "name": "role",
+          "description": "The role that will no longer be sticky",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "default_member_permissions": "32",
+  "contexts": [0]
+}
