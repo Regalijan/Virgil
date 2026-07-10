@@ -1,0 +1,14 @@
+{
+  "name": "reversesearch",
+  "description": "Look up a user's Discord accounts by Roblox account",
+  "options": [
+    {
+      "type": 3,
+      "name": "username",
+      "description": "Username (or id) to look up",
+      "required": true
+    }
+  ],
+  "default_member_permissions": "32",
+  "contexts": [0]
+}
