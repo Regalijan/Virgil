@@ -49,13 +49,12 @@ module.exports = async function (
           stickyRoles.find((sr) => sr.role === role),
       );
 
-      const removals: { _id: ObjectId }[] = stickyRoles
+      const removals: ObjectId[] = stickyRoles
         .filter((sr) => removedStickyRoles.includes(sr.role))
-        .map((s) => {
-          return { _id: s._id };
-        });
+        .map((s) => s._id);
 
-      await appliedStickyRolesCol.deleteMany(removals);
+      if (removals.length)
+        await appliedStickyRolesCol.deleteMany({ _id: { $in: removals } });
     }
   }
 
