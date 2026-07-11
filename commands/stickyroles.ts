@@ -8,7 +8,7 @@ import {
 const stickyRolesCol = mongo.db("bot").collection("sticky_roles");
 
 export = {
-  name: "stickyrole",
+  name: "stickyroles",
   async exec(i: ChatInputCommandInteraction) {
     const command = i.options.getSubcommand(true);
 
