@@ -18,6 +18,13 @@ export = {
         .project({ _id: 0 })
         .toArray();
 
+      if (!stickyRolesList.length) {
+        await i.reply({
+          content: "There are no sticky roles.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+      }
+
       const embed = new EmbedBuilder()
         .setDescription(
           stickyRolesList
@@ -37,7 +44,7 @@ export = {
     const existingStickyRole = await stickyRolesCol.findOne(obj);
 
     switch (command) {
-      case "add":
+      case "create":
         if (existingStickyRole) {
           await i.reply({
             content: "This role is already sticky!",
