@@ -23,6 +23,7 @@ export = {
           content: "There are no sticky roles.",
           flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
+        return;
       }
 
       const embed = new EmbedBuilder()
