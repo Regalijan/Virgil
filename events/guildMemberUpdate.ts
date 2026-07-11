@@ -19,8 +19,8 @@ module.exports = async function (
     oldMember.roles.cache.size !== newMember.roles.cache.size &&
     stickyRoles.length
   ) {
-    const oldRoles = oldMember.guild.roles.cache.keys().toArray();
-    const newRoles = newMember.guild.roles.cache.keys().toArray();
+    const oldRoles = oldMember.roles.cache.keys().toArray();
+    const newRoles = newMember.roles.cache.keys().toArray();
     const wasRoleApplied = newRoles.length > oldRoles.length;
     const appliedStickyRolesCol = mongo.collection("applied_sticky_roles");
 
