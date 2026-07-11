@@ -2,7 +2,6 @@ import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
-import { type ObjectId } from "mongodb";
 
 const mongo = db.db("bot");
 
@@ -57,12 +56,10 @@ module.exports = async function (
           stickyRoles.find((sr) => sr.role === role),
       );
 
-      const removals: ObjectId[] = stickyRoles
-        .filter((sr) => removedStickyRoles.includes(sr.role))
-        .map((s) => s._id);
-
-      if (removals.length)
-        await appliedStickyRolesCol.deleteMany({ _id: { $in: removals } });
+      await appliedStickyRolesCol.deleteMany({
+        guild: newMember.guild.id,
+        role: { $in: [removedStickyRoles], user: newMember.id },
+      });
     }
   }
 
