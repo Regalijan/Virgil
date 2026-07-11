@@ -41,7 +41,15 @@ module.exports = async function (
         });
       });
 
-      await appliedStickyRolesCol.insertMany(additions);
+      await appliedStickyRolesCol.updateMany(
+        {
+          guild: newMember.guild.id,
+          role: { $in: [addedStickyRoles] },
+          user: newMember.id,
+        },
+        { $setOnInsert: [additions] },
+        { upsert: true },
+      );
     } else {
       const removedStickyRoles = oldRoles.filter(
         (role) =>
