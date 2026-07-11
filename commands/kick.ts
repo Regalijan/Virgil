@@ -12,7 +12,7 @@ export = {
       await i.reply({
         content:
           'I cannot kick that user because I do not have the "Kick Members" permission.',
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -55,7 +55,7 @@ export = {
     if (!currentMember) {
       await i.reply({
         content:
-          "An error occured when checking permissions - please try again later.",
+          "An error occurred when checking permissions - please try again later.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;

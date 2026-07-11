@@ -1,5 +1,4 @@
 import {
-  ApplicationCommandType,
   BaseInteraction,
   ButtonInteraction,
   ChannelType,
@@ -7,8 +6,8 @@ import {
   EmbedBuilder,
   GuildMember,
   GuildMFALevel,
-  InteractionType,
   MessageContextMenuCommandInteraction,
+  MessageFlagsBitField,
   PermissionResolvable,
   UserContextMenuCommandInteraction,
 } from "discord.js";
@@ -99,7 +98,10 @@ module.exports = async function (i: BaseInteraction) {
       !contextMember?.permissions.has(contextCommand.permissions)
     ) {
       return await i
-        .reply({ content: "You cannot run this command!", ephemeral: true })
+        .reply({
+          content: "You cannot run this command!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        })
         .catch(Logger);
     }
 
@@ -112,7 +114,7 @@ module.exports = async function (i: BaseInteraction) {
           content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
             process.env.DSN ? Sentry.captureException(e) : e
           }`,
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         })
         .catch(Logger);
     }
@@ -125,7 +127,7 @@ module.exports = async function (i: BaseInteraction) {
       await i.reply({
         content:
           "Uh oh! The command could not be found! This might mean that a command was removed from the bot but the context app still exists.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -134,7 +136,7 @@ module.exports = async function (i: BaseInteraction) {
       await i.reply({
         content:
           "No guild member was found! Was this command run in a dm? If so that shouldn't have happened.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -148,7 +150,7 @@ module.exports = async function (i: BaseInteraction) {
           content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
             process.env.DSN ? Sentry.captureException(e) : e
           },`,
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         })
         .catch(Logger);
     }
@@ -161,7 +163,7 @@ module.exports = async function (i: BaseInteraction) {
       await i.reply({
         content:
           "Uh oh! Looks like this button is no longer active! This means that the command associated with this button was removed.",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -185,7 +187,7 @@ module.exports = async function (i: BaseInteraction) {
         .reply({
           content:
             "Hey! You can't run commands here! They may only be run in a thread or a standard text/voice text channel.",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         })
         .catch(Logger);
       return;
@@ -202,7 +204,7 @@ module.exports = async function (i: BaseInteraction) {
       if (!(await common.isMFAEnabled(i.user)))
         return await i.reply({
           content: `Sorry, but you must verify that you have MFA enabled to use this command!\n\nVisit ${process.env.MFA_VERIFY_SITE} to verify.`,
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
     }
 
@@ -235,7 +237,7 @@ module.exports = async function (i: BaseInteraction) {
         content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
           process.env.DSN ? Sentry.captureException(e) : e
         }\``,
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       })
       .catch(console.error);
   }

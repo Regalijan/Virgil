@@ -2,6 +2,7 @@ import {
   ChatInputCommandInteraction,
   DiscordAPIError,
   GuildMember,
+  MessageFlagsBitField,
 } from "discord.js";
 import logger from "../logger";
 
@@ -28,7 +29,7 @@ export = {
       if (!userResolveReq.ok) {
         await i.reply({
           content: "Failed to look up that username",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
       }
@@ -37,7 +38,7 @@ export = {
       if (!resolvedUser.data?.length) {
         await i.reply({
           content: "No user exists with that name",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         return;
       }
@@ -55,14 +56,17 @@ export = {
     );
 
     if (registryReq.status === 404) {
-      await i.reply({ content: "This user is not verified", ephemeral: true });
+      await i.reply({
+        content: "This user is not verified",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
       return;
     }
 
     if (!registryReq.ok) {
       await i.reply({
         content: "Lookup failed, try again later",
-        ephemeral: true,
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
@@ -82,14 +86,17 @@ export = {
       } catch (e) {
         if (e instanceof DiscordAPIError && e.status === 404) continue;
         logger(e);
-        await i.reply({ content: "Failed to retrieve users", ephemeral: true });
+        await i.reply({
+          content: "Failed to retrieve users",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
       }
     }
 
     await i.reply({
       content: `Accounts in this server are: ${usersInServer.join(", ")}`,
-      ephemeral: true,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
   },
 };

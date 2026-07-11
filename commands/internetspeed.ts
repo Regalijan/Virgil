@@ -3,6 +3,7 @@ import {
   ActionRowModalData,
   ChatInputCommandInteraction,
   EmbedBuilder,
+  MessageFlagsBitField,
   ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
@@ -42,7 +43,10 @@ export = {
         title: "Select Speedtest Server",
       });
     } catch {
-      await i.reply({ content: "Test failed", ephemeral: true });
+      await i.reply({
+        content: "Test failed",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
     }
     let submission: ModalSubmitInteraction;
     try {
@@ -51,14 +55,20 @@ export = {
         time: 30000,
       });
     } catch {
-      await i.reply({ content: "Too slow!", ephemeral: true });
+      await i.reply({
+        content: "Too slow!",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
       return;
     }
 
     const serverId = (submission.components[0] as ActionRowModalData)
       .components[0].value;
     if (serverId && isNaN(parseInt(serverId))) {
-      await i.reply({ content: "Invalid server ID", ephemeral: true });
+      await i.reply({
+        content: "Invalid server ID",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
       return;
     }
 

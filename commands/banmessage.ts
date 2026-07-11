@@ -20,7 +20,10 @@ export = {
           { guild: i.guildId },
           { $set: { banMessage: i.options.getString("message", true) } },
         );
-        await i.reply({ content: "Ban message set!", ephemeral: true });
+        await i.reply({
+          content: "Ban message set!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         break;
 
       case "clear":
@@ -30,7 +33,7 @@ export = {
         );
         await i.reply({
           content: "Ban message cleared!",
-          ephemeral: true,
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
         break;
     }

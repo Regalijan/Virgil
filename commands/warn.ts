@@ -2,6 +2,7 @@ import {
   ChannelType,
   ChatInputCommandInteraction,
   EmbedBuilder,
+  MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
 import mongo from "../mongo";
@@ -26,7 +27,10 @@ export = {
       target: user.id,
       reason: reason,
     };
-    await i.reply({ content: `Warned ${user.tag}`, ephemeral: true });
+    await i.reply({
+      content: `Warned ${user.tag}`,
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
     const settings = await mongo
       .db("bot")
       .collection("settings")

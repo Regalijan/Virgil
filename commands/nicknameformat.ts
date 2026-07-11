@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import mongo from "../mongo";
 
 const settingsDB = mongo.db("bot").collection("settings");
@@ -10,6 +10,9 @@ export = {
       { server: i.guildId },
       { $set: { nicknameformat: i.options.getString("format", true) } },
     );
-    await i.reply({ content: "Nickname format updated!", ephemeral: true });
+    await i.reply({
+      content: "Nickname format updated!",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
   },
 };

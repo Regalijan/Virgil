@@ -78,7 +78,10 @@ export = {
           server: i.guildId,
         });
 
-        await i.reply({ content: "Bypass applied!", ephemeral: true });
+        await i.reply({
+          content: "Bypass applied!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
 
       case "list":
@@ -140,7 +143,10 @@ export = {
           server: i.guildId,
         });
 
-        await i.reply({ content: "Filter deleted!", ephemeral: true });
+        await i.reply({
+          content: "Filter deleted!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
 
       case "remove_bypass":
@@ -151,7 +157,10 @@ export = {
           server: i.guildId,
         });
 
-        await i.reply({ content: "Bypass deleted!", ephemeral: true });
+        await i.reply({
+          content: "Bypass deleted!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
 
       default:

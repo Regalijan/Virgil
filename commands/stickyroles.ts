@@ -1,5 +1,9 @@
 import mongo from "../mongo";
-import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  MessageFlagsBitField,
+} from "discord.js";
 
 const stickyRolesCol = mongo.db("bot").collection("sticky_roles");
 
@@ -37,13 +41,16 @@ export = {
         if (existingStickyRole) {
           await i.reply({
             content: "This role is already sticky!",
-            ephemeral: true,
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
           });
           return;
         }
 
         await stickyRolesCol.insertOne(obj);
-        await i.reply({ content: "Sticky role added!", ephemeral: true });
+        await i.reply({
+          content: "Sticky role added!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
 
       case "remove":
@@ -60,7 +67,10 @@ export = {
           .db("bot")
           .collection("applied_sticky_roles")
           .deleteMany(obj);
-        await i.reply({ content: "Sticky role removed!", ephemeral: true });
+        await i.reply({
+          content: "Sticky role removed!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
         return;
 
       default:
