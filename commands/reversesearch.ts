@@ -82,7 +82,7 @@ export = {
 
         if (!guildUser) continue;
 
-        usersInServer.push(`<@${guildUser}>`);
+        usersInServer.push(`<@${guildUser.id}>`);
       } catch (e) {
         if (e instanceof DiscordAPIError && e.status === 404) continue;
         logger(e);
