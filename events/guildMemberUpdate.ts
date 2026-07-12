@@ -63,7 +63,8 @@ module.exports = async function (
 
       await appliedStickyRolesCol.deleteMany({
         guild: newMember.guild.id,
-        role: { $in: [removedStickyRoles], user: newMember.id },
+        role: { $in: [removedStickyRoles] },
+        user: newMember.id,
       });
     }
   }
