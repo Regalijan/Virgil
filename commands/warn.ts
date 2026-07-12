@@ -58,5 +58,11 @@ export = {
     embed.setColor(member?.displayColor ?? 0);
     await modlogStore.insertOne(logObj);
     await channel.send({ embeds: [embed] });
+
+    try {
+      await user.send({
+        content: `You have been warned in ${i.guild?.name} for the following reason: ${reason}\n\nPlease contact server staff if you think this was a mistake.`,
+      });
+    } catch {}
   },
 };
