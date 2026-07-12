@@ -2,6 +2,7 @@ import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
+import { type AnyBulkWriteOperation } from "mongodb";
 
 const mongo = db.db("bot");
 
@@ -30,25 +31,29 @@ module.exports = async function (
           stickyRoles.find((sr) => sr.role === role),
       );
 
-      const additions: { guild: string; role: string; user: string }[] = [];
+      const additions: AnyBulkWriteOperation[] = [];
 
       addedStickyRoles.forEach((role) => {
         additions.push({
-          guild: newMember.guild.id,
-          role,
-          user: newMember.user.id,
+          updateOne: {
+            filter: {
+              guild: newMember.guild.id,
+              role,
+              user: newMember.id,
+            },
+            update: {
+              $setOnInsert: {
+                guild: newMember.guild.id,
+                role,
+                user: newMember.id,
+              },
+            },
+            upsert: true,
+          },
         });
       });
 
-      await appliedStickyRolesCol.updateMany(
-        {
-          guild: newMember.guild.id,
-          role: { $in: [addedStickyRoles] },
-          user: newMember.id,
-        },
-        { $setOnInsert: [additions] },
-        { upsert: true },
-      );
+      await appliedStickyRolesCol.bulkWrite(additions);
     } else {
       const removedStickyRoles = oldRoles.filter(
         (role) =>
