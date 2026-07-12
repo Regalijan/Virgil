@@ -44,7 +44,7 @@ module.exports = async function (member: GuildMember) {
   const highestRole = member.guild.members.me?.roles.highest;
 
   if (
-    member.guild.members.me?.permissions.has(
+    !member.guild.members.me?.permissions.has(
       PermissionsBitField.Flags.ManageRoles,
     ) ||
     !highestRole
