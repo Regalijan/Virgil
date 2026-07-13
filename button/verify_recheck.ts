@@ -10,7 +10,7 @@ export = {
   async exec(i: ButtonInteraction): Promise<void> {
     if (!i.guild || !(i.member instanceof GuildMember)) return;
     const canEdit =
-      i.message.editable && i.user.id === i.message.interaction?.id;
+      i.message.editable && i.user.id === i.message.interactionMetadata?.id;
     await i.member.fetch();
     let response = await Common.verify(i.member, true, i);
     if (!response.verified) {
