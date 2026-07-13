@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import mongo from "../mongo";
 import SendLog from "../send_log";
+import deleteMessage from "../webhook_delete";
 const reportStore = mongo.db("bot").collection("reports");
 const settingsStore = mongo.db("bot").collection("settings");
 
@@ -62,6 +63,16 @@ export = {
       flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
     if (!settings?.messageReportActionLogChannelWebhook) return;
+
+    if (settings.messageReportChannelWebhook) {
+      try {
+        await deleteMessage(
+          settings.messageReportChannelWebhook,
+          i.message.id,
+          i.guild,
+        );
+      } catch {}
+    }
 
     const logEmbed = new EmbedBuilder()
       .setAuthor({

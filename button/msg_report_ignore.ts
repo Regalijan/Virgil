@@ -4,7 +4,7 @@ import {
   MessageFlagsBitField,
 } from "discord.js";
 import mongo from "../mongo";
-import DeleteMessage from "../webhook_delete";
+import deleteMessage from "../webhook_delete";
 import SendLog from "../send_log";
 const reportStore = mongo.db("bot").collection("reports");
 const settingsStore = mongo.db("bot").collection("settings");
@@ -26,15 +26,17 @@ export = {
     await reportStore.deleteOne({
       "message.id": i.message.embeds[0].fields[1].value,
     });
+
     const settings = await settingsStore.findOne({ guild: i.guildId });
-    const reportMessage = await i.channel?.messages.fetch(i.message.id);
-    if (reportMessage && settings?.messageReportChannelWebhook) {
-      await DeleteMessage(
-        settings.messageReportChannelWebhook,
-        reportMessage.id,
+
+    try {
+      await deleteMessage(
+        settings?.messageReportChannelWebhook,
+        i.message.id,
         i.guild,
       );
-    }
+    } catch {}
+
     await i.reply({
       content: "Report ignored!",
       flags: [MessageFlagsBitField.Flags.Ephemeral],
