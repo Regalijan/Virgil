@@ -8,6 +8,7 @@ import {
 import mongo from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
+import common from "../common";
 
 const settingsDB = mongo.db("bot").collection("settings");
 
@@ -40,6 +41,10 @@ module.exports = async function (member: GuildMember) {
     member.guild,
     "memberJoinLogChannelWebhook",
   );
+
+  try {
+    await common.verify(member, true);
+  } catch {}
 
   const highestRole = member.guild.members.me?.roles.highest;
 
