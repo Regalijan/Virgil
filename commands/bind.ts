@@ -7,6 +7,16 @@ export = {
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guild) throw Error("<ChatInputCommandInteraction>.guild is null");
     const subc = i.options.getSubcommand(true);
+    const { id: role, managed } = i.options.getRole("role", true);
+
+    if (managed) {
+      await i.reply({
+        content: "Bot-managed roles cannot be bound.",
+        flags: [MessageFlagsBitField.Flags.Ephemeral],
+      });
+      return;
+    }
+
     const bindDb = mongo.db("bot").collection("binds");
     const bindId = createHash("sha256")
       .update(new Uint8Array(randomBytes(512).buffer))
@@ -59,7 +69,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "group",
-          role: i.options.getRole("role", true).id,
+          role,
           group: i.options.getInteger("group_id", true),
           rank: i.options.getInteger("rank"),
         });
@@ -91,7 +101,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "badge",
-          role: i.options.getRole("role", true).id,
+          role,
           asset: i.options.getInteger("badge_id", true),
         });
         break;
@@ -130,7 +140,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "bundle",
-          role: i.options.getRole("role", true).id,
+          role,
           asset: i.options.getInteger("bundle_id", true),
         });
         break;
@@ -171,7 +181,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "gamepass",
-          role: i.options.getRole("role", true).id,
+          role,
           asset: i.options.getInteger("gamepass_id", true),
         });
         break;
@@ -213,7 +223,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "asset",
-          role: i.options.getRole("role", true).id,
+          role,
           asset: i.options.getInteger("asset_id", true),
         });
         break;
@@ -223,7 +233,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "verified",
-          role: i.options.getRole("role", true).id,
+          role,
         });
         break;
 
@@ -232,7 +242,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "unverified",
-          role: i.options.getRole("role", true).id,
+          role,
         });
         break;
 
@@ -275,7 +285,7 @@ export = {
           id: bindId,
           server: i.guildId,
           type: "friend",
-          role: i.options.getRole("role", true).id,
+          role,
           friend: userVerifyData.data[0].id,
         });
         break;
