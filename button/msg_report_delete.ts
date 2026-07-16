@@ -53,7 +53,7 @@ export = {
       return;
     }
 
-    const message = fetchedChannel.messages
+    const message = await fetchedChannel.messages
       .fetch(i.message.embeds[0].fields[1].value)
       .catch(() => {});
 
