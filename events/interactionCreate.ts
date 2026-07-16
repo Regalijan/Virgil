@@ -145,14 +145,23 @@ module.exports = async function (i: BaseInteraction) {
       await msgCommand.exec(i);
     } catch (e) {
       if (!process.env.DSN) console.error(e);
-      await i
-        .reply({
-          content: `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
-            process.env.DSN ? Sentry.captureException(e) : e
-          },`,
-          flags: [MessageFlagsBitField.Flags.Ephemeral],
-        })
-        .catch(Logger);
+      const content = `Oops! An error occurred when running this command! If you contact the developer, give them this information: \`Error: ${
+        process.env.DSN ? Sentry.captureException(e) : e
+      }`;
+
+      try {
+        i.deferred
+          ? await i.followUp({
+              content,
+              flags: [MessageFlagsBitField.Flags.Ephemeral],
+            })
+          : await i.reply({
+              content,
+              flags: [MessageFlagsBitField.Flags.Ephemeral],
+            });
+      } catch (e) {
+        Logger(e);
+      }
     }
     return;
   }
