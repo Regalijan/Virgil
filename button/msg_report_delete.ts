@@ -78,11 +78,7 @@ export = {
     const settings = await settingsStore.findOne({ guild: i.guildId });
 
     try {
-      await deleteMessage(
-        settings?.messageReportChannelWebhook,
-        i.guild,
-        i.message.id,
-      );
+      await message.delete();
     } catch (e) {
       let msg = "An unknown error has occurred.";
 
@@ -102,6 +98,14 @@ export = {
       });
       return;
     }
+
+    try {
+      await deleteMessage(
+        settings?.messageReportChannelWebhook,
+        i.guild,
+        i.message.id,
+      );
+    } catch {}
 
     await reportStore.deleteOne({
       _id: objectId,
