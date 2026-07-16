@@ -33,6 +33,11 @@ export = {
       return;
     }
 
+    const settings = await mongo
+      .db("bot")
+      .collection("settings")
+      .findOne({ guild: i.guild.id }, { projection: { banMessage: 1 } });
+
     let aheadToUnban = 0;
     const minutes = i.options.getInteger("minutes", false);
     if (minutes) aheadToUnban += minutes * 60000;
@@ -40,11 +45,16 @@ export = {
     if (hours) aheadToUnban += hours * 60 * 60000;
     const days = i.options.getInteger("days", false);
     if (days) aheadToUnban += days * 1440 * 60000;
+
+    let banMessage = `You have been banned from ${
+      i.guild?.name
+    } for the following reason:\n\n${i.options.getString("reason")}`;
+
+    if (settings?.banMessage) banMessage += `\n\n${banMessage}`;
+
     await target
       .send({
-        content: `You have been banned from ${
-          i.guild?.name
-        } for the following reason:\n\n${i.options.getString("reason")}`,
+        content: banMessage,
       })
       .catch((e) => console.error(e));
     await target.ban({
