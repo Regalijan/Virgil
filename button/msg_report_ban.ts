@@ -149,7 +149,7 @@ export = {
       })
       .setTitle("Report Resolved (Ban)")
       .setDescription(
-        `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`,
+        `Report ${associatedReport._id} was resolved by <@${i.user.id}>`,
       )
       .addFields(
         {

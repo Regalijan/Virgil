@@ -56,7 +56,7 @@ export = {
       })
       .setTitle("Report Ignored")
       .setDescription(
-        `Report ${associatedReport.reportId} was ignored by <@${i.user.id}>`,
+        `Report ${associatedReport._id} was ignored by <@${i.user.id}>`,
       )
       .addFields(
         {

@@ -125,7 +125,7 @@ export = {
       })
       .setTitle("Report Resolved (Message Deleted)")
       .setDescription(
-        `User ${associatedReport.reportId} was ignored by <@${i.user.id}>`,
+        `User ${associatedReport._id} was ignored by <@${i.user.id}>`,
       )
       .addFields(
         {
