@@ -8,7 +8,8 @@ import {
   ThreadChannel,
 } from "discord.js";
 import mongo from "../mongo";
-
+import webhookDelete from "../webhook_delete";
+import logger from "../logger";
 const settingsDB = mongo.db("bot").collection("settings");
 const ignoredDB = mongo.db("bot").collection("ignored");
 
@@ -16,6 +17,8 @@ export = {
   name: "logs",
   description: "View, set, or remove a log channel",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.guild) return; // There should always be a guild
+
     const embed = new EmbedBuilder();
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
     const settingsList = await settingsDB.findOne({ guild: i.guildId });
@@ -267,6 +270,14 @@ export = {
         ] = "";
         await settingsDB.updateOne({ guild: i.guildId }, $yeet);
         await i.reply({ content: `\`${removalChoice}\` log disabled!` });
+        try {
+          await webhookDelete(
+            choiceToSettingMap.get(removalChoice) ?? "" + "Webhook",
+            i.guild,
+          );
+        } catch (e) {
+          logger(e);
+        }
         break;
 
       case "set":

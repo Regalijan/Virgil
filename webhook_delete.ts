@@ -1,9 +1,10 @@
-import { Guild } from "discord.js";
+import { type Guild } from "discord.js";
+import logger from "./logger";
 
 export default async function (
   webhookUrl: string,
-  messageId: string,
   guild: Guild,
+  messageId?: string,
 ): Promise<void> {
   const webhookParts = webhookUrl
     .replace(/https:\/\/discord.com\/api\/?v?\d{0,2}?\/webhooks\//, "")
@@ -11,5 +12,14 @@ export default async function (
   const webhook = await guild.client
     .fetchWebhook(webhookParts[0], webhookParts[1])
     .catch(console.error);
-  await webhook?.delete(messageId).catch(console.error);
+
+  if (!webhook) return;
+
+  try {
+    if (messageId) {
+      await webhook.deleteMessage(messageId);
+    } else await webhook.delete("Log removed");
+  } catch (e) {
+    logger(e);
+  }
 }

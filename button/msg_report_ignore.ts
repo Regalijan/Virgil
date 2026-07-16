@@ -32,8 +32,8 @@ export = {
     try {
       await deleteMessage(
         settings?.messageReportChannelWebhook,
-        i.message.id,
         i.guild,
+        i.message.id,
       );
     } catch {}
 
