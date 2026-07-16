@@ -6,6 +6,7 @@ import {
   CommandInteraction,
   Guild,
   GuildMember,
+  MessageFlagsBitField,
   PermissionsBitField,
   RoleResolvable,
   Team,
@@ -353,6 +354,9 @@ export = {
       | CommandInteraction
       | UserContextMenuCommandInteraction,
   ): Promise<{ content: string; errored: boolean; verified: boolean }> {
+    await interaction?.deferReply({
+      flags: self ? undefined : [MessageFlagsBitField.Flags.Ephemeral],
+    });
     if (
       !member.guild.members.me?.permissions.has(
         PermissionsBitField.Flags.ManageRoles,
@@ -455,7 +459,6 @@ export = {
         verified: false,
       };
     }
-    await interaction?.deferReply({ ephemeral: !self });
 
     const {
       id: robloxUserId,

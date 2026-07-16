@@ -9,8 +9,7 @@ export = {
   name: "verify_recheck",
   async exec(i: ButtonInteraction): Promise<void> {
     if (!i.guild || !(i.member instanceof GuildMember)) return;
-    const canEdit =
-      i.message.editable && i.user.id === i.message.interactionMetadata?.id;
+
     await i.member.fetch();
     let response = await Common.verify(i.member, true, i);
     if (!response.verified) {
@@ -21,19 +20,19 @@ export = {
       });
       return;
     }
+
     const payload = { content: response.content };
-    canEdit
-      ? await i.message.edit(payload)
-      : i.deferred
-        ? await i.followUp(
-            Object.defineProperty(payload, "flags", [
-              MessageFlagsBitField.Flags.Ephemeral,
-            ]),
-          )
-        : await i.reply(
-            Object.defineProperty(payload, "flags", [
-              MessageFlagsBitField.Flags.Ephemeral,
-            ]),
-          );
+
+    await i.followUp(
+      Object.defineProperty(payload, "flags", [
+        MessageFlagsBitField.Flags.Ephemeral,
+      ]),
+    );
+
+    if (i.message.deletable) {
+      try {
+        await i.message.delete();
+      } catch {}
+    }
   },
 };

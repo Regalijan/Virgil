@@ -17,6 +17,6 @@ export = {
 
     const { content } = await Common.verify(member, member.id === i.user.id, i);
 
-    i.deferred ? await i.followUp({ content }) : await i.reply({ content });
+    await i.followUp({ content });
   },
 };

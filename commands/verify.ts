@@ -47,6 +47,6 @@ export = {
         ),
       ];
     }
-    i.deferred ? await i.followUp(replyOpts) : await i.reply(replyOpts);
+    await i.followUp(replyOpts);
   },
 };
