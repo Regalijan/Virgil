@@ -2,24 +2,26 @@ import {
   ButtonInteraction,
   DiscordAPIError,
   EmbedBuilder,
+  Message,
   MessageFlagsBitField,
-  PermissionsBitField,
 } from "discord.js";
-import mongo from "../mongo";
-import SendLog from "../send_log";
-import deleteMessage from "../webhook_delete";
 import { ObjectId } from "mongodb";
+import mongo from "../mongo";
+import deleteMessage from "../webhook_delete";
+import SendLog from "../send_log";
+
 const reportStore = mongo.db("bot").collection("reports");
 const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
-  name: "msg_report_ban",
-  async exec(i: ButtonInteraction): Promise<void> {
+  name: "msg_report_delete",
+  async exec(i: ButtonInteraction) {
     if (!i.guild || !i.message.embeds[0].fields) return;
 
-    const objId = new ObjectId(i.message.embeds[0].fields[3].value);
+    const objectId = new ObjectId(i.message.embeds[0].fields[3].value);
+
     const associatedReport = await reportStore.findOne({
-      _id: objId,
+      _id: objectId,
     });
 
     if (!associatedReport) {
@@ -30,23 +32,14 @@ export = {
       return;
     }
 
-    const { Flags } = PermissionsBitField;
-    if (!i.guild?.members.me?.permissions.has(Flags.BanMembers)) {
-      await i.reply({
-        content:
-          "I do not have permission to ban! Please check my permissions.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-      return;
-    }
-
     const fetchedChannel = await i.guild.channels
-      .fetch(associatedReport.message.channel)
+      .fetch(i.message.embeds[0].fields[2].value)
       .catch(() => {});
 
     if (!fetchedChannel) {
       await i.reply({
-        content: "Failed to retrieve channel.",
+        content:
+          "Failed to locate the channel message is located in. If this keeps happening, please ignore the report.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
@@ -54,34 +47,42 @@ export = {
 
     if (!fetchedChannel.isTextBased()) {
       await i.reply({
-        content: "Channel is not text-based, how did you do that?",
+        content: "The channel is not text-based, how did this happen?",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
-    const reportMessage = await fetchedChannel.messages
-      .fetch(associatedReport.message.id)
+    const message = fetchedChannel.messages
+      .fetch(i.message.embeds[0].fields[1].value)
       .catch(() => {});
 
-    if (!reportMessage) {
+    if (!(message instanceof Message)) {
       await i.reply({
-        content: "Failed to locate message! Was it deleted?",
+        content:
+          "Failed to locate message. If this keeps happening, please ignore the report.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
 
-    if (!reportMessage.deletable) {
+    if (!message.deletable) {
       await i.reply({
-        content: "Cannot delete that message, check if I have permission to.",
+        content:
+          "I cannot delete the message. Please verify I have permission to do so.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
     }
+
+    const settings = await settingsStore.findOne({ guild: i.guildId });
 
     try {
-      await reportMessage.delete();
+      await deleteMessage(
+        settings?.messageReportChannelWebhook,
+        i.guild,
+        i.message.id,
+      );
     } catch (e) {
       let msg = "An unknown error has occurred.";
 
@@ -102,54 +103,25 @@ export = {
       return;
     }
 
-    const settings = await settingsStore.findOne({ guild: i.guildId });
-    await reportMessage.author
-      .send({
-        content: `You have been banned from ${reportMessage.guild?.name}.${
-          settings?.banMessage ? `\n\n${settings.banMessage}` : ""
-        }`,
-      })
-      .catch(() => {});
-    await reportMessage.member?.ban();
+    await reportStore.deleteOne({
+      _id: objectId,
+    });
+
     await i.reply({
-      content: `${reportMessage.author.tag} banned!`,
+      content: "Message deleted!",
       flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
 
-    try {
-      await deleteMessage(
-        settings?.messageReportChannelWebhook,
-        i.guild,
-        i.message.id,
-      );
-    } catch {}
-
-    await reportStore.deleteOne({
-      _id: objId,
-    });
-
-    if (!settings) return;
-
-    if (settings.messageReportChannelWebhook) {
-      try {
-        await deleteMessage(
-          settings.messageReportChannelWebhook,
-          i.guild,
-          i.message.id,
-        );
-      } catch {}
-    }
-
-    if (!settings.messageReportActionLogChannelWebhook) return;
+    if (!settings?.messageReportActionLogChannelWebhook) return;
 
     const logEmbed = new EmbedBuilder()
       .setAuthor({
         name: i.user.tag,
         iconURL: i.user.displayAvatarURL(),
       })
-      .setTitle("Report Resolved (Ban)")
+      .setTitle("Report Resolved (Message Deleted)")
       .setDescription(
-        `Report ${associatedReport.reportId} was resolved by <@${i.user.id}>`,
+        `User ${associatedReport.reportId} was ignored by <@${i.user.id}>`,
       )
       .addFields(
         {
@@ -159,10 +131,6 @@ export = {
         {
           name: "Reported Content",
           value: associatedReport.message.content,
-        },
-        {
-          name: "User Banned",
-          value: `${associatedReport.message.author}`,
         },
       );
 

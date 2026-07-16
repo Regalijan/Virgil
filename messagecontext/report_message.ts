@@ -8,7 +8,6 @@ import {
   MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
-import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
@@ -61,9 +60,19 @@ export = {
       return;
     }
 
-    const reportId = createHash("sha256")
-      .update(new Uint8Array(randomBytes(256).buffer))
-      .digest("base64url");
+    const reportInsertResponse = await reportStore.insertOne({
+      message: {
+        channel: message.channelId,
+        content: message.content,
+        id: message.id,
+        author: message.author.id,
+      },
+      reporter: {
+        id: i.user.id,
+        username: i.user.username,
+      },
+      created: Date.now(),
+    });
 
     const embed = new EmbedBuilder()
       .setAuthor({
@@ -76,10 +85,14 @@ export = {
       .addFields(
         {
           name: "Message Author",
-          value: `${message.author.tag} (${message.author.id})`,
+          value: `${message.author.username} (${message.author.id})`,
         },
         { name: "Message ID", value: message.id },
-        { name: "Report ID", value: reportId },
+        { name: "Channel ID", value: message.channelId },
+        {
+          name: "Report ID",
+          value: reportInsertResponse.insertedId.toString(),
+        },
       );
 
     const actionRow1 = new ActionRowBuilder().addComponents(
@@ -132,21 +145,8 @@ export = {
       [actionRow1, ignActionRow],
     );
 
-    await reportStore.insertOne({
-      reportId,
-      message: {
-        content: message.content,
-        id: message.id,
-        author: message.author.id,
-      },
-      reporter: {
-        id: i.user.id,
-        tag: i.user.tag,
-      },
-      created: Date.now(),
-    });
     await i.reply({
-      content: `Report sent! For reference, your report ID is \`${reportId}\``,
+      content: `Report sent! For reference, your report ID is \`${reportInsertResponse.insertedId}\``,
       flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
   },

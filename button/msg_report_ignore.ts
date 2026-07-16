@@ -3,9 +3,11 @@ import {
   EmbedBuilder,
   MessageFlagsBitField,
 } from "discord.js";
+import { ObjectId } from "mongodb";
 import mongo from "../mongo";
 import deleteMessage from "../webhook_delete";
 import SendLog from "../send_log";
+
 const reportStore = mongo.db("bot").collection("reports");
 const settingsStore = mongo.db("bot").collection("settings");
 
@@ -13,9 +15,12 @@ export = {
   name: "msg_report_ignore",
   async exec(i: ButtonInteraction): Promise<void> {
     if (!i.guild || !i.message.embeds[0].fields) return;
+
+    const objId = new ObjectId(i.message.embeds[0].fields[3].value);
     const associatedReport = await reportStore.findOne({
-      "message.id": i.message.embeds[0].fields[1].value,
+      _id: objId,
     });
+
     if (!associatedReport) {
       await i.reply({
         content: "The report could not be found! Was it already acted upon?",
@@ -24,7 +29,7 @@ export = {
       return;
     }
     await reportStore.deleteOne({
-      "message.id": i.message.embeds[0].fields[1].value,
+      _id: objId,
     });
 
     const settings = await settingsStore.findOne({ guild: i.guildId });
