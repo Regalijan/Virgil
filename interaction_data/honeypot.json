@@ -1,0 +1,39 @@
+{
+  "name": "honeypot",
+  "description": "Manage honeypot channels to catch and automatically ban scammers",
+  "options": [
+    {
+      "type": 1,
+      "name": "add",
+      "description": "Add a honeypot channel",
+      "options": [
+        {
+          "type": 7,
+          "name": "channel",
+          "description": "The channel to add as a honeypot",
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "list",
+      "description": "List all current honeypot channels"
+    },
+    {
+      "type": 1,
+      "name": "remove",
+      "description": "Remove a honeypot channel",
+      "options": [
+        {
+          "type": 7,
+          "name": "channel",
+          "description": "The channel to remove as a honeypot",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "default_member_permissions": "32",
+  "contexts": [0]
+}

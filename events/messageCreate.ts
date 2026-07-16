@@ -1,8 +1,7 @@
-import { Message, PermissionsBitField, Team, TextChannel } from "discord.js";
+import { Message, PermissionsBitField, TextChannel } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import redis from "../redis";
-import { randomBytes } from "crypto";
 import Common from "../common";
 
 const mongo = db.db("bot");
@@ -15,10 +14,42 @@ module.exports = async function (message: Message) {
     message.channel.isDMBased()
   )
     return;
+
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: message.guildId })
     .catch(Logger);
+
+  if (
+    message.channel.isTextBased() &&
+    message.guild.members.me?.permissions.has(
+      PermissionsBitField.Flags.BanMembers,
+    ) &&
+    message.member?.bannable
+  ) {
+    try {
+      const honeypots = await mongo
+        .collection("honeypots")
+        .findOne({ channel: message.channelId, guild: message.guild.id });
+
+      if (honeypots) {
+        let banMessage = `You have been banned from ${message.guild.name} because your account has potentially been compromised.`;
+
+        if (settings?.banMessage) banMessage += `\n\n${settings.banMessage}`;
+
+        try {
+          await message.author.send({ content: banMessage });
+        } catch {}
+
+        await message.member.ban({
+          deleteMessageSeconds: 300,
+          reason: "Sent a message in a honeypot channel",
+        });
+      }
+    } catch (e) {
+      Logger(e);
+    }
+  }
 
   if (!settings) return;
 
@@ -53,7 +84,7 @@ module.exports = async function (message: Message) {
       ?.has(PermissionsBitField.Flags.ManageMessages)
   ) {
     try {
-      const banned_words = await mongo
+      const banned_words = mongo
         .collection("banned_words")
         .find({ server: message.guildId });
 
