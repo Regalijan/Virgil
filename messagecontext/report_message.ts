@@ -64,6 +64,7 @@ export = {
       message: {
         channel: message.channelId,
         content: message.content,
+        guild: message.guildId,
         id: message.id,
         author: message.author.id,
       },
