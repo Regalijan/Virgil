@@ -220,10 +220,10 @@ module.exports = async function (i: BaseInteraction) {
     await command?.exec(i);
     if (!command?.privileged || !i.guild) return;
     const settings = await mongo
-      .collection("settings")
-      .findOne({ guild: i.guild?.id })
+      .collection("log_channels")
+      .findOne({ guild: i.guild?.id, type: "command" })
       .catch(Logger);
-    if (!settings?.commandLogChannelWebhook) return;
+    if (!settings) return;
     const embed = new EmbedBuilder({
       author: {
         name: i.user.username,
@@ -233,12 +233,7 @@ module.exports = async function (i: BaseInteraction) {
       footer: { text: `ID: ${i.id}` },
     });
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
-    await SendLog(
-      settings.commandLogChannelWebhook,
-      embed,
-      i.guild,
-      "commandLogChannelWebhook",
-    );
+    await SendLog(settings.webhook, embed, i.guild, "command");
   } catch (e) {
     if (!process.env.DSN) console.error(e);
     await i

@@ -27,11 +27,16 @@ module.exports = async function (
     })
     .catch(Logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: newMessage.guild.id })
-    .catch(Logger);
-  if (!settings?.editLogChannelWebhook) return;
+
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: newMessage.guildId, type: "edit" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
+
   const embed = new EmbedBuilder()
     .setAuthor({
       name: `${oldMessage.author.username} (${oldMessage.author.id})`,
@@ -59,10 +64,5 @@ module.exports = async function (
       },
     );
   if (newMessage.member) embed.setColor(newMessage.member.displayColor);
-  await SendLog(
-    settings.editLogChannelWebhook,
-    embed,
-    newMessage.guild,
-    "editLogChannelWebhook",
-  );
+  await SendLog(logChannel.webhook, embed, newMessage.guild, "edit");
 };

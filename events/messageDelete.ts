@@ -21,11 +21,16 @@ module.exports = async function (message: Message | PartialMessage) {
     })
     .catch(Logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: message.guild.id })
-    .catch(Logger);
-  if (!settings?.deleteLogChannelWebhook) return;
+
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: message.guild.id, type: "delete" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
+
   const embed = new EmbedBuilder()
     .setAuthor({
       name: `${message.author.username} (${message.author.id})`,
@@ -41,7 +46,7 @@ module.exports = async function (message: Message | PartialMessage) {
     embed.addFields({ name: "Attachment", value: att.url });
   });
   await SendLog(
-    settings.deleteLogChannelWebhook,
+    logChannel.webhook,
     embed,
     message.guild,
     "deleteLogChannelWebhook",

@@ -6,13 +6,13 @@ import {
 } from "discord.js";
 import mongo from "./mongo";
 
-const settings = mongo.db("bot").collection("settings");
+const logChannelStore = mongo.db("bot").collection("log_channels");
 
 export default async function (
   url: string,
   embed: EmbedBuilder,
   guild: Guild,
-  settingName: string,
+  logType: string,
   actionRows?: ActionRowBuilder[],
 ): Promise<void> {
   const webhookIdArr = url.match(/\d{17,19}/);
@@ -28,10 +28,7 @@ export default async function (
     .catch((e: DiscordAPIError) => e);
   if (webhookData instanceof DiscordAPIError) {
     if (webhookData.status === 404) {
-      const $unset: any = {};
-      $unset[settingName] = "";
-      $unset[settingName.replace("Webhook", "")] = "";
-      await settings.updateOne({ guild: guild.id }, { $unset });
+      await logChannelStore.deleteOne({ guild: guild.id, type: logType });
     }
     return;
   }

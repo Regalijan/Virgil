@@ -1,48 +1,42 @@
 import {
-  ChannelType,
   ChatInputCommandInteraction,
   EmbedBuilder,
   MessageFlagsBitField,
-  PermissionsBitField,
 } from "discord.js";
 import mongo from "../mongo";
-import { createHash, randomBytes } from "crypto";
-const modlogStore = mongo.db("bot").collection("modlogs");
+import sendLog from "../send_log";
+import logger from "../logger";
+const modLogStore = mongo.db("bot").collection("modlogs");
 
 export = {
   name: "warn",
   privileged: true,
   async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (!i.guild) return;
+
     const reason = i.options.getString("reason") ?? "No reason provided.";
     const user = i.options.getUser("user", true);
-    const logId = createHash("sha256")
-      .update(new Uint8Array(randomBytes(256).buffer))
-      .digest("base64url");
-
     const logObj = {
-      id: logId,
       moderator: `${i.user.tag} (${i.user.id})`,
       action: "warn",
       time: Date.now(),
       target: user.id,
       reason: reason,
     };
+
+    await modLogStore.insertOne(logObj);
     await i.reply({
       content: `Warned ${user.tag}`,
       flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
-    const settings = await mongo
+
+    const warnLogResult = await mongo
       .db("bot")
-      .collection("settings")
-      .findOne({ guild: i.guildId });
-    if (!settings?.warnLogChannel) return;
-    const channel = await i.guild?.channels.fetch(settings.warnLogChannel);
-    if (
-      !channel ||
-      channel.type !== ChannelType.GuildText ||
-      !i.appPermissions?.has(PermissionsBitField.Flags.SendMessages)
-    )
-      return;
+      .collection("log_channels")
+      .findOne({ guild: i.guildId, type: "warn" });
+
+    if (!warnLogResult?.webhook) return;
+
     const member = await i.guild?.members.fetch(i.user.id);
     const embed = new EmbedBuilder()
       .setTitle("Member Warned")
@@ -56,8 +50,12 @@ export = {
         { name: "Reason", value: reason },
       );
     embed.setColor(member?.displayColor ?? 0);
-    await modlogStore.insertOne(logObj);
-    await channel.send({ embeds: [embed] });
+
+    try {
+      await sendLog(warnLogResult.webhook, embed, i.guild, "warn");
+    } catch (e) {
+      logger(e);
+    }
 
     try {
       await user.send({

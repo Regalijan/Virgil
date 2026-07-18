@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import mongo from "../mongo";
 
-const settingsStore = mongo.db("bot").collection("settings");
+const settingsStore = mongo.db("bot").collection("nickname_settings");
 
 export = {
   name: "nicknamelock",
@@ -11,7 +11,11 @@ export = {
       case true:
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $set: { lockNicknames: true } },
+          {
+            $set: { lock_nicknames: true },
+            $setOnInsert: { guild: i.guildId },
+          },
+          { upsert: true },
         );
         await i.reply({
           content: "Nicknames will now be enforced on this server.",
@@ -21,7 +25,7 @@ export = {
       case false:
         await settingsStore.updateOne(
           { guild: i.guildId },
-          { $unset: { lockNicknames: null } },
+          { $unset: { lock_nicknames: null } },
         );
         await i.reply({
           content: "Nicknames will no longer be enforced on this server.",

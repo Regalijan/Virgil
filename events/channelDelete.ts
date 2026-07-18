@@ -4,8 +4,8 @@ import {
   NonThreadGuildBasedChannel,
 } from "discord.js";
 import db from "../mongo";
-import Logger from "../logger";
-import SendLog from "../send_log";
+import logger from "../logger";
+import sendLog from "../send_log";
 
 const mongo = db.db("bot");
 
@@ -19,21 +19,20 @@ module.exports = async function (
       channel: { $in: [channel.id, channel.parent?.id] },
       log: { $in: ["channel_delete", null] },
     })
-    .catch(Logger);
+    .catch(logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: channel.guild.id })
-    .catch(Logger);
-  if (!settings?.channelDeleteLogChannelWebhook) return;
+
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: channel.guildId, type: "channel_delete" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
   const embed = new EmbedBuilder().setDescription(
     `${channel} has been deleted.`,
   );
-  if (settings.embedColor) embed.setColor(settings.embedColor);
-  await SendLog(
-    settings.channelDeleteLogChannelWebhook,
-    embed,
-    channel.guild,
-    "channelDeleteLogChannelWebhook",
-  );
+
+  await sendLog(logChannel.webhook, embed, channel.guild, "channel_delete");
 };

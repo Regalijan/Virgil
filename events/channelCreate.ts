@@ -1,6 +1,6 @@
 import { EmbedBuilder, NonThreadGuildBasedChannel } from "discord.js";
 import Logger from "../logger";
-import SendLog from "../send_log";
+import sendLog from "../send_log";
 import db from "../mongo";
 
 const mongo = db.db("bot");
@@ -14,19 +14,17 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
     })
     .catch(Logger);
   if (ignoreData) return;
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne({ guild: channel.guildId, type: "channel_create" });
   const settings = await mongo
     .collection("settings")
     .findOne({ guild: channel.guild.id })
     .catch(Logger);
-  if (!settings?.channelCreateLogChannelWebhook) return;
+  if (!logChannel) return;
   const embed = new EmbedBuilder().setDescription(
     `${channel} has been created.`,
   );
-  if (settings.embedColor) embed.setColor(settings.embedColor);
-  await SendLog(
-    settings.channelCreateLogChannelWebhook,
-    embed,
-    channel.guild,
-    "channelCreateLogChannelWebhook",
-  );
+
+  await sendLog(logChannel.webhook, embed, channel.guild, "create_channel");
 };

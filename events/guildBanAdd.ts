@@ -1,16 +1,19 @@
 import { EmbedBuilder, GuildBan } from "discord.js";
 import db from "../mongo";
-import Logger from "../logger";
 import SendLog from "../send_log";
 
 const mongo = db.db("bot");
 
 module.exports = async function (ban: GuildBan) {
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: ban.guild.id })
-    .catch(Logger);
-  if (!settings?.banLogChannelWebhook) return;
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: ban.guild.id, type: "ban" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
+
   const embed = new EmbedBuilder()
     .setTitle("Member Banned")
     .setAuthor({
@@ -20,10 +23,5 @@ module.exports = async function (ban: GuildBan) {
     .setDescription(`<@${ban.user.id}> ${ban.user.username}`)
     .addFields({ name: "Reason", value: ban.reason ?? "No reason provided" });
 
-  await SendLog(
-    settings.banLogChannelWebhook,
-    embed,
-    ban.guild,
-    "banLogChannelWebhook",
-  );
+  await SendLog(logChannel.webhook, embed, ban.guild, "ban");
 };

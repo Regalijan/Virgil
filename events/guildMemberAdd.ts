@@ -6,17 +6,19 @@ import {
   Role,
 } from "discord.js";
 import mongo from "../mongo";
-import Logger from "../logger";
 import SendLog from "../send_log";
 import common from "../common";
 
-const settingsDB = mongo.db("bot").collection("settings");
+const logChannelStore = mongo.db("bot").collection("log_channels");
 
 module.exports = async function (member: GuildMember) {
-  const settings = await settingsDB
-    .findOne({ guild: member.guild.id })
-    .catch(Logger);
-  if (!settings?.memberJoinLogChannelWebhook) return;
+  const logChannel = await logChannelStore.findOne(
+    { guild: member.guild.id, type: "member_join" },
+    { projection: { webhook: 1 } },
+  );
+
+  if (!logChannel) return;
+
   const embed = new EmbedBuilder()
     .setAuthor({
       name: "Member Joined",
@@ -35,12 +37,8 @@ module.exports = async function (member: GuildMember) {
         .toString(),
     })
     .setFooter({ text: `ID: ${member.id}` });
-  await SendLog(
-    settings.memberJoinLogChannelWebhook,
-    embed,
-    member.guild,
-    "memberJoinLogChannelWebhook",
-  );
+
+  await SendLog(logChannel.webhook, embed, member.guild, "member_join");
 
   try {
     await common.verify(member, true);

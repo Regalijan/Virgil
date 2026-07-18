@@ -8,9 +8,8 @@ export = {
     const redisBefore = Date.now();
     await redis.ping();
     const redisAfter = Date.now();
-    const db = mongo.db("bot").collection("settings");
     const mongoBefore = Date.now();
-    await db.findOne({ server: i.guildId });
+    await mongo.db("bot").admin().ping();
     const mongoAfter = Date.now();
     const embed = new EmbedBuilder().setDescription("Latency").addFields(
       { name: "Database (MongoDB)", value: `${mongoAfter - mongoBefore}ms` },

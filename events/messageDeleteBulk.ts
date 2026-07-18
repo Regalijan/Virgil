@@ -26,11 +26,14 @@ module.exports = async function (
     })
     .catch(Logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: messages.first()?.guild?.id })
-    .catch(Logger);
-  if (!settings?.deleteLogChannelWebhook) return;
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: firstMessage.guildId, type: "delete" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
   let uploadBody = `${new Intl.DateTimeFormat(
     messages.first()?.guild?.preferredLocale ?? "en-US",
     {
@@ -53,9 +56,9 @@ module.exports = async function (
   const webhook = await messages
     .first()
     ?.client.fetchWebhook(
-      settings.deleteLogChannelWebhook.match(/\d{16,}/)[0],
-      settings.deleteLogChannelWebhook.replace(
-        /https:\/\/discorda?p?p?\.com\/api\/?v?\d*?\/webhooks\/\d{16,}\//,
+      logChannel.webhook.match(/\d{16,}/)[0],
+      logChannel.webhook.replace(
+        /https:\/\/discord\.com\/api\/?v?\d*?\/webhooks\/\d{16,}\//,
         "",
       ),
     )
@@ -66,11 +69,8 @@ module.exports = async function (
   if (webhook instanceof DiscordAPIError) {
     if (webhook.status === 404) {
       await mongo
-        .collection("settings")
-        .updateOne(
-          { guild: messages.first()?.guild?.id },
-          { $unset: { deleteLogChannel: "", deleteLogChannelWebhook: "" } },
-        )
+        .collection("log_channels")
+        .deleteOne({ guild: firstMessage.guildId, type: "delete" })
         .catch(Logger);
     }
     return;

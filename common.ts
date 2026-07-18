@@ -473,32 +473,23 @@ export = {
         errored: true,
         verified: false,
       };
-    const serversettings = await mongo
+
+    const nicknameSettings = await mongo
       .db("bot")
-      .collection("settings")
-      .findOne({ guild: member.guild.id })
-      .catch(console.error);
-    if (!serversettings)
-      return {
-        content: `The server settings are not ready, ${
-          member.permissions.has(PermissionsBitField.Flags.ManageGuild)
-            ? ""
-            : "ask your server admin to"
-        } run the \`/initialize\` command.`,
-        errored: true,
-        verified: false,
-      };
+      .collection("nickname_settings")
+      .findOne({ guild: member.guild.id });
+
     if (
       member.manageable &&
       member.guild.members.me.permissions.has(
         PermissionsBitField.Flags.ManageNicknames,
       ) &&
-      serversettings.lockNicknames
+      nicknameSettings?.lock_nicknames
     )
       await member
         .setNickname(
           this.formatName(
-            serversettings.nicknameformat ?? "{{SMARTNAME}}",
+            nicknameSettings.nickname_format ?? "{{SMARTNAME}}",
             member.user.username,
             member.id,
             member.guild.name,

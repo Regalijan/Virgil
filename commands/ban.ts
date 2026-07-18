@@ -4,6 +4,7 @@ import {
   PermissionsBitField,
 } from "discord.js";
 import mongo from "../mongo";
+import agenda from "../agenda";
 
 export = {
   name: "ban",
@@ -35,8 +36,8 @@ export = {
 
     const settings = await mongo
       .db("bot")
-      .collection("settings")
-      .findOne({ guild: i.guild.id }, { projection: { banMessage: 1 } });
+      .collection("ban_messages")
+      .findOne({ guild: i.guild.id }, { projection: { message_content: 1 } });
 
     let aheadToUnban = 0;
     const minutes = i.options.getInteger("minutes", false);
@@ -50,7 +51,7 @@ export = {
       i.guild?.name
     } for the following reason:\n\n${i.options.getString("reason")}`;
 
-    if (settings?.banMessage) banMessage += `\n\n${banMessage}`;
+    if (settings?.message_content) banMessage += `\n\n${banMessage}`;
 
     await target
       .send({
@@ -62,9 +63,9 @@ export = {
     });
     if (!aheadToUnban) return;
     aheadToUnban += Date.now();
-    await mongo
-      .db("bot")
-      .collection("bans")
-      .insertOne({ server: i.guildId, unban: aheadToUnban, user: target.id });
+    await agenda.schedule(new Date(aheadToUnban), "clear-temporary-ban", {
+      server: i.guildId,
+      user: target.id,
+    });
   },
 };

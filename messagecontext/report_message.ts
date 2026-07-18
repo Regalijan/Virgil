@@ -6,17 +6,18 @@ import {
   EmbedBuilder,
   MessageContextMenuCommandInteraction,
   MessageFlagsBitField,
-  PermissionsBitField,
 } from "discord.js";
 import mongo from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
-const settingsStore = mongo.db("bot").collection("settings");
+const logStore = mongo.db("bot").collection("log_channels");
 const reportStore = mongo.db("bot").collection("reports");
 
 export = {
   name: "Report Message to Server Mods",
   async exec(i: MessageContextMenuCommandInteraction): Promise<void> {
+    if (!i.guild) return;
+
     const message = await i.channel?.messages.fetch(i.targetId).catch(Logger);
     if (!message) {
       await i.reply({
@@ -26,8 +27,12 @@ export = {
       return;
     }
 
-    const settings = await settingsStore.findOne({ guild: i.guildId });
-    if (!settings?.messageReportChannel) {
+    const actionChannel = await logStore.findOne({
+      guild: i.guildId,
+      type: "message_reports",
+    });
+
+    if (!actionChannel?.channel) {
       await i.reply({
         content: "Message reporting is disabled in this server.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
@@ -36,25 +41,12 @@ export = {
     }
 
     const channel = await i.guild?.channels
-      .fetch(settings.messageReportChannel)
+      .fetch(actionChannel.channel)
       .catch(Logger);
     if (!channel || channel.type !== ChannelType.GuildText) {
       await i.reply({
         content:
           "Your report was not sent! The channel set by server moderation could not be found.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-      return;
-    }
-
-    if (
-      !i.guild?.members.me
-        ?.permissionsIn(channel)
-        .has(PermissionsBitField.Flags.SendMessages)
-    ) {
-      await i.reply({
-        content:
-          "Your report was not sent! I have been restricted from sending in the report channel.",
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
       return;
@@ -139,7 +131,7 @@ export = {
     );
 
     await SendLog(
-      settings.messageReportChannelWebhook,
+      actionChannel.webhook,
       embed,
       i.guild,
       "messageReportChannelWebhook",

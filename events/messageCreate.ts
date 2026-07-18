@@ -15,10 +15,12 @@ module.exports = async function (message: Message) {
   )
     return;
 
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: message.guildId })
-    .catch(Logger);
+  const banMessageSettings = await mongo
+    .collection("ban_messages")
+    .findOne(
+      { guild: message.guildId },
+      { projection: { message_content: 1 } },
+    );
 
   if (
     message.channel.isTextBased() &&
@@ -35,7 +37,8 @@ module.exports = async function (message: Message) {
       if (honeypots) {
         let banMessage = `You have been banned from ${message.guild.name} because your account has potentially been compromised. Please change your password and enable multi-factor authentication if you have not already done so. If your account has not been compromised and you disobeyed the instructions, well that sucks for you.`;
 
-        if (settings?.banMessage) banMessage += `\n\n${settings.banMessage}`;
+        if (banMessageSettings)
+          banMessage += `\n\n${banMessageSettings.message_content}`;
 
         try {
           await message.author.send({ content: banMessage });
@@ -50,8 +53,6 @@ module.exports = async function (message: Message) {
       Logger(e);
     }
   }
-
-  if (!settings) return;
 
   const shouldVerify =
     Math.random() <= 0.005 &&

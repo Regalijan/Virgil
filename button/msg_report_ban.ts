@@ -9,8 +9,8 @@ import mongo from "../mongo";
 import SendLog from "../send_log";
 import deleteMessage from "../webhook_delete";
 import { ObjectId } from "mongodb";
+const logsStore = mongo.db("bot").collection("log_channels");
 const reportStore = mongo.db("bot").collection("reports");
-const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "msg_report_ban",
@@ -102,11 +102,18 @@ export = {
       return;
     }
 
-    const settings = await settingsStore.findOne({ guild: i.guildId });
+    const actionChannel = await logsStore.findOne({
+      guild: i.guildId,
+      type: "message_reports",
+    });
+    const banMessageSettings = await mongo
+      .db("bot")
+      .collection("ban_messages")
+      .findOne({ guild: i.guildId });
     await reportMessage.author
       .send({
         content: `You have been banned from ${reportMessage.guild?.name}.${
-          settings?.banMessage ? `\n\n${settings.banMessage}` : ""
+          banMessageSettings ? `\n\n${banMessageSettings.message_content}` : ""
         }`,
       })
       .catch(() => {});
@@ -117,30 +124,25 @@ export = {
     });
 
     try {
-      await deleteMessage(
-        settings?.messageReportChannelWebhook,
-        i.guild,
-        i.message.id,
-      );
+      await deleteMessage(actionChannel?.webhook, i.guild, i.message.id);
     } catch {}
 
     await reportStore.deleteOne({
       _id: objId,
     });
 
-    if (!settings) return;
-
-    if (settings.messageReportChannelWebhook) {
+    if (actionChannel?.webhook) {
       try {
-        await deleteMessage(
-          settings.messageReportChannelWebhook,
-          i.guild,
-          i.message.id,
-        );
+        await deleteMessage(actionChannel.webhook, i.guild, i.message.id);
       } catch {}
     }
 
-    if (!settings.messageReportActionLogChannelWebhook) return;
+    const actionLogChannel = await logsStore.findOne({
+      guild: i.guildId,
+      type: "message_report_actions",
+    });
+
+    if (!actionLogChannel) return;
 
     const logEmbed = new EmbedBuilder()
       .setAuthor({
@@ -167,7 +169,7 @@ export = {
       );
 
     await SendLog(
-      settings.messageReportActionLogChannelWebhook,
+      actionLogChannel.webhook,
       logEmbed,
       i.guild,
       "messageReportActionLogChannelWebhook",

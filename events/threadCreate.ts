@@ -1,32 +1,31 @@
 import { EmbedBuilder, ThreadChannel } from "discord.js";
-import db from "../mongo";
+import mongo from "../mongo";
 import Logger from "../logger";
 import SendLog from "../send_log";
 
-const mongo = db.db("bot");
+const ignoredStore = mongo.db("bot").collection("ignored");
+const logStore = mongo.db("bot").collection("log_channels");
 
 module.exports = async function (thread: ThreadChannel) {
-  const ignoreData = await mongo
-    .collection("ignored")
+  const ignoreData = await ignoredStore
     .findOne({
       channel: { $in: [thread.parent?.id, thread.parent?.parent?.id] },
       log: { $in: ["thread_create", null] },
     })
     .catch(Logger);
+
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: thread.guildId })
-    .catch(Logger);
-  if (!settings?.threadCreateLogChannelWebhook) return;
+
+  const logChannel = await logStore.findOne(
+    { guild: thread.guild.id, type: "thread_create" },
+    { projection: { webhook: 1 } },
+  );
+
+  if (!logChannel) return;
+
   const embed = new EmbedBuilder()
     .setDescription(`Thread <#${thread.id}> created by <@${thread.ownerId}>`)
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([0, 255, 0]);
-  await SendLog(
-    settings.threadCreateLogChannelWebhook,
-    embed,
-    thread.guild,
-    "threadCreateLogChannelWebhook",
-  );
+  await SendLog(logChannel.webhook, embed, thread.guild, "thread_create");
 };

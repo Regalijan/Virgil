@@ -14,19 +14,18 @@ module.exports = async function (thread: ThreadChannel) {
     })
     .catch(Logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: thread.guildId })
-    .catch(Logger);
-  if (!settings?.threadDeleteLogChannelWebhook) return;
+
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: thread.guildId, type: "thread_delete" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
   const embed = new EmbedBuilder()
     .setDescription(`Thread ${thread.name} deleted.`)
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([255, 0, 0]);
-  await SendLog(
-    settings.threadDeleteLogChannelWebhook,
-    embed,
-    thread.guild,
-    "threadDeleteLogChannelWebhook",
-  );
+  await SendLog(logChannel.webhook, embed, thread.guild, "thread_delete");
 };

@@ -10,8 +10,8 @@ import mongo from "../mongo";
 import deleteMessage from "../webhook_delete";
 import SendLog from "../send_log";
 
+const logsStore = mongo.db("bot").collection("log_channels");
 const reportStore = mongo.db("bot").collection("reports");
-const settingsStore = mongo.db("bot").collection("settings");
 
 export = {
   name: "msg_report_delete",
@@ -75,7 +75,10 @@ export = {
       return;
     }
 
-    const settings = await settingsStore.findOne({ guild: i.guildId });
+    const logChannel = await logsStore.findOne({
+      guild: i.guildId,
+      type: "message_reports",
+    });
 
     try {
       await message.delete();
@@ -100,11 +103,7 @@ export = {
     }
 
     try {
-      await deleteMessage(
-        settings?.messageReportChannelWebhook,
-        i.guild,
-        i.message.id,
-      );
+      await deleteMessage(logChannel?.webhook, i.guild, i.message.id);
     } catch {}
 
     await reportStore.deleteOne({
@@ -116,7 +115,12 @@ export = {
       flags: [MessageFlagsBitField.Flags.Ephemeral],
     });
 
-    if (!settings?.messageReportActionLogChannelWebhook) return;
+    const actionChannel = await logsStore.findOne({
+      guild: i.guildId,
+      type: "message_report_actions",
+    });
+
+    if (!actionChannel) return;
 
     const logEmbed = new EmbedBuilder()
       .setAuthor({
@@ -139,7 +143,7 @@ export = {
       );
 
     await SendLog(
-      settings.messageReportActionLogChannelWebhook,
+      actionChannel.webhook,
       logEmbed,
       i.guild,
       "messageReportActionLogChannelWebhook",

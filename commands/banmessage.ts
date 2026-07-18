@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import mongo from "../mongo";
-const settingsStore = mongo.db("bot").collection("settings");
+const messagesStore = mongo.db("bot").collection("ban_messages");
 
 export = {
   name: "banmessage",
   async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const settings = await settingsStore.findOne({ guild: i.guildId });
+    const settings = await messagesStore.findOne({ guild: i.guildId });
     if (!settings) {
       await i.reply({
         content:
@@ -16,9 +16,13 @@ export = {
     }
     switch (i.options.getSubcommand(true)) {
       case "set":
-        await settingsStore.updateOne(
+        await messagesStore.updateOne(
           { guild: i.guildId },
-          { $set: { banMessage: i.options.getString("message", true) } },
+          {
+            $set: { message_content: i.options.getString("message", true) },
+            $setOnInsert: { guild: i.guildId },
+          },
+          { upsert: true },
         );
         await i.reply({
           content: "Ban message set!",
@@ -27,9 +31,9 @@ export = {
         break;
 
       case "clear":
-        await settingsStore.updateOne(
+        await messagesStore.updateOne(
           { guild: i.guildId },
-          { $unset: { banMessage: "" } },
+          { $unset: { message_content: "" } },
         );
         await i.reply({
           content: "Ban message cleared!",

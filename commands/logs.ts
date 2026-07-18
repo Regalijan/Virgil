@@ -10,7 +10,8 @@ import {
 import mongo from "../mongo";
 import webhookDelete from "../webhook_delete";
 import logger from "../logger";
-const settingsDB = mongo.db("bot").collection("settings");
+const db = mongo.db("bot");
+const logChannelStore = db.collection("log_channels");
 const ignoredDB = mongo.db("bot").collection("ignored");
 
 export = {
@@ -21,41 +22,6 @@ export = {
 
     const embed = new EmbedBuilder();
     if (i.member instanceof GuildMember) embed.setColor(i.member.displayColor);
-    const settingsList = await settingsDB.findOne({ guild: i.guildId });
-    if (!settingsList) {
-      await i.reply({
-        content: `The server settings are not ready, ${
-          i.member instanceof GuildMember
-            ? i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
-              ? ""
-              : "ask your server admin to"
-            : "ask your server admin to"
-        } run the \`/initialize\` command.`,
-      });
-      return;
-    }
-
-    const choiceToSettingMap: Map<string, string> = new Map()
-      .set("ban", "banLogChannel")
-      .set("delete", "deleteLogChannel")
-      .set("edit", "editLogChannel")
-      .set("member_join", "memberJoinLogChannel")
-      .set("member_leave", "memberLeaveLogChannel")
-      .set("message_report_actions", "messageReportActionLogChannel")
-      .set("message_reports", "messageReportChannel")
-      .set("nickname", "nicknameLogChannel")
-      .set("role", "roleLogChannel")
-      .set("thread_create", "threadCreateLogChannel")
-      .set("thread_delete", "threadDeleteLogChannel")
-      .set("thread_update", "threadUpdateLogChannel")
-      .set("unban", "unbanLogChannel")
-      .set("voice_deafen", "voiceDeafenLogChannel")
-      .set("voice_join", "voiceJoinLogChannel")
-      .set("voice_leave", "voiceLeaveLogChannel")
-      .set("voice_mute", "voiceMuteLogChannel")
-      .set("voice_switch", "voiceSwitchLogChannel")
-      .set("voice_video", "voiceVideoLogChannel")
-      .set("warn", "warnLogChannel");
 
     switch (i.options.getSubcommand(true)) {
       case "ignore":
@@ -93,154 +59,118 @@ export = {
         break;
 
       case "list":
+        const allLogChannels = await logChannelStore
+          .find({ guild: i.guildId })
+          .toArray();
+        const channelsList: Map<string, string> = new Map();
+
+        for (const logChannel of allLogChannels)
+          channelsList.set(
+            logChannel.type,
+            logChannel.channel ? `<#${logChannel.id}>` : "Not set",
+          );
+
         embed.setTitle("Log channels for " + i.guild?.name);
         embed.setDescription("\u200B");
         embed.addFields(
           {
             name: "Ban logs",
-            value: settingsList.banLogChannel
-              ? `<#${settingsList.banLogChannel}>`
-              : "Not set",
+            value: channelsList.get("ban") ?? "Unknown",
             inline: true,
           },
           {
             name: "Delete logs",
-            value: settingsList.deleteLogChannel
-              ? `<#${settingsList.deleteLogChannel}>`
-              : "Not set",
+            value: channelsList.get("delete") ?? "Unknown",
             inline: true,
           },
           {
             name: "Edit logs",
-            value: settingsList.editLogChannel
-              ? `<#${settingsList.editLogChannel}>`
-              : "Not set",
+            value: channelsList.get("edit") ?? "Unknown",
             inline: true,
           },
           {
             name: "Member join logs",
-            value: settingsList.memberJoinLogChannel
-              ? `<#${settingsList.memberJoinLogChannel}>`
-              : "Not set",
+            value: channelsList.get("member_join") ?? "Unknown",
             inline: true,
           },
           {
             name: "Member leave logs",
-            value: settingsList.memberLeaveLogChannel
-              ? `<#${settingsList.memberLeaveLogChannel}>`
-              : "Not set",
+            value: channelsList.get("member_leave") ?? "Unknown",
             inline: true,
           },
           {
             name: "Message report action logs",
-            value: settingsList.messageReportActionLogChannel
-              ? `<#${settingsList.messageReportActionLogChannel}>`
-              : "Not set",
+            value: channelsList.get("message_report_actions") ?? "Unknown",
             inline: true,
           },
           {
             name: "Message reports",
-            value: settingsList.messageReportChannel
-              ? `<#${settingsList.messageReportChannel}>`
-              : "Not set",
-            inline: true,
-          },
-          {
-            name: "Mute role",
-            value: settingsList.muteRole
-              ? `<@&${settingsList.muteRole}>`
-              : "Not set",
+            value: channelsList.get("message_reports") ?? "Unknown",
             inline: true,
           },
           {
             name: "Nickname logs",
-            value: settingsList.nicknameLogChannel
-              ? `<#${settingsList.nicknameLogChannel}>`
-              : "Not set",
+            value: channelsList.get("nickname") ?? "Unknown",
             inline: true,
           },
           {
             name: "Role logs",
-            value: settingsList.roleLogChannel
-              ? `<#${settingsList.roleLogChannel}>`
-              : "Not set",
+            value: channelsList.get("role") ?? "Unknown",
             inline: true,
           },
           {
             name: "Thread creation logs",
-            value: settingsList.threadCreateLogChannel
-              ? `<#${settingsList.threadCreateLogChannel}>`
-              : "Not set",
+            value: channelsList.get("thread_create") ?? "Unknown",
             inline: true,
           },
           {
             name: "Thread delete logs",
-            value: settingsList.threadDeleteLogChannel
-              ? `<#${settingsList.threadDeleteLogChannel}>`
-              : "Not set",
+            value: channelsList.get("thread_delete") ?? "Unknown",
             inline: true,
           },
           {
             name: "Thread update logs",
-            value: settingsList.threadUpdateLogChannel
-              ? `<#${settingsList.threadUpdateLogChannel}>`
-              : "Not set",
+            value: channelsList.get("thread_delete") ?? "Unknown",
             inline: true,
           },
           {
             name: "Unban logs",
-            value: settingsList.unbanLogChannel
-              ? `<#${settingsList.unbanLogChannel}>`
-              : "Not set",
+            value: channelsList.get("unban") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice deafen logs",
-            value: settingsList.voiceDeafenLogChannel
-              ? `<#${settingsList.voiceDeafenLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_deafen") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice join logs",
-            value: settingsList.voiceJoinLogChannel
-              ? `<#${settingsList.voiceJoinLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_join") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice leave logs",
-            value: settingsList.voiceLeaveLogChannel
-              ? `<#${settingsList.voiceLeaveLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_leave") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice mute logs",
-            value: settingsList.voiceMuteLogChannel
-              ? `<#${settingsList.voiceMuteLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_mute") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice channel switch logs",
-            value: settingsList.voiceSwitchLogChannel
-              ? `<#${settingsList.voiceSwitchLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_switch") ?? "Unknown",
             inline: true,
           },
           {
             name: "Voice video logs",
-            value: settingsList.voiceVideoLogChannel
-              ? `<#${settingsList.voiceVideoLogChannel}>`
-              : "Not set",
+            value: channelsList.get("voice_video") ?? "Unknown",
             inline: true,
           },
           {
             name: "Warn logs",
-            value: settingsList.warnLogChannel
-              ? `<#${settingsList.warnLogChannel}>`
-              : "Not set",
+            value: channelsList.get("warn") ?? "Unknown",
             inline: true,
           },
         );
@@ -249,32 +179,22 @@ export = {
 
       case "remove":
         const removalChoice = i.options.getString("log", true);
-        if (
-          settingsList[
-            (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
-          ]
-        ) {
-          await fetch(
-            settingsList[
-              choiceToSettingMap.get(removalChoice ?? "") + "Webhook"
-            ],
-            {
-              method: "DELETE",
-            },
-          ).catch(console.error);
+        const removedLog = await logChannelStore.findOneAndDelete({
+          guild: i.guildId,
+          type: removalChoice,
+        });
+
+        if (!removedLog) {
+          await i.reply({
+            content: "That log does not exist",
+            flags: [MessageFlagsBitField.Flags.Ephemeral],
+          });
+          return;
         }
-        const $yeet: any = { $unset: {} };
-        $yeet.$unset[choiceToSettingMap.get(removalChoice) ?? ""] = "";
-        $yeet.$unset[
-          (choiceToSettingMap.get(removalChoice) ?? "") + "Webhook"
-        ] = "";
-        await settingsDB.updateOne({ guild: i.guildId }, $yeet);
+
         await i.reply({ content: `\`${removalChoice}\` log disabled!` });
         try {
-          await webhookDelete(
-            choiceToSettingMap.get(removalChoice) ?? "" + "Webhook",
-            i.guild,
-          );
+          await webhookDelete(removedLog.webhook, i.guild);
         } catch (e) {
           logger(e);
         }
@@ -293,8 +213,7 @@ export = {
         }
 
         const setChoice = i.options.getString("log", true);
-        const $set: any = { $set: {} };
-        $set.$set[choiceToSettingMap.get(setChoice) ?? ""] = setChannel?.id;
+
         // It should never be zero, Discord's permission checks should prevent this
         if (
           !setChannel
@@ -313,9 +232,24 @@ export = {
           avatar: i.client.user?.avatarURL(),
           name: `${i.client.user?.username} Logs`,
         });
-        $set.$set[(choiceToSettingMap.get(setChoice) ?? "") + "Webhook"] =
-          newWebhook.url;
-        await settingsDB.updateOne({ guild: i.guildId }, $set);
+
+        await logChannelStore.updateOne(
+          { guild: i.guildId, type: setChoice },
+          {
+            $set: {
+              channel: setChannel.id,
+              webhook: newWebhook.url,
+            },
+            $setOnInsert: {
+              guild: i.guildId,
+              type: setChoice,
+            },
+          },
+          {
+            upsert: true,
+          },
+        );
+
         await i.reply({
           content: `\`${setChoice}\` log set to <#${
             i.options.getChannel("channel", true).id

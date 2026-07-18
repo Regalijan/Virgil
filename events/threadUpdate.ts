@@ -17,11 +17,14 @@ module.exports = async function (
     })
     .catch(Logger);
   if (ignoreData) return;
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: newThread.guildId })
-    .catch(Logger);
-  if (!settings?.threadUpdateLogChannelWebhook) return;
+  const logChannel = await mongo
+    .collection("log_channels")
+    .findOne(
+      { guild: newThread.guildId, type: "thread_update" },
+      { projection: { webhook: 1 } },
+    );
+
+  if (!logChannel) return;
   const embed = new EmbedBuilder()
     .setTitle("Thread Updated")
     .setColor([0, 0, 255])
@@ -32,12 +35,14 @@ module.exports = async function (
     actionstring = `Thread <#${newThread.id}> archived.`;
   } else if (oldThread.members.cache.size < newThread.members.cache.size) {
     actionstring += `Members added to thread <#${newThread.id}>:\n`;
+
     newThread.members.cache.each((threadmember) => {
       if (!oldThread.members.cache.has(threadmember.id))
         actionstring += `<@${threadmember.id}> `;
     });
   } else if (oldThread.members.cache.size > newThread.members.cache.size) {
     actionstring += `Members removed from thread <#${newThread.id}>:\n`;
+
     oldThread.members.cache.each((threadmember) => {
       if (newThread.members.cache.has(threadmember.id))
         actionstring += `<@${threadmember.id}> `;
@@ -51,10 +56,5 @@ module.exports = async function (
   }
   if (!actionstring) return;
   embed.setDescription(actionstring);
-  await SendLog(
-    settings.threadUpdateLogChannelWebhook,
-    embed,
-    newThread.guild,
-    "threadUpdateLogChannelWebhook",
-  );
+  await SendLog(logChannel.webhook, embed, newThread.guild, "thread_update");
 };

@@ -1,6 +1,5 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import db from "../mongo";
-import Logger from "../logger";
 import SendLog from "../send_log";
 import { type AnyBulkWriteOperation } from "mongodb";
 
@@ -69,12 +68,7 @@ module.exports = async function (
     }
   }
 
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: newMember.guild.id })
-    .catch(Logger);
-  if (!settings) return;
-
+  const channelStore = mongo.collection("log_channels");
   const embed = new EmbedBuilder();
   embed.setAuthor({
     name: newMember.user.username,
@@ -82,8 +76,12 @@ module.exports = async function (
   });
 
   if (oldMember.roles.cache.size !== newMember.roles.cache.size) {
-    if (!settings.roleLogChannelWebhook) return;
+    const logChannel = await channelStore.findOne(
+      { guild: newMember.guild.id, type: "role" },
+      { projection: { webhook: 1 } },
+    );
 
+    if (!logChannel) return;
     embed.setTitle("Roles Updated");
 
     let oldrolesstring = "";
@@ -108,15 +106,14 @@ module.exports = async function (
       });
       embed.addFields({ name: "Roles Added", value: rolesadded });
     }
-    await SendLog(
-      settings.roleLogChannelWebhook,
-      embed,
-      newMember.guild,
-      "roleLogChannelWebhook",
-    );
+    await SendLog(logChannel.webhook, embed, newMember.guild, "role");
   } else if (oldMember.nickname !== newMember.nickname) {
-    if (!settings.nicknameLogChannelWebhook) return;
+    const logChannel = await channelStore.findOne(
+      { guild: newMember.guild.id, type: "nickname" },
+      { projection: { webhook: 1 } },
+    );
 
+    if (!logChannel) return;
     embed.setTitle("Nickname Updated");
     embed.setDescription(
       `\`${oldMember.nickname ?? "None"}\` -> \`${
@@ -125,11 +122,6 @@ module.exports = async function (
     );
     await newMember.fetch().catch(console.error);
     embed.setColor(newMember.displayColor);
-    await SendLog(
-      settings.nicknameLogChannelWebhook,
-      embed,
-      newMember.guild,
-      "nicknameLogChannelWebhook",
-    );
+    await SendLog(logChannel.webhook, embed, newMember.guild, "nickname");
   }
 };

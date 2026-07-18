@@ -31,10 +31,14 @@
     "sodium-native": "^5.1.0"
   },
   "devDependencies": {
+    "migrate-mongo": "^14.0.7",
     "prettier": "^3.9.5",
     "typescript": "^7.0.2"
   },
   "prettier": {
     "endOfLine": "auto"
+  },
+  "allowScripts": {
+    "bufferutil@4.1.0": true
   }
 }
