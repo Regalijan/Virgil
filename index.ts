@@ -1,6 +1,7 @@
 import { config as dotenv } from "dotenv";
 import { ShardingManager } from "discord.js";
 import { join } from "path";
+import { database, up } from "migrate-mongo";
 
 if (typeof fetch === "undefined")
   console.error(
@@ -22,6 +23,14 @@ async function getGatewayData() {
 }
 
 (async function () {
+  const { client, db } = await database.connect();
+  const migrated = await up(db, client);
+
+  await client.close();
+
+  for (const migration of migrated)
+    console.log(`Applied migration ${migration}`);
+
   const gatewayData = await getGatewayData();
   const shardCount = gatewayData.shards;
   const shardMgr = new ShardingManager(join(__dirname, "shard.js"), {
