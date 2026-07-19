@@ -1,6 +1,7 @@
 import { config as dotenv } from "dotenv";
 import { ShardingManager } from "discord.js";
-import { join } from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { database, up } from "migrate-mongo";
 
 dotenv();
@@ -28,10 +29,13 @@ async function getGatewayData() {
 
   const gatewayData = await getGatewayData();
   const shardCount = gatewayData.shards;
-  const shardMgr = new ShardingManager(join(__dirname, "shard.js"), {
-    token: process.env.DISCORDTOKEN,
-    totalShards: shardCount,
-  });
+  const shardMgr = new ShardingManager(
+    join(dirname(fileURLToPath(import.meta.url)), "shard.js"),
+    {
+      token: process.env.DISCORDTOKEN,
+      totalShards: shardCount,
+    },
+  );
 
   shardMgr.on("shardCreate", function (shard) {
     console.log(`Launching shard ${shard.id + 1} of ${shardMgr.totalShards}.`);
