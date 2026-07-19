@@ -8,8 +8,8 @@ import {
   ThreadChannel,
 } from "discord.js";
 import mongo from "../mongo.js";
-import webhookDelete from "../webhook_delete";
-import logger from "../logger";
+import webhookDelete from "../webhook_delete.js";
+import logger from "../logger.js";
 const db = mongo.db("bot");
 const logChannelStore = db.collection("log_channels");
 const ignoredDB = mongo.db("bot").collection("ignored");
