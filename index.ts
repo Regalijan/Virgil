@@ -3,11 +3,6 @@ import { ShardingManager } from "discord.js";
 import { join } from "path";
 import { database, up } from "migrate-mongo";
 
-if (typeof fetch === "undefined")
-  console.error(
-    "`fetch` is not defined. Use Node v17.5.0 or later (versions below 18 require passing the --experimental-global-fetch flag)",
-  );
-
 dotenv();
 
 async function getGatewayData() {

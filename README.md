@@ -1,4 +1,4 @@
-# Virgil V2
+# Virgil
 
 [Were you looking for the user manual?](MANUAL.md)
 
@@ -13,7 +13,7 @@
 ## Self-hosting (development)
 
 Use WSL on Windows<br>
-Node 17.5.0 or later is required
+Node 24.17.0 or later is required
 
 1. Install [Node.js](https://nodejs.org/en/download/current)
 2. Install [MongoDB](https://www.mongodb.com/try/download/community)
