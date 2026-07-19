@@ -35,7 +35,7 @@ module.exports = async function (message: Message) {
         .findOne({ channel: message.channelId, guild: message.guild.id });
 
       if (honeypots) {
-        let banMessage = `You have been banned from ${message.guild.name} because your account has potentially been compromised. Please change your password and enable multi-factor authentication if you have not already done so. If your account has not been compromised and you disobeyed the instructions, well that sucks for you.`;
+        let banMessage = `You have been banned from ${message.guild.name} because your account has potentially been compromised. Please change your password and enable multi-factor authentication if you have not already done so. If your account has not been compromised and you disobeyed the instructions, well that sucks for you. Maybe you should learn how to read.`;
 
         if (banMessageSettings)
           banMessage += `\n\n${banMessageSettings.message_content}`;
