@@ -32,7 +32,7 @@ function loadEvents() {
     bot.on("debug", function (m) {
       console.log(m);
     });
-  for (const file of readdirSync(join(__dirname, "events")).filter((f) =>
+  for (const file of readdirSync(join(process.cwd(), "events")).filter((f) =>
     f.endsWith(".js"),
   )) {
     const requiredEvent = require(`./events/${file}`);
@@ -47,7 +47,7 @@ function loadEvents() {
   });
 }
 
-for (const file of readdirSync(join(__dirname, "jobs")).filter((f) =>
+for (const file of readdirSync(join(process.cwd(), "jobs")).filter((f) =>
   f.endsWith(".js"),
 )) {
   const requiredJob = await import(`./jobs/${file}`);
