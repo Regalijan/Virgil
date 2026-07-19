@@ -64,7 +64,7 @@ export async function exec(i: ChatInputCommandInteraction): Promise<void> {
       const channelsList: Map<string, string> = new Map();
 
       for (const logChannel of allLogChannels)
-        channelsList.set(logChannel.type, `<#${logChannel.id}>`);
+        channelsList.set(logChannel.type, `<#${logChannel.channel}>`);
 
       embed.setTitle("Log channels for " + i.guild?.name);
       embed.setDescription("\u200B");
