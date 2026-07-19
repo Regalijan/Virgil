@@ -15,8 +15,9 @@ import Logger from "../logger.js";
 import SendLog from "../send_log.js";
 import Sentry from "../sentry.js";
 import { readdirSync } from "fs";
-import { join } from "path";
+import { dirname, join } from "path";
 import { isMFAEnabled } from "../common.js";
+import { fileURLToPath } from "url";
 
 const mongo = db.db("bot");
 
@@ -53,28 +54,30 @@ const buttonCommands: Map<
   }
 > = new Map();
 
-for (const file of readdirSync(join(__dirname, "../commands")).filter((f) =>
+const dir = dirname(fileURLToPath(import.meta.url));
+
+for (const file of readdirSync(join(dir, "../commands")).filter((f) =>
   f.endsWith(".js"),
 )) {
   const commandFile = await import(`../commands/${file}`);
   cmds.set(commandFile.name, commandFile);
 }
 
-for (const file of readdirSync(join(__dirname, "../usercontext")).filter((f) =>
+for (const file of readdirSync(join(dir, "../usercontext")).filter((f) =>
   f.endsWith(".js"),
 )) {
   const ucFile = await import(`../usercontext/${file}`);
   userContextCommands.set(ucFile.name, ucFile);
 }
 
-for (const file of readdirSync(join(__dirname, "../messagecontext")).filter(
-  (f) => f.endsWith(".js"),
+for (const file of readdirSync(join(dir, "../messagecontext")).filter((f) =>
+  f.endsWith(".js"),
 )) {
   const mcFile = await import(`../messagecontext/${file}`);
   messageContextCommands.set(mcFile.name, mcFile);
 }
 
-for (const file of readdirSync(join(__dirname, "../button")).filter((f) =>
+for (const file of readdirSync(join(dir, "../button")).filter((f) =>
   f.endsWith(".js"),
 )) {
   const bFile = await import(`../button/${file}`);
