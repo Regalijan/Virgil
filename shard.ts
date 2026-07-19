@@ -8,7 +8,7 @@ import { ActivityType, Client, GatewayIntentBits } from "discord.js";
 import Logger from "./logger.js";
 import db from "./mongo.js";
 import agenda from "./agenda.js";
-import custom_statuses from "./custom_statuses.json";
+import custom_statuses from "./custom_statuses.json" with { type: "json" };
 
 db.connect().then(() => {});
 
