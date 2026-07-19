@@ -1,6 +1,6 @@
-import redis from "./redis";
-import mongo from "./mongo";
-import Logger from "./logger";
+import redis from "./redis.js";
+import mongo from "./mongo.js";
+import Logger from "./logger.js";
 import {
   ButtonInteraction,
   CommandInteraction,

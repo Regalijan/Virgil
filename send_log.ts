@@ -4,7 +4,7 @@ import {
   EmbedBuilder,
   Guild,
 } from "discord.js";
-import mongo from "./mongo";
+import mongo from "./mongo.js";
 
 const logChannelStore = mongo.db("bot").collection("log_channels");
 

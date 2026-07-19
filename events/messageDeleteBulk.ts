@@ -5,8 +5,8 @@ import {
   PartialMessage,
   Snowflake,
 } from "discord.js";
-import db from "../mongo";
-import Logger from "../logger";
+import db from "../mongo.js";
+import Logger from "../logger.js";
 
 const mongo = db.db("bot");
 

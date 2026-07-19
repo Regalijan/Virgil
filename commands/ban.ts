@@ -3,8 +3,8 @@ import {
   MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
-import mongo from "../mongo";
-import agenda from "../agenda";
+import mongo from "../mongo.js";
+import agenda from "../agenda.js";
 
 export const name = "ban";
 export const privileged = true;

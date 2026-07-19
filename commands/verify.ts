@@ -5,7 +5,7 @@ import {
   ChatInputCommandInteraction,
   MessageFlagsBitField,
 } from "discord.js";
-import { verify } from "../common";
+import { verify } from "../common.js";
 
 export const name = "verify";
 

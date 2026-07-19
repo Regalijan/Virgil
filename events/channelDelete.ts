@@ -3,9 +3,9 @@ import {
   EmbedBuilder,
   NonThreadGuildBasedChannel,
 } from "discord.js";
-import db from "../mongo";
-import logger from "../logger";
-import sendLog from "../send_log";
+import db from "../mongo.js";
+import logger from "../logger.js";
+import sendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 

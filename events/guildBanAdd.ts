@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildBan } from "discord.js";
-import db from "../mongo";
-import SendLog from "../send_log";
+import db from "../mongo.js";
+import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 

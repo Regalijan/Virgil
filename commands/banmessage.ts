@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 const messagesStore = mongo.db("bot").collection("ban_messages");
 
 export const name = "banmessage";

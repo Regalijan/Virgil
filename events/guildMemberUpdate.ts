@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
-import db from "../mongo";
-import SendLog from "../send_log";
+import db from "../mongo.js";
+import SendLog from "../send_log.js";
 import { type AnyBulkWriteOperation } from "mongodb";
 
 const mongo = db.db("bot");

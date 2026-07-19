@@ -1,7 +1,7 @@
 import { EmbedBuilder, ThreadChannel } from "discord.js";
-import mongo from "../mongo";
-import Logger from "../logger";
-import SendLog from "../send_log";
+import mongo from "../mongo.js";
+import Logger from "../logger.js";
+import SendLog from "../send_log.js";
 
 const ignoredStore = mongo.db("bot").collection("ignored");
 const logStore = mongo.db("bot").collection("log_channels");

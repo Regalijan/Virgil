@@ -4,7 +4,7 @@ import {
   GuildMember,
   MessageFlagsBitField,
 } from "discord.js";
-import logger from "../logger";
+import logger from "../logger.js";
 
 export const name = "reversesearch";
 

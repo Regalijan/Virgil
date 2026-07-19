@@ -1,7 +1,7 @@
 import { Agenda } from "agenda";
 import { MongoBackend } from "@agendajs/mongo-backend";
 import { RedisBackend } from "@agendajs/redis-backend";
-import redis from "./redis";
+import redis from "./redis.js";
 
 const redisBackend = new RedisBackend({ redis });
 

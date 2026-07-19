@@ -3,7 +3,7 @@ import {
   MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
-import agenda from "../agenda";
+import agenda from "../agenda.js";
 
 export const name = "selfban";
 

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 
 const bindDb = mongo.db("bot").collection("binds");
 

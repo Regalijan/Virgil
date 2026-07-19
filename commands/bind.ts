@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import { createHash, randomBytes } from "crypto";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 
 export const name = "bind";
 

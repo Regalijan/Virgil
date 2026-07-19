@@ -4,9 +4,9 @@ import {
   MessageFlagsBitField,
 } from "discord.js";
 import { ObjectId } from "mongodb";
-import mongo from "../mongo";
-import deleteMessage from "../webhook_delete";
-import SendLog from "../send_log";
+import mongo from "../mongo.js";
+import deleteMessage from "../webhook_delete.js";
+import SendLog from "../send_log.js";
 
 const logsStore = mongo.db("bot").collection("log_channels");
 const reportStore = mongo.db("bot").collection("reports");

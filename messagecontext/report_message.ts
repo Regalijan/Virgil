@@ -7,9 +7,9 @@ import {
   MessageContextMenuCommandInteraction,
   MessageFlagsBitField,
 } from "discord.js";
-import mongo from "../mongo";
-import Logger from "../logger";
-import SendLog from "../send_log";
+import mongo from "../mongo.js";
+import Logger from "../logger.js";
+import SendLog from "../send_log.js";
 const logStore = mongo.db("bot").collection("log_channels");
 const reportStore = mongo.db("bot").collection("reports");
 

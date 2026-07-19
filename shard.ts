@@ -5,9 +5,9 @@ dotenv();
 import { readdirSync } from "fs";
 import { join } from "path";
 import { ActivityType, Client, GatewayIntentBits } from "discord.js";
-import Logger from "./logger";
-import db from "./mongo";
-import agenda from "./agenda";
+import Logger from "./logger.js";
+import db from "./mongo.js";
+import agenda from "./agenda.js";
 import custom_statuses from "./custom_statuses.json";
 
 db.connect().then(() => {});
@@ -47,17 +47,15 @@ function loadEvents() {
   });
 }
 
-function loadJobs() {
-  for (const file of readdirSync(join(__dirname, "jobs")).filter((f) =>
-    f.endsWith(".js"),
-  )) {
-    const requiredJob = require(`./jobs/${file}`);
-    agenda.define(
-      file,
-      (job) => requiredJob.job(job, bot),
-      requiredJob.options ?? undefined,
-    );
-  }
+for (const file of readdirSync(join(__dirname, "jobs")).filter((f) =>
+  f.endsWith(".js"),
+)) {
+  const requiredJob = await import(`./jobs/${file}`);
+  agenda.define(
+    file,
+    (job) => requiredJob.job(job, bot),
+    requiredJob.options ?? undefined,
+  );
 }
 
 async function logDebug(message: any) {
@@ -65,7 +63,6 @@ async function logDebug(message: any) {
 }
 
 loadEvents();
-loadJobs();
 
 bot.login().catch((e) => {
   Logger(e);

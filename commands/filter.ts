@@ -6,8 +6,7 @@ import {
   Role,
   User,
 } from "discord.js";
-import { createHash, randomBytes } from "crypto";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 
 const filterBypasses = mongo.db("bot").collection("filter_bypass");
 const wordsDB = mongo.db("bot").collection("banned_words");
@@ -38,20 +37,15 @@ export async function exec(i: ChatInputCommandInteraction): Promise<void> {
         return;
       }
 
-      const filterID = createHash("sha256")
-        .update(new Uint8Array(randomBytes(512).buffer))
-        .digest("base64url");
-
       await wordsDB.insertOne({
         case_sensitive,
         filter: word,
-        id: filterID,
         server: i.guildId,
         type: i.options.getInteger("filter_type", true),
       });
 
       await i.reply({
-        content: `Filter created! ID: ${filterID}`,
+        content: `Filter created!`,
         flags: [MessageFlagsBitField.Flags.Ephemeral],
       });
 

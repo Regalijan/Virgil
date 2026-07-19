@@ -1,7 +1,7 @@
 import { EmbedBuilder, ThreadChannel } from "discord.js";
-import db from "../mongo";
-import Logger from "../logger";
-import SendLog from "../send_log";
+import db from "../mongo.js";
+import Logger from "../logger.js";
+import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 

@@ -9,7 +9,7 @@ import {
   TextInputStyle,
 } from "discord.js";
 import { execSync } from "child_process";
-import { isDeveloper } from "../common";
+import { isDeveloper } from "../common.js";
 
 export const name = "internetspeed";
 

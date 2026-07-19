@@ -1,4 +1,4 @@
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 import {
   ChannelType,
   ChatInputCommandInteraction,
@@ -6,7 +6,7 @@ import {
   MessageFlagsBitField,
   PermissionsBitField,
 } from "discord.js";
-import logger from "../logger";
+import logger from "../logger.js";
 
 const honeypotStore = mongo.db("bot").collection("honeypots");
 

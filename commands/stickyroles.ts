@@ -1,4 +1,4 @@
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 import {
   ChatInputCommandInteraction,
   EmbedBuilder,

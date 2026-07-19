@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 
 const settingsStore = mongo.db("bot").collection("nickname_settings");
 

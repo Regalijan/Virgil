@@ -10,13 +10,13 @@ import {
   MessageFlagsBitField,
   UserContextMenuCommandInteraction,
 } from "discord.js";
-import db from "../mongo";
-import Logger from "../logger";
-import SendLog from "../send_log";
-import Sentry from "../sentry";
+import db from "../mongo.js";
+import Logger from "../logger.js";
+import SendLog from "../send_log.js";
+import Sentry from "../sentry.js";
 import { readdirSync } from "fs";
 import { join } from "path";
-import { isMFAEnabled } from "../common";
+import { isMFAEnabled } from "../common.js";
 
 const mongo = db.db("bot");
 

@@ -1,5 +1,5 @@
-import Logger from "../logger";
-import mongo from "../mongo";
+import Logger from "../logger.js";
+import mongo from "../mongo.js";
 
 const credDB = mongo.db("bot").collection("credentials");
 

@@ -7,7 +7,7 @@ import {
   PermissionsBitField,
   ThreadChannel,
 } from "discord.js";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 import webhookDelete from "../webhook_delete";
 import logger from "../logger";
 const db = mongo.db("bot");

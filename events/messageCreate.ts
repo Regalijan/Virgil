@@ -1,8 +1,8 @@
 import { Message, PermissionsBitField, TextChannel } from "discord.js";
-import db from "../mongo";
-import Logger from "../logger";
-import redis from "../redis";
-import { verify } from "../common";
+import db from "../mongo.js";
+import Logger from "../logger.js";
+import redis from "../redis.js";
+import { verify } from "../common.js";
 
 const mongo = db.db("bot");
 

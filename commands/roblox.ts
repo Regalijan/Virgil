@@ -6,8 +6,8 @@ import {
   Team,
   User,
 } from "discord.js";
-import { getRobloxUserProfile } from "../common";
-import Sentry from "../sentry";
+import { getRobloxUserProfile } from "../common.js";
+import Sentry from "../sentry.js";
 
 export const name = "roblox";
 

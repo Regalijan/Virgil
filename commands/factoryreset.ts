@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import mongo from "../mongo";
+import mongo from "../mongo.js";
 
 export const name = "factoryreset";
 

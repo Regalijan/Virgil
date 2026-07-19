@@ -5,9 +5,9 @@ import {
   PermissionsBitField,
   Role,
 } from "discord.js";
-import mongo from "../mongo";
-import SendLog from "../send_log";
-import { verify } from "../common";
+import mongo from "../mongo.js";
+import SendLog from "../send_log.js";
+import { verify } from "../common.js";
 
 const logChannelStore = mongo.db("bot").collection("log_channels");
 

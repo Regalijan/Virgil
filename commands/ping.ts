@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import redis from "../redis";
-import mongo from "../mongo";
+import redis from "../redis.js";
+import mongo from "../mongo.js";
 
 export const name = "ping";
 

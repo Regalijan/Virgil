@@ -3,9 +3,9 @@ import {
   EmbedBuilder,
   MessageFlagsBitField,
 } from "discord.js";
-import mongo from "../mongo";
-import sendLog from "../send_log";
-import logger from "../logger";
+import mongo from "../mongo.js";
+import sendLog from "../send_log.js";
+import logger from "../logger.js";
 const modLogStore = mongo.db("bot").collection("modlogs");
 
 export const name = "warn";
