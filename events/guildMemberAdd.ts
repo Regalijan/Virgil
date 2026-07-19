@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import mongo from "../mongo";
 import SendLog from "../send_log";
-import common from "../common";
+import { verify } from "../common";
 
 const logChannelStore = mongo.db("bot").collection("log_channels");
 
@@ -41,7 +41,7 @@ module.exports = async function (member: GuildMember) {
   await SendLog(logChannel.webhook, embed, member.guild, "member_join");
 
   try {
-    await common.verify(member, true);
+    await verify(member, true);
   } catch {}
 
   const highestRole = member.guild.members.me?.roles.highest;

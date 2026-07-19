@@ -2,7 +2,7 @@ import { Message, PermissionsBitField, TextChannel } from "discord.js";
 import db from "../mongo";
 import Logger from "../logger";
 import redis from "../redis";
-import Common from "../common";
+import { verify } from "../common";
 
 const mongo = db.db("bot");
 
@@ -58,8 +58,7 @@ module.exports = async function (message: Message) {
     Math.random() <= 0.005 &&
     !(await redis.get(`recentlyverified_${message.author.id}`));
 
-  if (shouldVerify && message.member)
-    await Common.verify(message.member, false);
+  if (shouldVerify && message.member) await verify(message.member, false);
 
   const bypasses = await mongo
     .collection("filter_bypass")

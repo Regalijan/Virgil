@@ -5,48 +5,47 @@ import {
   ChatInputCommandInteraction,
   MessageFlagsBitField,
 } from "discord.js";
-import Common from "../common";
+import { verify } from "../common";
 
-export = {
-  name: "verify",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const member = await i.guild?.members.fetch(i.user.id);
-    if (!member) {
-      await i.reply({
-        content:
-          "An error occurred when attempting to verify you - please try again later.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-      return;
-    }
+export const name = "verify";
 
-    const results = await Common.verify(member, true, i);
-    const replyOpts: {
-      content: string;
-      components: ActionRowBuilder<ButtonBuilder>[];
-    } = {
-      content: results.content,
-      components: [],
-    };
-    if (!results.verified) {
-      const notVerifiedLinkButton = new ButtonBuilder({
-        emoji: "🔗",
-        label: "Verify your account",
-        style: ButtonStyle.Link,
-        url: "https://registry.virgil.gg/me",
-      });
-      const verifyButton = new ButtonBuilder({
-        customId: "verify_recheck",
-        label: "I have verified my account",
-        style: ButtonStyle.Primary,
-      });
-      replyOpts.components = [
-        new ActionRowBuilder<ButtonBuilder>().addComponents(
-          notVerifiedLinkButton,
-          verifyButton,
-        ),
-      ];
-    }
-    await i.followUp(replyOpts);
-  },
-};
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  const member = await i.guild?.members.fetch(i.user.id);
+  if (!member) {
+    await i.reply({
+      content:
+        "An error occurred when attempting to verify you - please try again later.",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+    return;
+  }
+
+  const results = await verify(member, true, i);
+  const replyOpts: {
+    content: string;
+    components: ActionRowBuilder<ButtonBuilder>[];
+  } = {
+    content: results.content,
+    components: [],
+  };
+  if (!results.verified) {
+    const notVerifiedLinkButton = new ButtonBuilder({
+      emoji: "🔗",
+      label: "Verify your account",
+      style: ButtonStyle.Link,
+      url: "https://registry.virgil.gg/me",
+    });
+    const verifyButton = new ButtonBuilder({
+      customId: "verify_recheck",
+      label: "I have verified my account",
+      style: ButtonStyle.Primary,
+    });
+    replyOpts.components = [
+      new ActionRowBuilder<ButtonBuilder>().addComponents(
+        notVerifiedLinkButton,
+        verifyButton,
+      ),
+    ];
+  }
+  await i.followUp(replyOpts);
+}

@@ -1,22 +1,21 @@
 import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
-import Common from "../common";
+import { verify } from "../common";
 
-export = {
-  name: "update",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const member = await i.guild?.members
-      .fetch(i.options.getUser("user") ?? i.user.id)
-      .catch((e) => console.error(e));
-    if (!member) {
-      await i.reply({
-        content: "This user is not in the server!",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-      return;
-    }
+export const name = "update";
 
-    const { content } = await Common.verify(member, member.id === i.user.id, i);
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  const member = await i.guild?.members
+    .fetch(i.options.getUser("user") ?? i.user.id)
+    .catch((e) => console.error(e));
+  if (!member) {
+    await i.reply({
+      content: "This user is not in the server!",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+    return;
+  }
 
-    await i.followUp({ content });
-  },
-};
+  const { content } = await verify(member, member.id === i.user.id, i);
+
+  await i.followUp({ content });
+}

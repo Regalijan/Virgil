@@ -54,39 +54,38 @@ function getGitVersion(): string {
   }
 }
 
-export = {
-  name: "debug",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const clientApplication = await i.client.application?.fetch();
-    let applicationOwner = "Unknown";
-    if (clientApplication?.owner instanceof Team) {
-      applicationOwner = clientApplication.owner.name + " (Team)";
-    } else if (clientApplication?.owner instanceof User) {
-      applicationOwner = clientApplication.owner.tag;
-    }
+export const name = "debug";
 
-    const embed = new EmbedBuilder()
-      .setAuthor({
-        name: i.client.user?.tag ?? "Unknown Bot",
-        iconURL: i.client.user?.displayAvatarURL(),
-      })
-      .addFields(
-        { name: "Operator", value: applicationOwner },
-        { name: "Node Version", value: process.version },
-        { name: "Uptime", value: getUptime() },
-        { name: "Memory Usage", value: getMemoryUsage() },
-        { name: "Version", value: getGitVersion() },
-        { name: "Repository", value: getGitRemote() },
-        { name: "Branch", value: getGitBranch() },
-        { name: "Server ID", value: i.guild?.id ?? "N/A" },
-        {
-          name: "Shard ID",
-          value: i.client.shard
-            ? `${i.client.shard.ids[0]} (${i.client.options.shardCount} total)`
-            : "N/A",
-        },
-      );
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  const clientApplication = await i.client.application?.fetch();
+  let applicationOwner = "Unknown";
+  if (clientApplication?.owner instanceof Team) {
+    applicationOwner = clientApplication.owner.name + " (Team)";
+  } else if (clientApplication?.owner instanceof User) {
+    applicationOwner = clientApplication.owner.tag;
+  }
 
-    await i.reply({ embeds: [embed] });
-  },
-};
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: i.client.user?.tag ?? "Unknown Bot",
+      iconURL: i.client.user?.displayAvatarURL(),
+    })
+    .addFields(
+      { name: "Operator", value: applicationOwner },
+      { name: "Node Version", value: process.version },
+      { name: "Uptime", value: getUptime() },
+      { name: "Memory Usage", value: getMemoryUsage() },
+      { name: "Version", value: getGitVersion() },
+      { name: "Repository", value: getGitRemote() },
+      { name: "Branch", value: getGitBranch() },
+      { name: "Server ID", value: i.guild?.id ?? "N/A" },
+      {
+        name: "Shard ID",
+        value: i.client.shard
+          ? `${i.client.shard.ids[0]} (${i.client.options.shardCount} total)`
+          : "N/A",
+      },
+    );
+
+  await i.reply({ embeds: [embed] });
+}

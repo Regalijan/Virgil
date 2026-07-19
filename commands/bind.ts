@@ -2,294 +2,292 @@ import { ChatInputCommandInteraction, MessageFlagsBitField } from "discord.js";
 import { createHash, randomBytes } from "crypto";
 import mongo from "../mongo";
 
-export = {
-  name: "bind",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    if (!i.guild) throw Error("<ChatInputCommandInteraction>.guild is null");
-    const subc = i.options.getSubcommand(true);
-    const { id: role, managed } = i.options.getRole("role", true);
+export const name = "bind";
 
-    if (managed) {
-      await i.reply({
-        content: "Bot-managed roles cannot be bound.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  if (!i.guild) throw Error("<ChatInputCommandInteraction>.guild is null");
+  const subc = i.options.getSubcommand(true);
+  const { id: role, managed } = i.options.getRole("role", true);
+
+  if (managed) {
+    await i.reply({
+      content: "Bot-managed roles cannot be bound.",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+    return;
+  }
+
+  const bindDb = mongo.db("bot").collection("binds");
+  const bindId = createHash("sha256")
+    .update(new Uint8Array(randomBytes(512).buffer))
+    .digest("base64")
+    .replaceAll("=", "")
+    .replaceAll("/", "_")
+    .replaceAll("+", "-");
+  switch (subc) {
+    case "group":
+      if (i.options.getInteger("group_id", true) < 1) {
+        await i.reply({
+          content: "Group IDs cannot be negative!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      if (i.options.getInteger("group_id", true) === 0) {
+        await i.reply({
+          content: "You cannot use group 0, please bind another verified role.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      const groupRequest = await fetch(
+        "https://groups.roblox.com/v2/groups?groupIds=" +
+          i.options.getInteger("group_id", true),
+      ).catch((e) => console.error(e));
+      if (!groupRequest) {
+        await i.reply({
+          content: "The group could not be validated!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      const groupData = await groupRequest.json();
+
+      if (!groupData.data?.length) {
+        await i.reply({
+          content: "This group does not exist!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "group",
+        role,
+        group: i.options.getInteger("group_id", true),
+        rank: i.options.getInteger("rank"),
       });
-      return;
-    }
+      break;
 
-    const bindDb = mongo.db("bot").collection("binds");
-    const bindId = createHash("sha256")
-      .update(new Uint8Array(randomBytes(512).buffer))
-      .digest("base64")
-      .replaceAll("=", "")
-      .replaceAll("/", "_")
-      .replaceAll("+", "-");
-    switch (subc) {
-      case "group":
-        if (i.options.getInteger("group_id", true) < 1) {
-          await i.reply({
-            content: "Group IDs cannot be negative!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        if (i.options.getInteger("group_id", true) === 0) {
-          await i.reply({
-            content:
-              "You cannot use group 0, please bind another verified role.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const groupRequest = await fetch(
-          "https://groups.roblox.com/v2/groups?groupIds=" +
-            i.options.getInteger("group_id", true),
-        ).catch((e) => console.error(e));
-        if (!groupRequest) {
-          await i.reply({
-            content: "The group could not be validated!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const groupData = await groupRequest.json();
-
-        if (!groupData.data?.length) {
-          await i.reply({
-            content: "This group does not exist!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "group",
-          role,
-          group: i.options.getInteger("group_id", true),
-          rank: i.options.getInteger("rank"),
+    case "badge":
+      if (i.options.getInteger("badge_id", true) < 0) {
+        await i.reply({
+          content: "Badge IDs cannot be negative!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
+        return;
+      }
 
-      case "badge":
-        if (i.options.getInteger("badge_id", true) < 0) {
-          await i.reply({
-            content: "Badge IDs cannot be negative!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const badgeVerify = await fetch(
-          `https://badges.roblox.com/v1/badges/${i.options.getInteger(
-            "badge_id",
-          )}`,
-        ).catch(() => {});
-        if (!badgeVerify?.ok) {
-          await i.reply({
-            content: "Badge could not be validated! Does it exist?",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "badge",
-          role,
-          asset: i.options.getInteger("badge_id", true),
+      const badgeVerify = await fetch(
+        `https://badges.roblox.com/v1/badges/${i.options.getInteger(
+          "badge_id",
+        )}`,
+      ).catch(() => {});
+      if (!badgeVerify?.ok) {
+        await i.reply({
+          content: "Badge could not be validated! Does it exist?",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
+        return;
+      }
 
-      case "bundle":
-        if (i.options.getInteger("bundle_id", true) < 1) {
-          await i.reply({
-            content: "Bundle IDs cannot be less than 1!",
-          });
-        }
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "badge",
+        role,
+        asset: i.options.getInteger("badge_id", true),
+      });
+      break;
 
-        const bundleVerify = await fetch(
-          `https://catalog.roblox.com/v1/bundles/${i.options.getInteger(
-            "bundle_id",
-            true,
-          )}/details`,
-        ).catch(() => {});
-        if (!bundleVerify) {
-          await i.reply({
-            content:
-              "An error occurred when looking up the bundle! Please try again later.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        if (!bundleVerify.ok) {
-          await i.reply({
-            content: "The bundle you specified does not exist.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "bundle",
-          role,
-          asset: i.options.getInteger("bundle_id", true),
+    case "bundle":
+      if (i.options.getInteger("bundle_id", true) < 1) {
+        await i.reply({
+          content: "Bundle IDs cannot be less than 1!",
         });
-        break;
+      }
 
-      case "gamepass":
-        if (i.options.getInteger("gamepass_id", true) < 1) {
-          await i.reply({
-            content: "GamePass IDs cannot be less than 1!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const gamePassVerify = await fetch(
-          `https://apis.roblox.com/game-passes/v1/game-passes/${i.options.getInteger(
-            "gamepass_id",
-            true,
-          )}/product-info`,
-        ).catch(() => {});
-
-        if (!gamePassVerify) {
-          await i.reply({
-            content:
-              "An error occurred when looking up that GamePass! Please try again later.",
-          });
-          return;
-        }
-
-        if (!gamePassVerify.ok) {
-          await i.reply({
-            content: "GamePass does not exist! Try again.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "gamepass",
-          role,
-          asset: i.options.getInteger("gamepass_id", true),
+      const bundleVerify = await fetch(
+        `https://catalog.roblox.com/v1/bundles/${i.options.getInteger(
+          "bundle_id",
+          true,
+        )}/details`,
+      ).catch(() => {});
+      if (!bundleVerify) {
+        await i.reply({
+          content:
+            "An error occurred when looking up the bundle! Please try again later.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
+        return;
+      }
 
-      case "asset":
-        if (i.options.getInteger("asset_id", true) < 1) {
-          await i.reply({
-            content: "Asset IDs cannot be less than 1!",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const assetVerify = await fetch(
-          `https://economy.roblox.com/v2/assets/${i.options.getInteger(
-            "asset_id",
-            true,
-          )}/details`,
-        ).catch(() => {});
-
-        if (!assetVerify) {
-          await i.reply({
-            content:
-              "An error occurred when looking up that asset! Please try again later.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        if (!assetVerify.ok) {
-          await i.reply({
-            content: "This asset does not exist! Try again.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "asset",
-          role,
-          asset: i.options.getInteger("asset_id", true),
+      if (!bundleVerify.ok) {
+        await i.reply({
+          content: "The bundle you specified does not exist.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
+        return;
+      }
 
-      case "verified_status":
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "verified",
-          role,
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "bundle",
+        role,
+        asset: i.options.getInteger("bundle_id", true),
+      });
+      break;
+
+    case "gamepass":
+      if (i.options.getInteger("gamepass_id", true) < 1) {
+        await i.reply({
+          content: "GamePass IDs cannot be less than 1!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
+        return;
+      }
 
-      case "unverified_status":
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "unverified",
-          role,
+      const gamePassVerify = await fetch(
+        `https://apis.roblox.com/game-passes/v1/game-passes/${i.options.getInteger(
+          "gamepass_id",
+          true,
+        )}/product-info`,
+      ).catch(() => {});
+
+      if (!gamePassVerify) {
+        await i.reply({
+          content:
+            "An error occurred when looking up that GamePass! Please try again later.",
         });
-        break;
+        return;
+      }
 
-      case "friend_status":
-        const userVerifyReq = await fetch(
-          "https://users.roblox.com/v1/usernames/users",
-          {
-            body: JSON.stringify({
-              usernames: [i.options.getString("username", true)],
-              excludeBannedUsers: false,
-            }),
-            headers: {
-              "content-type": "application/json",
-            },
-            method: "POST",
+      if (!gamePassVerify.ok) {
+        await i.reply({
+          content: "GamePass does not exist! Try again.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "gamepass",
+        role,
+        asset: i.options.getInteger("gamepass_id", true),
+      });
+      break;
+
+    case "asset":
+      if (i.options.getInteger("asset_id", true) < 1) {
+        await i.reply({
+          content: "Asset IDs cannot be less than 1!",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      const assetVerify = await fetch(
+        `https://economy.roblox.com/v2/assets/${i.options.getInteger(
+          "asset_id",
+          true,
+        )}/details`,
+      ).catch(() => {});
+
+      if (!assetVerify) {
+        await i.reply({
+          content:
+            "An error occurred when looking up that asset! Please try again later.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      if (!assetVerify.ok) {
+        await i.reply({
+          content: "This asset does not exist! Try again.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "asset",
+        role,
+        asset: i.options.getInteger("asset_id", true),
+      });
+      break;
+
+    case "verified_status":
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "verified",
+        role,
+      });
+      break;
+
+    case "unverified_status":
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "unverified",
+        role,
+      });
+      break;
+
+    case "friend_status":
+      const userVerifyReq = await fetch(
+        "https://users.roblox.com/v1/usernames/users",
+        {
+          body: JSON.stringify({
+            usernames: [i.options.getString("username", true)],
+            excludeBannedUsers: false,
+          }),
+          headers: {
+            "content-type": "application/json",
           },
-        ).catch(() => {});
+          method: "POST",
+        },
+      ).catch(() => {});
 
-        if (!userVerifyReq) {
-          await i.reply({
-            content:
-              "An error occurred when looking up that user! Please try again later.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        const userVerifyData = await userVerifyReq.json();
-
-        if (!userVerifyData.data?.length) {
-          await i.reply({
-            content:
-              "This user does not exist! Please make sure that you spelled it correctly.",
-            flags: [MessageFlagsBitField.Flags.Ephemeral],
-          });
-          return;
-        }
-
-        await bindDb.insertOne({
-          id: bindId,
-          server: i.guildId,
-          type: "friend",
-          role,
-          friend: userVerifyData.data[0].id,
+      if (!userVerifyReq) {
+        await i.reply({
+          content:
+            "An error occurred when looking up that user! Please try again later.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
         });
-        break;
-    }
-    await i.reply({ content: "Bind created! ID: " + bindId });
-  },
-};
+        return;
+      }
+
+      const userVerifyData = await userVerifyReq.json();
+
+      if (!userVerifyData.data?.length) {
+        await i.reply({
+          content:
+            "This user does not exist! Please make sure that you spelled it correctly.",
+          flags: [MessageFlagsBitField.Flags.Ephemeral],
+        });
+        return;
+      }
+
+      await bindDb.insertOne({
+        id: bindId,
+        server: i.guildId,
+        type: "friend",
+        role,
+        friend: userVerifyData.data[0].id,
+      });
+      break;
+  }
+  await i.reply({ content: "Bind created! ID: " + bindId });
+}

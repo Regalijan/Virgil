@@ -5,54 +5,53 @@ import {
 } from "discord.js";
 import agenda from "../agenda";
 
-export = {
-  name: "selfban",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    if (!i.appPermissions?.has(PermissionsBitField.Flags.BanMembers)) {
-      await i.reply({
-        content:
-          "I was unable to run this command because I do not have the Ban Members permission.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
+export const name = "selfban";
+
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  if (!i.appPermissions?.has(PermissionsBitField.Flags.BanMembers)) {
+    await i.reply({
+      content:
+        "I was unable to run this command because I do not have the Ban Members permission.",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+    return;
+  }
+
+  const chance = Math.random() <= 1 / 1000;
+  if (chance) {
+    const target = await i.guild?.members.fetch(i.user);
+    if (
+      !target?.bannable ||
+      !i.guild?.members.me ||
+      target.roles.highest.comparePositionTo(
+        i.guild.members.me.roles.highest,
+      ) >= 0
+    ) {
+      await i.reply("This user cannot be banned.");
       return;
     }
 
-    const chance = Math.random() <= 1 / 1000;
-    if (chance) {
-      const target = await i.guild?.members.fetch(i.user);
-      if (
-        !target?.bannable ||
-        !i.guild?.members.me ||
-        target.roles.highest.comparePositionTo(
-          i.guild.members.me.roles.highest,
-        ) >= 0
-      ) {
-        await i.reply("This user cannot be banned.");
-        return;
-      }
-
-      let aheadToUnban = Math.round(Math.random() * 10) * 1440 * 60000;
-      await target
-        .send({
-          content: `You have been banned from ${i.guild?.name} for the following reason:\n\nSelf-ban`,
-        })
-        .catch((e) => console.error(e));
-      await i.reply({
-        content: `${i.user} banned himself successfully.`,
-      });
-      await target.ban({
-        reason: "Natural Selection",
-      });
-      aheadToUnban += Date.now();
-      await agenda.schedule(new Date(aheadToUnban), "clear-temporary-ban", {
-        server: i.guildId,
-        user: target.id,
-      });
-    } else {
-      await i.reply({
-        content: "Try again.",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-    }
-  },
-};
+    let aheadToUnban = Math.round(Math.random() * 10) * 1440 * 60000;
+    await target
+      .send({
+        content: `You have been banned from ${i.guild?.name} for the following reason:\n\nSelf-ban`,
+      })
+      .catch((e) => console.error(e));
+    await i.reply({
+      content: `${i.user} banned himself successfully.`,
+    });
+    await target.ban({
+      reason: "Natural Selection",
+    });
+    aheadToUnban += Date.now();
+    await agenda.schedule(new Date(aheadToUnban), "clear-temporary-ban", {
+      server: i.guildId,
+      user: target.id,
+    });
+  } else {
+    await i.reply({
+      content: "Try again.",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+  }
+}

@@ -4,32 +4,31 @@ import {
   MessageFlagsBitField,
 } from "discord.js";
 
-export = {
-  name: "dog",
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    const dogReq = await fetch("https://dog.ceo/api/breeds/image/random").catch(
-      () => {},
-    );
+export const name = "dog";
 
-    if (!dogReq?.ok) {
-      await i.reply({
-        content:
-          "The dog giver is on break, please try again later. (HTTP Error)",
-        flags: [MessageFlagsBitField.Flags.Ephemeral],
-      });
-      return;
-    }
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  const dogReq = await fetch("https://dog.ceo/api/breeds/image/random").catch(
+    () => {},
+  );
 
-    const dogData = await dogReq.json();
+  if (!dogReq?.ok) {
+    await i.reply({
+      content:
+        "The dog giver is on break, please try again later. (HTTP Error)",
+      flags: [MessageFlagsBitField.Flags.Ephemeral],
+    });
+    return;
+  }
 
-    const embed = new EmbedBuilder()
-      .setTitle(":dog: Woof!")
-      .setImage(dogData.message);
+  const dogData = await dogReq.json();
 
-    const member = await i.guild?.members
-      .fetch(i.user.id)
-      .catch((e) => console.error(e));
-    if (member) embed.setColor(member.displayColor);
-    await i.reply({ embeds: [embed] });
-  },
-};
+  const embed = new EmbedBuilder()
+    .setTitle(":dog: Woof!")
+    .setImage(dogData.message);
+
+  const member = await i.guild?.members
+    .fetch(i.user.id)
+    .catch((e) => console.error(e));
+  if (member) embed.setColor(member.displayColor);
+  await i.reply({ embeds: [embed] });
+}

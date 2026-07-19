@@ -8,7 +8,6 @@ import {
   GuildMFALevel,
   MessageContextMenuCommandInteraction,
   MessageFlagsBitField,
-  PermissionResolvable,
   UserContextMenuCommandInteraction,
 } from "discord.js";
 import db from "../mongo";
@@ -17,7 +16,7 @@ import SendLog from "../send_log";
 import Sentry from "../sentry";
 import { readdirSync } from "fs";
 import { join } from "path";
-import common from "../common";
+import { isMFAEnabled } from "../common";
 
 const mongo = db.db("bot");
 
@@ -34,7 +33,6 @@ const userContextCommands: Map<
   string,
   {
     name: string;
-    permissions?: PermissionResolvable[];
     exec(i: UserContextMenuCommandInteraction): Promise<void>;
   }
 > = new Map();
@@ -43,7 +41,6 @@ const messageContextCommands: Map<
   string,
   {
     name: string;
-    permissions?: PermissionResolvable[];
     exec(i: MessageContextMenuCommandInteraction): Promise<void>;
   }
 > = new Map();
@@ -52,7 +49,6 @@ const buttonCommands: Map<
   string,
   {
     name: string;
-    permissions?: PermissionResolvable[];
     exec(i: ButtonInteraction): Promise<void>;
   }
 > = new Map();
@@ -60,28 +56,28 @@ const buttonCommands: Map<
 for (const file of readdirSync(join(__dirname, "../commands")).filter((f) =>
   f.endsWith(".js"),
 )) {
-  const commandFile = require(`../commands/${file}`);
+  const commandFile = await import(`../commands/${file}`);
   cmds.set(commandFile.name, commandFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../usercontext")).filter((f) =>
   f.endsWith(".js"),
 )) {
-  const ucFile = require(`../usercontext/${file}`);
+  const ucFile = await import(`../usercontext/${file}`);
   userContextCommands.set(ucFile.name, ucFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../messagecontext")).filter(
   (f) => f.endsWith(".js"),
 )) {
-  const mcFile = require(`../messagecontext/${file}`);
+  const mcFile = await import(`../messagecontext/${file}`);
   messageContextCommands.set(mcFile.name, mcFile);
 }
 
 for (const file of readdirSync(join(__dirname, "../button")).filter((f) =>
   f.endsWith(".js"),
 )) {
-  const bFile = require(`../button/${file}`);
+  const bFile = await import(`../button/${file}`);
   buttonCommands.set(bFile.name, bFile);
 }
 
@@ -89,21 +85,6 @@ module.exports = async function (i: BaseInteraction) {
   if (i.isUserContextMenuCommand()) {
     if (!userContextCommands.has(i.commandName)) return;
     const contextCommand = userContextCommands.get(i.commandName);
-    const contextMember = await i.guild?.members
-      .fetch(i.user.id)
-      .catch(console.error);
-
-    if (
-      contextCommand?.permissions?.length &&
-      !contextMember?.permissions.has(contextCommand.permissions)
-    ) {
-      return await i
-        .reply({
-          content: "You cannot run this command!",
-          flags: [MessageFlagsBitField.Flags.Ephemeral],
-        })
-        .catch(Logger);
-    }
 
     try {
       await contextCommand?.exec(i);
@@ -210,7 +191,7 @@ module.exports = async function (i: BaseInteraction) {
       process.env.MFA_CLIENT_SECRET &&
       process.env.MFA_VERIFY_SITE
     ) {
-      if (!(await common.isMFAEnabled(i.user)))
+      if (!(await isMFAEnabled(i.user)))
         return await i.reply({
           content: `Sorry, but you must verify that you have MFA enabled to use this command!\n\nVisit ${process.env.MFA_VERIFY_SITE} to verify.`,
           flags: [MessageFlagsBitField.Flags.Ephemeral],

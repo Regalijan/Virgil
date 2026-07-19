@@ -3,34 +3,33 @@ import mongo from "../mongo";
 
 const settingsStore = mongo.db("bot").collection("nickname_settings");
 
-export = {
-  name: "nicknamelock",
-  privileged: true,
-  async exec(i: ChatInputCommandInteraction): Promise<void> {
-    switch (i.options.getBoolean("should_nickname", true)) {
-      case true:
-        await settingsStore.updateOne(
-          { guild: i.guildId },
-          {
-            $set: { lock_nicknames: true },
-            $setOnInsert: { guild: i.guildId },
-          },
-          { upsert: true },
-        );
-        await i.reply({
-          content: "Nicknames will now be enforced on this server.",
-        });
-        return;
+export const name = "nicknamelock";
+export const privileged = true;
 
-      case false:
-        await settingsStore.updateOne(
-          { guild: i.guildId },
-          { $unset: { lock_nicknames: null } },
-        );
-        await i.reply({
-          content: "Nicknames will no longer be enforced on this server.",
-        });
-        return;
-    }
-  },
-};
+export async function exec(i: ChatInputCommandInteraction): Promise<void> {
+  switch (i.options.getBoolean("should_nickname", true)) {
+    case true:
+      await settingsStore.updateOne(
+        { guild: i.guildId },
+        {
+          $set: { lock_nicknames: true },
+          $setOnInsert: { guild: i.guildId },
+        },
+        { upsert: true },
+      );
+      await i.reply({
+        content: "Nicknames will now be enforced on this server.",
+      });
+      return;
+
+    case false:
+      await settingsStore.updateOne(
+        { guild: i.guildId },
+        { $unset: { lock_nicknames: null } },
+      );
+      await i.reply({
+        content: "Nicknames will no longer be enforced on this server.",
+      });
+      return;
+  }
+}
