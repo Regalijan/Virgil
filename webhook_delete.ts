@@ -1,5 +1,5 @@
 import { type Guild } from "discord.js";
-import logger from "./logger";
+import logger from "./logger.js";
 
 export default async function (
   webhookUrl: string,
