@@ -81,7 +81,7 @@ for (const file of readdirSync(join(__dirname, "../button")).filter((f) =>
   buttonCommands.set(bFile.name, bFile);
 }
 
-module.exports = async function (i: BaseInteraction) {
+export default async function (i: BaseInteraction) {
   if (i.isUserContextMenuCommand()) {
     if (!userContextCommands.has(i.commandName)) return;
     const contextCommand = userContextCommands.get(i.commandName);
@@ -226,4 +226,4 @@ module.exports = async function (i: BaseInteraction) {
       })
       .catch(console.error);
   }
-};
+}

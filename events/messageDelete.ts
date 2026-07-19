@@ -5,7 +5,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (message: Message | PartialMessage) {
+export default async function (message: Message | PartialMessage) {
   if (
     message.channel.isDMBased() ||
     !message.guild ||
@@ -51,4 +51,4 @@ module.exports = async function (message: Message | PartialMessage) {
     message.guild,
     "deleteLogChannelWebhook",
   );
-};
+}

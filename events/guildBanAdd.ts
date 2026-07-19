@@ -4,7 +4,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (ban: GuildBan) {
+export default async function (ban: GuildBan) {
   const logChannel = await mongo
     .collection("log_channels")
     .findOne(
@@ -24,4 +24,4 @@ module.exports = async function (ban: GuildBan) {
     .addFields({ name: "Reason", value: ban.reason ?? "No reason provided" });
 
   await SendLog(logChannel.webhook, embed, ban.guild, "ban");
-};
+}

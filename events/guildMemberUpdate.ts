@@ -5,7 +5,7 @@ import { type AnyBulkWriteOperation } from "mongodb";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   oldMember: GuildMember | PartialGuildMember,
   newMember: GuildMember | PartialGuildMember,
 ) {
@@ -124,4 +124,4 @@ module.exports = async function (
     embed.setColor(newMember.displayColor);
     await SendLog(logChannel.webhook, embed, newMember.guild, "nickname");
   }
-};
+}

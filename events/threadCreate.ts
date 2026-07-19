@@ -6,7 +6,7 @@ import SendLog from "../send_log.js";
 const ignoredStore = mongo.db("bot").collection("ignored");
 const logStore = mongo.db("bot").collection("log_channels");
 
-module.exports = async function (thread: ThreadChannel) {
+export default async function (thread: ThreadChannel) {
   const ignoreData = await ignoredStore
     .findOne({
       channel: { $in: [thread.parent?.id, thread.parent?.parent?.id] },
@@ -28,4 +28,4 @@ module.exports = async function (thread: ThreadChannel) {
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([0, 255, 0]);
   await SendLog(logChannel.webhook, embed, thread.guild, "thread_create");
-};
+}

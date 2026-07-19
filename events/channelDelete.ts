@@ -9,7 +9,7 @@ import sendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   channel: DMChannel | NonThreadGuildBasedChannel,
 ) {
   if (channel instanceof DMChannel) return;
@@ -35,4 +35,4 @@ module.exports = async function (
   );
 
   await sendLog(logChannel.webhook, embed, channel.guild, "channel_delete");
-};
+}

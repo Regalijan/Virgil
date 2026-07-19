@@ -10,7 +10,7 @@ import Logger from "../logger.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   messages: Collection<Snowflake, Message | PartialMessage>,
 ) {
   const firstMessage = messages.first();
@@ -81,4 +81,4 @@ module.exports = async function (
       files: [{ attachment: Buffer.from(uploadBody), name: uploadName }],
     })
     .catch(console.error);
-};
+}

@@ -7,7 +7,7 @@ import { type Document, type WithId } from "mongodb";
 const mongo = db.db("bot");
 const logStore = mongo.collection("log_channels");
 
-module.exports = async function (oldState: VoiceState, newState: VoiceState) {
+export default async function (oldState: VoiceState, newState: VoiceState) {
   if (!newState.member) return;
   const ignoreData = await mongo.collection("ignored").findOne({
     channel: { $in: [newState.channel?.id, newState.channel?.parent?.id] },
@@ -144,4 +144,4 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
   if (actionstring === `<@${newState.member.id}> `) return;
   embed.setDescription(actionstring);
   await SendLog(webhookUrl, embed, newState.guild, settingName);
-};
+}

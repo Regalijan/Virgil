@@ -4,7 +4,7 @@ import SendLog from "../send_log.js";
 
 const channelStore = mongo.db("bot").collection("log_channels");
 
-module.exports = async function (member: GuildMember) {
+export default async function (member: GuildMember) {
   const logChannel = await channelStore.findOne(
     { guild: member.guild.id, type: "member_leave" },
     { projection: { webhook: 1 } },
@@ -21,4 +21,4 @@ module.exports = async function (member: GuildMember) {
     .setDescription(`<@${member.id}> ${member.user.username}`)
     .setFooter({ text: `ID: ${member.id}` });
   await SendLog(logChannel.webhook, embed, member.guild, "member_leave");
-};
+}

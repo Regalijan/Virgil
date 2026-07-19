@@ -5,7 +5,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   oldThread: ThreadChannel,
   newThread: ThreadChannel,
 ) {
@@ -57,4 +57,4 @@ module.exports = async function (
   if (!actionstring) return;
   embed.setDescription(actionstring);
   await SendLog(logChannel.webhook, embed, newThread.guild, "thread_update");
-};
+}

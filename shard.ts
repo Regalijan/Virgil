@@ -3,7 +3,8 @@ import { config as dotenv } from "dotenv";
 dotenv();
 
 import { readdirSync } from "fs";
-import { join } from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { ActivityType, Client, GatewayIntentBits } from "discord.js";
 import Logger from "./logger.js";
 import db from "./mongo.js";
@@ -27,27 +28,28 @@ const bot = new Client({
   ],
 });
 
-function loadEvents() {
-  if (process.env.ENABLEDEBUG)
-    bot.on("debug", function (m) {
-      console.log(m);
-    });
-  for (const file of readdirSync(join(process.cwd(), "events")).filter((f) =>
-    f.endsWith(".js"),
-  )) {
-    const requiredEvent = require(`./events/${file}`);
-    events.set(file.replace(".js", ""), requiredEvent);
-  }
+const dir = dirname(fileURLToPath(import.meta.url));
 
-  events.forEach((_value, key) => {
-    const event = events.get(key);
-    bot.on(key, async (...args: any[]) => {
-      await event(...args);
-    });
+if (process.env.ENABLEDEBUG)
+  bot.on("debug", function (m) {
+    console.log(m);
   });
+
+for (const file of readdirSync(join(dir, "events")).filter((f) =>
+  f.endsWith(".js"),
+)) {
+  const requiredEvent = await import(`./events/${file}`);
+  events.set(file.replace(".js", ""), requiredEvent);
 }
 
-for (const file of readdirSync(join(process.cwd(), "jobs")).filter((f) =>
+events.forEach((_value, key) => {
+  const event = events.get(key);
+  bot.on(key, async (...args: any[]) => {
+    await event(...args);
+  });
+});
+
+for (const file of readdirSync(join(dir, "jobs")).filter((f) =>
   f.endsWith(".js"),
 )) {
   const requiredJob = await import(`./jobs/${file}`);
@@ -61,8 +63,6 @@ for (const file of readdirSync(join(process.cwd(), "jobs")).filter((f) =>
 async function logDebug(message: any) {
   console.log(`SHARD ${bot.shard?.ids[0]}:\n${message}`);
 }
-
-loadEvents();
 
 bot.login().catch((e) => {
   Logger(e);

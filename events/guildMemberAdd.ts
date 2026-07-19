@@ -11,7 +11,7 @@ import { verify } from "../common.js";
 
 const logChannelStore = mongo.db("bot").collection("log_channels");
 
-module.exports = async function (member: GuildMember) {
+export default async function (member: GuildMember) {
   const logChannel = await logChannelStore.findOne(
     { guild: member.guild.id, type: "member_join" },
     { projection: { webhook: 1 } },
@@ -96,4 +96,4 @@ module.exports = async function (member: GuildMember) {
       `Failed to apply sticky roles to ${member.id} (${member.guild.id})`,
     );
   }
-};
+}

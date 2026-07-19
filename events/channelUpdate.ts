@@ -9,7 +9,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   _oldChannel: DMChannel | NonThreadGuildBasedChannel,
   newChannel: DMChannel | NonThreadGuildBasedChannel,
 ) {
@@ -36,4 +36,4 @@ module.exports = async function (
   );
 
   await SendLog(logChannel.webhook, embed, newChannel.guild, "channel_update");
-};
+}

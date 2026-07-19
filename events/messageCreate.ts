@@ -6,7 +6,7 @@ import { verify } from "../common.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (message: Message) {
+export default async function (message: Message) {
   if (
     !message.content ||
     !message.author ||
@@ -119,4 +119,4 @@ module.exports = async function (message: Message) {
       Logger(e);
     }
   }
-};
+}

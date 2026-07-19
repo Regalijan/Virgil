@@ -5,7 +5,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (thread: ThreadChannel) {
+export default async function (thread: ThreadChannel) {
   const ignoreData = await mongo
     .collection("ignored")
     .findOne({
@@ -28,4 +28,4 @@ module.exports = async function (thread: ThreadChannel) {
     .setFooter({ text: `Thread ${thread.id}` })
     .setColor([255, 0, 0]);
   await SendLog(logChannel.webhook, embed, thread.guild, "thread_delete");
-};
+}

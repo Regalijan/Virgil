@@ -5,7 +5,7 @@ import SendLog from "../send_log.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (
+export default async function (
   oldMessage: Message | PartialMessage,
   newMessage: Message | PartialMessage,
 ) {
@@ -65,4 +65,4 @@ module.exports = async function (
     );
   if (newMessage.member) embed.setColor(newMessage.member.displayColor);
   await SendLog(logChannel.webhook, embed, newMessage.guild, "edit");
-};
+}

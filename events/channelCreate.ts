@@ -5,7 +5,7 @@ import db from "../mongo.js";
 
 const mongo = db.db("bot");
 
-module.exports = async function (channel: NonThreadGuildBasedChannel) {
+export default async function (channel: NonThreadGuildBasedChannel) {
   const ignoreData = await mongo
     .collection("ignored")
     .findOne({
@@ -25,4 +25,4 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
   );
 
   await sendLog(logChannel.webhook, embed, channel.guild, "create_channel");
-};
+}
