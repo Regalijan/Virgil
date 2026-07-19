@@ -66,7 +66,7 @@ export async function exec(i: ChatInputCommandInteraction): Promise<void> {
       for (const logChannel of allLogChannels)
         channelsList.set(
           logChannel.type,
-          logChannel.channel ? `<#${logChannel.id}>` : "Not set",
+          `<#${logChannel.id}>`,
         );
 
       embed.setTitle("Log channels for " + i.guild?.name);
@@ -74,102 +74,102 @@ export async function exec(i: ChatInputCommandInteraction): Promise<void> {
       embed.addFields(
         {
           name: "Ban logs",
-          value: channelsList.get("ban") ?? "Unknown",
+          value: channelsList.get("ban") ?? "Not set",
           inline: true,
         },
         {
           name: "Delete logs",
-          value: channelsList.get("delete") ?? "Unknown",
+          value: channelsList.get("delete") ?? "Not set",
           inline: true,
         },
         {
           name: "Edit logs",
-          value: channelsList.get("edit") ?? "Unknown",
+          value: channelsList.get("edit") ?? "Not set",
           inline: true,
         },
         {
           name: "Member join logs",
-          value: channelsList.get("member_join") ?? "Unknown",
+          value: channelsList.get("member_join") ?? "Not set",
           inline: true,
         },
         {
           name: "Member leave logs",
-          value: channelsList.get("member_leave") ?? "Unknown",
+          value: channelsList.get("member_leave") ?? "Not set",
           inline: true,
         },
         {
           name: "Message report action logs",
-          value: channelsList.get("message_report_actions") ?? "Unknown",
+          value: channelsList.get("message_report_actions") ?? "Not set",
           inline: true,
         },
         {
           name: "Message reports",
-          value: channelsList.get("message_reports") ?? "Unknown",
+          value: channelsList.get("message_reports") ?? "Not set",
           inline: true,
         },
         {
           name: "Nickname logs",
-          value: channelsList.get("nickname") ?? "Unknown",
+          value: channelsList.get("nickname") ?? "Not set",
           inline: true,
         },
         {
           name: "Role logs",
-          value: channelsList.get("role") ?? "Unknown",
+          value: channelsList.get("role") ?? "Not set",
           inline: true,
         },
         {
           name: "Thread creation logs",
-          value: channelsList.get("thread_create") ?? "Unknown",
+          value: channelsList.get("thread_create") ?? "Not set",
           inline: true,
         },
         {
           name: "Thread delete logs",
-          value: channelsList.get("thread_delete") ?? "Unknown",
+          value: channelsList.get("thread_delete") ?? "Not set",
           inline: true,
         },
         {
           name: "Thread update logs",
-          value: channelsList.get("thread_delete") ?? "Unknown",
+          value: channelsList.get("thread_delete") ?? "Not set",
           inline: true,
         },
         {
           name: "Unban logs",
-          value: channelsList.get("unban") ?? "Unknown",
+          value: channelsList.get("unban") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice deafen logs",
-          value: channelsList.get("voice_deafen") ?? "Unknown",
+          value: channelsList.get("voice_deafen") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice join logs",
-          value: channelsList.get("voice_join") ?? "Unknown",
+          value: channelsList.get("voice_join") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice leave logs",
-          value: channelsList.get("voice_leave") ?? "Unknown",
+          value: channelsList.get("voice_leave") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice mute logs",
-          value: channelsList.get("voice_mute") ?? "Unknown",
+          value: channelsList.get("voice_mute") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice channel switch logs",
-          value: channelsList.get("voice_switch") ?? "Unknown",
+          value: channelsList.get("voice_switch") ?? "Not set",
           inline: true,
         },
         {
           name: "Voice video logs",
-          value: channelsList.get("voice_video") ?? "Unknown",
+          value: channelsList.get("voice_video") ?? "Not set",
           inline: true,
         },
         {
           name: "Warn logs",
-          value: channelsList.get("warn") ?? "Unknown",
+          value: channelsList.get("warn") ?? "Not set",
           inline: true,
         },
       );
