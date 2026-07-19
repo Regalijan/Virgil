@@ -13,11 +13,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     channel: { $in: [newState.channel?.id, newState.channel?.parent?.id] },
     log: { $regex: "^voice_" },
   });
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: newState.guild.id })
-    .catch(Logger);
-  if (!settings) return;
+
   const embed = new EmbedBuilder()
     .setColor(newState.member?.displayColor ?? 0)
     .setAuthor({
@@ -69,10 +65,7 @@ module.exports = async function (oldState: VoiceState, newState: VoiceState) {
     actionstring += `${newState.mute ? "muted" : "unmuted"} themself.`;
     settingName = "voice_mute";
     webhookUrl = logChannel.webhook;
-  } else if (
-    newState.selfDeaf !== oldState.selfDeaf &&
-    settings.voiceDeafenLogChannel
-  ) {
+  } else if (newState.selfDeaf !== oldState.selfDeaf) {
     if (ignoreData?.log === "voice_deafen") return;
     logChannel = await logStore
       .findOne(

@@ -14,13 +14,11 @@ module.exports = async function (channel: NonThreadGuildBasedChannel) {
     })
     .catch(Logger);
   if (ignoreData) return;
+
   const logChannel = await mongo
     .collection("log_channels")
     .findOne({ guild: channel.guildId, type: "channel_create" });
-  const settings = await mongo
-    .collection("settings")
-    .findOne({ guild: channel.guild.id })
-    .catch(Logger);
+
   if (!logChannel) return;
   const embed = new EmbedBuilder().setDescription(
     `${channel} has been created.`,
