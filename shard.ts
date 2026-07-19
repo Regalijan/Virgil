@@ -45,7 +45,7 @@ for (const file of readdirSync(join(dir, "events")).filter((f) =>
 events.forEach((_value, key) => {
   const event = events.get(key);
   bot.on(key, async (...args: any[]) => {
-    await event(...args);
+    await event.default(...args);
   });
 });
 
