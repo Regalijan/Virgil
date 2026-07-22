@@ -7,13 +7,7 @@ import { verify } from "../common.js";
 const mongo = db.db("bot");
 
 export default async function (message: Message) {
-  if (
-    !message.content ||
-    !message.author ||
-    !message.guild ||
-    message.channel.isDMBased()
-  )
-    return;
+  if (!message.guild || !message.member || message.channel.isDMBased()) return;
 
   const banMessageSettings = await mongo
     .collection("ban_messages")
