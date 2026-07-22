@@ -21,7 +21,7 @@
   "homepage": "https://github.com/Regalijan/Virgil#readme",
   "dependencies": {
     "@agendajs/mongo-backend": "^4.0.3",
-    "@agendajs/redis-backend": "^3.0.6",
+    "@agendajs/redis-backend": "^3.0.7",
     "@sentry/node": "^10.67.0",
     "agenda": "^6.2.5",
     "bufferutil": "^4.1.0",
