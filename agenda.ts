@@ -3,6 +3,7 @@ import { MongoBackend } from "@agendajs/mongo-backend";
 import { RedisBackend } from "@agendajs/redis-backend";
 import redis from "./redis.js";
 
+// @ts-expect-error
 const redisBackend = new RedisBackend({ redis });
 
 (async function () {
