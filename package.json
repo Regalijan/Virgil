@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/migrate-mongo": "^14.0.0",
     "migrate-mongo": "^14.0.7",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.8",
     "typescript": "^7.0.2"
   },
   "prettier": {
