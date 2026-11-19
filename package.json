@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/Regalijan/Virgil#readme",
   "dependencies": {
-    "@agendajs/mongo-backend": "^4.0.4",
-    "@agendajs/redis-backend": "^3.0.8",
+    "@agendajs/mongo-backend": "^4.0.5",
+    "@agendajs/redis-backend": "^3.0.9",
     "@sentry/node": "^11.12.0",
     "agenda": "^6.2.8",
     "bufferutil": "^4.2.0",
@@ -41,6 +41,6 @@
     "endOfLine": "auto"
   },
   "allowScripts": {
-    "bufferutil@4.1.0": true
+    "bufferutil@4.2.0": true
   }
 }
